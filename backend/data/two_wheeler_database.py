@@ -5,6 +5,8 @@ scooters, and electric two-wheelers sold in India (including iconic discontinued
 """
 
 from typing import List, Dict, Any, Optional
+import os
+import csv
 
 BRAND_ALIASES: Dict[str, str] = {
     "hero": "Hero MotoCorp",
@@ -3744,6 +3746,59 @@ INDIAN_TWO_WHEELER_DATABASE: List[Dict[str, Any]] = [
     }
 ]
 
+CSV_CATALOGUE_PATH = os.path.join(os.path.dirname(__file__), "two_wheeler_catalogue.csv")
+
+def load_catalogue_from_csv(file_path: Optional[str] = None) -> List[Dict[str, Any]]:
+    """Loads and parses two-wheeler catalogue from CSV database with fallback"""
+    path = file_path or CSV_CATALOGUE_PATH
+    if not os.path.exists(path):
+        return INDIAN_TWO_WHEELER_DATABASE
+    try:
+        grouped = {}
+        with open(path, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                brand = (row.get("brand") or "").strip()
+                model = (row.get("model") or "").strip()
+                if not brand or not model:
+                    continue
+                key = (brand, model)
+                if key not in grouped:
+                    try:
+                        min_y = int(row.get("min_year") or 2018)
+                        max_y = int(row.get("max_year") or 2026)
+                        years = list(range(min_y, max_y + 1))
+                    except Exception:
+                        years = list(range(2018, 2026))
+                    grouped[key] = {
+                        "brand": brand,
+                        "model": model,
+                        "category": (row.get("category") or "motorcycle").strip().lower(),
+                        "fuel_type": (row.get("fuel_type") or "petrol").strip().lower(),
+                        "engine_cc": float(row.get("engine_cc") or 0.0),
+                        "transmission": (row.get("transmission") or "").strip(),
+                        "available_years": years,
+                        "is_discontinued": str(row.get("is_discontinued", "")).strip().lower() in ["true", "1", "yes"],
+                        "variants": []
+                    }
+                var_name = (row.get("variant_name") or "Standard").strip()
+                try:
+                    var_mrp = float(row.get("original_mrp") or 100000.0)
+                except Exception:
+                    var_mrp = 100000.0
+                grouped[key]["variants"].append({
+                    "name": var_name,
+                    "mrp": var_mrp
+                })
+        if grouped:
+            return list(grouped.values())
+    except Exception as e:
+        print(f"Warning: Failed to load CSV catalogue from {path}: {e}")
+    return INDIAN_TWO_WHEELER_DATABASE
+
+# Active dataset parsed from CSV with fallback
+ACTIVE_CATALOGUE = load_catalogue_from_csv()
+
 def normalize_brand(brand_input: str) -> str:
     clean = str(brand_input or "").strip().lower()
     return BRAND_ALIASES.get(clean, brand_input.strip() if brand_input else "Royal Enfield")
@@ -3754,19 +3809,30 @@ def get_all_categories() -> List[str]:
 def get_brands_by_category(category: Optional[str] = None) -> List[str]:
     brands = set()
     cat_clean = category.lower().strip() if category and category != "all" else None
-    for v in INDIAN_TWO_WHEELER_DATABASE:
+    for v in ACTIVE_CATALOGUE:
         if not cat_clean or v["category"].lower() == cat_clean:
             brands.add(v["brand"])
     return sorted(list(brands))
+
+def get_brands_categorized() -> Dict[str, List[str]]:
+    """Returns mapping of categories to their respective available brands"""
+    mapping: Dict[str, set] = {"motorcycle": set(), "scooter": set(), "electric": set()}
+    for v in ACTIVE_CATALOGUE:
+        cat = v.get("category", "motorcycle").lower()
+        if cat in mapping:
+            mapping[cat].add(v["brand"])
+        else:
+            mapping.setdefault(cat, set()).add(v["brand"])
+    return {k: sorted(list(v)) for k, v in mapping.items()}
 
 def get_models_by_brand(brand: str, category: Optional[str] = None) -> List[Dict[str, Any]]:
     canonical_brand = normalize_brand(brand).lower()
     cat_clean = category.lower().strip() if category and category != "all" else None
     models = []
     seen_model_names = set()
-    for v in INDIAN_TWO_WHEELER_DATABASE:
+    for v in ACTIVE_CATALOGUE:
         v_brand_norm = normalize_brand(v["brand"]).lower()
-        if v_brand_norm == canonical_brand or canonical_brand in v_brand_norm:
+        if v_brand_norm == canonical_brand or canonical_brand in v_brand_norm or v["brand"].lower() == canonical_brand:
             if not cat_clean or v["category"].lower() == cat_clean:
                 if v["model"] not in seen_model_names:
                     seen_model_names.add(v["model"])
@@ -3786,7 +3852,7 @@ def get_models_by_brand(brand: str, category: Optional[str] = None) -> List[Dict
 
 def get_vehicle_by_id(vehicle_id: str) -> Optional[Dict[str, Any]]:
     vid = str(vehicle_id or "").strip().lower()
-    for v in INDIAN_TWO_WHEELER_DATABASE:
+    for v in ACTIVE_CATALOGUE:
         if v.get("id", "").lower() == vid:
             return v
     return None
@@ -3794,10 +3860,14 @@ def get_vehicle_by_id(vehicle_id: str) -> Optional[Dict[str, Any]]:
 def get_vehicle_entry(brand: str, model: str) -> Optional[Dict[str, Any]]:
     b_norm = normalize_brand(brand).lower()
     m_clean = str(model or "").lower().strip()
-    for v in INDIAN_TWO_WHEELER_DATABASE:
+    for v in ACTIVE_CATALOGUE:
         v_brand_norm = normalize_brand(v["brand"]).lower()
         v_model_norm = v["model"].lower().strip()
         if (v_brand_norm == b_norm or b_norm in v_brand_norm) and (v_model_norm == m_clean or m_clean in v_model_norm or v_model_norm in m_clean):
+            return v
+    for v in ACTIVE_CATALOGUE:
+        v_model_norm = v["model"].lower().strip()
+        if v_model_norm == m_clean or m_clean in v_model_norm:
             return v
     return None
 

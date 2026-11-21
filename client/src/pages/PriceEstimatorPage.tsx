@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { formatINR } from '../utils/geo';
 import { 
   Sparkles, 
@@ -201,12 +201,14 @@ export const PriceEstimatorPage: React.FC = () => {
     year, 
     km, 
     owners, 
+    usagePattern,
     condition, 
     engineCondition, 
     batteryHealth, 
     tyreCondition, 
     brakeCondition, 
     bodyCondition, 
+    electricalCondition,
     serviceHistory, 
     accidentHistory, 
     insuranceValidity, 
@@ -452,6 +454,17 @@ export const PriceEstimatorPage: React.FC = () => {
     },
     {
       id: 12,
+      field: 'rc_status',
+      question: "What is the RC (Registration Certificate) & loan status?",
+      helper: "Bank hypothecation or lost RC requires NOC or police NCR clearance",
+      options: [
+        { label: '📄 Clean RC Card (Clear Title)', value: 'clean', subtext: 'Original smart card in hand, zero loan hypothecation' },
+        { label: '🏦 Bank Hypothecated (Loan Active)', value: 'hypothecated', subtext: 'Loan active, bank NOC & RTO clearance needed (-₹1,500)' },
+        { label: '❓ Missing / Duplicate RC', value: 'lost', subtext: 'Requires duplicate RC issuance from RTO (-₹4,500)' }
+      ]
+    },
+    {
+      id: 13,
       field: 'city',
       question: "In which city is the vehicle located or registered?",
       helper: "Regional RTO demand, interstate tax and local popularity shift values",
@@ -567,13 +580,17 @@ export const PriceEstimatorPage: React.FC = () => {
     setYear(chatFormState.manufacturing_year || 2023);
     setKm(chatFormState.km_driven || 14000);
     setOwners(chatFormState.owners_count || 1);
+    if (chatFormState.condition) setCondition(chatFormState.condition);
     if (chatFormState.engine_condition) setEngineCondition(chatFormState.engine_condition);
     if (chatFormState.battery_health) setBatteryHealth(chatFormState.battery_health);
     if (chatFormState.tyre_condition) setTyreCondition(chatFormState.tyre_condition);
+    if (chatFormState.brake_condition) setBrakeCondition(chatFormState.brake_condition);
     if (chatFormState.body_condition) setBodyCondition(chatFormState.body_condition);
+    if (chatFormState.electrical_condition) setElectricalCondition(chatFormState.electrical_condition);
     if (chatFormState.service_history) setServiceHistory(chatFormState.service_history);
     if (chatFormState.accident_history) setAccidentHistory(chatFormState.accident_history);
     if (chatFormState.insurance_validity) setInsuranceValidity(chatFormState.insurance_validity);
+    if (chatFormState.rc_status) setRcStatus(chatFormState.rc_status);
     if (chatFormState.city) setCity(chatFormState.city);
 
     setActiveTab('manual');
@@ -906,7 +923,7 @@ export const PriceEstimatorPage: React.FC = () => {
                       >
                         <option value="brand_new">🌟 Brand New (&gt;85% Tread depth)</option>
                         <option value="good">✅ Good (50% – 85% Tread depth)</option>
-                        <option value="worn">⚠️ Worn Out (&lt;35% Tread, approx -₹4,000 deduction)</option>
+                        <option value="worn">⚠️ Worn Out (&lt;35% Tread, approx -₹3,500 deduction)</option>
                         <option value="needs_replacement">❌ Bald / Cracked (Needs immediate new set)</option>
                       </select>
                     </div>
@@ -920,8 +937,50 @@ export const PriceEstimatorPage: React.FC = () => {
                       >
                         <option value="clean">✨ Showroom Mint (Zero dents, clean paint)</option>
                         <option value="minor_scratches">👌 Minor Scratches (Normal parking wear)</option>
-                        <option value="dents">🔨 Visible Dents / Broken fairing clip (-₹4,500)</option>
+                        <option value="dents">🔨 Visible Dents / Broken fairing clip (-₹4,000)</option>
                         <option value="repainted">🎨 Repainted / Aftermarket paint job</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Brakes, Electrical & Overall Grade */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                    <div>
+                      <label className="text-slate-400 font-semibold mb-1.5 block">Brake System</label>
+                      <select
+                        value={brakeCondition}
+                        onChange={(e) => setBrakeCondition(e.target.value)}
+                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                      >
+                        <option value="good">🟢 Crisp Bite & Thick Pads</option>
+                        <option value="spongy">🟡 Spongy / Soft Lever</option>
+                        <option value="needs_replacement">🔴 Worn Discs / Drums Due</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-slate-400 font-semibold mb-1.5 block">Electrical & Starter</label>
+                      <select
+                        value={electricalCondition}
+                        onChange={(e) => setElectricalCondition(e.target.value)}
+                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                      >
+                        <option value="working">🟢 All Working Normal</option>
+                        <option value="issues">🟠 Starter / Wiring Issues</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-slate-400 font-semibold mb-1.5 block">Overall Vehicle Grade</label>
+                      <select
+                        value={condition}
+                        onChange={(e) => setCondition(e.target.value)}
+                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none font-semibold text-emerald-400"
+                      >
+                        <option value="excellent">🌟 Excellent (Pristine)</option>
+                        <option value="good">✅ Good (Dependable)</option>
+                        <option value="fair">⚠️ Fair (Cosmetic / Wear)</option>
+                        <option value="poor">❌ Needs Repair</option>
                       </select>
                     </div>
                   </div>
@@ -983,6 +1042,19 @@ export const PriceEstimatorPage: React.FC = () => {
                   </div>
 
                   <div>
+                    <label className="text-slate-400 font-semibold mb-1.5 block">RC & Financing Status</label>
+                    <select
+                      value={rcStatus}
+                      onChange={(e) => setRcStatus(e.target.value)}
+                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                    >
+                      <option value="clean">📄 Clean RC Card (Clear title ready for transfer)</option>
+                      <option value="hypothecated">🏦 Bank Hypothecated (Loan NOC required -₹1,500)</option>
+                      <option value="lost">❓ Missing / Duplicate RC Card (-₹4,500)</option>
+                    </select>
+                  </div>
+
+                  <div className="sm:col-span-2">
                     <label className="text-slate-400 font-semibold mb-1.5 block">City / RTO Location</label>
                     <select
                       value={city}

@@ -1,0 +1,191 @@
+brand,model,category,fuel_type,engine_cc,transmission,min_year,max_year,is_discontinued,variant_name,original_mrp
+Hero MotoCorp,Splendor Plus,motorcycle,petrol,97.2,4-speed Manual,2004,2025,False,Self Start Drum Brake Alloy,75400
+Hero MotoCorp,Splendor Plus,motorcycle,petrol,97.2,4-speed Manual,2004,2025,False,XTEC Bluetooth Digital,79900
+Hero MotoCorp,Splendor Plus,motorcycle,petrol,97.2,4-speed Manual,2004,2025,False,Black and Accent Edition,76800
+Hero MotoCorp,Splendor Plus,motorcycle,petrol,97.2,4-speed Manual,2004,2025,False,Kick Start Spoke Wheel (Older),58000
+Hero MotoCorp,HF Deluxe,motorcycle,petrol,97.2,4-speed Manual,2010,2025,False,Self Start Alloy Wheel,67800
+Hero MotoCorp,HF Deluxe,motorcycle,petrol,97.2,4-speed Manual,2010,2025,False,Kick Start Drum Alloy,60200
+Hero MotoCorp,HF Deluxe,motorcycle,petrol,97.2,4-speed Manual,2010,2025,False,i3S Technology Drum,69200
+Hero MotoCorp,Glamour,motorcycle,petrol,124.7,5-speed Manual,2005,2025,False,Disc Brake Alloy,86800
+Hero MotoCorp,Glamour,motorcycle,petrol,124.7,5-speed Manual,2005,2025,False,Drum Brake Alloy,82500
+Hero MotoCorp,Glamour,motorcycle,petrol,124.7,5-speed Manual,2005,2025,False,Glamour XTEC Bluetooth Disc,91500
+Hero MotoCorp,Passion Pro / Plus,motorcycle,petrol,113.2,4-speed Manual,2002,2025,False,Pro Disc Alloy i3S,81000
+Hero MotoCorp,Passion Pro / Plus,motorcycle,petrol,113.2,4-speed Manual,2002,2025,False,Pro Drum Alloy,77000
+Hero MotoCorp,Passion Pro / Plus,motorcycle,petrol,113.2,4-speed Manual,2002,2025,False,Passion Plus Re-launch Edition,78500
+Hero MotoCorp,Xpulse 200 4V,motorcycle,petrol,199.6,5-speed Manual,2021,2026,False,Base Dual ABS,146000
+Hero MotoCorp,Xpulse 200 4V,motorcycle,petrol,199.6,5-speed Manual,2021,2026,False,Pro Edition (Fully Adjustable Rally Suspension),154000
+Hero MotoCorp,Karizma XMR,motorcycle,petrol,210.0,6-speed Manual with Slipper Clutch,2023,2026,False,Dual Channel ABS Standard,180000
+Hero MotoCorp,Karizma R / ZMR (Iconic Discontinued),motorcycle,petrol,223.0,5-speed Manual,2003,2018,True,Karizma R Carburetor Red/Yellow,85000
+Hero MotoCorp,Karizma R / ZMR (Iconic Discontinued),motorcycle,petrol,223.0,5-speed Manual,2003,2018,True,Karizma ZMR PGM-FI Full Fairing,108000
+Hero MotoCorp,Destini 125,scooter,petrol,124.6,CVT Automatic,2018,2025,False,Prime Drum Alloy,76500
+Hero MotoCorp,Destini 125,scooter,petrol,124.6,CVT Automatic,2018,2025,False,XTEC Connected Disc,86000
+Hero MotoCorp,Pleasure Plus,scooter,petrol,110.9,CVT Automatic,2006,2025,False,LX Sheet Metal Wheel,71200
+Hero MotoCorp,Pleasure Plus,scooter,petrol,110.9,CVT Automatic,2006,2025,False,XTEC Connected Alloy,82800
+Honda,Activa 6G,scooter,petrol,109.51,CVT Automatic,2020,2026,False,Standard Drum,76800
+Honda,Activa 6G,scooter,petrol,109.51,CVT Automatic,2020,2026,False,Deluxe LED Headlamp,79500
+Honda,Activa 6G,scooter,petrol,109.51,CVT Automatic,2020,2026,False,H-Smart Smart Key Alloy,83200
+Honda,Activa 125,scooter,petrol,124.0,CVT Automatic,2014,2025,False,Drum Steel,81000
+Honda,Activa 125,scooter,petrol,124.0,CVT Automatic,2014,2025,False,Drum Alloy,84600
+Honda,Activa 125,scooter,petrol,124.0,CVT Automatic,2014,2025,False,Disc Alloy H-Smart,90500
+Honda,Activa (3G / 4G / 5G Discontinued Generations),scooter,petrol,109.2,CVT Automatic,2009,2019,True,Activa 3G BS3,51000
+Honda,Activa (3G / 4G / 5G Discontinued Generations),scooter,petrol,109.2,CVT Automatic,2009,2019,True,Activa 4G BS4 AHO,54000
+Honda,Activa (3G / 4G / 5G Discontinued Generations),scooter,petrol,109.2,CVT Automatic,2009,2019,True,Activa 5G LED DLX,57500
+Honda,Dio 110 / 125,scooter,petrol,123.92,CVT Automatic,2012,2025,False,Standard Drum 110,73000
+Honda,Dio 110 / 125,scooter,petrol,123.92,CVT Automatic,2012,2025,False,Dio 125 Standard,84500
+Honda,Dio 110 / 125,scooter,petrol,123.92,CVT Automatic,2012,2025,False,Dio 125 Smart Key Disc,92500
+Honda,Shine 125,motorcycle,petrol,123.94,5-speed Manual,2006,2025,False,Drum Brake CBS,80500
+Honda,Shine 125,motorcycle,petrol,123.94,5-speed Manual,2006,2025,False,Front Disc Brake CBS,84500
+Honda,SP 125,motorcycle,petrol,123.94,5-speed Manual,2019,2025,False,Drum Brake,86800
+Honda,SP 125,motorcycle,petrol,123.94,5-speed Manual,2019,2025,False,Disc Brake,91000
+Honda,SP 125,motorcycle,petrol,123.94,5-speed Manual,2019,2025,False,Sports Edition Disc,92000
+Honda,Unicorn 160,motorcycle,petrol,162.7,5-speed Manual,2004,2025,False,Standard Single ABS,111500
+Honda,H'ness CB350,motorcycle,petrol,348.36,5-speed with Assist & Slipper Clutch,2020,2026,False,DLX Dual ABS,210000
+Honda,H'ness CB350,motorcycle,petrol,348.36,5-speed with Assist & Slipper Clutch,2020,2026,False,DLX Pro Dual Tone,215000
+Honda,H'ness CB350,motorcycle,petrol,348.36,5-speed with Assist & Slipper Clutch,2020,2026,False,Legacy Edition,217000
+Honda,CB350RS,motorcycle,petrol,348.36,5-speed Manual,2021,2026,False,Monotone Dual ABS,216000
+Honda,CB350RS,motorcycle,petrol,348.36,5-speed Manual,2021,2026,False,Dual Tone Edition,218500
+Honda,CBR 250R (Iconic Discontinued),motorcycle,petrol,249.6,6-speed Manual,2011,2019,True,Non-ABS Standard,165000
+Honda,CBR 250R (Iconic Discontinued),motorcycle,petrol,249.6,6-speed Manual,2011,2019,True,Combined ABS Repsol Edition,195000
+TVS,Jupiter 110,scooter,petrol,113.3,CVT Automatic,2013,2025,False,Sheet Metal Drum,74500
+TVS,Jupiter 110,scooter,petrol,113.3,CVT Automatic,2013,2025,False,ZX Drum Alloy iTouch,83000
+TVS,Jupiter 110,scooter,petrol,113.3,CVT Automatic,2013,2025,False,SmartXonnect Disc,88000
+TVS,Jupiter 125,scooter,petrol,124.8,CVT Automatic,2021,2026,False,Drum Steel,80000
+TVS,Jupiter 125,scooter,petrol,124.8,CVT Automatic,2021,2026,False,Drum Alloy,83500
+TVS,Jupiter 125,scooter,petrol,124.8,CVT Automatic,2021,2026,False,Disc SmartXonnect TFT,91500
+TVS,Ntorq 125,scooter,petrol,124.8,CVT Automatic,2018,2025,False,Drum,85000
+TVS,Ntorq 125,scooter,petrol,124.8,CVT Automatic,2018,2025,False,Disc Bluetooth,90000
+TVS,Ntorq 125,scooter,petrol,124.8,CVT Automatic,2018,2025,False,Race Edition,94500
+TVS,Ntorq 125,scooter,petrol,124.8,CVT Automatic,2018,2025,False,Race XP (10.2 PS Dual Riding Modes),98000
+TVS,Ntorq 125,scooter,petrol,124.8,CVT Automatic,2018,2025,False,XT Connected TFT,105000
+TVS,Apache RTR 160 4V,motorcycle,petrol,159.7,5-speed Manual,2018,2025,False,Rear Drum Single ABS,124500
+TVS,Apache RTR 160 4V,motorcycle,petrol,159.7,5-speed Manual,2018,2025,False,Rear Disc Bluetooth SmartXonnect,131500
+TVS,Apache RTR 160 4V,motorcycle,petrol,159.7,5-speed Manual,2018,2025,False,Special Edition Bullpup Exhaust,133000
+TVS,Apache RTR 200 4V,motorcycle,petrol,197.75,5-speed with Slipper Clutch & Riding Modes,2016,2025,False,Single Channel ABS Riding Modes,142000
+TVS,Apache RTR 200 4V,motorcycle,petrol,197.75,5-speed with Slipper Clutch & Riding Modes,2016,2025,False,Dual Channel ABS with Showa Adjustable Suspension,148500
+TVS,Raider 125,motorcycle,petrol,124.8,5-speed Manual,2021,2026,False,Drum,95500
+TVS,Raider 125,motorcycle,petrol,124.8,5-speed Manual,2021,2026,False,Single Disc,98000
+TVS,Raider 125,motorcycle,petrol,124.8,5-speed Manual,2021,2026,False,SmartXonnect Color TFT,104000
+TVS,Ronin 225,motorcycle,petrol,225.9,5-speed with Assist & Slipper Clutch,2022,2026,False,SS Single Channel ABS,149000
+TVS,Ronin 225,motorcycle,petrol,225.9,5-speed with Assist & Slipper Clutch,2022,2026,False,DS Dual Channel ABS,156500
+TVS,Ronin 225,motorcycle,petrol,225.9,5-speed with Assist & Slipper Clutch,2022,2026,False,TD Triple Tone Connected,172000
+TVS,iQube EV,electric,electric,0,Automatic Direct Hub Drive,2020,2026,False,Base 2.2 kWh (75 km Range),110000
+TVS,iQube EV,electric,electric,0,Automatic Direct Hub Drive,2020,2026,False,iQube 3.4 kWh (100 km TrueRange),136500
+TVS,iQube EV,electric,electric,0,Automatic Direct Hub Drive,2020,2026,False,iQube S 3.4 kWh TFT Connected,146500
+TVS,iQube EV,electric,electric,0,Automatic Direct Hub Drive,2020,2026,False,iQube ST 5.1 kWh Fast Charge (150 km Range),185000
+Bajaj,Pulsar 150,motorcycle,petrol,149.5,5-speed Manual,2001,2025,False,Single Disc ABS,113000
+Bajaj,Pulsar 150,motorcycle,petrol,149.5,5-speed Manual,2001,2025,False,Twin Disc ABS Split Seat,118500
+Bajaj,Pulsar NS200,motorcycle,petrol,199.5,6-speed Manual with Perimeter Frame,2012,2025,False,BS4 Carburetor (Discontinued),112000
+Bajaj,Pulsar NS200,motorcycle,petrol,199.5,6-speed Manual with Perimeter Frame,2012,2025,False,BS6 Dual Channel ABS with USD Forks,149000
+Bajaj,Pulsar 220F,motorcycle,petrol,220.0,5-speed Manual,2007,2025,False,Carb Dual Disc (Legacy),98000
+Bajaj,Pulsar 220F,motorcycle,petrol,220.0,5-speed Manual,2007,2025,False,BS6 Single Channel ABS Projector,140000
+Bajaj,Dominar 400,motorcycle,petrol,373.3,6-speed Manual with Slipper Clutch,2016,2025,False,Dual ABS Standard,225000
+Bajaj,Dominar 400,motorcycle,petrol,373.3,6-speed Manual with Slipper Clutch,2016,2025,False,"Touring Edition (Tall Screen, Luggage Carrier, Handguards)",232000
+Bajaj,Avenger Cruise / Street 220,motorcycle,petrol,220.0,5-speed Manual,2005,2025,False,Cruise 220 Chrome with Windshield,144000
+Bajaj,Avenger Cruise / Street 220,motorcycle,petrol,220.0,5-speed Manual,2005,2025,False,Street 160 Black Alloy,118000
+Bajaj,Platina 100 / 110,motorcycle,petrol,115.45,5-speed Manual with ComforTec,2006,2025,False,100 ES Drum,67800
+Bajaj,Platina 100 / 110,motorcycle,petrol,115.45,5-speed Manual with ComforTec,2006,2025,False,110 ABS (Segment First ABS),79800
+Bajaj,Chetak EV,electric,electric,0,Automatic Direct Metal Body,2020,2026,False,Urbane 2.9 kWh,115000
+Bajaj,Chetak EV,electric,electric,0,Automatic Direct Metal Body,2020,2026,False,Premium 3.2 kWh with TecPac,135000
+Bajaj,Chetak EV,electric,electric,0,Automatic Direct Metal Body,2020,2026,False,2901 Affordable Edition,96000
+Bajaj,Chetak 2-Stroke (Iconic Vintage Discontinued),scooter,petrol,145.45,4-speed Handle Grip Shift,1980,2005,True,12V Electronic Ignition Steel Body,32000
+Royal Enfield,Classic 350,motorcycle,petrol,349.34,5-speed Constant Mesh J-Series,2009,2025,False,UCE 350 Twinspark (Older 2009-2021),165000
+Royal Enfield,Classic 350,motorcycle,petrol,349.34,5-speed Constant Mesh J-Series,2009,2025,False,J-Series Redditch Single ABS,193000
+Royal Enfield,Classic 350,motorcycle,petrol,349.34,5-speed Constant Mesh J-Series,2009,2025,False,Halcyon Dual Channel ABS,199000
+Royal Enfield,Classic 350,motorcycle,petrol,349.34,5-speed Constant Mesh J-Series,2009,2025,False,Signals Dual Channel ABS,214000
+Royal Enfield,Classic 350,motorcycle,petrol,349.34,5-speed Constant Mesh J-Series,2009,2025,False,Dark Stealth Black Alloy Tubeless,221000
+Royal Enfield,Classic 350,motorcycle,petrol,349.34,5-speed Constant Mesh J-Series,2009,2025,False,Chrome Red / Bronze Dual ABS,225000
+Royal Enfield,Hunter 350,motorcycle,petrol,349.34,5-speed Manual,2022,2026,False,Retro Factory Spoke Single ABS,149900
+Royal Enfield,Hunter 350,motorcycle,petrol,349.34,5-speed Manual,2022,2026,False,Metro Dapper Dual ABS Alloy,169500
+Royal Enfield,Hunter 350,motorcycle,petrol,349.34,5-speed Manual,2022,2026,False,Metro Rebel Dual Tone Alloy,174500
+Royal Enfield,Bullet 350,motorcycle,petrol,349.34,5-speed Manual,1990,2025,False,Standard Cast Iron Heavy Crank (Vintage),85000
+Royal Enfield,Bullet 350,motorcycle,petrol,349.34,5-speed Manual,1990,2025,False,Bullet 350 ES Electra UCE,145000
+Royal Enfield,Bullet 350,motorcycle,petrol,349.34,5-speed Manual,1990,2025,False,New J-Series Military Red/Black,174000
+Royal Enfield,Bullet 350,motorcycle,petrol,349.34,5-speed Manual,1990,2025,False,New J-Series Standard Black/Maroon,198000
+Royal Enfield,Bullet 350,motorcycle,petrol,349.34,5-speed Manual,1990,2025,False,Black Gold Dual ABS,216000
+Royal Enfield,Meteor 350,motorcycle,petrol,349.34,5-speed Manual with Tripper Nav,2020,2026,False,Fireball Dual ABS,206000
+Royal Enfield,Meteor 350,motorcycle,petrol,349.34,5-speed Manual with Tripper Nav,2020,2026,False,Stellar with Pillion Backrest,216000
+Royal Enfield,Meteor 350,motorcycle,petrol,349.34,5-speed Manual with Tripper Nav,2020,2026,False,Supernova Dual Tone with Windshield,230000
+Royal Enfield,Himalayan,motorcycle,petrol,451.65,6-speed with Ride-by-Wire (Sherpa 450),2016,2025,False,Himalayan 411 LS410 (Discontinued),215000
+Royal Enfield,Himalayan,motorcycle,petrol,451.65,6-speed with Ride-by-Wire (Sherpa 450),2016,2025,False,Himalayan 450 Base Kaza Brown,285000
+Royal Enfield,Himalayan,motorcycle,petrol,451.65,6-speed with Ride-by-Wire (Sherpa 450),2016,2025,False,Himalayan 450 Pass Slate,289000
+Royal Enfield,Himalayan,motorcycle,petrol,451.65,6-speed with Ride-by-Wire (Sherpa 450),2016,2025,False,Himalayan 450 Summit Hanle Black Tubeless Spoke,298000
+Royal Enfield,Interceptor 650,motorcycle,petrol,647.95,6-speed Parallel Twin with Slipper Clutch,2018,2025,False,Canyon Red Spoke Wheel,303000
+Royal Enfield,Interceptor 650,motorcycle,petrol,647.95,6-speed Parallel Twin with Slipper Clutch,2018,2025,False,Black Ray Alloy Wheel Tubeless,321000
+Royal Enfield,Interceptor 650,motorcycle,petrol,647.95,6-speed Parallel Twin with Slipper Clutch,2018,2025,False,Mark 2 Chrome Edition,331000
+Royal Enfield,Continental GT 650,motorcycle,petrol,647.95,6-speed Cafe Racer Clip-ons,2018,2025,False,Rocker Red Spoke,319000
+Royal Enfield,Continental GT 650,motorcycle,petrol,647.95,6-speed Cafe Racer Clip-ons,2018,2025,False,Apex Grey Alloy Wheel,339000
+Royal Enfield,Continental GT 650,motorcycle,petrol,647.95,6-speed Cafe Racer Clip-ons,2018,2025,False,Mister Clean Triple Chrome,345000
+Yamaha,YZF R15 V4 / V3 / V2,motorcycle,petrol,155.0,6-speed Manual with VVA & Assist Slipper Clutch,2012,2025,False,R15 V2 Dual Headlamp (Legacy Discontinued),118000
+Yamaha,YZF R15 V4 / V3 / V2,motorcycle,petrol,155.0,6-speed Manual with VVA & Assist Slipper Clutch,2012,2025,False,R15 V3 Dual ABS (Legacy Discontinued),155000
+Yamaha,YZF R15 V4 / V3 / V2,motorcycle,petrol,155.0,6-speed Manual with VVA & Assist Slipper Clutch,2012,2025,False,R15S V3 Unibody Seat,166000
+Yamaha,YZF R15 V4 / V3 / V2,motorcycle,petrol,155.0,6-speed Manual with VVA & Assist Slipper Clutch,2012,2025,False,R15 V4 Metallic Red Dual ABS,183000
+Yamaha,YZF R15 V4 / V3 / V2,motorcycle,petrol,155.0,6-speed Manual with VVA & Assist Slipper Clutch,2012,2025,False,R15 V4 Racing Blue Quickshifter,188000
+Yamaha,YZF R15 V4 / V3 / V2,motorcycle,petrol,155.0,6-speed Manual with VVA & Assist Slipper Clutch,2012,2025,False,R15M Silver Carbon with TFT Display,198000
+Yamaha,MT-15 V2,motorcycle,petrol,155.0,6-speed Manual with USD Forks,2019,2025,False,V1 Single ABS (Discontinued),145000
+Yamaha,MT-15 V2,motorcycle,petrol,155.0,6-speed Manual with USD Forks,2019,2025,False,V2 Dual Channel ABS Traction Control,168000
+Yamaha,MT-15 V2,motorcycle,petrol,155.0,6-speed Manual with USD Forks,2019,2025,False,V2 Deluxe Metallic Black / Ice Fluo,173500
+Yamaha,FZ-S FI V3 / V4,motorcycle,petrol,149.0,5-speed Manual,2008,2025,False,FZ V2 Carb/FI (Legacy),87000
+Yamaha,FZ-S FI V3 / V4,motorcycle,petrol,149.0,5-speed Manual,2008,2025,False,FZ-S V3 Single Channel ABS,121000
+Yamaha,FZ-S FI V3 / V4,motorcycle,petrol,149.0,5-speed Manual,2008,2025,False,FZ-S V4 Deluxe Traction Control LED,130000
+Yamaha,Aerox 155,scooter,petrol,155.0,CVT Automatic with Liquid Cooled VVA,2021,2026,False,Standard Single Channel ABS,148500
+Yamaha,Aerox 155,scooter,petrol,155.0,CVT Automatic with Liquid Cooled VVA,2021,2026,False,MotoGP Monster Energy Edition,153500
+Yamaha,RayZR 125 Fi Hybrid,scooter,petrol,125.0,CVT Automatic with Electric SMG Assist,2016,2025,False,Drum Hybrid,85500
+Yamaha,RayZR 125 Fi Hybrid,scooter,petrol,125.0,CVT Automatic with Electric SMG Assist,2016,2025,False,Disc Hybrid Bluetooth,91500
+Yamaha,RayZR 125 Fi Hybrid,scooter,petrol,125.0,CVT Automatic with Electric SMG Assist,2016,2025,False,Street Rally Edition with Knuckle Guards,96000
+Yamaha,RX 100 (Legendary 2-Stroke Discontinued),motorcycle,petrol,98.0,4-speed Manual 2-Stroke Reed Valve,1985,1995,True,Made In Japan Escorts Original,19500
+Suzuki,Access 125,scooter,petrol,124.0,CVT Automatic with SEP,2007,2025,False,Drum Brake Steel Wheels,79800
+Suzuki,Access 125,scooter,petrol,124.0,CVT Automatic with SEP,2007,2025,False,Drum Alloy Wheel,83500
+Suzuki,Access 125,scooter,petrol,124.0,CVT Automatic with SEP,2007,2025,False,Disc Brake Alloy Wheel,86800
+Suzuki,Access 125,scooter,petrol,124.0,CVT Automatic with SEP,2007,2025,False,Special Edition Ride Connect Bluetooth,90500
+Suzuki,Burgman Street 125,scooter,petrol,124.0,CVT Automatic Maxi-Scooter,2018,2025,False,Standard Disc,94500
+Suzuki,Burgman Street 125,scooter,petrol,124.0,CVT Automatic Maxi-Scooter,2018,2025,False,Ride Connect Bluetooth,98500
+Suzuki,Burgman Street 125,scooter,petrol,124.0,CVT Automatic Maxi-Scooter,2018,2025,False,Burgman Street EX (12-inch Rear Wheel & Auto Start-Stop),114500
+Suzuki,Gixxer 150 / SF 150,motorcycle,petrol,155.0,5-speed Manual,2014,2025,False,Gixxer Naked Single ABS,134500
+Suzuki,Gixxer 150 / SF 150,motorcycle,petrol,155.0,5-speed Manual,2014,2025,False,Gixxer SF Aerodynamic Fairing Single ABS,145500
+Suzuki,Gixxer 150 / SF 150,motorcycle,petrol,155.0,5-speed Manual,2014,2025,False,Gixxer SF Ride Connect Bluetooth,147500
+KTM,Duke 200,motorcycle,petrol,199.5,6-speed Manual Trellis Frame,2012,2025,False,BS3 Underbelly Exhaust (Legacy),135000
+KTM,Duke 200,motorcycle,petrol,199.5,6-speed Manual Trellis Frame,2012,2025,False,Dual Channel ABS SuperMoto Mode LED,198000
+KTM,Duke 390,motorcycle,petrol,398.63,"6-speed with Quickshifter+, Launch Control, Cornering ABS",2013,2025,False,Gen 1 (2013-2016 Legacy),185000
+KTM,Duke 390,motorcycle,petrol,398.63,"6-speed with Quickshifter+, Launch Control, Cornering ABS",2013,2025,False,Gen 2 TFT Screen (2017-2023),295000
+KTM,Duke 390,motorcycle,petrol,398.63,"6-speed with Quickshifter+, Launch Control, Cornering ABS",2013,2025,False,"Gen 3 (399cc LC4c Engine, 45.3 bhp)",312000
+KTM,RC 200,motorcycle,petrol,199.5,6-speed Manual Track Clip-ons,2014,2025,False,Twin Projector Gen 1 (Discontinued),172000
+KTM,RC 200,motorcycle,petrol,199.5,6-speed Manual Track Clip-ons,2014,2025,False,Gen 2 Dual Channel ABS Foldable Levers,218000
+Ather Energy,450X,electric,electric,0,Automatic Direct Belt Drive (PMSM 6kW),2020,2026,False,Gen 1 (2.9 kWh),145000
+Ather Energy,450X,electric,electric,0,Automatic Direct Belt Drive (PMSM 6kW),2020,2026,False,Gen 2 (2.9 kWh 4G SIM),150000
+Ather Energy,450X,electric,electric,0,Automatic Direct Belt Drive (PMSM 6kW),2020,2026,False,Gen 3 (3.7 kWh 111 km TrueRange),158000
+Ather Energy,450X,electric,electric,0,Automatic Direct Belt Drive (PMSM 6kW),2020,2026,False,Gen 3 Pro Pack with Warp Mode & Google Maps,169000
+Ather Energy,450S,electric,electric,0,Automatic Direct Belt Drive,2023,2026,False,2.9 kWh DeepView Display (90 km TrueRange),126000
+Ather Energy,450S,electric,electric,0,Automatic Direct Belt Drive,2023,2026,False,450S with Pro Pack,136000
+Ather Energy,Rizta,electric,electric,0,Automatic Family Comfort Scooter,2024,2026,False,S 2.9 kWh (105 km IDC Range),110000
+Ather Energy,Rizta,electric,electric,0,Automatic Family Comfort Scooter,2024,2026,False,Z 2.9 kWh Backrest & SkidControl,125000
+Ather Energy,Rizta,electric,electric,0,Automatic Family Comfort Scooter,2024,2026,False,Z 3.7 kWh Long Range (160 km IDC Range),145000
+Ola Electric,S1 Pro,electric,electric,0,Automatic Mid-Drive IPM,2021,2026,False,Gen 1 (3.97 kWh Single Front Fork),139000
+Ola Electric,S1 Pro,electric,electric,0,Automatic Mid-Drive IPM,2021,2026,False,"Gen 2 (4.0 kWh Dual Telescopic Fork, 11 kW Peak)",147500
+Ola Electric,S1 Air,electric,electric,0,Automatic Hub Motor,2023,2026,False,3 kWh (151 km Certified IDC Range),105000
+Ola Electric,S1 X,electric,electric,0,Automatic Physical Key Drive,2023,2026,False,S1 X (2 kWh Battery),74999
+Ola Electric,S1 X,electric,electric,0,Automatic Physical Key Drive,2023,2026,False,S1 X (3 kWh Battery),87999
+Ola Electric,S1 X,electric,electric,0,Automatic Physical Key Drive,2023,2026,False,S1 X (4 kWh Battery 190 km Range),101999
+Ola Electric,S1 X,electric,electric,0,Automatic Physical Key Drive,2023,2026,False,S1 X Plus (3 kWh Keyless Display),89999
+Triumph,Speed 400,motorcycle,petrol,398.15,6-speed with Slipper Clutch (40 PS / 37.5 Nm),2023,2026,False,Standard Dual Channel ABS Traction Control,234000
+Triumph,Scrambler 400 X,motorcycle,petrol,398.15,6-speed with 19-inch Front Wheel,2023,2026,False,Standard Switchable ABS Handguards,264000
+Harley-Davidson,X440,motorcycle,petrol,440.0,6-speed Manual Single Cylinder (38 Nm),2023,2026,False,Denim (Spoke Wheels),239500
+Harley-Davidson,X440,motorcycle,petrol,440.0,6-speed Manual Single Cylinder (38 Nm),2023,2026,False,Vivid (Alloy Wheels),259500
+Harley-Davidson,X440,motorcycle,petrol,440.0,6-speed Manual Single Cylinder (38 Nm),2023,2026,False,"S (Diamond Cut Alloys, e-SIM Connected TFT)",279500
+Harley-Davidson,Street 750 (Iconic Discontinued),motorcycle,petrol,749.0,6-speed Liquid Cooled V-Twin Revolution X,2014,2020,True,Standard Dual Disc,534000
+Harley-Davidson,Street 750 (Iconic Discontinued),motorcycle,petrol,749.0,6-speed Liquid Cooled V-Twin Revolution X,2014,2020,True,ABS Edition Vivid Black,580000
+Jawa,Jawa 350 / Classic,motorcycle,petrol,334.0,6-speed Manual DOHC,2018,2025,False,Single Channel ABS (Older),173000
+Jawa,Jawa 350 / Classic,motorcycle,petrol,334.0,6-speed Manual DOHC,2018,2025,False,New Jawa 350 Dual Channel ABS Spoke,214500
+Jawa,42 / 42 Bobber,motorcycle,petrol,334.0,6-speed Manual,2018,2025,False,Jawa 42 2.1 Alloy Wheel,198000
+Jawa,42 / 42 Bobber,motorcycle,petrol,334.0,6-speed Manual,2018,2025,False,42 Bobber Single Floating Seat,225000
+Yezdi,Roadster,motorcycle,petrol,334.0,6-speed Manual (29.7 bhp / 29 Nm),2022,2026,False,Dark Smoke Grey Alloy,206000
+Yezdi,Roadster,motorcycle,petrol,334.0,6-speed Manual (29.7 bhp / 29 Nm),2022,2026,False,Chrome Dual Tone,212500
+Revolt,RV400,electric,electric,0,Automatic Belt Drive with Synthetic Sound Synthesizer,2019,2025,False,RV400 BRZ (Affordable 150 km Eco),128000
+Revolt,RV400,electric,electric,0,Automatic Belt Drive with Synthetic Sound Synthesizer,2019,2025,False,RV400 Premium Connected (3.24 kWh Swappable Battery),139000
+Ultraviolette,F77 Mach 2,electric,electric,0,Direct Drive High Performance (30 kW / 100 Nm),2023,2026,False,F77 Mach 2 Standard (7.1 kWh 211 km IDC),299000
+Ultraviolette,F77 Mach 2,electric,electric,0,Direct Drive High Performance (30 kW / 100 Nm),2023,2026,False,"F77 Mach 2 Recon (10.3 kWh 323 km IDC, 40.2 bhp)",399000
+Vida,V1 Pro / Plus,electric,electric,0,Automatic Dual Removable Batteries,2022,2026,False,V1 Plus (3.44 kWh),120000
+Vida,V1 Pro / Plus,electric,electric,0,Automatic Dual Removable Batteries,2022,2026,False,V1 Pro (3.94 kWh 110 km TrueRange),145000
+Ampere,Magnus EX / Nexus,electric,electric,0,Automatic Hub Drive,2021,2025,False,Magnus EX (2.3 kWh 80-100 km Range),84500
+Ampere,Magnus EX / Nexus,electric,electric,0,Automatic Hub Drive,2021,2025,False,Nexus LFP Battery Mid-Mount,110000
+Hero Electric,Optima CX,electric,electric,0,Automatic Hub Motor,2018,2024,False,CX Single Battery (82 km Range),67000
+Hero Electric,Optima CX,electric,electric,0,Automatic Hub Motor,2018,2024,False,CX 2.0 Dual Battery (140 km Range),85000

@@ -3,9 +3,11 @@ from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from ml.model_store import price_estimator_engine
 from data.two_wheeler_database import (
+    ACTIVE_CATALOGUE,
     INDIAN_TWO_WHEELER_DATABASE, 
     get_all_categories, 
     get_brands_by_category, 
+    get_brands_categorized,
     get_models_by_brand,
     normalize_brand
 )
@@ -39,9 +41,9 @@ class ComprehensiveValuationRequest(BaseModel):
     electrical_condition: Optional[str] = Field(default="working")
 
     # History & Documentation
-    service_history: Optional[str] = Field(default="authorized_regular")
+    service_history: Optional[str] = Field(default="regular")
     accident_history: Optional[str] = Field(default="none")
-    insurance_validity: Optional[str] = Field(default="active_comprehensive")
+    insurance_validity: Optional[str] = Field(default="active")
     rc_status: Optional[str] = Field(default="clean")
 
     # Location & Market
@@ -67,7 +69,7 @@ async def get_vehicle_catalog(
     s_lower = search.lower().strip() if search else None
     brand_norm = normalize_brand(brand).lower() if brand else None
 
-    for v in INDIAN_TWO_WHEELER_DATABASE:
+    for v in ACTIVE_CATALOGUE:
         # Category filter
         if category and category != "all" and v["category"].lower() != category.lower():
             continue
@@ -110,6 +112,7 @@ async def get_vehicle_catalog(
         "page_size": page_size,
         "categories": get_all_categories(),
         "brands": get_brands_by_category(category),
+        "brands_by_category": get_brands_categorized(),
         "vehicles": paged_results
     }
 
@@ -133,7 +136,7 @@ async def estimate_price(req: ComprehensiveValuationRequest):
     Called identically by both the manual valuation form and the conversational AI chat.
     """
     try:
-        result = price_estimator_engine.predict(req.dict())
+        result = price_estimator_engine.predict(req.model_dump())
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Valuation pipeline error: {str(e)}")

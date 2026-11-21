@@ -332,6 +332,28 @@ MARKETPLACE_LISTINGS: List[Dict[str, Any]] = [
         "verification_tier": "document_verified",
         "inspection_score": 4.3,
         "primary_image": "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+        "id": "bike-008",
+        "title": "2023 Hero Splendor Plus XTEC Black and Accent",
+        "brand": "Hero MotoCorp",
+        "model": "Splendor Plus",
+        "variant": "XTEC Bluetooth Digital",
+        "category": "motorcycle",
+        "year": 2023,
+        "km": 11500,
+        "price": 62000,
+        "original_mrp": 79900,
+        "city": "Chandigarh",
+        "locality": "Sector 47",
+        "lat": 30.7050,
+        "lng": 76.7720,
+        "owners": 1,
+        "fuel": "petrol",
+        "condition": "good",
+        "verification_tier": "physically_inspected",
+        "inspection_score": 4.7,
+        "primary_image": "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80",
     }
 ]
 
@@ -340,18 +362,30 @@ def search_marketplace_listings(
     max_price: Optional[float] = None,
     city: Optional[str] = None,
     brand: Optional[str] = None,
+    model: Optional[str] = None,
     limit: Optional[int] = None
 ) -> List[Dict[str, Any]]:
-    """Filter real marketplace inventory for AI recommendations"""
-    results = MARKETPLACE_LISTINGS
+    """Filter real marketplace inventory for AI recommendations and comparables"""
+    results = list(MARKETPLACE_LISTINGS)
     if category and category != "all":
         results = [l for l in results if l["category"].lower() == category.lower()]
     if max_price:
         results = [l for l in results if l["price"] <= max_price]
     if city and city != "all":
-        results = [l for l in results if city.lower() in l["city"].lower() or city.lower() in l["locality"].lower()]
+        city_lower = city.lower().strip()
+        matched_city = [l for l in results if city_lower in l["city"].lower() or city_lower in l["locality"].lower()]
+        if matched_city:
+            results = matched_city
     if brand and brand != "all":
-        results = [l for l in results if brand.lower() in l["brand"].lower()]
+        b_lower = brand.lower().strip()
+        matched_brand = [l for l in results if b_lower in l["brand"].lower() or l["brand"].lower() in b_lower]
+        if matched_brand:
+            results = matched_brand
+    if model and model != "all":
+        m_lower = model.lower().strip()
+        matched_model = [l for l in results if m_lower in l["model"].lower() or l["model"].lower() in m_lower]
+        if matched_model:
+            results = matched_model
     if limit is not None and limit > 0:
         results = results[:limit]
     return results
