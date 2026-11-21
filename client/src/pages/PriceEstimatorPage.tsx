@@ -123,24 +123,41 @@ export const PriceEstimatorPage: React.FC = () => {
     initData();
   }, []);
 
-  // Compute category-filtered brands (no duplicates)
-  const categoryBrands = Array.from(
-    new Set(
-      (catalog?.vehicles || [])
-        .filter((v) => category === 'all' || v.category.toLowerCase() === category.toLowerCase())
-        .map((v) => v.brand)
-    )
-  ).sort();
+  // Compute category-filtered brands (dynamically from CSV catalog, zero duplicates)
+  const categoryBrands = useMemo(() => {
+    return Array.from(
+      new Set(
+        (catalog?.vehicles || [])
+          .filter((v) => category === 'all' || v.category.toLowerCase() === category.toLowerCase())
+          .map((v) => v.brand)
+      )
+    ).sort();
+  }, [catalog, category]);
 
-  // Compute available models for selected brand & category
-  const availableModels = (catalog?.vehicles || []).filter(
-    (v) => isBrandMatch(v.brand, brand) && (category === 'all' || v.category.toLowerCase() === category.toLowerCase())
-  );
+  // Compute available models for selected brand & category (zero duplicates)
+  const availableModels = useMemo(() => {
+    if (!brand) return [];
+    const seen = new Set<string>();
+    const models: any[] = [];
+    (catalog?.vehicles || []).forEach((v) => {
+      if (isBrandMatch(v.brand, brand) && (category === 'all' || v.category.toLowerCase() === category.toLowerCase())) {
+        const normName = v.model.trim().toLowerCase();
+        if (!seen.has(normName)) {
+          seen.add(normName);
+          models.push(v);
+        }
+      }
+    });
+    return models;
+  }, [catalog, brand, category]);
 
   // Compute available variants for selected model
-  const selectedVehicleObj = (catalog?.vehicles || []).find(
-    (v) => isBrandMatch(v.brand, brand) && v.model.toLowerCase() === model.toLowerCase()
-  );
+  const selectedVehicleObj = useMemo(() => {
+    if (!brand || !model) return null;
+    return (catalog?.vehicles || []).find(
+      (v) => isBrandMatch(v.brand, brand) && v.model.toLowerCase() === model.toLowerCase()
+    );
+  }, [catalog, brand, model]);
   const availableVariants = selectedVehicleObj?.variants || [];
   const availableYears = selectedVehicleObj?.available_years || [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018];
 
@@ -188,7 +205,7 @@ export const PriceEstimatorPage: React.FC = () => {
 
   // Recalculate on manual state changes (debounced)
   useEffect(() => {
-    if (activeTab === 'manual') {
+    if (activeTab === 'manual' && brand && model) {
       const timer = setTimeout(() => {
         runValuation();
       }, 350);
@@ -220,33 +237,16 @@ export const PriceEstimatorPage: React.FC = () => {
   // Handle Category Switch
   const handleCategoryChange = (newCat: string) => {
     setCategory(newCat);
-    if (catalog) {
-      const matchingVehicles = catalog.vehicles.filter((v) => v.category.toLowerCase() === newCat.toLowerCase());
-      if (matchingVehicles.length > 0) {
-        const first = matchingVehicles[0];
-        setBrand(first.brand);
-        setModel(first.model);
-        if (first.variants && first.variants.length > 0) {
-          setVariant(first.variants[0].name);
-        }
-      }
-    }
+    setBrand('');
+    setModel('');
+    setVariant('');
   };
 
-  // Handle Brand Switch
+  // Handle Brand Switch - resets model & variant dynamically
   const handleBrandChange = (newBrand: string) => {
     setBrand(newBrand);
-    if (catalog) {
-      const matching = catalog.vehicles.filter(
-        (v) => isBrandMatch(v.brand, newBrand) && (category === 'all' || v.category.toLowerCase() === category.toLowerCase())
-      );
-      if (matching.length > 0) {
-        setModel(matching[0].model);
-        if (matching[0].variants && matching[0].variants.length > 0) {
-          setVariant(matching[0].variants[0].name);
-        }
-      }
-    }
+    setModel('');
+    setVariant('');
   };
 
   // -------------------------------------------------------------
@@ -714,6 +714,7 @@ export const PriceEstimatorPage: React.FC = () => {
                       onChange={(e) => handleBrandChange(e.target.value)}
                       className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-forest-500 font-medium"
                     >
+                      <option value="">Select Manufacturer / Brand</option>
                       {categoryBrands.map((b) => (
                         <option key={b} value={b}>{b}</option>
                       ))}
@@ -724,6 +725,7 @@ export const PriceEstimatorPage: React.FC = () => {
                     <label className="text-slate-400 font-semibold mb-1.5 block">Model</label>
                     <select
                       value={model}
+                      disabled={!brand}
                       onChange={(e) => {
                         const m = e.target.value;
                         setModel(m);
@@ -732,19 +734,22 @@ export const PriceEstimatorPage: React.FC = () => {
                         );
                         if (vObj && vObj.variants && vObj.variants.length > 0) {
                           setVariant(vObj.variants[0].name);
+                        } else {
+                          setVariant('');
                         }
                       }}
-                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-forest-500 font-medium"
+                      className={`w-full bg-forest-950 border rounded-xl px-3.5 py-2.5 text-white focus:outline-none font-medium ${
+                        !brand 
+                          ? 'border-forest-900/40 opacity-50 cursor-not-allowed text-slate-500' 
+                          : 'border-forest-800 focus:border-forest-500'
+                      }`}
                     >
-                      {availableModels.length > 0 ? (
-                        availableModels.map((m) => (
-                          <option key={m.id || m.model} value={m.model}>
-                            {m.model} {m.is_discontinued ? '(Discontinued Classic)' : ''}
-                          </option>
-                        ))
-                      ) : (
-                        <option value={model}>{model}</option>
-                      )}
+                      <option value="">{brand ? 'Select Model' : 'Select Manufacturer First'}</option>
+                      {availableModels.map((m) => (
+                        <option key={m.id || m.model} value={m.model}>
+                          {m.model} {m.is_discontinued ? '(Discontinued Classic)' : ''}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

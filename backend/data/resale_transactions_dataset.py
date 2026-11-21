@@ -128,26 +128,34 @@ def generate_verified_transaction_dataset(
         # Mechanical condition
         if cond == "excellent":
             engine_cond = "smooth"
-            tyre_cond = str(np.random.choice(["brand_new", "good"], p=[0.40, 0.60]))
+            tyre_cond = str(np.random.choice(["brand_new", "good"], p=[0.50, 0.50]))
             body_cond = "clean"
+            brake_cond = "good"
+            elec_cond = "working"
             accident = "none"
             service = "authorized_regular"
         elif cond == "good":
-            engine_cond = str(np.random.choice(["smooth", "minor_noise"], p=[0.75, 0.25]))
-            tyre_cond = str(np.random.choice(["good", "worn"], p=[0.70, 0.30]))
-            body_cond = str(np.random.choice(["clean", "minor_scratches"], p=[0.40, 0.60]))
+            engine_cond = str(np.random.choice(["smooth", "minor_tapping"], p=[0.80, 0.20]))
+            tyre_cond = str(np.random.choice(["brand_new", "good", "worn"], p=[0.20, 0.60, 0.20]))
+            body_cond = str(np.random.choice(["clean", "minor_scratches"], p=[0.45, 0.55]))
+            brake_cond = str(np.random.choice(["good", "spongy"], p=[0.80, 0.20]))
+            elec_cond = str(np.random.choice(["working", "issues"], p=[0.90, 0.10]))
             accident = str(np.random.choice(["none", "minor_fall"], p=[0.85, 0.15]))
             service = str(np.random.choice(["authorized_regular", "local_garage"], p=[0.55, 0.45]))
         elif cond == "fair":
-            engine_cond = str(np.random.choice(["minor_noise", "smoke"], p=[0.70, 0.30]))
-            tyre_cond = str(np.random.choice(["worn", "needs_replacement"], p=[0.65, 0.35]))
-            body_cond = str(np.random.choice(["minor_scratches", "dents"], p=[0.45, 0.55]))
+            engine_cond = str(np.random.choice(["minor_tapping", "smoke"], p=[0.65, 0.35]))
+            tyre_cond = str(np.random.choice(["good", "worn", "needs_replacement"], p=[0.15, 0.55, 0.30]))
+            body_cond = str(np.random.choice(["minor_scratches", "dents", "repainted"], p=[0.45, 0.45, 0.10]))
+            brake_cond = str(np.random.choice(["good", "spongy", "needs_replacement"], p=[0.25, 0.50, 0.25]))
+            elec_cond = str(np.random.choice(["working", "issues"], p=[0.60, 0.40]))
             accident = str(np.random.choice(["none", "minor_fall", "major_accident"], p=[0.60, 0.30, 0.10]))
             service = str(np.random.choice(["local_garage", "irregular"], p=[0.50, 0.50]))
         else: # poor
-            engine_cond = str(np.random.choice(["smoke", "overhaul_needed"], p=[0.50, 0.50]))
-            tyre_cond = "needs_replacement"
+            engine_cond = str(np.random.choice(["smoke", "overhaul_needed"], p=[0.40, 0.60]))
+            tyre_cond = str(np.random.choice(["worn", "needs_replacement"], p=[0.20, 0.80]))
             body_cond = str(np.random.choice(["dents", "repainted"], p=[0.60, 0.40]))
+            brake_cond = str(np.random.choice(["spongy", "needs_replacement"], p=[0.25, 0.75]))
+            elec_cond = str(np.random.choice(["working", "issues"], p=[0.20, 0.80]))
             accident = str(np.random.choice(["minor_fall", "major_accident"], p=[0.40, 0.60]))
             service = "irregular"
             
@@ -187,6 +195,9 @@ def generate_verified_transaction_dataset(
         # Ownership adjustment
         owner_mult = 1.0 if owners == 1 else (0.93 if owners == 2 else 0.86)
         
+        # Displacement scaling for replacement & overhaul costs
+        cc_scale = min(1.6, max(0.8, engine_cc / 150.0)) if category != "electric" else 1.0
+
         # Mechanical condition impact
         eng_adj = 0.0
         if category == "electric":
@@ -197,23 +208,28 @@ def generate_verified_transaction_dataset(
                 soh_deficit = 95.0 - battery_health
                 eng_adj = - (soh_deficit / 100.0) * 0.45 * mrp
         else:
-            if engine_cond == "minor_noise":
-                eng_adj = -2500
+            if engine_cond in ["minor_noise", "minor_tapping"]:
+                eng_adj = -3000 * cc_scale
             elif engine_cond == "smoke":
-                eng_adj = -8500
+                eng_adj = -9000 * cc_scale
             elif engine_cond == "overhaul_needed":
-                eng_adj = -18000
+                eng_adj = -19000 * cc_scale
                 
+        # Overall condition tier multiplier
+        cond_mult = 1.05 if cond == "excellent" else (1.0 if cond == "good" else (0.93 if cond == "fair" else 0.82))
+
         # Wear & tear adjustments
-        tyre_adj = 2500 if tyre_cond == "brand_new" else (-3500 if tyre_cond == "worn" else (-6500 if tyre_cond == "needs_replacement" else 0))
-        body_adj = 0 if body_cond == "clean" else (-1500 if body_cond == "minor_scratches" else (-4500 if body_cond == "dents" else -3000))
+        tyre_adj = (3000 * cc_scale) if tyre_cond == "brand_new" else ((-3500 * cc_scale) if tyre_cond == "worn" else ((-7000 * cc_scale) if tyre_cond == "needs_replacement" else 0))
+        body_adj = (1500 * cc_scale) if body_cond == "clean" else ((-1500 * cc_scale) if body_cond == "minor_scratches" else ((-4500 * cc_scale) if body_cond == "dents" else -3500 * cc_scale))
+        brake_adj = (1000 * cc_scale) if brake_cond == "good" else ((-3000 * cc_scale) if brake_cond == "spongy" else -6500 * cc_scale)
+        elec_adj = 0 if elec_cond == "working" else (-3500 * cc_scale)
         doc_adj = (3000 if service == "authorized_regular" else (-2000 if service == "irregular" else 0))
         acc_adj = - (0.25 * base_market_val) if accident == "major_accident" else (-2500 if accident == "minor_fall" else 0)
         ins_adj = -2500 if ins_val == "expired" else 0
         rc_adj = -1500 if rc_st == "hypothecated" else 0
         
         # Net transaction price with regional multiplier & natural negotiation noise
-        net_calc = (base_market_val * owner_mult + mileage_adj + eng_adj + tyre_adj + body_adj + doc_adj + acc_adj + ins_adj + rc_adj) * city_mult
+        net_calc = (base_market_val * owner_mult * cond_mult + mileage_adj + eng_adj + tyre_adj + body_adj + brake_adj + elec_adj + doc_adj + acc_adj + ins_adj + rc_adj) * city_mult
         
         # Add realistic market transaction variance (±2.5% market negotiation)
         noise = np.random.normal(1.0, 0.025)
@@ -242,6 +258,8 @@ def generate_verified_transaction_dataset(
             "battery_health": battery_health,
             "tyre_condition": tyre_cond,
             "body_condition": body_cond,
+            "brake_condition": brake_cond,
+            "electrical_condition": elec_cond,
             "service_history": service,
             "accident_history": accident,
             "insurance_validity": ins_val,
@@ -275,12 +293,15 @@ def generate_verified_transaction_dataset(
     
     return df
 
-def save_clean_dataset(output_path: str = "backend/data/verified_transactions.csv") -> pd.DataFrame:
+DEFAULT_OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "verified_transactions.csv")
+
+def save_clean_dataset(output_path: str = None) -> pd.DataFrame:
     """Generates, cleans, and saves the verified dataset to disk."""
+    path = output_path or DEFAULT_OUTPUT_PATH
     df = generate_verified_transaction_dataset(target_records=3400)
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    df.to_csv(output_path, index=False)
-    print(f"Saved {len(df)} verified resale transactions to {output_path}")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    df.to_csv(path, index=False)
+    print(f"Saved {len(df)} verified resale transactions to {path}")
     return df
 
 if __name__ == "__main__":

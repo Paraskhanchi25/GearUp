@@ -47,7 +47,11 @@ class EnhancedPriceEstimatorModel:
     def load_model(self):
         if os.path.exists(MODEL_PATH):
             try:
-                self.ml_model = joblib.load(MODEL_PATH)
+                loaded = joblib.load(MODEL_PATH)
+                if isinstance(loaded, dict) and "model" in loaded:
+                    self.ml_model = loaded["model"]
+                else:
+                    self.ml_model = loaded
             except Exception as e:
                 print(f"Error loading model from {MODEL_PATH}: {e}")
                 self.ml_model = None
@@ -111,19 +115,96 @@ class EnhancedPriceEstimatorModel:
         usage_pattern = str(data.get("usage_pattern", "daily_commute")).lower().strip()
         
         # Extended Condition Parameters
-        condition = str(data.get("condition", "good")).lower().strip() # excellent, good, fair, poor
-        engine_condition = str(data.get("engine_condition", "smooth")).lower().strip()
-        battery_health = float(data.get("battery_health") or 95.0) if (category == "electric" or fuel == "electric") else None
-        tyre_condition = str(data.get("tyre_condition", "good")).lower().strip()
-        brake_condition = str(data.get("brake_condition", "good")).lower().strip()
-        body_condition = str(data.get("body_condition", "clean")).lower().strip()
-        electrical_condition = str(data.get("electrical_condition", "working")).lower().strip()
+        raw_condition = str(data.get("condition", "good")).lower().strip()
+        raw_engine = str(data.get("engine_condition", "smooth")).lower().strip()
+        battery_health = float(data.get("battery_health") or 95.0) if (category == "electric" or fuel == "electric") else 0.0
+        raw_tyre = str(data.get("tyre_condition", "good")).lower().strip()
+        raw_brake = str(data.get("brake_condition", "good")).lower().strip()
+        raw_body = str(data.get("body_condition", "clean")).lower().strip()
+        raw_electrical = str(data.get("electrical_condition", "working")).lower().strip()
         
         # Extended History & Documentation Parameters
-        service_history = str(data.get("service_history", "regular")).lower().strip()
-        accident_history = str(data.get("accident_history", "none")).lower().strip()
-        insurance_validity = str(data.get("insurance_validity", "active")).lower().strip()
-        rc_status = str(data.get("rc_status", "clean")).lower().strip()
+        raw_service = str(data.get("service_history", "authorized_regular")).lower().strip()
+        raw_accident = str(data.get("accident_history", "none")).lower().strip()
+        raw_insurance = str(data.get("insurance_validity", "active_comprehensive")).lower().strip()
+        raw_rc = str(data.get("rc_status", "clean")).lower().strip()
+        
+        # Categorical normalization matching ML training pipeline
+        if raw_condition in ["excellent", "mint", "pristine"]:
+            condition = "excellent"
+        elif raw_condition in ["poor", "needs_repair", "damaged"]:
+            condition = "poor"
+        elif raw_condition in ["fair", "average", "moderate"]:
+            condition = "fair"
+        else:
+            condition = "good"
+
+        if "overhaul" in raw_engine or "knock" in raw_engine or "slip" in raw_engine:
+            engine_condition = "overhaul_needed"
+        elif "smoke" in raw_engine or "ring" in raw_engine:
+            engine_condition = "smoke"
+        elif "tap" in raw_engine or "noise" in raw_engine or "minor" in raw_engine or "valve" in raw_engine:
+            engine_condition = "minor_tapping"
+        else:
+            engine_condition = "smooth"
+
+        if "new" in raw_tyre or "brand" in raw_tyre or ">85" in raw_tyre:
+            tyre_condition = "brand_new"
+        elif "need" in raw_tyre or "bald" in raw_tyre or "crack" in raw_tyre or "replace" in raw_tyre:
+            tyre_condition = "needs_replacement"
+        elif "worn" in raw_tyre or "<35" in raw_tyre:
+            tyre_condition = "worn"
+        else:
+            tyre_condition = "good"
+
+        if "need" in raw_brake or "worn" in raw_brake or "disc" in raw_brake or "drum" in raw_brake or "replace" in raw_brake or "due" in raw_brake:
+            brake_condition = "needs_replacement"
+        elif "spongy" in raw_brake or "soft" in raw_brake or "bleed" in raw_brake:
+            brake_condition = "spongy"
+        else:
+            brake_condition = "good"
+
+        if "repaint" in raw_body or "aftermarket" in raw_body:
+            body_condition = "repainted"
+        elif "dent" in raw_body or "broken" in raw_body or "damage" in raw_body:
+            body_condition = "dents"
+        elif "scratch" in raw_body:
+            body_condition = "minor_scratches"
+        else:
+            body_condition = "clean"
+
+        if "issue" in raw_electrical or "fault" in raw_electrical or "starter" in raw_electrical or "wiring" in raw_electrical:
+            electrical_condition = "issues"
+        else:
+            electrical_condition = "working"
+
+        if "auth" in raw_service:
+            service_history = "authorized_regular"
+        elif "irreg" in raw_service or "none" in raw_service:
+            service_history = "irregular"
+        else:
+            service_history = "local_garage"
+
+        if "major" in raw_accident:
+            accident_history = "major_accident"
+        elif "minor" in raw_accident or "fall" in raw_accident:
+            accident_history = "minor_fall"
+        else:
+            accident_history = "none"
+
+        if "exp" in raw_insurance:
+            insurance_validity = "expired"
+        elif "third" in raw_insurance:
+            insurance_validity = "third_party_only"
+        else:
+            insurance_validity = "active_comprehensive"
+
+        if "hypo" in raw_rc:
+            rc_status = "hypothecated"
+        elif "noc" in raw_rc:
+            rc_status = "noc_issued"
+        else:
+            rc_status = "clean"
         
         current_year = 2026
         age = max(0, current_year - year)
@@ -134,46 +215,48 @@ class EnhancedPriceEstimatorModel:
         original_mrp = float(data.get("original_mrp") or lookup_mrp)
         has_abs = bool(data.get("has_abs")) if data.get("has_abs") is not None else detected_abs
         engine_cc = float(data.get("engine_cc")) if data.get("engine_cc") is not None else detected_cc
+        battery_kwh = float(data.get("battery_kwh", 0.0) or 0.0)
         
         # Scale parts/repair deductions based on vehicle displacement class
         cc_multiplier = min(1.6, max(0.8, engine_cc / 150.0)) if category != "electric" else 1.0
 
-        # Harmonize top-level condition with component grades for the ML feature
-        has_severe_faults = (
-            "overhaul" in engine_condition or 
-            "major" in accident_history or 
-            "smoke" in engine_condition or 
-            "dent" in body_condition or 
-            "dents" in body_condition
-        )
-        if has_severe_faults and condition == "excellent":
-            ml_condition = "good" if ("smoke" in engine_condition or "dent" in body_condition) else "fair"
-        elif condition in ["poor", "needs_repair"]:
-            ml_condition = "fair"
-        else:
-            ml_condition = "good" if condition in ["good", "average"] else ("excellent" if condition == "excellent" else "fair")
-        
-        # 2. Base ML Model Prediction:
-        # The ML regressor accurately captures make, model, age, mileage, city and ownership tier.
+        # 2. Comprehensive ML Pipeline Prediction:
+        # All 6 mechanical & component parameters directly drive the ML regressor
         input_df = pd.DataFrame([{
             "brand": brand,
             "model": model,
+            "variant": variant or (model + " Standard"),
             "category": category,
             "fuel_type": fuel,
+            "condition": condition,
+            "engine_condition": engine_condition,
+            "tyre_condition": tyre_condition,
+            "body_condition": body_condition,
+            "brake_condition": brake_condition,
+            "electrical_condition": electrical_condition,
+            "service_history": service_history,
+            "accident_history": accident_history,
+            "insurance_validity": insurance_validity,
+            "rc_status": rc_status,
+            "city": city,
             "manufacturing_year": year,
             "age_years": age,
             "km_driven": km,
-            "condition": ml_condition,
             "owners_count": min(owners, 3),
-            "city": city,
+            "battery_health": float(battery_health or 0.0),
+            "engine_cc": float(engine_cc),
+            "battery_kwh": battery_kwh,
             "has_abs": int(has_abs),
-            "original_mrp": original_mrp
+            "original_mrp": float(original_mrp)
         }])
         
+        ml_prediction_succeeded = False
         if self.ml_model is not None:
             try:
                 base_val = float(self.ml_model.predict(input_df)[0])
-            except Exception:
+                ml_prediction_succeeded = True
+            except Exception as e:
+                print(f"ML Model prediction exception: {e}")
                 base_dep = 0.08 if category == "motorcycle" else (0.08 if category == "scooter" else 0.11)
                 age_decay = (1.0 - base_dep) ** max(1, age)
                 base_val = original_mrp * age_decay
@@ -184,6 +267,7 @@ class EnhancedPriceEstimatorModel:
             
         factors_log = []
         net_adjustments_inr = 0.0
+        paperwork_adjustments_inr = 0.0
 
         # 3. Factor: Vehicle Age & Vintage (Transparent explanation without duplicate deduction)
         age_drop_inr = round(max(0.0, original_mrp - base_val) / 500) * 500
@@ -247,6 +331,7 @@ class EnhancedPriceEstimatorModel:
             if battery_health and battery_health < 75.0:
                 bat_penalty = round(base_val * 0.20 / 500) * 500
                 net_adjustments_inr -= bat_penalty
+                paperwork_adjustments_inr -= bat_penalty
                 factors_log.append({
                     "factor": "EV Battery Capacity Degradation",
                     "impact": f"-₹{int(bat_penalty):,}",
@@ -256,6 +341,7 @@ class EnhancedPriceEstimatorModel:
             elif battery_health and battery_health < 85.0:
                 bat_penalty = round(base_val * 0.08 / 500) * 500
                 net_adjustments_inr -= bat_penalty
+                paperwork_adjustments_inr -= bat_penalty
                 factors_log.append({
                     "factor": "EV Battery Normal Degradation",
                     "impact": f"-₹{int(bat_penalty):,}",
@@ -464,16 +550,18 @@ class EnhancedPriceEstimatorModel:
             })
 
         # 14. Factor: RC Status & Hypothecation
-        if "hypothecat" in rc_status:
+        if "hypo" in raw_rc:
             net_adjustments_inr -= 1500
+            paperwork_adjustments_inr -= 1500
             factors_log.append({
                 "factor": "Bank Loan Hypothecation Active",
                 "impact": "-₹1,500",
                 "type": "negative",
                 "description": "Requires bank loan closure NOC certificate and RTO hypothecation removal fee"
             })
-        elif "lost" in rc_status or "missing" in rc_status or "duplicate" in rc_status:
+        elif "lost" in raw_rc or "miss" in raw_rc or "dup" in raw_rc:
             net_adjustments_inr -= 4500
+            paperwork_adjustments_inr -= 4500
             factors_log.append({
                 "factor": "Missing / Duplicate RC",
                 "impact": "-₹4,500",
@@ -484,6 +572,7 @@ class EnhancedPriceEstimatorModel:
         # 15. Factor: Usage Pattern Duty
         if "commercial" in usage_pattern:
             net_adjustments_inr -= 5000
+            paperwork_adjustments_inr -= 5000
             factors_log.append({
                 "factor": "Commercial / Delivery Usage Duty",
                 "impact": "-₹5,000",
@@ -492,6 +581,7 @@ class EnhancedPriceEstimatorModel:
             })
         elif "occasional" in usage_pattern:
             net_adjustments_inr += 1500
+            paperwork_adjustments_inr += 1500
             factors_log.append({
                 "factor": "Occasional / Light Commuting",
                 "impact": "+₹1,500",
@@ -500,6 +590,7 @@ class EnhancedPriceEstimatorModel:
             })
         elif "weekend_touring" in usage_pattern:
             net_adjustments_inr += 1000
+            paperwork_adjustments_inr += 1000
             factors_log.append({
                 "factor": "Highway Touring Pattern",
                 "impact": "+₹1,000",
@@ -510,6 +601,7 @@ class EnhancedPriceEstimatorModel:
         # 16. Factor: Registration Year Advantage
         if registration_year > year:
             net_adjustments_inr += 1500
+            paperwork_adjustments_inr += 1500
             factors_log.append({
                 "factor": "Registration Year Advantage",
                 "impact": "+₹1,500",
@@ -530,7 +622,12 @@ class EnhancedPriceEstimatorModel:
             })
 
         # 18. Final Fair Price Calculation
-        calculated_price = max(8000.0, base_val + net_adjustments_inr)
+        if ml_prediction_succeeded:
+            # ML Model directly predicts transaction price factoring in all 25 features including all mechanical components;
+            # add legal paperwork & usage duty adjustments
+            calculated_price = max(8000.0, base_val + paperwork_adjustments_inr)
+        else:
+            calculated_price = max(8000.0, base_val + net_adjustments_inr)
         fair_price = round(calculated_price / 500.0) * 500
 
         # Empirical Error Range (+- 5%)

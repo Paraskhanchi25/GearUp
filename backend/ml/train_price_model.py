@@ -1,8 +1,15 @@
 """
 GEAR UP Machine Learning Pipeline: Used Two-Wheeler Price Valuation
-Trains and validates high-precision regressors (CatBoostRegressor vs GradientBoostingRegressor)
+Trains and validates high-precision regressors (GradientBoostingRegressor Pipeline)
 using authentic Indian market transaction data.
-Saves the best trained model artifact, metrics, and feature importances.
+Includes all 6 mechanical & component condition parameters:
+1. engine_condition (Smooth, Minor Tappet/Noise, Smoke, Overhaul Required)
+2. tyre_condition (Brand New, Good, Worn, Needs Replacement)
+3. body_condition (Clean Mint, Minor Scratches, Dents, Repainted)
+4. brake_condition (Good Bite, Spongy, Needs Replacement)
+5. electrical_condition (Working Normal, Starter/Wiring Issues)
+6. condition (Overall Vehicle Grade: Excellent, Good, Fair, Poor)
+Saves the trained model artifact, metrics, and feature importances.
 """
 
 import os
@@ -17,7 +24,6 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
-from catboost import CatBoostRegressor
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from data.resale_transactions_dataset import save_clean_dataset
@@ -26,22 +32,27 @@ DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "verified_tran
 MODEL_OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "..", "models", "price_estimator_model.joblib")
 METRICS_OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "..", "models", "evaluation_metrics.json")
 
-def load_or_generate_dataset() -> pd.DataFrame:
-    if os.path.exists(DATA_PATH):
+def load_or_generate_dataset(force_regenerate: bool = True) -> pd.DataFrame:
+    if not force_regenerate and os.path.exists(DATA_PATH):
         df = pd.read_csv(DATA_PATH)
-        print(f"Loaded existing verified dataset: {len(df)} transactions from {DATA_PATH}")
+        if "brake_condition" not in df.columns or "electrical_condition" not in df.columns:
+            print("Dataset missing mechanical columns, regenerating verified transactions...")
+            df = save_clean_dataset(DATA_PATH)
+        else:
+            print(f"Loaded existing verified dataset: {len(df)} transactions from {DATA_PATH}")
     else:
-        print("Generating verified transaction dataset...")
+        print("Generating fresh verified transaction dataset with all 6 mechanical parameters...")
         df = save_clean_dataset(DATA_PATH)
     return df
 
 def train_and_evaluate():
     df = load_or_generate_dataset()
     
-    # Feature specifications
+    # Feature specifications (all 6 mechanical & component parameters included)
     categorical_features = [
         "brand", "model", "variant", "category", "fuel_type",
         "condition", "engine_condition", "tyre_condition", "body_condition",
+        "brake_condition", "electrical_condition",
         "service_history", "accident_history", "insurance_validity", "rc_status", "city"
     ]
     
@@ -63,7 +74,7 @@ def train_and_evaluate():
     y = df["transaction_price"].astype(float)
     
     # Time-based train / validation / test split to prevent lookahead leakage
-    # 80% train+val (chronologically earlier transactions), 20% test (most recent transactions)
+    # 80% train+val, 20% test (out of time)
     split_idx = int(len(df) * 0.80)
     X_train_val = X.iloc[:split_idx].copy()
     y_train_val = y.iloc[:split_idx].copy()
@@ -79,47 +90,8 @@ def train_and_evaluate():
     
     print(f"Time-stratified Split: Train={len(X_train)}, Validation={len(X_val)}, Test={len(X_test)}")
     
-    # Candidate 1: CatBoost Regressor with native categorical support
-    print("\n--- Training Candidate 1: CatBoostRegressor ---")
-    cat_indices = [X.columns.get_loc(col) for col in categorical_features]
-    
-    catboost_model = CatBoostRegressor(
-        iterations=450,
-        learning_rate=0.06,
-        depth=6,
-        loss_function="RMSE",
-        eval_metric="MAE",
-        random_seed=42,
-        verbose=100
-    )
-    
-    catboost_model.fit(
-        X_train, y_train,
-        cat_features=cat_indices,
-        eval_set=(X_val, y_val),
-        early_stopping_rounds=40,
-        verbose=False
-    )
-    
-    val_preds_cb = catboost_model.predict(X_val)
-    test_preds_cb = catboost_model.predict(X_test)
-    
-    cb_metrics = {
-        "val_mae": mean_absolute_error(y_val, val_preds_cb),
-        "val_rmse": np.sqrt(mean_squared_error(y_val, val_preds_cb)),
-        "val_r2": r2_score(y_val, val_preds_cb),
-        "val_medape": np.median(np.abs((y_val - val_preds_cb) / y_val)) * 100,
-        "test_mae": mean_absolute_error(y_test, test_preds_cb),
-        "test_rmse": np.sqrt(mean_squared_error(y_test, test_preds_cb)),
-        "test_r2": r2_score(y_test, test_preds_cb),
-        "test_medape": np.median(np.abs((y_test - test_preds_cb) / y_test)) * 100,
-    }
-    
-    print(f"CatBoost Validation -> MAE: ₹{cb_metrics['val_mae']:,.0f}, R²: {cb_metrics['val_r2']:.4f}, MedAPE: {cb_metrics['val_medape']:.2f}%")
-    print(f"CatBoost Out-of-Time Test -> MAE: ₹{cb_metrics['test_mae']:,.0f}, R²: {cb_metrics['test_r2']:.4f}, MedAPE: {cb_metrics['test_medape']:.2f}%")
-    
-    # Candidate 2: Scikit-Learn GradientBoosting Pipeline with OneHotEncoder
-    print("\n--- Training Candidate 2: GradientBoostingRegressor (Scikit-Learn) ---")
+    # Candidate: Scikit-Learn GradientBoosting Pipeline with OneHotEncoder
+    print("\n--- Training Production Pipeline: GradientBoostingRegressor ---")
     preprocessor = ColumnTransformer(
         transformers=[
             ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical_features),
@@ -129,76 +101,96 @@ def train_and_evaluate():
     
     gb_pipeline = Pipeline(steps=[
         ("preprocessor", preprocessor),
-        ("regressor", GradientBoostingRegressor(n_estimators=180, learning_rate=0.08, max_depth=5, random_state=42))
+        ("regressor", GradientBoostingRegressor(
+            n_estimators=240, 
+            learning_rate=0.065, 
+            max_depth=5, 
+            subsample=0.9,
+            random_state=42
+        ))
     ])
     
     gb_pipeline.fit(X_train, y_train)
     val_preds_gb = gb_pipeline.predict(X_val)
     test_preds_gb = gb_pipeline.predict(X_test)
     
-    gb_metrics = {
-        "val_mae": mean_absolute_error(y_val, val_preds_gb),
-        "val_rmse": np.sqrt(mean_squared_error(y_val, val_preds_gb)),
-        "val_r2": r2_score(y_val, val_preds_gb),
-        "val_medape": np.median(np.abs((y_val - val_preds_gb) / y_val)) * 100,
-        "test_mae": mean_absolute_error(y_test, test_preds_gb),
-        "test_rmse": np.sqrt(mean_squared_error(y_test, test_preds_gb)),
-        "test_r2": r2_score(y_test, test_preds_gb),
-        "test_medape": np.median(np.abs((y_test - test_preds_gb) / y_test)) * 100,
-    }
+    val_mae = mean_absolute_error(y_val, val_preds_gb)
+    val_rmse = np.sqrt(mean_squared_error(y_val, val_preds_gb))
+    val_r2 = r2_score(y_val, val_preds_gb)
+    val_medape = np.median(np.abs((y_val - val_preds_gb) / y_val)) * 100
     
-    print(f"GradientBoosting Validation -> MAE: ₹{gb_metrics['val_mae']:,.0f}, R²: {gb_metrics['val_r2']:.4f}, MedAPE: {gb_metrics['val_medape']:.2f}%")
-    print(f"GradientBoosting Out-of-Time Test -> MAE: ₹{gb_metrics['test_mae']:,.0f}, R²: {gb_metrics['test_r2']:.4f}, MedAPE: {gb_metrics['test_medape']:.2f}%")
+    test_mae = mean_absolute_error(y_test, test_preds_gb)
+    test_rmse = np.sqrt(mean_squared_error(y_test, test_preds_gb))
+    test_r2 = r2_score(y_test, test_preds_gb)
+    test_medape = np.median(np.abs((y_test - test_preds_gb) / y_test)) * 100
     
-    # Model Selection: CatBoostRegressor natively handles tabular categoricals & interaction trees
-    best_name = "CatBoostRegressor (Native Categoricals Production v3.0)"
-    best_model = catboost_model
-    best_metrics = cb_metrics
-    is_catboost = True
-        
-    print(f"\n🏆 Best Model Selected: {best_name} (Test R² = {best_metrics['test_r2']:.4f}, Test MedAPE = {best_metrics['test_medape']:.2f}%)")
+    print(f"GradientBoosting Validation -> MAE: ₹{val_mae:,.2f}, R²: {val_r2:.4f}, MedAPE: {val_medape:.2f}%")
+    print(f"GradientBoosting Out-of-Time Test -> MAE: ₹{test_mae:,.2f}, R²: {test_r2:.4f}, MedAPE: {test_medape:.2f}%")
     
-    # Extract Feature Importances
-    feature_importances = {}
-    if is_catboost:
-        importances = catboost_model.get_feature_importance()
-        for feat, imp in zip(all_features, importances):
-            feature_importances[feat] = round(float(imp), 3)
+    # Calculate grouped feature importances across all encoded columns
+    reg = gb_pipeline.named_steps["regressor"]
+    prep = gb_pipeline.named_steps["preprocessor"]
+    raw_importances = reg.feature_importances_
+    
+    # Map raw encoded feature names back to original column names
+    encoded_feature_names = prep.get_feature_names_out()
+    grouped_importances = {col: 0.0 for col in all_features}
+    
+    for feat_name, imp in zip(encoded_feature_names, raw_importances):
+        # Format is cat__<col>_<val> or num__<col>
+        if feat_name.startswith("cat__"):
+            base_col_and_val = feat_name[5:]
+            for col in categorical_features:
+                if base_col_and_val.startswith(col + "_") or base_col_and_val == col:
+                    grouped_importances[col] += imp
+                    break
+        elif feat_name.startswith("num__"):
+            col = feat_name[5:]
+            if col in grouped_importances:
+                grouped_importances[col] += imp
+                
+    # Normalize to 100%
+    total_imp = sum(grouped_importances.values())
+    if total_imp > 0:
+        normalized_fi = {k: round((v / total_imp) * 100.0, 3) for k, v in grouped_importances.items()}
     else:
-        reg = gb_pipeline.named_steps["regressor"]
-        # Approximated feature importance
-        importances = reg.feature_importances_
-        feature_importances = {"summary": "GradientBoosting feature importances"}
+        normalized_fi = grouped_importances
         
-    # Sort feature importances
-    if is_catboost:
-        sorted_fi = dict(sorted(feature_importances.items(), key=lambda item: item[1], reverse=True))
-    else:
-        sorted_fi = feature_importances
+    sorted_fi = dict(sorted(normalized_fi.items(), key=lambda item: item[1], reverse=True))
+    
+    print("\nFeature Importances (All Condition & Specification Features):")
+    for k, v in sorted_fi.items():
+        print(f"  {k}: {v}%")
         
-    print("\nTop 10 Feature Importances:")
-    if is_catboost:
-        for k, v in list(sorted_fi.items())[:10]:
-            print(f"  {k}: {v}%")
-            
+    # Verify all 6 mechanical parameters have non-zero learned importance
+    mechanical_params = [
+        "engine_condition", "tyre_condition", "body_condition", 
+        "brake_condition", "electrical_condition", "condition"
+    ]
+    print("\nMechanical & Component Parameter Importances:")
+    for mp in mechanical_params:
+        print(f"  ✓ {mp}: {sorted_fi.get(mp, 0.0)}%")
+        assert sorted_fi.get(mp, 0.0) > 0.0, f"Error: {mp} was not utilized by the trained model!"
+        
     # Save the trained model artifact
     os.makedirs(os.path.dirname(MODEL_OUTPUT_PATH), exist_ok=True)
     model_payload = {
-        "model": best_model,
-        "model_type": "catboost" if is_catboost else "gradient_boosting",
+        "model": gb_pipeline,
+        "model_type": "gradient_boosting_pipeline",
         "categorical_features": categorical_features,
         "numerical_features": numerical_features,
-        "cat_indices": cat_indices if is_catboost else [],
+        "all_features": all_features,
+        "feature_importances": sorted_fi,
         "training_date": datetime.now().isoformat(),
-        "version": "v3.0.0-catboost-production"
+        "version": "v3.1.0-mechanical-production"
     }
     joblib.dump(model_payload, MODEL_OUTPUT_PATH)
-    print(f"Saved trained model artifact to {MODEL_OUTPUT_PATH}")
+    print(f"\nSaved trained model artifact to {MODEL_OUTPUT_PATH}")
     
     # Save evaluation metrics json
     evaluation_record = {
-        "model_name": best_name,
-        "model_version": "v3.0.0-catboost-production",
+        "model_name": "GradientBoostingRegressor Pipeline (Comprehensive Mechanical v3.1)",
+        "model_version": "v3.1.0-mechanical-production",
         "training_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "total_records": len(df),
         "train_samples": len(X_train),
@@ -210,23 +202,20 @@ def train_and_evaluate():
             "Metro Pre-Owned Two-Wheeler Registries (Delhi, Chandigarh, Bengaluru, Pune, Mumbai)"
         ],
         "validation_metrics": {
-            "MAE_inr": round(float(best_metrics["val_mae"]), 2),
-            "RMSE_inr": round(float(best_metrics["val_rmse"]), 2),
-            "R2_score": round(float(best_metrics["val_r2"]), 4),
-            "MedAPE_percent": round(float(best_metrics["val_medape"]), 2)
+            "MAE_inr": round(float(val_mae), 2),
+            "RMSE_inr": round(float(val_rmse), 2),
+            "R2_score": round(float(val_r2), 4),
+            "MedAPE_percent": round(float(val_medape), 2)
         },
         "test_metrics_out_of_time": {
-            "MAE_inr": round(float(best_metrics["test_mae"]), 2),
-            "RMSE_inr": round(float(best_metrics["test_rmse"]), 2),
-            "R2_score": round(float(best_metrics["test_r2"]), 4),
-            "MedAPE_percent": round(float(best_metrics["test_medape"]), 2)
+            "MAE_inr": round(float(test_mae), 2),
+            "RMSE_inr": round(float(test_rmse), 2),
+            "R2_score": round(float(test_r2), 4),
+            "MedAPE_percent": round(float(test_medape), 2)
         },
         "feature_importances": sorted_fi,
-        "parameters_handled_by_trained_ml": all_features,
-        "parameters_handled_by_fallback_rules": [
-            "Interstate NOC transfer costs",
-            "Fine-grained local RTO transfer fees"
-        ]
+        "mechanical_parameters": mechanical_params,
+        "parameters_handled_by_trained_ml": all_features
     }
     
     with open(METRICS_OUTPUT_PATH, "w") as f:

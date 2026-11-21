@@ -59,7 +59,7 @@ async def get_vehicle_catalog(
     brand: Optional[str] = Query(None, description="Filter by brand"),
     search: Optional[str] = Query(None, description="Fuzzy search brand or model name"),
     page: int = Query(1, ge=1, description="Page number"),
-    page_size: int = Query(100, ge=1, le=200, description="Page size")
+    page_size: int = Query(500, ge=1, le=1000, description="Page size")
 ):
     """
     Returns full database of Indian two-wheelers with canonical unique IDs,
