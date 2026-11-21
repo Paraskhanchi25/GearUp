@@ -90,7 +90,7 @@ export const AdminPage: React.FC = () => {
     setIsSubmittingDecision(true);
     setDecisionSuccessMsg(null);
 
-    const docType = activeDocTab === 'ownership' ? 'form29_30' : (activeDocTab === 'condition' ? 'repair_bills' : activeDocTab);
+    const docType = activeDocTab === 'ownership' ? 'ownership_proof' : (activeDocTab === 'condition' ? 'repair_bills' : activeDocTab);
     const reasonText = reviewerNotes.trim() || `Reviewer action: ${action.replace('_', ' ')} executed by Moderation Lead.`;
 
     try {

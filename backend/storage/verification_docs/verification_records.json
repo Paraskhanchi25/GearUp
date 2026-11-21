@@ -284,5 +284,1939 @@
         "reason": "Test approval: all Parivahan fields match vehicle listing."
       }
     ]
+  },
+  "test-corrupt-001": {
+    "listing_id": "test-corrupt-001",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:00.928602",
+    "updated_at": "2026-11-22T05:09:00.928621",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "status": "not_uploaded",
+        "status_reason": "Registration Certificate (RC) has not been uploaded."
+      },
+      "insurance": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Insurance policy document has not been uploaded."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "not_uploaded",
+        "status_reason": "Ownership proof pending verification."
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 0,
+      "total_required": 4,
+      "overall_status": "unverified",
+      "blocking_reasons": [
+        "Registration Certificate (RC) has not been uploaded.",
+        "Insurance policy document has not been uploaded.",
+        "Pollution Under Control (PUC) certificate has not been uploaded.",
+        "Ownership proof pending verification."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Registration Certificate (RC) has not been uploaded.",
+          "extracted_preview": {
+            "registration_number": "****",
+            "owner_name": null,
+            "model": ""
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Insurance policy document has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": null,
+            "provider": null,
+            "expiry_date": null
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Ownership proof pending verification.",
+          "is_reused_from_rc": false,
+          "extracted_preview": {
+            "owner_name": null,
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-gate-rc-only": {
+    "listing_id": "test-gate-rc-only",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.030546",
+    "updated_at": "2026-11-22T05:13:35.952071",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "doc_id": "DOC-0314F0B6",
+        "filename": "rc.pdf",
+        "file_size": 198,
+        "mime_type": "application/pdf",
+        "sha256_hash": "65046241bd91b3eb92dcb1a63fb0e553aaef93cc5a0562b06142c26283daec30",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "rc",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "rc",
+          "is_readable": true,
+          "registration_number": "CH01AB8821",
+          "registered_owner": "VIKRAMJIT SINGH MAKER",
+          "manufacturer": "ROYAL ENFIELD MODEL",
+          "model": "CLASSIC 350 FUEL",
+          "vehicle_category": "2W - Motorcycle",
+          "fuel_type": "PETROL",
+          "registration_date": "12/03/2023",
+          "chassis_number": null,
+          "engine_number": null,
+          "ocr_confidence": 0.95
+        },
+        "is_readable": true,
+        "status": "passed",
+        "status_reason": "RC verified: Registration, manufacturer, and fuel type match listing."
+      },
+      "insurance": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Insurance policy document has not been uploaded."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "passed",
+        "status_reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT SINGH MAKER).",
+        "is_reused_from_rc": true,
+        "extracted_fields": {
+          "document_type": "rc_ownership_verified",
+          "registered_owner": "VIKRAMJIT SINGH MAKER",
+          "verified_source": "RC Ownership Endorsement"
+        }
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 2,
+      "total_required": 4,
+      "overall_status": "partially_verified",
+      "blocking_reasons": [
+        "Insurance policy document has not been uploaded.",
+        "Pollution Under Control (PUC) certificate has not been uploaded."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "passed",
+          "passed": true,
+          "reason": "RC verified: Registration, manufacturer, and fuel type match listing.",
+          "extracted_preview": {
+            "registration_number": "CH01****21",
+            "owner_name": "VIKRAMJIT SINGH MAKER",
+            "model": "ROYAL ENFIELD MODEL CLASSIC 350 FUEL"
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Insurance policy document has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": null,
+            "provider": null,
+            "expiry_date": null
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "passed",
+          "passed": true,
+          "reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT SINGH MAKER).",
+          "is_reused_from_rc": true,
+          "extracted_preview": {
+            "owner_name": "VIKRAMJIT SINGH MAKER",
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-gate-3-docs": {
+    "listing_id": "test-gate-3-docs",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.036195",
+    "updated_at": "2026-11-22T05:13:35.961493",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "doc_id": "DOC-1DEE4CDB",
+        "filename": "rc.pdf",
+        "file_size": 90,
+        "mime_type": "application/pdf",
+        "sha256_hash": "53f348d532fc26e1fe984bbb8f0e5a38136795de0361fba02f108777a60118a1",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "rc",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "rc",
+          "is_readable": true,
+          "registration_number": "CH01AB8821",
+          "registered_owner": "VIKRAMJIT SINGH MAKER",
+          "manufacturer": "ROYAL ENFIELD",
+          "model": null,
+          "vehicle_category": "2W - Motorcycle",
+          "fuel_type": "PETROL",
+          "registration_date": null,
+          "chassis_number": null,
+          "engine_number": null,
+          "ocr_confidence": 0.95
+        },
+        "is_readable": true,
+        "status": "passed",
+        "status_reason": "RC verified: Registration, manufacturer, and fuel type match listing."
+      },
+      "insurance": {
+        "doc_id": "DOC-24533E37",
+        "filename": "insurance.pdf",
+        "file_size": 78,
+        "mime_type": "application/pdf",
+        "sha256_hash": "a9773a92319327df6fd6cf5944b988217734583a5cb7deae03f62ab1920756d1",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "insurance",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "insurance",
+          "is_readable": true,
+          "policy_number": "POL-2024-8849201",
+          "provider": "HDFC ERGO",
+          "registration_number": "CH01AB8821",
+          "vehicle_model": null,
+          "start_date": null,
+          "expiry_date": "15/03/2027",
+          "coverage_type": "Comprehensive (Own Damage + Third Party)",
+          "ocr_confidence": 0.93
+        },
+        "is_readable": true,
+        "status": "passed",
+        "is_expired": false,
+        "status_reason": "Insurance verified: Valid policy through 15/03/2027 matching vehicle registration."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "passed",
+        "status_reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT SINGH MAKER).",
+        "is_reused_from_rc": true,
+        "extracted_fields": {
+          "document_type": "rc_ownership_verified",
+          "registered_owner": "VIKRAMJIT SINGH MAKER",
+          "verified_source": "RC Ownership Endorsement"
+        }
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 3,
+      "total_required": 4,
+      "overall_status": "partially_verified",
+      "blocking_reasons": [
+        "Pollution Under Control (PUC) certificate has not been uploaded."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "passed",
+          "passed": true,
+          "reason": "RC verified: Registration, manufacturer, and fuel type match listing.",
+          "extracted_preview": {
+            "registration_number": "CH01****21",
+            "owner_name": "VIKRAMJIT SINGH MAKER",
+            "model": "ROYAL ENFIELD None"
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "passed",
+          "passed": true,
+          "reason": "Insurance verified: Valid policy through 15/03/2027 matching vehicle registration.",
+          "expiry_date": "15/03/2027",
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": "POL-2024-8849201",
+            "provider": "HDFC ERGO",
+            "expiry_date": "15/03/2027"
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "passed",
+          "passed": true,
+          "reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT SINGH MAKER).",
+          "is_reused_from_rc": true,
+          "extracted_preview": {
+            "owner_name": "VIKRAMJIT SINGH MAKER",
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-gate-expired-ins": {
+    "listing_id": "test-gate-expired-ins",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.042383",
+    "updated_at": "2026-11-22T05:13:35.963567",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "status": "not_uploaded",
+        "status_reason": "Registration Certificate (RC) has not been uploaded."
+      },
+      "insurance": {
+        "doc_id": "DOC-614FF6E5",
+        "filename": "ins_exp.pdf",
+        "file_size": 77,
+        "mime_type": "application/pdf",
+        "sha256_hash": "46dee02a7645591ce15fa97c7ea194f65284058b673b7172e80c520d748c60c4",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "insurance",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "insurance",
+          "is_readable": true,
+          "policy_number": "POL-2024-8849201",
+          "provider": "HDFC ERGO",
+          "registration_number": "CH01AB8821",
+          "vehicle_model": null,
+          "start_date": null,
+          "expiry_date": "15/03/2021",
+          "coverage_type": "Comprehensive (Own Damage + Third Party)",
+          "ocr_confidence": 0.93
+        },
+        "is_readable": true,
+        "status": "expired",
+        "is_expired": true,
+        "status_reason": "Insurance policy expired on 15/03/2021. Active policy required to publish."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "not_uploaded",
+        "status_reason": "Ownership proof pending verification."
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 0,
+      "total_required": 4,
+      "overall_status": "verification_issue_found",
+      "blocking_reasons": [
+        "Registration Certificate (RC) has not been uploaded.",
+        "Insurance policy expired on 15/03/2021. Active policy required to publish.",
+        "Pollution Under Control (PUC) certificate has not been uploaded.",
+        "Ownership proof pending verification."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Registration Certificate (RC) has not been uploaded.",
+          "extracted_preview": {
+            "registration_number": "****",
+            "owner_name": null,
+            "model": ""
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "expired",
+          "passed": false,
+          "reason": "Insurance policy expired on 15/03/2021. Active policy required to publish.",
+          "expiry_date": "15/03/2021",
+          "is_expired": true,
+          "extracted_preview": {
+            "policy_number": "POL-2024-8849201",
+            "provider": "HDFC ERGO",
+            "expiry_date": "15/03/2021"
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Ownership proof pending verification.",
+          "is_reused_from_rc": false,
+          "extracted_preview": {
+            "owner_name": null,
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-gate-expired-puc": {
+    "listing_id": "test-gate-expired-puc",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.045330",
+    "updated_at": "2026-11-22T05:13:35.966616",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "status": "not_uploaded",
+        "status_reason": "Registration Certificate (RC) has not been uploaded."
+      },
+      "insurance": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Insurance policy document has not been uploaded."
+      },
+      "puc": {
+        "doc_id": "DOC-C4E30F64",
+        "filename": "puc_exp.pdf",
+        "file_size": 72,
+        "mime_type": "application/pdf",
+        "sha256_hash": "ca020783f6edb00e978c25a670c3b5bb6dc220dd2ac822fbbe966187fc2902f0",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "puc",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "puc",
+          "is_readable": true,
+          "certificate_number": "CH01-PUC-2026-9921",
+          "registration_number": "CH01AB8821",
+          "issue_date": "10/01/2026",
+          "expiry_date": "10/05/2022",
+          "carbon_monoxide_co": "0.12% (Limit: 0.5%)",
+          "hydrocarbons_hc": "85 ppm (Limit: 750 ppm)",
+          "emission_result": "PASS (BS6 Compliant)",
+          "ocr_confidence": 0.92
+        },
+        "is_readable": true,
+        "status": "expired",
+        "is_expired": true,
+        "status_reason": "PUC certificate expired on 10/05/2022. Current valid PUC required."
+      },
+      "ownership_proof": {
+        "status": "not_uploaded",
+        "status_reason": "Ownership proof pending verification."
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 0,
+      "total_required": 4,
+      "overall_status": "verification_issue_found",
+      "blocking_reasons": [
+        "Registration Certificate (RC) has not been uploaded.",
+        "Insurance policy document has not been uploaded.",
+        "PUC certificate expired on 10/05/2022. Current valid PUC required.",
+        "Ownership proof pending verification."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Registration Certificate (RC) has not been uploaded.",
+          "extracted_preview": {
+            "registration_number": "****",
+            "owner_name": null,
+            "model": ""
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Insurance policy document has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": null,
+            "provider": null,
+            "expiry_date": null
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "expired",
+          "passed": false,
+          "reason": "PUC certificate expired on 10/05/2022. Current valid PUC required.",
+          "expiry_date": "10/05/2022",
+          "is_expired": true,
+          "extracted_preview": {
+            "certificate_number": "CH01-PUC-2026-9921",
+            "expiry_date": "10/05/2022",
+            "result": "PASS (BS6 Compliant)"
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Ownership proof pending verification.",
+          "is_reused_from_rc": false,
+          "extracted_preview": {
+            "owner_name": null,
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-gate-rc-mismatch": {
+    "listing_id": "test-gate-rc-mismatch",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.048356",
+    "updated_at": "2026-11-22T05:13:35.969514",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "doc_id": "DOC-0B945916",
+        "filename": "rc_diff.pdf",
+        "file_size": 73,
+        "mime_type": "application/pdf",
+        "sha256_hash": "efd70843a936f25e995b324d26a859d6d0c9e50616394d0c4e55cc49696bc260",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "rc",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "rc",
+          "is_readable": true,
+          "registration_number": "DL01XY9999",
+          "registered_owner": "RAJESH MAKER",
+          "manufacturer": "HONDA",
+          "model": null,
+          "vehicle_category": "2W - Motorcycle",
+          "fuel_type": "PETROL",
+          "registration_date": null,
+          "chassis_number": null,
+          "engine_number": null,
+          "ocr_confidence": 0.95
+        },
+        "is_readable": true,
+        "status": "mismatch_found",
+        "status_reason": "Registration number on RC (DL01XY9999) does not match listing (CH01AB8821)."
+      },
+      "insurance": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Insurance policy document has not been uploaded."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "not_uploaded",
+        "status_reason": "Ownership proof pending verification."
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 0,
+      "total_required": 4,
+      "overall_status": "verification_issue_found",
+      "blocking_reasons": [
+        "Registration number on RC (DL01XY9999) does not match listing (CH01AB8821).",
+        "Insurance policy document has not been uploaded.",
+        "Pollution Under Control (PUC) certificate has not been uploaded.",
+        "Ownership proof pending verification."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "mismatch_found",
+          "passed": false,
+          "reason": "Registration number on RC (DL01XY9999) does not match listing (CH01AB8821).",
+          "extracted_preview": {
+            "registration_number": "DL01****99",
+            "owner_name": "RAJESH MAKER",
+            "model": "HONDA None"
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Insurance policy document has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": null,
+            "provider": null,
+            "expiry_date": null
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Ownership proof pending verification.",
+          "is_reused_from_rc": false,
+          "extracted_preview": {
+            "owner_name": "RAJESH MAKER",
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-gate-ins-mismatch": {
+    "listing_id": "test-gate-ins-mismatch",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.052057",
+    "updated_at": "2026-11-22T05:13:35.975488",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "doc_id": "DOC-9985FE48",
+        "filename": "rc.pdf",
+        "file_size": 84,
+        "mime_type": "application/pdf",
+        "sha256_hash": "d0ce921f4c16089d314f80b06f1ae73fc11a40321be8880198c6b1400da1da24",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "rc",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "rc",
+          "is_readable": true,
+          "registration_number": "CH01AB8821",
+          "registered_owner": "VIKRAMJIT MAKER",
+          "manufacturer": "ROYAL ENFIELD",
+          "model": null,
+          "vehicle_category": "2W - Motorcycle",
+          "fuel_type": "PETROL",
+          "registration_date": null,
+          "chassis_number": null,
+          "engine_number": null,
+          "ocr_confidence": 0.95
+        },
+        "is_readable": true,
+        "status": "passed",
+        "status_reason": "RC verified: Registration, manufacturer, and fuel type match listing."
+      },
+      "insurance": {
+        "doc_id": "DOC-AF1356E3",
+        "filename": "ins.pdf",
+        "file_size": 77,
+        "mime_type": "application/pdf",
+        "sha256_hash": "d3f5870313658dc6da42ed5401ab43ac1f2163d198e447eec15938b50027daf2",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "insurance",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "insurance",
+          "is_readable": true,
+          "policy_number": "POL-2024-8849201",
+          "provider": "HDFC ERGO",
+          "registration_number": "MH02CD1111",
+          "vehicle_model": null,
+          "start_date": null,
+          "expiry_date": "15/03/2027",
+          "coverage_type": "Comprehensive (Own Damage + Third Party)",
+          "ocr_confidence": 0.93
+        },
+        "is_readable": true,
+        "status": "mismatch_found",
+        "is_expired": false,
+        "status_reason": "Registration number on insurance (MH02CD1111) does not match RC (CH01AB8821)."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "passed",
+        "status_reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT MAKER).",
+        "is_reused_from_rc": true,
+        "extracted_fields": {
+          "document_type": "rc_ownership_verified",
+          "registered_owner": "VIKRAMJIT MAKER",
+          "verified_source": "RC Ownership Endorsement"
+        }
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 2,
+      "total_required": 4,
+      "overall_status": "verification_issue_found",
+      "blocking_reasons": [
+        "Registration number on insurance (MH02CD1111) does not match RC (CH01AB8821).",
+        "Pollution Under Control (PUC) certificate has not been uploaded."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "passed",
+          "passed": true,
+          "reason": "RC verified: Registration, manufacturer, and fuel type match listing.",
+          "extracted_preview": {
+            "registration_number": "CH01****21",
+            "owner_name": "VIKRAMJIT MAKER",
+            "model": "ROYAL ENFIELD None"
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "mismatch_found",
+          "passed": false,
+          "reason": "Registration number on insurance (MH02CD1111) does not match RC (CH01AB8821).",
+          "expiry_date": "15/03/2027",
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": "POL-2024-8849201",
+            "provider": "HDFC ERGO",
+            "expiry_date": "15/03/2027"
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "passed",
+          "passed": true,
+          "reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT MAKER).",
+          "is_reused_from_rc": true,
+          "extracted_preview": {
+            "owner_name": "VIKRAMJIT MAKER",
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-gate-duplicate": {
+    "listing_id": "test-gate-duplicate",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.057733",
+    "updated_at": "2026-11-22T05:13:35.978535",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "status": "not_uploaded",
+        "status_reason": "Registration Certificate (RC) has not been uploaded."
+      },
+      "insurance": {
+        "doc_id": "DOC-6A3B7712",
+        "filename": "doc.pdf",
+        "file_size": 68,
+        "mime_type": "application/pdf",
+        "sha256_hash": "5c4053a5c2df068a1e7ac8e3c18b8107065bdcd6813599241e95b775518ad8c7",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "insurance",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "insurance",
+          "is_readable": true,
+          "policy_number": "POL-2024-8849201",
+          "provider": "HDFC ERGO",
+          "registration_number": "CH01AB8821",
+          "vehicle_model": null,
+          "start_date": null,
+          "expiry_date": "15/03/2027",
+          "coverage_type": "Comprehensive (Own Damage + Third Party)",
+          "ocr_confidence": 0.93
+        },
+        "is_readable": true,
+        "status": "passed",
+        "is_expired": false,
+        "status_reason": "Insurance verified: Valid policy through 15/03/2027 matching vehicle registration."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "not_uploaded",
+        "status_reason": "Ownership proof pending verification."
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 1,
+      "total_required": 4,
+      "overall_status": "partially_verified",
+      "blocking_reasons": [
+        "Registration Certificate (RC) has not been uploaded.",
+        "Pollution Under Control (PUC) certificate has not been uploaded.",
+        "Ownership proof pending verification."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Registration Certificate (RC) has not been uploaded.",
+          "extracted_preview": {
+            "registration_number": "****",
+            "owner_name": null,
+            "model": ""
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "passed",
+          "passed": true,
+          "reason": "Insurance verified: Valid policy through 15/03/2027 matching vehicle registration.",
+          "expiry_date": "15/03/2027",
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": "POL-2024-8849201",
+            "provider": "HDFC ERGO",
+            "expiry_date": "15/03/2027"
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Ownership proof pending verification.",
+          "is_reused_from_rc": false,
+          "extracted_preview": {
+            "owner_name": null,
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-gate-full-pass": {
+    "listing_id": "test-gate-full-pass",
+    "seller_id": "seller-default",
+    "is_published": true,
+    "created_at": "2026-11-22T05:09:01.062017",
+    "updated_at": "2026-11-22T05:13:35.993421",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "doc_id": "DOC-51DC3140",
+        "filename": "rc.pdf",
+        "file_size": 122,
+        "mime_type": "application/pdf",
+        "sha256_hash": "5ff43135f741a5d28f341aca22ef57bec2bff89f88ca89e1688a985c4c300be2",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "rc",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "rc",
+          "is_readable": true,
+          "registration_number": "CH01AB8821",
+          "registered_owner": "VIKRAMJIT SINGH MAKER",
+          "manufacturer": "ROYAL ENFIELD MODEL",
+          "model": "CLASSIC 350 FUEL",
+          "vehicle_category": "2W - Motorcycle",
+          "fuel_type": "PETROL",
+          "registration_date": null,
+          "chassis_number": null,
+          "engine_number": null,
+          "ocr_confidence": 0.95
+        },
+        "is_readable": true,
+        "status": "passed",
+        "status_reason": "RC verified: Registration, manufacturer, and fuel type match listing."
+      },
+      "insurance": {
+        "doc_id": "DOC-B4798331",
+        "filename": "ins.pdf",
+        "file_size": 92,
+        "mime_type": "application/pdf",
+        "sha256_hash": "a9801e844a0df92e39032fc69b82092ff3648c7b5ccbc43d4306c799de496797",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "insurance",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "insurance",
+          "is_readable": true,
+          "policy_number": "POL-88129",
+          "provider": "HDFC ERGO",
+          "registration_number": "CH01AB8821",
+          "vehicle_model": null,
+          "start_date": null,
+          "expiry_date": "15/03/2027",
+          "coverage_type": "Comprehensive (Own Damage + Third Party)",
+          "ocr_confidence": 0.93
+        },
+        "is_readable": true,
+        "status": "passed",
+        "is_expired": false,
+        "status_reason": "Insurance verified: Valid policy through 15/03/2027 matching vehicle registration."
+      },
+      "puc": {
+        "doc_id": "DOC-FEF5C07B",
+        "filename": "puc.pdf",
+        "file_size": 90,
+        "mime_type": "application/pdf",
+        "sha256_hash": "1305cf94bc7771b247fcdd46df52a01a520e112aaefe705eff255196d89d9fef",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "puc",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "puc",
+          "is_readable": true,
+          "certificate_number": "PUC-9921",
+          "registration_number": "CH01AB8821",
+          "issue_date": "10/01/2026",
+          "expiry_date": "20/02/2027",
+          "carbon_monoxide_co": "0.12% (Limit: 0.5%)",
+          "hydrocarbons_hc": "85 ppm (Limit: 750 ppm)",
+          "emission_result": "PASS (BS6 Compliant)",
+          "ocr_confidence": 0.92
+        },
+        "is_readable": true,
+        "status": "passed",
+        "is_expired": false,
+        "status_reason": "PUC verified: BS6 emission compliance valid through 20/02/2027."
+      },
+      "ownership_proof": {
+        "status": "passed",
+        "status_reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT SINGH MAKER).",
+        "is_reused_from_rc": true,
+        "extracted_fields": {
+          "document_type": "rc_ownership_verified",
+          "registered_owner": "VIKRAMJIT SINGH MAKER",
+          "verified_source": "RC Ownership Endorsement"
+        }
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": true,
+      "passed_count": 4,
+      "total_required": 4,
+      "overall_status": "verified_documents",
+      "blocking_reasons": [],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "passed",
+          "passed": true,
+          "reason": "RC verified: Registration, manufacturer, and fuel type match listing.",
+          "extracted_preview": {
+            "registration_number": "CH01****21",
+            "owner_name": "VIKRAMJIT SINGH MAKER",
+            "model": "ROYAL ENFIELD MODEL CLASSIC 350 FUEL"
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "passed",
+          "passed": true,
+          "reason": "Insurance verified: Valid policy through 15/03/2027 matching vehicle registration.",
+          "expiry_date": "15/03/2027",
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": "POL-88129",
+            "provider": "HDFC ERGO",
+            "expiry_date": "15/03/2027"
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "passed",
+          "passed": true,
+          "reason": "PUC verified: BS6 emission compliance valid through 20/02/2027.",
+          "expiry_date": "20/02/2027",
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": "PUC-9921",
+            "expiry_date": "20/02/2027",
+            "result": "PASS (BS6 Compliant)"
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "passed",
+          "passed": true,
+          "reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT SINGH MAKER).",
+          "is_reused_from_rc": true,
+          "extracted_preview": {
+            "owner_name": "VIKRAMJIT SINGH MAKER",
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    },
+    "published_at": "2026-11-22T05:13:35.994306",
+    "publication_event": {
+      "event_id": "PUB-FA49AE1C",
+      "timestamp": "2026-11-22T05:13:35.994311",
+      "verified_by_gate": true,
+      "passed_documents": 4
+    }
+  },
+  "test-direct-spoof": {
+    "listing_id": "test-direct-spoof",
+    "seller_id": "seller-malicious",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.074337",
+    "updated_at": "2026-11-22T05:13:35.995953",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "status": "not_uploaded",
+        "status_reason": "Registration Certificate (RC) has not been uploaded."
+      },
+      "insurance": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Insurance policy document has not been uploaded."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "not_uploaded",
+        "status_reason": "Ownership proof pending verification."
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 0,
+      "total_required": 4,
+      "overall_status": "unverified",
+      "blocking_reasons": [
+        "Registration Certificate (RC) has not been uploaded.",
+        "Insurance policy document has not been uploaded.",
+        "Pollution Under Control (PUC) certificate has not been uploaded.",
+        "Ownership proof pending verification."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Registration Certificate (RC) has not been uploaded.",
+          "extracted_preview": {
+            "registration_number": "****",
+            "owner_name": null,
+            "model": ""
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Insurance policy document has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": null,
+            "provider": null,
+            "expiry_date": null
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Ownership proof pending verification.",
+          "is_reused_from_rc": false,
+          "extracted_preview": {
+            "owner_name": null,
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-replace-doc": {
+    "listing_id": "test-replace-doc",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.077494",
+    "updated_at": "2026-11-22T05:13:36.006058",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "status": "not_uploaded",
+        "status_reason": "Registration Certificate (RC) has not been uploaded."
+      },
+      "insurance": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Insurance policy document has not been uploaded."
+      },
+      "puc": {
+        "doc_id": "DOC-9C4914E7",
+        "filename": "puc_new.pdf",
+        "file_size": 54,
+        "mime_type": "application/pdf",
+        "sha256_hash": "b59494f06c3395e374ebd6f0dc57e350859f45b7923b6752a11538d17b0511ad",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "puc",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "puc",
+          "is_readable": true,
+          "certificate_number": "CH01-PUC-2026-9921",
+          "registration_number": "CH01AB8821",
+          "issue_date": "10/01/2026",
+          "expiry_date": "01/01/2027",
+          "carbon_monoxide_co": "0.12% (Limit: 0.5%)",
+          "hydrocarbons_hc": "85 ppm (Limit: 750 ppm)",
+          "emission_result": "PASS (BS6 Compliant)",
+          "ocr_confidence": 0.92
+        },
+        "is_readable": true,
+        "status": "passed",
+        "is_expired": false,
+        "status_reason": "PUC verified: BS6 emission compliance valid through 01/01/2027."
+      },
+      "ownership_proof": {
+        "status": "not_uploaded",
+        "status_reason": "Ownership proof pending verification."
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 1,
+      "total_required": 4,
+      "overall_status": "partially_verified",
+      "blocking_reasons": [
+        "Registration Certificate (RC) has not been uploaded.",
+        "Insurance policy document has not been uploaded.",
+        "Ownership proof pending verification."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Registration Certificate (RC) has not been uploaded.",
+          "extracted_preview": {
+            "registration_number": "****",
+            "owner_name": null,
+            "model": ""
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Insurance policy document has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": null,
+            "provider": null,
+            "expiry_date": null
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "passed",
+          "passed": true,
+          "reason": "PUC verified: BS6 emission compliance valid through 01/01/2027.",
+          "expiry_date": "01/01/2027",
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": "CH01-PUC-2026-9921",
+            "expiry_date": "01/01/2027",
+            "result": "PASS (BS6 Compliant)"
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Ownership proof pending verification.",
+          "is_reused_from_rc": false,
+          "extracted_preview": {
+            "owner_name": null,
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-delete-doc": {
+    "listing_id": "test-delete-doc",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.083092",
+    "updated_at": "2026-11-22T05:13:36.010374",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "status": "not_uploaded",
+        "status_reason": "Registration Certificate (RC) has not been uploaded."
+      },
+      "insurance": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Insurance policy document has not been uploaded."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "passed",
+        "status_reason": "Ownership proof verified.",
+        "is_reused_from_rc": true,
+        "extracted_fields": {
+          "document_type": "rc_ownership_verified",
+          "registered_owner": "VIKRAMJIT MAKER",
+          "verified_source": "RC Ownership Endorsement"
+        }
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 1,
+      "total_required": 4,
+      "overall_status": "partially_verified",
+      "blocking_reasons": [
+        "Registration Certificate (RC) has not been uploaded.",
+        "Insurance policy document has not been uploaded.",
+        "Pollution Under Control (PUC) certificate has not been uploaded."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Registration Certificate (RC) has not been uploaded.",
+          "extracted_preview": {
+            "registration_number": "****",
+            "owner_name": null,
+            "model": ""
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Insurance policy document has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": null,
+            "provider": null,
+            "expiry_date": null
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "passed",
+          "passed": true,
+          "reason": "Ownership proof verified.",
+          "is_reused_from_rc": true,
+          "extracted_preview": {
+            "owner_name": "VIKRAMJIT MAKER",
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-analysis-report-01": {
+    "listing_id": "test-analysis-report-01",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.090018",
+    "updated_at": "2026-11-22T05:13:36.013326",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "doc_id": "DOC-EB1A9E98",
+        "filename": "rc.pdf",
+        "file_size": 108,
+        "mime_type": "application/pdf",
+        "sha256_hash": "6356b30630d91d634ebfa189afdb39de57af72e62061b761c0850bfe9a7eb45b",
+        "upload_timestamp": "22 Nov 2026, 05:13 AM",
+        "document_type": "rc",
+        "reviewer_status": "pending",
+        "extracted_fields": {
+          "document_type": "rc",
+          "is_readable": true,
+          "registration_number": "CH01AB8821",
+          "registered_owner": "VIKRAMJIT SINGH MAKER",
+          "manufacturer": "ROYAL ENFIELD CHASSIS",
+          "model": null,
+          "vehicle_category": "2W - Motorcycle",
+          "fuel_type": "PETROL",
+          "registration_date": null,
+          "chassis_number": null,
+          "engine_number": null,
+          "ocr_confidence": 0.95
+        },
+        "is_readable": true,
+        "status": "passed",
+        "status_reason": "RC verified: Registration, manufacturer, and fuel type match listing."
+      },
+      "insurance": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Insurance policy document has not been uploaded."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "passed",
+        "status_reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT SINGH MAKER).",
+        "is_reused_from_rc": true,
+        "extracted_fields": {
+          "document_type": "rc_ownership_verified",
+          "registered_owner": "VIKRAMJIT SINGH MAKER",
+          "verified_source": "RC Ownership Endorsement"
+        }
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 2,
+      "total_required": 4,
+      "overall_status": "partially_verified",
+      "blocking_reasons": [
+        "Insurance policy document has not been uploaded.",
+        "Pollution Under Control (PUC) certificate has not been uploaded."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "passed",
+          "passed": true,
+          "reason": "RC verified: Registration, manufacturer, and fuel type match listing.",
+          "extracted_preview": {
+            "registration_number": "CH01****21",
+            "owner_name": "VIKRAMJIT SINGH MAKER",
+            "model": "ROYAL ENFIELD CHASSIS None"
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Insurance policy document has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": null,
+            "provider": null,
+            "expiry_date": null
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "passed",
+          "passed": true,
+          "reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (VIKRAMJIT SINGH MAKER).",
+          "is_reused_from_rc": true,
+          "extracted_preview": {
+            "owner_name": "VIKRAMJIT SINGH MAKER",
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
+  },
+  "test-mod-review": {
+    "listing_id": "test-mod-review",
+    "seller_id": "seller-default",
+    "is_published": false,
+    "created_at": "2026-11-22T05:09:01.094552",
+    "updated_at": "2026-11-22T05:13:36.017784",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "status": "passed",
+        "is_readable": true,
+        "status_reason": "Chassis verified manually against RTO Parivahan gateway.",
+        "reviewer_status": "approved"
+      },
+      "insurance": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Insurance policy document has not been uploaded."
+      },
+      "puc": {
+        "status": "not_uploaded",
+        "is_expired": false,
+        "status_reason": "Pollution Under Control (PUC) certificate has not been uploaded."
+      },
+      "ownership_proof": {
+        "status": "passed",
+        "status_reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (None).",
+        "is_reused_from_rc": true,
+        "extracted_fields": {
+          "document_type": "rc_ownership_verified",
+          "registered_owner": null,
+          "verified_source": "RC Ownership Endorsement"
+        }
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": false,
+      "repair_bills": []
+    },
+    "level3_ownership": {
+      "seller_full_name": "Vikramjit Singh",
+      "is_registered_owner": true,
+      "is_authorized": true,
+      "loan_status": "no_loan"
+    },
+    "review_audit_log": [
+      {
+        "action_id": "ACT-830D5B",
+        "timestamp": "2026-11-22T05:09:01.098227",
+        "reviewer_id": "MOD-101",
+        "reviewer_name": "Specialist Reviewer",
+        "document_type": "rc",
+        "action": "approve",
+        "reason": "Chassis verified manually against RTO Parivahan gateway."
+      },
+      {
+        "action_id": "ACT-A2165C",
+        "timestamp": "2026-11-22T05:11:20.978410",
+        "reviewer_id": "MOD-101",
+        "reviewer_name": "Specialist Reviewer",
+        "document_type": "rc",
+        "action": "approve",
+        "reason": "Chassis verified manually against RTO Parivahan gateway."
+      },
+      {
+        "action_id": "ACT-AD4564",
+        "timestamp": "2026-11-22T05:13:36.017773",
+        "reviewer_id": "MOD-101",
+        "reviewer_name": "Specialist Reviewer",
+        "document_type": "rc",
+        "action": "approve",
+        "reason": "Chassis verified manually against RTO Parivahan gateway."
+      }
+    ],
+    "publication_gate": {
+      "can_publish": false,
+      "passed_count": 2,
+      "total_required": 4,
+      "overall_status": "partially_verified",
+      "blocking_reasons": [
+        "Insurance policy document has not been uploaded.",
+        "Pollution Under Control (PUC) certificate has not been uploaded."
+      ],
+      "checklist": [
+        {
+          "doc_type": "rc",
+          "name": "Registration Certificate (RC)",
+          "status": "passed",
+          "passed": true,
+          "reason": "Chassis verified manually against RTO Parivahan gateway.",
+          "extracted_preview": {
+            "registration_number": "****",
+            "owner_name": null,
+            "model": ""
+          }
+        },
+        {
+          "doc_type": "insurance",
+          "name": "Insurance Certificate",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Insurance policy document has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "policy_number": null,
+            "provider": null,
+            "expiry_date": null
+          }
+        },
+        {
+          "doc_type": "puc",
+          "name": "Pollution Under Control (PUC)",
+          "status": "not_uploaded",
+          "passed": false,
+          "reason": "Pollution Under Control (PUC) certificate has not been uploaded.",
+          "expiry_date": null,
+          "is_expired": false,
+          "extracted_preview": {
+            "certificate_number": null,
+            "expiry_date": null,
+            "result": null
+          }
+        },
+        {
+          "doc_type": "ownership_proof",
+          "name": "Ownership / Seller Authorisation Proof",
+          "status": "passed",
+          "passed": true,
+          "reason": "Ownership verified: Seller confirmed as registered owner matching RC endorsement (None).",
+          "is_reused_from_rc": true,
+          "extracted_preview": {
+            "owner_name": null,
+            "relationship": "Registered Owner"
+          }
+        }
+      ]
+    }
   }
 }

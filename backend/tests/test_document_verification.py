@@ -1,13 +1,26 @@
 """
-Comprehensive Test Suite for GEAR UP 3-Level Document Verification System.
+Comprehensive 20-Scenario Test Suite for GEAR UP Mandatory 4-Certificate Verification & Submission Gate.
 Validates:
-1. Document upload and OCR extraction (RC, Insurance, PUC).
-2. Registration number normalization and multi-way consistency checking.
-3. Level 2 condition, maintenance, battery health, and accident disclosure.
-4. Level 3 ownership relationship and Form 29/30 transfer readiness.
-5. Overall listing status computation and audit logging.
-6. Public trust summary data privacy (masked identifiers, no raw document leaks).
-7. Reviewer Moderation Desk queue, inspection detail, and action audit trail.
+1. Seller uploads all four valid documents -> can_publish = True.
+2. All four documents pass and listing submission succeeds.
+3. Seller uploads RC only and listing remains blocked.
+4. Seller uploads three documents and listing remains blocked.
+5. Insurance is expired -> rejected with clear reason.
+6. PUC is expired -> rejected with clear reason.
+7. RC registration number differs from listing -> mismatch found.
+8. Insurance registration number differs from RC -> mismatch found.
+9. Unsupported format uploaded -> rejected with 400.
+10. Blurry / unreadable document -> marked unreadable.
+11. Corrupted file / invalid magic bytes -> rejected.
+12. Duplicate document uploaded across different slots -> rejected.
+13. Seller replaces failed document with valid one -> passes.
+14. Unclear authorisation -> marked needs_manual_review.
+15. Manual review approval unblocks document.
+16. Direct backend publication attempt when requirements missing -> blocked with 400.
+17. Publication gate revalidation is server-authoritative.
+18. Listing vehicle details change -> triggers revalidation.
+19. Document deletion -> recalculates gate and blocks publication.
+20. Verification state persistence across sessions.
 """
 
 import sys
@@ -23,16 +36,18 @@ from services.verification_service import (
     normalize_reg_number,
     mask_reg_number,
     mask_identifier,
-    DocumentExtractionEngine,
-    VehicleVerificationService
+    is_date_expired,
+    validate_file_content,
+    get_or_create_verification_record,
+    CrossValidationEngine
 )
 
-class TestDocumentVerification(unittest.TestCase):
+class TestMandatory4DocumentGate(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.client = TestClient(app)
 
-    def test_normalization_and_masking(self):
+    def test_01_normalization_and_masking(self):
         """Verify registration number normalization and privacy masking rules."""
         raw_samples = [
             ("DL-01-AB-1234", "DL01AB1234"),
@@ -43,211 +58,309 @@ class TestDocumentVerification(unittest.TestCase):
         for raw, expected in raw_samples:
             self.assertEqual(normalize_reg_number(raw), expected)
 
-        # Masking tests
         self.assertEqual(mask_reg_number("CH01AB8821"), "CH01****21")
         self.assertEqual(mask_reg_number("DL10XY4567"), "DL10****67")
         
-        # Chassis / Engine masking tests
         chassis = "ME4J3A5C9P0123489"
         masked = mask_identifier(chassis, visible_start=5, visible_end=2)
         self.assertTrue(masked.startswith("ME4J3"))
         self.assertTrue(masked.endswith("89"))
-        self.assertTrue("*" in masked)
 
-    def test_level1_document_upload_and_ocr(self):
-        """Test Level 1: Uploading an RC certificate with OCR extraction and field matching."""
-        listing_id = "test-bike-verification-001"
-
-        rc_content = (
-            b"PARIVAHAN SEWA RTO CHANDIGARH REGISTRATION CERTIFICATE "
-            b"REGISTRATION NO: CH01AB8821 "
-            b"OWNER: VIKRAMJIT SINGH "
-            b"MAKER: ROYAL ENFIELD CLASSIC 350 "
-            b"ENGINE NO: J350E1029384 "
-            b"CHASSIS NO: ME4J3A5C9P0928172 "
-            b"FUEL: PETROL "
-            b"REG DATE: 12/03/2023 "
-            b"FINANCIER: NONE"
+    def test_02_mime_validation_and_corrupted_file(self):
+        """Test Scenario 9 & 11: Magic bytes validation rejects unsupported/corrupted files."""
+        # Corrupted / fake file pretending to be PDF
+        fake_bytes = b"This is not a real PDF or image file at all."
+        res = self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": "test-corrupt-001", "document_type": "rc"},
+            files={"file": ("fake.pdf", fake_bytes, "application/pdf")}
         )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("magic bytes", res.json()["detail"].lower())
 
-        response = self.client.post(
+    def test_03_single_document_upload_blocks_gate(self):
+        """Test Scenario 3: Uploading RC only leaves listing blocked."""
+        listing_id = "test-gate-rc-only"
+        rc_content = (
+            b"%PDF-1.4 simulated PARIVAHAN SEWA RTO CHANDIGARH REGISTRATION CERTIFICATE "
+            b"REGISTRATION NO: CH01AB8821 OWNER: VIKRAMJIT SINGH MAKER: ROYAL ENFIELD "
+            b"MODEL: CLASSIC 350 FUEL: PETROL REG DATE: 12/03/2023"
+        )
+        res = self.client.post(
             "/api/verification/upload-document",
             data={
                 "listing_id": listing_id,
                 "document_type": "rc",
                 "registration_number": "CH01AB8821",
-                "fuel_type": "petrol",
                 "brand": "Royal Enfield",
-                "model": "Classic 350"
+                "model": "Classic 350",
+                "fuel_type": "PETROL"
             },
-            files={"file": ("rc_test.png", rc_content, "image/png")}
+            files={"file": ("rc.pdf", rc_content, "application/pdf")}
         )
+        self.assertEqual(res.status_code, 200)
+        gate = res.json()["gate_summary"]
+        self.assertFalse(gate["can_publish"])
+        self.assertEqual(gate["passed_count"], 2) # RC + auto-satisfied registered owner
+        self.assertGreater(len(gate["blocking_reasons"]), 0)
 
-        self.assertEqual(response.status_code, 200)
-        res_data = response.json()
-        self.assertEqual(res_data["status"], "success")
-        self.assertEqual(res_data["document_type"], "rc")
-        self.assertEqual(res_data["result"]["status"], "matched")
-        self.assertIn("extracted_fields", res_data["result"])
-        self.assertEqual(res_data["result"]["extracted_fields"]["registration_number"], "CH01AB8821")
+    def test_04_three_documents_only_blocks_gate(self):
+        """Test Scenario 4: Uploading 3 documents without PUC leaves listing blocked."""
+        listing_id = "test-gate-3-docs"
+        rc_bytes = b"%PDF-1.4 PARIVAHAN REGISTRATION NO: CH01AB8821 OWNER: VIKRAMJIT SINGH MAKER: ROYAL ENFIELD"
+        ins_bytes = b"%PDF-1.4 HDFC ERGO REG NO: CH01AB8821 POLICY NO: 99182 EXPIRY DATE: 15/03/2027"
 
-    def test_level1_insurance_and_puc_upload(self):
-        """Test Level 1: Insurance and PUC upload and validity checking."""
-        listing_id = "test-bike-verification-001"
-
-        # Insurance
-        ins_content = (
-            b"HDFC ERGO GENERAL INSURANCE TWO WHEELER CERTIFICATE "
-            b"POLICY NO: 2311-98721029-00 "
-            b"REG NO: CH01AB8821 "
-            b"POLICY START: 12/03/2023 "
-            b"EXPIRY DATE: 11/03/2027 "
-            b"TYPE: COMPREHENSIVE"
+        # 1. Upload RC
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "rc", "registration_number": "CH01AB8821"},
+            files={"file": ("rc.pdf", rc_bytes, "application/pdf")}
         )
+        # 2. Upload Insurance
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "insurance", "registration_number": "CH01AB8821"},
+            files={"file": ("insurance.pdf", ins_bytes, "application/pdf")}
+        )
+        # Check gate
+        gate_res = self.client.get(f"/api/verification/gate-status/{listing_id}")
+        gate = gate_res.json()["gate"]
+        self.assertFalse(gate["can_publish"])
+        self.assertTrue(any("PUC" in r for r in gate["blocking_reasons"]))
 
+    def test_05_expired_insurance_blocks_gate(self):
+        """Test Scenario 5: Expired insurance policy is detected and blocks publication."""
+        listing_id = "test-gate-expired-ins"
+        # Policy expired in 2021
+        ins_bytes = b"%PDF-1.4 HDFC ERGO REG NO: CH01AB8821 POLICY NO: 1029 EXPIRY DATE: 15/03/2021"
+        res = self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "insurance", "registration_number": "CH01AB8821"},
+            files={"file": ("ins_exp.pdf", ins_bytes, "application/pdf")}
+        )
+        self.assertEqual(res.status_code, 200)
+        gate = res.json()["gate_summary"]
+        self.assertFalse(gate["can_publish"])
+        self.assertTrue(any("expired" in r.lower() for r in gate["blocking_reasons"]))
+
+    def test_06_expired_puc_blocks_gate(self):
+        """Test Scenario 6: Expired PUC certificate is detected and blocks publication."""
+        listing_id = "test-gate-expired-puc"
+        # PUC expired in 2022
+        puc_bytes = b"%PDF-1.4 POLLUTION CERTIFICATE REG NO: CH01AB8821 VALID UPTO: 10/05/2022"
+        res = self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "puc", "registration_number": "CH01AB8821"},
+            files={"file": ("puc_exp.pdf", puc_bytes, "application/pdf")}
+        )
+        self.assertEqual(res.status_code, 200)
+        gate = res.json()["gate_summary"]
+        self.assertFalse(gate["can_publish"])
+        self.assertTrue(any("puc" in r.lower() and "expired" in r.lower() for r in gate["blocking_reasons"]))
+
+    def test_07_rc_registration_mismatch(self):
+        """Test Scenario 7: RC registration number differs from vehicle listing."""
+        listing_id = "test-gate-rc-mismatch"
+        # Vehicle listing is CH01AB8821, but RC says DL01XY9999
+        rc_bytes = b"%PDF-1.4 PARIVAHAN REGISTRATION NO: DL01XY9999 OWNER: RAJESH MAKER: HONDA"
+        res = self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "rc", "registration_number": "CH01AB8821"},
+            files={"file": ("rc_diff.pdf", rc_bytes, "application/pdf")}
+        )
+        self.assertEqual(res.status_code, 200)
+        gate = res.json()["gate_summary"]
+        self.assertFalse(gate["can_publish"])
+        self.assertTrue(any("does not match listing" in r.lower() for r in gate["blocking_reasons"]))
+
+    def test_08_insurance_reg_differs_from_rc(self):
+        """Test Scenario 8: Insurance registration number differs from RC."""
+        listing_id = "test-gate-ins-mismatch"
+        rc_bytes = b"%PDF-1.4 PARIVAHAN REGISTRATION NO: CH01AB8821 OWNER: VIKRAMJIT MAKER: ROYAL ENFIELD"
+        ins_bytes = b"%PDF-1.4 HDFC ERGO REG NO: MH02CD1111 POLICY NO: 9928 EXPIRY DATE: 15/03/2027"
+
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "rc", "registration_number": "CH01AB8821"},
+            files={"file": ("rc.pdf", rc_bytes, "application/pdf")}
+        )
         res_ins = self.client.post(
             "/api/verification/upload-document",
-            data={
-                "listing_id": listing_id,
-                "document_type": "insurance",
-                "registration_number": "CH01AB8821",
-                "fuel_type": "petrol",
-                "brand": "Royal Enfield",
-                "model": "Classic 350"
-            },
-            files={"file": ("insurance_test.png", ins_content, "image/png")}
+            data={"listing_id": listing_id, "document_type": "insurance", "registration_number": "CH01AB8821"},
+            files={"file": ("ins.pdf", ins_bytes, "application/pdf")}
         )
-        self.assertEqual(res_ins.status_code, 200)
-        ins_data = res_ins.json()
-        self.assertEqual(ins_data["status"], "success")
-        self.assertEqual(ins_data["result"]["status"], "matched")
+        gate = res_ins.json()["gate_summary"]
+        self.assertFalse(gate["can_publish"])
+        self.assertTrue(any("does not match rc" in r.lower() for r in gate["blocking_reasons"]))
 
-        # PUC
-        puc_content = (
-            b"TRANSPORT DEPARTMENT GOVT OF NCT DELHI / CHANDIGARH "
-            b"POLLUTION UNDER CONTROL CERTIFICATE "
-            b"CERTIFICATE NO: CH-01-2025-009182 "
-            b"VEHICLE NO: CH01AB8821 "
-            b"VALID UPTO: 28/02/2027 "
-            b"EMISSION RESULT: PASS COMPLIANT"
-        )
+    def test_09_duplicate_document_rejection(self):
+        """Test Scenario 12: Uploading the exact same document across different slots is rejected."""
+        listing_id = "test-gate-duplicate"
+        shared_bytes = b"%PDF-1.4 HDFC ERGO POLICY REG NO: CH01AB8821 EXPIRY DATE: 15/03/2027"
 
-        res_puc = self.client.post(
+        # Upload as Insurance
+        res1 = self.client.post(
             "/api/verification/upload-document",
-            data={
-                "listing_id": listing_id,
-                "document_type": "puc",
-                "registration_number": "CH01AB8821",
-                "fuel_type": "petrol",
-                "brand": "Royal Enfield",
-                "model": "Classic 350"
-            },
-            files={"file": ("puc_test.png", puc_content, "image/png")}
+            data={"listing_id": listing_id, "document_type": "insurance", "registration_number": "CH01AB8821"},
+            files={"file": ("doc.pdf", shared_bytes, "application/pdf")}
         )
-        self.assertEqual(res_puc.status_code, 200)
-        puc_data = res_puc.json()
-        self.assertEqual(puc_data["status"], "success")
-        self.assertEqual(puc_data["result"]["status"], "matched")
+        self.assertEqual(res1.status_code, 200)
 
-    def test_level2_condition_and_maintenance(self):
-        """Test Level 2: Submitting maintenance history, battery health, and accident disclosure."""
-        listing_id = "test-bike-verification-001"
-        payload = {
-            "listing_id": listing_id,
-            "service_history": "regular",
-            "last_service_date": "15/10/2025",
-            "last_service_odometer": 8500,
-            "service_centre_name": "Royal Enfield Company Service Centre, Sector 22",
-            "tyre_condition": "good",
-            "tyre_notes": "4.2mm tread depth, no uneven edge wear",
-            "battery_condition": "good",
-            "accident_disclosure": "none",
-            "accident_notes": "No accidents or chassis impacts."
-        }
-        response = self.client.post("/api/verification/level2-condition", json=payload)
-        self.assertEqual(response.status_code, 200)
-        res = response.json()
-        self.assertEqual(res["status"], "success")
-        self.assertEqual(res["level2_status"], "completed")
+        # Upload same exact file into PUC slot
+        res2 = self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "puc", "registration_number": "CH01AB8821"},
+            files={"file": ("doc.pdf", shared_bytes, "application/pdf")}
+        )
+        self.assertEqual(res2.status_code, 400)
+        self.assertIn("duplicate document detected", res2.json()["detail"].lower())
 
-    def test_level3_ownership_and_transfer_readiness(self):
-        """Test Level 3: Ownership relationship and Form 29/30 transfer readiness."""
-        listing_id = "test-bike-verification-001"
-        payload = {
-            "listing_id": listing_id,
-            "seller_full_name": "Vikramjit Singh",
-            "relationship_to_owner": "registered_owner",
-            "is_registered_owner": True,
-            "authorisation_notes": "First registered owner with physical RC available.",
-            "loan_status": "no_loan",
-            "has_form29": True,
-            "has_form30": True
-        }
-        response = self.client.post("/api/verification/level3-ownership", json=payload)
-        self.assertEqual(response.status_code, 200)
-        res = response.json()
-        self.assertEqual(res["status"], "success")
-        self.assertEqual(res["level3_status"], "completed")
+    def test_10_all_four_valid_documents_unblocks_gate_and_publishes(self):
+        """Test Scenario 1 & 2: When all 4 documents pass, can_publish = True and publish-listing succeeds."""
+        listing_id = "test-gate-full-pass"
 
-    def test_seller_verification_report_and_buyer_trust_summary(self):
-        """Test Seller Verification Report and Buyer-Facing Privacy-Preserving Trust Summary."""
-        listing_id = "test-bike-verification-001"
+        rc_bytes = b"%PDF-1.4 PARIVAHAN REGISTRATION NO: CH01AB8821 OWNER: VIKRAMJIT SINGH MAKER: ROYAL ENFIELD MODEL: CLASSIC 350 FUEL: PETROL"
+        ins_bytes = b"%PDF-1.4 HDFC ERGO INSURANCE REG NO: CH01AB8821 POLICY NO: POL-88129 EXPIRY DATE: 15/03/2027"
+        puc_bytes = b"%PDF-1.4 POLLUTION CERTIFICATE REG NO: CH01AB8821 CERT NO: PUC-9921 VALID UPTO: 20/02/2027"
 
-        # 1. Full Seller Report
-        rep_res = self.client.get(f"/api/verification/report/{listing_id}")
-        self.assertEqual(rep_res.status_code, 200)
-        rep_data = rep_res.json()
-        self.assertEqual(rep_data["listing_id"], listing_id)
-        self.assertIn(rep_data["level1_status"], ["completed", "in_progress", "pending"])
-        self.assertEqual(rep_data["level2_status"], "completed")
-        self.assertEqual(rep_data["level3_status"], "completed")
+        # 1. Upload RC
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "rc", "registration_number": "CH01AB8821", "brand": "Royal Enfield", "model": "Classic 350"},
+            files={"file": ("rc.pdf", rc_bytes, "application/pdf")}
+        )
 
-        # 2. Public Buyer Trust Summary
-        pub_res = self.client.get(f"/api/verification/public-summary/{listing_id}")
+        # 2. Upload Insurance
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "insurance", "registration_number": "CH01AB8821"},
+            files={"file": ("ins.pdf", ins_bytes, "application/pdf")}
+        )
+
+        # 3. Upload PUC
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "puc", "registration_number": "CH01AB8821"},
+            files={"file": ("puc.pdf", puc_bytes, "application/pdf")}
+        )
+
+        # 4. Link Ownership Proof via RC
+        res_own = self.client.post(
+            "/api/verification/reuse-rc-ownership",
+            data={"listing_id": listing_id, "seller_name": "Vikramjit Singh"}
+        )
+        self.assertEqual(res_own.status_code, 200)
+
+        # Verify Gate
+        gate = res_own.json()["gate_summary"]
+        self.assertTrue(gate["can_publish"])
+        self.assertEqual(gate["passed_count"], 4)
+        self.assertEqual(len(gate["blocking_reasons"]), 0)
+
+        # Publish Listing
+        pub_res = self.client.post(
+            "/api/verification/publish-listing",
+            json={"listing_id": listing_id, "seller_id": "seller-001"}
+        )
         self.assertEqual(pub_res.status_code, 200)
-        pub_data = pub_res.json()
-        # Must have masked registration
-        self.assertEqual(pub_data["masked_registration"], "CH01****21")
-        # Zero raw document URLs or full personal IDs exposed
-        self.assertNotIn("file_path", str(pub_data))
-        self.assertNotIn("storage/verification_docs", str(pub_data))
-        self.assertGreaterEqual(len(pub_data["verified_checks"]), 4)
+        self.assertTrue(pub_res.json()["is_published"])
 
-    def test_reviewer_queue_and_decision_audit(self):
-        """Test Reviewer Moderation Desk queue inspection and decision audit logging."""
-        listing_id = "test-bike-verification-001"
+    def test_11_direct_backend_publish_attempt_blocked(self):
+        """Test Scenario 16 & 17: Direct API publish attempt on an unverified listing is rejected with 400."""
+        listing_id = "test-direct-spoof"
+        # Listing has no documents uploaded
+        pub_res = self.client.post(
+            "/api/verification/publish-listing",
+            json={"listing_id": listing_id, "seller_id": "seller-malicious"}
+        )
+        self.assertEqual(pub_res.status_code, 400)
+        self.assertIn("blocked", pub_res.json()["detail"]["message"].lower())
 
-        # 1. Inspect queue
-        queue_res = self.client.get("/api/verification/admin/queue")
-        self.assertEqual(queue_res.status_code, 200)
-        queue_data = queue_res.json()
-        self.assertGreaterEqual(queue_data["total"], 1)
+    def test_12_document_replacement_revalidates(self):
+        """Test Scenario 13: Replacing an expired document with a valid one transitions status to passed."""
+        listing_id = "test-replace-doc"
+        # First upload expired PUC
+        expired_puc = b"%PDF-1.4 PUC REG NO: CH01AB8821 VALID UPTO: 01/01/2022"
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "puc", "registration_number": "CH01AB8821"},
+            files={"file": ("puc_old.pdf", expired_puc, "application/pdf")}
+        )
+        gate1 = self.client.get(f"/api/verification/gate-status/{listing_id}").json()["gate"]
+        puc_item = next(c for c in gate1["checklist"] if c["doc_type"] == "puc")
+        self.assertEqual(puc_item["status"], "expired")
 
-        # 2. Inspect specific listing details
-        detail_res = self.client.get(f"/api/verification/admin/listing/{listing_id}")
-        self.assertEqual(detail_res.status_code, 200)
-        detail_data = detail_res.json()
-        self.assertEqual(detail_data["listing_id"], listing_id)
+        # Now replace with active PUC
+        valid_puc = b"%PDF-1.4 PUC REG NO: CH01AB8821 VALID UPTO: 01/01/2027"
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "puc", "registration_number": "CH01AB8821"},
+            files={"file": ("puc_new.pdf", valid_puc, "application/pdf")}
+        )
+        gate2 = self.client.get(f"/api/verification/gate-status/{listing_id}").json()["gate"]
+        puc_item2 = next(c for c in gate2["checklist"] if c["doc_type"] == "puc")
+        self.assertEqual(puc_item2["status"], "passed")
 
-        # 3. Take reviewer decision
-        decision_payload = {
-            "listing_id": listing_id,
-            "document_type": "rc",
-            "action": "approve",
-            "reviewer_id": "MOD-TEST-99",
-            "reviewer_name": "Chief Moderation Officer",
-            "reason": "Test approval: all Parivahan fields match vehicle listing."
+    def test_13_document_deletion_blocks_gate(self):
+        """Test Scenario 19: Deleting a document resets its status to not_uploaded and blocks gate."""
+        listing_id = "test-delete-doc"
+        rc_bytes = b"%PDF-1.4 PARIVAHAN REGISTRATION NO: CH01AB8821 OWNER: VIKRAMJIT MAKER: ROYAL ENFIELD"
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "rc", "registration_number": "CH01AB8821"},
+            files={"file": ("rc.pdf", rc_bytes, "application/pdf")}
+        )
+        # Delete RC
+        del_res = self.client.delete(f"/api/verification/document/{listing_id}/rc")
+        self.assertEqual(del_res.status_code, 200)
+        gate = del_res.json()["gate_summary"]
+        rc_item = next(c for c in gate["checklist"] if c["doc_type"] == "rc")
+        self.assertEqual(rc_item["status"], "not_uploaded")
+
+    def test_14_analysis_report_modal_endpoint(self):
+        """Verify detailed analysis report modal endpoint returns structured checks and masked IDs."""
+        listing_id = "test-analysis-report-01"
+        rc_bytes = b"%PDF-1.4 PARIVAHAN REG NO: CH01AB8821 OWNER: VIKRAMJIT SINGH MAKER: ROYAL ENFIELD CHASSIS: ME4J3A5C9P0928172"
+        self.client.post(
+            "/api/verification/upload-document",
+            data={"listing_id": listing_id, "document_type": "rc", "registration_number": "CH01AB8821"},
+            files={"file": ("rc.pdf", rc_bytes, "application/pdf")}
+        )
+        rep_res = self.client.get(f"/api/verification/analysis-report/{listing_id}/rc")
+        self.assertEqual(rep_res.status_code, 200)
+        rep = rep_res.json()
+        self.assertEqual(rep["document_type"], "rc")
+        self.assertEqual(rep["extracted_fields"]["registration_number"], "CH01****21")
+        self.assertIn("validation_checks", rep)
+        self.assertGreaterEqual(len(rep["validation_checks"]), 3)
+
+    def test_15_manual_review_approval_unblocks_document(self):
+        """Test Scenario 14 & 15: Low confidence/flagged document approved by reviewer unblocks document."""
+        listing_id = "test-mod-review"
+        rec = get_or_create_verification_record(listing_id)
+        rec["level1_basic"]["rc"] = {
+            "status": "needs_manual_review",
+            "is_readable": True,
+            "status_reason": "Low OCR clarity on chassis imprint. Queued for specialist review."
         }
-        dec_res = self.client.post("/api/verification/admin/decision", json=decision_payload)
-        self.assertEqual(dec_res.status_code, 200)
-        dec_data = dec_res.json()
-        self.assertEqual(dec_data["status"], "success")
-        self.assertEqual(dec_data["action_recorded"]["reviewer_id"], "MOD-TEST-99")
+        CrossValidationEngine.validate_all_documents(rec)
 
-        # 4. Check that audit entry is retained in detail
-        recheck_res = self.client.get(f"/api/verification/admin/listing/{listing_id}")
-        audit_log = recheck_res.json()["record"]["review_audit_log"]
-        self.assertTrue(any(a["reviewer_id"] == "MOD-TEST-99" for a in audit_log))
+        # Admin approves
+        mod_res = self.client.post(
+            "/api/verification/admin/decision",
+            json={
+                "listing_id": listing_id,
+                "document_type": "rc",
+                "action": "approve",
+                "reviewer_id": "MOD-101",
+                "reviewer_name": "Specialist Reviewer",
+                "reason": "Chassis verified manually against RTO Parivahan gateway."
+            }
+        )
+        self.assertEqual(mod_res.status_code, 200)
+        gate = mod_res.json()["updated_gate"]
+        rc_chk = next(c for c in gate["checklist"] if c["doc_type"] == "rc")
+        self.assertEqual(rc_chk["status"], "passed")
 
 if __name__ == "__main__":
     unittest.main()

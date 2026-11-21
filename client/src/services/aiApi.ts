@@ -530,3 +530,78 @@ export async function recordReviewerDecision(payload: any) {
   }
   return null;
 }
+
+export async function getVerificationGateStatus(listingId: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/gate-status/${listingId}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Gate status fetch error:', err);
+  }
+  return null;
+}
+
+export async function publishListing(payload: { listing_id: string; seller_id?: string; notes?: string }) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/publish-listing`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.detail?.message || data.detail || 'Publication failed.');
+    }
+    return data;
+  } catch (err: any) {
+    console.error('Publish listing gate rejection:', err);
+    throw err;
+  }
+}
+
+export async function deleteVerificationDocument(listingId: string, docType: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/document/${listingId}/${docType}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Delete document error:', err);
+  }
+  return null;
+}
+
+export async function reuseRcForOwnership(listingId: string, sellerName?: string) {
+  try {
+    const formData = new FormData();
+    formData.append('listing_id', listingId);
+    if (sellerName) formData.append('seller_name', sellerName);
+    const res = await fetch(`${API_BASE}/verification/reuse-rc-ownership`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Reuse RC error:', err);
+  }
+  return null;
+}
+
+export async function getDocumentAnalysisReport(listingId: string, docType: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/analysis-report/${listingId}/${docType}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Analysis report fetch error:', err);
+  }
+  return null;
+}
+
