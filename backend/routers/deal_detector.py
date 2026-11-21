@@ -39,6 +39,7 @@ async def evaluate_deal(req: DealCheckRequest):
     val_data = {
         "brand": req.brand,
         "model": req.model,
+        "variant": getattr(req, "variant", "") or "",
         "manufacturing_year": req.year,
         "km_driven": req.km,
         "condition": req.condition,

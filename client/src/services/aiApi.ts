@@ -48,18 +48,22 @@ export interface VehicleCatalogResponse {
   categories: string[];
   brands: string[];
   vehicles: Array<{
+    id?: string;
     brand: string;
     model: string;
     category: string;
     fuel_type: string;
     engine_cc?: number;
+    battery_kwh?: number;
     transmission?: string;
     available_years?: number[];
     is_discontinued?: boolean;
     variants: Array<{
+      id?: string;
       name: string;
-      original_mrp: number;
-      fuel_type: string;
+      mrp?: number;
+      original_mrp?: number;
+      fuel_type?: string;
       engine_cc?: number;
       battery_kwh?: number;
       has_abs?: boolean;
@@ -69,10 +73,15 @@ export interface VehicleCatalogResponse {
 }
 
 // 0. Vehicle Database Catalog API
-export async function getVehicleCatalog(category?: string, search?: string): Promise<VehicleCatalogResponse | null> {
+export async function getVehicleCatalog(
+  category?: string, 
+  brand?: string,
+  search?: string
+): Promise<VehicleCatalogResponse | null> {
   try {
     const params = new URLSearchParams();
     if (category && category !== 'all') params.append('category', category);
+    if (brand && brand !== 'all') params.append('brand', brand);
     if (search) params.append('search', search);
 
     const res = await fetch(`${API_BASE}/price-estimator/catalog?${params.toString()}`);
@@ -81,6 +90,18 @@ export async function getVehicleCatalog(category?: string, search?: string): Pro
     }
   } catch (err) {
     console.warn('Vehicle Catalog API fetch error:', err);
+  }
+  return null;
+}
+
+export async function getModelEvaluationMetrics() {
+  try {
+    const res = await fetch(`${API_BASE}/price-estimator/metrics`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Metrics API fetch error:', err);
   }
   return null;
 }
@@ -167,28 +188,15 @@ export async function getPriceEstimate(payload: ValuationPayload) {
     });
     if (res.ok) {
       return await res.json();
+    } else {
+      const errBody = await res.json().catch(() => ({}));
+      console.error('Price Estimator API server response:', res.status, errBody);
+      throw new Error(errBody.detail || `Server returned ${res.status}`);
     }
-  } catch (err) {
-    console.warn('Price Estimator API fetch error:', err);
+  } catch (err: any) {
+    console.warn('Price Estimator API network or server error:', err.message || err);
+    throw err;
   }
-
-  // Fallback empirical estimation
-  const age = Math.max(1, 2026 - payload.manufacturing_year);
-  const base = payload.brand.toLowerCase().includes('royal') ? 220000 : 90000;
-  const estimated = Math.round(base * Math.pow(0.91, age) * Math.max(0.7, 1 - (payload.km_driven / 100000) * 0.35) / 500) * 500;
-  return {
-    estimated_price: estimated,
-    price_range_min: Math.round(estimated * 0.95 / 500) * 500,
-    price_range_max: Math.round(estimated * 1.05 / 500) * 500,
-    confidence_score: 97.5,
-    confidence_level: 'High (ML v2.4)',
-    factors: [
-      { factor: 'Vehicle Age', impact: `-${age * 9}%`, description: `${age} years of natural market depreciation` },
-      { factor: 'Odometer Mileage', impact: `-${Math.round((payload.km_driven / 10000) * 3)}%`, description: `${payload.km_driven.toLocaleString()} km recorded` },
-      { factor: 'Condition', impact: '+₹4,500', description: `${payload.condition || 'Good'} condition grade` },
-    ],
-    comparables: [],
-  };
 }
 
 // 3. AI Deal Detector API

@@ -339,7 +339,8 @@ def search_marketplace_listings(
     category: Optional[str] = None,
     max_price: Optional[float] = None,
     city: Optional[str] = None,
-    brand: Optional[str] = None
+    brand: Optional[str] = None,
+    limit: Optional[int] = None
 ) -> List[Dict[str, Any]]:
     """Filter real marketplace inventory for AI recommendations"""
     results = MARKETPLACE_LISTINGS
@@ -351,6 +352,8 @@ def search_marketplace_listings(
         results = [l for l in results if city.lower() in l["city"].lower() or city.lower() in l["locality"].lower()]
     if brand and brand != "all":
         results = [l for l in results if brand.lower() in l["brand"].lower()]
+    if limit is not None and limit > 0:
+        results = results[:limit]
     return results
 
 def get_vehicle_specs(brand: str, model: str) -> Optional[Dict[str, Any]]:

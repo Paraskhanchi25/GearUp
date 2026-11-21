@@ -74,9 +74,10 @@ def test_ai_ecosystem():
     deal_res = client.post("/api/deal-detector/evaluate", json={
         "brand": "Royal Enfield",
         "model": "Classic 350",
+        "variant": "Dark Stealth Black Alloy Tubeless",
         "year": 2023,
         "km": 9400,
-        "asking_price": 140000, # Substantially below fair value (~174k)
+        "asking_price": 120000, # Substantially below fair value (~162k)
         "city": "Chandigarh"
     })
     assert deal_res.status_code == 200
