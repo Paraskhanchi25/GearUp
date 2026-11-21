@@ -1,0 +1,87 @@
+# ==============================================================================
+# GEAR UP — Root .gitignore Configuration
+# Comprehensive exclusions for React/Vite, Node.js, Flutter & Serverpod
+# ==============================================================================
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build Outputs
+dist/
+dist-ssr/
+build/
+.next/
+out/
+.vite/
+*.tsbuildinfo
+
+# Local Environment & Secret Files (NEVER COMMIT SECRETS)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.cert
+
+# Database files & local dumps
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+
+# Logs & Debugging
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+tmp/
+temp/
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs & Editor Configuration
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+
+# Flutter Mobile Client Build Artifacts
+flutter_mobile/.dart_tool/
+flutter_mobile/.flutter-plugins
+flutter_mobile/.flutter-plugins-dependencies
+flutter_mobile/build/
+flutter_mobile/ios/Flutter/Generated.xcconfig
+flutter_mobile/ios/Flutter/flutter_export_environment.sh
+flutter_mobile/android/local.properties
+flutter_mobile/android/.gradle/
+
+# Serverpod Backend Secrets & Local Build
+serverpod_backend/.dart_tool/
+serverpod_backend/build/
+serverpod_backend/config/passwords.yaml
+
+# Python & Machine Learning
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+.pytest_cache/

@@ -1,0 +1,16 @@
+class: Place
+table: places
+fields:
+  name: String
+  placeType: String # inspection_hub, service_center, rider_meetup, ev_station
+  city: String
+  address: String
+  latitude: double
+  longitude: double
+  rating: double?
+  coverImageUrl: String?
+  isVerifiedPartner: bool
+  createdAt: DateTime
+indexes:
+  place_coords_idx:
+    fields: latitude, longitude

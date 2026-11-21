@@ -1,0 +1,18 @@
+class: MediaMetadata
+table: media_metadata
+fields:
+  userId: UuidValue
+  listingId: UuidValue?
+  fileKey: String # S3/GCS Object Key
+  publicUrl: String
+  thumbnailUrl: String?
+  mediaCategory: String # image_front, audio_story, inspection_report, rc_document
+  mimeType: String
+  fileSizeBytes: int
+  width: int?
+  height: int?
+  isSensitive: bool # Requires auth (e.g. RC docs)
+  createdAt: DateTime
+indexes:
+  media_listing_idx:
+    fields: listingId

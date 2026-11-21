@@ -1,0 +1,26 @@
+name: gear_up_mobile
+description: GEAR UP Flutter Mobile Application with Device GPS, Camera, Sensors & Audio Integration
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  geolocator: ^11.0.0
+  camera: ^0.10.5+9
+  sensors_plus: ^5.0.1
+  record: ^5.1.0
+  audioplayers: ^6.0.0
+  permission_handler: ^11.3.1
+  serverpod_flutter: ^1.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

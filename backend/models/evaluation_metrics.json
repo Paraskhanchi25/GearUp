@@ -1,0 +1,46 @@
+{
+  "production_model": "GradientBoosting",
+  "training_dataset_size": 4000,
+  "test_dataset_size": 800,
+  "candidate_comparisons": {
+    "RandomForest": {
+      "MAE": 4065.8,
+      "RMSE": 5823.37,
+      "R2": 0.9761,
+      "MedAPE_percent": 4.11
+    },
+    "GradientBoosting": {
+      "MAE": 3013.46,
+      "RMSE": 4247.74,
+      "R2": 0.9873,
+      "MedAPE_percent": 3.08
+    }
+  },
+  "overall_evaluation": {
+    "MAE": 3013.46,
+    "RMSE": 4247.74,
+    "R2": 0.9873,
+    "MedAPE_percent": 3.08
+  },
+  "category_breakdown": {
+    "motorcycle": {
+      "samples": 468,
+      "MAE": 3521.68,
+      "R2": 0.9838,
+      "MedAPE_percent": 3.0
+    },
+    "scooter": {
+      "samples": 207,
+      "MAE": 2055.55,
+      "R2": 0.9836,
+      "MedAPE_percent": 3.29
+    },
+    "electric": {
+      "samples": 125,
+      "MAE": 2696.95,
+      "R2": 0.9758,
+      "MedAPE_percent": 3.64
+    }
+  },
+  "trained_date": "2026-01-20"
+}

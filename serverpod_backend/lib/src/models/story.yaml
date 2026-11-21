@@ -1,0 +1,20 @@
+class: Story
+table: stories
+fields:
+  userId: UuidValue
+  listingId: UuidValue?
+  placeId: UuidValue?
+  title: String
+  content: String
+  aiSummary: String?
+  audioUrl: String?
+  audioDurationSeconds: int?
+  audioTranscript: String?
+  imageUrls: List<String>
+  likeCount: int
+  createdAt: DateTime
+indexes:
+  story_user_idx:
+    fields: userId
+  story_listing_idx:
+    fields: listingId
