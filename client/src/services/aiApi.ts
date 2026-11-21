@@ -15,14 +15,74 @@ export interface ChatMessagePayload {
 export interface ValuationPayload {
   brand: string;
   model: string;
+  variant?: string;
   manufacturing_year: number;
+  registration_year?: number;
   km_driven: number;
-  condition?: string;
   owners_count?: number;
+  usage_pattern?: string;
+  condition?: string;
+  engine_condition?: string;
+  battery_health?: number;
+  tyre_condition?: string;
+  brake_condition?: string;
+  body_condition?: string;
+  electrical_condition?: string;
+  service_history?: string;
+  accident_history?: string;
+  insurance_validity?: string;
+  rc_status?: string;
   city?: string;
+  state?: string;
+  pincode?: string;
   category?: string;
   fuel_type?: string;
+  engine_cc?: number;
+  battery_capacity_kwh?: number;
+  original_mrp?: number;
   has_abs?: boolean;
+}
+
+export interface VehicleCatalogResponse {
+  total_vehicles: number;
+  categories: string[];
+  brands: string[];
+  vehicles: Array<{
+    brand: string;
+    model: string;
+    category: string;
+    fuel_type: string;
+    engine_cc?: number;
+    transmission?: string;
+    available_years?: number[];
+    is_discontinued?: boolean;
+    variants: Array<{
+      name: string;
+      original_mrp: number;
+      fuel_type: string;
+      engine_cc?: number;
+      battery_kwh?: number;
+      has_abs?: boolean;
+      description?: string;
+    }>;
+  }>;
+}
+
+// 0. Vehicle Database Catalog API
+export async function getVehicleCatalog(category?: string, search?: string): Promise<VehicleCatalogResponse | null> {
+  try {
+    const params = new URLSearchParams();
+    if (category && category !== 'all') params.append('category', category);
+    if (search) params.append('search', search);
+
+    const res = await fetch(`${API_BASE}/price-estimator/catalog?${params.toString()}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Vehicle Catalog API fetch error:', err);
+  }
+  return null;
 }
 
 export interface DealDetectorPayload {

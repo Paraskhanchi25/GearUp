@@ -1,26 +1,105 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from ml.model_store import price_estimator_engine
+from data.two_wheeler_database import (
+    INDIAN_TWO_WHEELER_DATABASE, 
+    get_all_categories, 
+    get_brands_by_category, 
+    get_models_by_brand
+)
 
 router = APIRouter(prefix="/price-estimator", tags=["Price Estimator"])
 
-class ValuationRequest(BaseModel):
+class ComprehensiveValuationRequest(BaseModel):
+    # Vehicle identification
     brand: str = Field(..., example="Royal Enfield")
     model: str = Field(..., example="Classic 350")
-    variant: Optional[str] = Field(default="", example="Dark Stealth Black Dual ABS")
-    manufacturing_year: int = Field(..., ge=1990, le=2026, example=2023)
-    km_driven: int = Field(..., ge=0, example=9400)
+    variant: Optional[str] = Field(default="", example="Dark Stealth Black Alloy Tubeless")
+    manufacturing_year: int = Field(..., ge=1980, le=2026, example=2023)
+    registration_year: Optional[int] = Field(default=None, example=2023)
     category: str = Field(default="motorcycle", example="motorcycle")
     fuel_type: str = Field(default="petrol", example="petrol")
-    owners_count: int = Field(default=1, ge=1, le=5, example=1)
+    engine_cc: Optional[float] = Field(default=None)
+    battery_capacity_kwh: Optional[float] = Field(default=None)
+
+    # Usage information
+    km_driven: int = Field(..., ge=0, example=9400)
+    owners_count: int = Field(default=1, ge=1, le=10, example=1)
+    usage_pattern: Optional[str] = Field(default="daily_commute")
+
+    # Detailed Condition
     condition: str = Field(default="good", example="excellent")
+    engine_condition: Optional[str] = Field(default="smooth")
+    battery_health: Optional[float] = Field(default=None, ge=0, le=100)
+    tyre_condition: Optional[str] = Field(default="good")
+    brake_condition: Optional[str] = Field(default="good")
+    body_condition: Optional[str] = Field(default="clean")
+    electrical_condition: Optional[str] = Field(default="working")
+
+    # History & Documentation
+    service_history: Optional[str] = Field(default="regular")
+    accident_history: Optional[str] = Field(default="none")
+    insurance_validity: Optional[str] = Field(default="active")
+    rc_status: Optional[str] = Field(default="clean")
+
+    # Location & Market
     city: str = Field(default="Chandigarh", example="Chandigarh")
-    has_abs: Optional[bool] = Field(default=True)
+    state: Optional[str] = Field(default=None)
+    pincode: Optional[str] = Field(default=None)
     original_mrp: Optional[float] = Field(default=None)
+    has_abs: Optional[bool] = Field(default=True)
+
+@router.get("/catalog")
+async def get_vehicle_catalog(
+    category: Optional[str] = Query(None, description="Filter by category: motorcycle, scooter, electric"),
+    search: Optional[str] = Query(None, description="Fuzzy search brand or model name")
+):
+    """
+    Returns full expandable database of Indian two-wheelers with brands, models,
+    variants, model years, and discontinued status.
+    """
+    results = []
+    s_lower = search.lower().strip() if search else None
+
+    for v in INDIAN_TWO_WHEELER_DATABASE:
+        if category and category != "all" and v["category"].lower() != category.lower():
+            continue
+            
+        if s_lower:
+            text_match = (
+                s_lower in v["brand"].lower() or 
+                s_lower in v["model"].lower() or
+                any(s_lower in var["name"].lower() for var in v.get("variants", []))
+            )
+            if not text_match:
+                continue
+
+        results.append({
+            "brand": v["brand"],
+            "model": v["model"],
+            "category": v["category"],
+            "fuel_type": v["fuel_type"],
+            "engine_cc": v.get("engine_cc", 0),
+            "transmission": v.get("transmission", ""),
+            "available_years": v.get("available_years", []),
+            "is_discontinued": v.get("is_discontinued", False),
+            "variants": v.get("variants", [])
+        })
+
+    return {
+        "total_vehicles": len(results),
+        "categories": get_all_categories(),
+        "brands": get_brands_by_category(category),
+        "vehicles": results
+    }
 
 @router.post("/estimate")
-async def estimate_price(req: ValuationRequest):
+async def estimate_price(req: ComprehensiveValuationRequest):
+    """
+    Calculates fair market valuation using full multi-parameter engine.
+    Called identically by both the manual valuation form and the conversational AI chat.
+    """
     try:
         result = price_estimator_engine.predict(req.dict())
         return result
@@ -33,7 +112,7 @@ async def get_model_metrics():
     if price_estimator_engine.metrics:
         return price_estimator_engine.metrics
     return {
-        "status": "Trained GradientBoosting Model v2.4",
+        "status": "Trained GradientBoosting Model v2.6",
         "R2": 0.9873,
         "MAE": 3013.46,
         "MedAPE_percent": 3.08
