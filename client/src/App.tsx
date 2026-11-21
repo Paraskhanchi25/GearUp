@@ -67,7 +67,7 @@ export const App: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#0A1411] flex flex-col font-sans selection:bg-forest-600 selection:text-white">
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 selection:bg-slate-900 selection:text-white">
         <Navbar
           currentLocation={currentLocation}
           onLocationChange={setCurrentLocation}

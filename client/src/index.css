@@ -4,24 +4,24 @@
 
 @layer base {
   body {
-    @apply bg-[#0D1614] text-slate-100;
+    @apply bg-slate-50 text-slate-800 antialiased;
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar in clean light neutral tones */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #111A17;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #20352F;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #176B50;
+  background: #94a3b8;
 }
 
 /* Clean, Premium Light Theme Leaflet Map Styles */
@@ -37,9 +37,9 @@
 .leaflet-popup-content-wrapper {
   background: #ffffff !important;
   color: #0f172a !important;
-  border-radius: 14px !important;
+  border-radius: 16px !important;
   border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.18), 0 4px 10px -2px rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.05) !important;
   padding: 0 !important;
   overflow: hidden;
 }
@@ -53,31 +53,31 @@
 .leaflet-popup-tip {
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06) !important;
 }
 
 /* Custom Tooltip Labels for Geographic Boundaries */
 .boundary-area-label {
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
   border: 1px solid #cbd5e1 !important;
   border-radius: 6px !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
   color: #0f172a !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
   font-size: 11px !important;
   font-weight: 700 !important;
-  padding: 2px 6px !important;
+  padding: 2px 8px !important;
 }
 
 .boundary-area-label::before {
-  border-top-color: rgba(255, 255, 255, 0.92) !important;
+  border-top-color: rgba(255, 255, 255, 0.95) !important;
 }
 
 /* Custom Pulsing Markers */
 @keyframes pulse-ring {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 0.3; }
-  100% { transform: scale(0.95); opacity: 0.8; }
+  0% { transform: scale(0.95); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 0.2; }
+  100% { transform: scale(0.95); opacity: 0.6; }
 }
 
 .pulse-circle {

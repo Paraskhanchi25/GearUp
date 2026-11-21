@@ -9,7 +9,6 @@ import {
   Eye, 
   EyeOff, 
   CheckCircle2, 
-  RotateCcw,
   Navigation
 } from 'lucide-react';
 import { PickupLocation, LocationVisibility } from '../types';
@@ -28,14 +27,14 @@ const pickupPinIcon = L.divIcon({
   className: 'custom-pickup-pin',
   html: `
     <div class="relative flex items-center justify-center -translate-x-1/2 -translate-y-full">
-      <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-forest-600 to-forest-800 text-white flex items-center justify-center border-2 border-white shadow-2xl shadow-forest-900/80 animate-bounce">
+      <div class="w-9 h-9 rounded-2xl bg-slate-900 text-white flex items-center justify-center border-2 border-white shadow-xl animate-bounce">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
       </div>
-      <div class="absolute -bottom-1 w-3 h-1 bg-black/50 rounded-full blur-[1px]"></div>
+      <div class="absolute -bottom-1 w-3 h-1 bg-black/40 rounded-full blur-[1px]"></div>
     </div>
   `,
-  iconSize: [40, 48],
-  iconAnchor: [20, 48],
+  iconSize: [36, 44],
+  iconAnchor: [18, 44],
 });
 
 interface SellerPickupLocationPickerProps {
@@ -69,7 +68,6 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isGeocoding, setIsGeocoding] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
 
   // Reverse geocode when coordinates change
   const updateAddressFromCoords = useCallback(async (lat: number, lng: number) => {
@@ -87,7 +85,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
     }
   }, [landmark]);
 
-  // Initialize Leaflet Map (Single instance, clean lifecycle)
+  // Initialize Leaflet Map
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
@@ -116,7 +114,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
 
     marker.bindPopup(`
       <div style="font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; padding:4px;">
-        <strong style="color:#176B50;">Pickup Location Marker</strong>
+        <strong style="color:#0f172a;">Pickup Location Marker</strong>
         <p style="margin:2px 0 0 0; color:#555;">Drag marker or tap map to adjust</p>
       </div>
     `);
@@ -179,7 +177,6 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
     e.preventDefault();
     if (!searchQuery.trim()) return;
 
-    // Search against popular Indian hubs or geocode
     const matchedHub = POPULAR_INDIAN_HUBS.find(h =>
       h.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       h.city.toLowerCase().includes(searchQuery.toLowerCase())
@@ -189,7 +186,6 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
       setCoordinates([matchedHub.lat, matchedHub.lng]);
       updateAddressFromCoords(matchedHub.lat, matchedHub.lng);
     } else {
-      // Nominatim search
       setIsGeocoding(true);
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery + ', India')}&limit=1`)
         .then(res => res.json())
@@ -224,38 +220,37 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
       landmark: landmark.trim() || undefined,
       visibility,
     };
-    setConfirmed(true);
     onLocationConfirmed(result);
   };
 
   return (
-    <div className="rounded-3xl bg-[#101D19] border border-forest-700/80 p-6 space-y-6 text-slate-100 shadow-2xl">
+    <div className="rounded-3xl bg-white border border-slate-200 p-6 space-y-6 text-slate-800 shadow-elevated">
       <div>
-        <span className="text-[10px] font-bold text-forest-300 uppercase tracking-widest">
+        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">
           STEP: VEHICLE PICKUP & INSPECTION LOCATION
         </span>
-        <h3 className="font-heading font-extrabold text-xl text-white mt-0.5">
+        <h3 className="font-heading font-extrabold text-xl text-slate-900 mt-0.5">
           Where will buyers & inspectors view the vehicle?
         </h3>
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-xs text-slate-500 mt-1">
           Drop a marker on your neighborhood or workshop. You can choose whether to keep exact house details private until a test ride is confirmed.
         </p>
       </div>
 
       {/* Search Toolbar & Current Location Button */}
       <div className="flex flex-col sm:flex-row gap-2">
-        <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center gap-2 bg-forest-950 px-3 py-2 rounded-xl border border-forest-800">
-          <Search className="w-4 h-4 text-forest-400 flex-shrink-0" />
+        <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200">
+          <Search className="w-4 h-4 text-slate-400 flex-shrink-0" />
           <input
             type="text"
             placeholder="Search sector, locality or landmark (e.g. Sector 35 Chandigarh, Saket Delhi)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
+            className="w-full bg-transparent text-xs text-slate-900 placeholder-slate-400 focus:outline-none"
           />
           <button
             type="submit"
-            className="px-3 py-1 bg-forest-700 hover:bg-forest-600 rounded-lg text-white font-bold text-xs whitespace-nowrap"
+            className="px-3 py-1 bg-slate-900 hover:bg-slate-800 rounded-lg text-white font-bold text-xs whitespace-nowrap"
           >
             Search
           </button>
@@ -264,26 +259,26 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
         <button
           type="button"
           onClick={handleUseCurrentLocation}
-          className="flex items-center justify-center gap-1.5 px-4 py-2 bg-forest-900 hover:bg-forest-800 border border-forest-700 rounded-xl text-xs font-bold text-forest-200 whitespace-nowrap transition-colors"
+          className="flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 whitespace-nowrap transition-colors"
         >
-          <Crosshair className="w-4 h-4 text-forest-300" />
+          <Crosshair className="w-4 h-4 text-blue-600" />
           <span>Use Current GPS</span>
         </button>
       </div>
 
       {/* Interactive Leaflet Map for Pickup */}
-      <div className="relative rounded-2xl overflow-hidden border border-forest-800 h-72 sm:h-80 w-full shadow-inner">
+      <div className="relative rounded-2xl overflow-hidden border border-slate-200 h-72 sm:h-80 w-full shadow-inner">
         <div ref={mapContainerRef} className="w-full h-full z-0" />
 
         {/* Drag Hint Pill */}
-        <div className="absolute top-3 left-3 z-[400] bg-[#0E1A16]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-forest-800 text-[11px] text-slate-200 shadow-elevated flex items-center gap-2">
-          <Navigation className="w-3.5 h-3.5 text-forest-400 animate-pulse" />
+        <div className="absolute top-3 left-3 z-[400] bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 text-[11px] text-slate-700 shadow-md flex items-center gap-2">
+          <Navigation className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
           <span>Tap anywhere or drag the pin to your exact pickup gate / parking</span>
         </div>
 
         {/* Loading Spinner */}
         {isGeocoding && (
-          <div className="absolute inset-0 z-[450] bg-black/40 backdrop-blur-[2px] flex items-center justify-center text-xs font-bold text-forest-200">
+          <div className="absolute inset-0 z-[450] bg-white/70 backdrop-blur-[2px] flex items-center justify-center text-xs font-bold text-slate-800">
             Fetching location address details...
           </div>
         )}
@@ -292,59 +287,59 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
       {/* Coordinate & Address Breakdown */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
         <div>
-          <label className="text-slate-300 font-semibold mb-1 block">Selected Locality / Sector</label>
+          <label className="text-slate-700 font-semibold mb-1 block">Selected Locality / Sector</label>
           <input
             type="text"
             value={locality}
             onChange={(e) => setLocality(e.target.value)}
-            className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2 text-white font-medium"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-medium focus:outline-none focus:border-slate-400"
           />
         </div>
 
         <div>
-          <label className="text-slate-300 font-semibold mb-1 block">City</label>
+          <label className="text-slate-700 font-semibold mb-1 block">City</label>
           <input
             type="text"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2 text-white font-medium"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-medium focus:outline-none focus:border-slate-400"
           />
         </div>
 
         <div className="sm:col-span-2">
-          <label className="text-slate-300 font-semibold mb-1 block">Full Pickup Address</label>
+          <label className="text-slate-700 font-semibold mb-1 block">Full Pickup Address</label>
           <input
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-slate-400"
           />
         </div>
 
         <div className="sm:col-span-2">
-          <label className="text-slate-300 font-semibold mb-1 block">Optional Landmark / Instructions</label>
+          <label className="text-slate-700 font-semibold mb-1 block">Optional Landmark / Instructions</label>
           <input
             type="text"
             placeholder="e.g. Near Community Centre gate, Opposite City Park"
             value={landmark}
             onChange={(e) => setLandmark(e.target.value)}
-            className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-slate-400"
           />
         </div>
       </div>
 
       {/* Latitude & Longitude display for verification */}
-      <div className="p-3 rounded-xl bg-forest-950/80 border border-forest-900 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-[11px] text-slate-600 font-mono">
         <span>Verified Coordinates:</span>
-        <span className="text-forest-300 font-bold">
+        <span className="text-slate-900 font-bold">
           LAT: {coordinates[0].toFixed(5)}, LNG: {coordinates[1].toFixed(5)}
         </span>
       </div>
 
-      {/* Location Privacy Preferences (Core Phase 4 Requirement) */}
-      <div className="p-4 rounded-2xl bg-[#0C1713] border border-forest-800 space-y-3">
-        <h4 className="font-bold text-xs text-white flex items-center gap-1.5">
-          <ShieldCheck className="w-4 h-4 text-forest-400" />
+      {/* Location Privacy Preferences */}
+      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+        <h4 className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+          <ShieldCheck className="w-4 h-4 text-emerald-600" />
           <span>Seller Location Privacy Preference</span>
         </h4>
 
@@ -353,15 +348,15 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
             onClick={() => setVisibility('approximate_public')}
             className={`p-3 rounded-xl border cursor-pointer transition-all ${
               visibility === 'approximate_public'
-                ? 'bg-forest-800/80 border-forest-400 text-white shadow-sm'
-                : 'bg-forest-950/50 border-forest-900 text-slate-400'
+                ? 'bg-blue-50 border-blue-500 text-slate-900 shadow-sm'
+                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
             <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4 text-forest-300" />
-              <p className="font-bold text-white">Approximate Locality (Recommended)</p>
+              <Eye className="w-4 h-4 text-blue-600" />
+              <p className="font-bold text-slate-900">Approximate Locality (Recommended)</p>
             </div>
-            <p className="text-[11px] text-slate-300 mt-1">
+            <p className="text-[11px] text-slate-500 mt-1">
               Public listings show only your neighborhood (e.g. &ldquo;{locality}, {city}&rdquo;). Exact door/building is hidden.
             </p>
           </label>
@@ -370,15 +365,15 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
             onClick={() => setVisibility('exact_verified_only')}
             className={`p-3 rounded-xl border cursor-pointer transition-all ${
               visibility === 'exact_verified_only'
-                ? 'bg-forest-800/80 border-forest-400 text-white shadow-sm'
-                : 'bg-forest-950/50 border-forest-900 text-slate-400'
+                ? 'bg-blue-50 border-blue-500 text-slate-900 shadow-sm'
+                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
             <div className="flex items-center gap-2">
-              <EyeOff className="w-4 h-4 text-gold-light" />
-              <p className="font-bold text-white">Exact Location Verified Only</p>
+              <EyeOff className="w-4 h-4 text-slate-700" />
+              <p className="font-bold text-slate-900">Exact Location Verified Only</p>
             </div>
-            <p className="text-[11px] text-slate-300 mt-1">
+            <p className="text-[11px] text-slate-500 mt-1">
               Exact coordinates & address provided strictly to verified buyers after they schedule an authenticated test ride.
             </p>
           </label>
@@ -391,7 +386,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 rounded-xl bg-forest-950 text-slate-400 hover:text-white border border-forest-800 text-xs font-semibold"
+            className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 text-xs font-semibold"
           >
             Cancel
           </button>
@@ -400,9 +395,9 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
         <button
           type="button"
           onClick={handleConfirm}
-          className="ml-auto px-6 py-3 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-elevated"
+          className="ml-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-sm"
         >
-          <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>Confirm Pickup Location</span>
         </button>
       </div>

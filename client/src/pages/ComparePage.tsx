@@ -16,16 +16,16 @@ export const ComparePage: React.FC = () => {
   const selectedBikes = [bike1, bike2, bike3];
 
   return (
-    <div className="min-h-screen bg-[#0A1411] text-slate-100 pb-24 px-4 sm:px-6 lg:px-8 pt-8">
+    <div className="min-h-screen bg-slate-50 text-slate-800 pb-24 px-4 sm:px-6 lg:px-8 pt-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <div>
-          <span className="text-xs font-bold text-forest-300 uppercase tracking-widest">
+          <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
             HEAD-TO-HEAD MATRIX
           </span>
-          <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mt-1">
+          <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-slate-900 tracking-tight mt-1">
             Compare Two-Wheelers Side-by-Side
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-slate-500 text-sm mt-1">
             Evaluate specifications, estimated running cost, fair price valuation and AI verdict across up to 3 rides.
           </p>
         </div>
@@ -33,10 +33,10 @@ export const ComparePage: React.FC = () => {
         {/* Vehicles Header Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {selectedBikes.map((bike, idx) => (
-            <div key={idx} className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
-              <div className="relative aspect-video rounded-2xl overflow-hidden bg-forest-950">
+            <div key={idx} className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-100">
                 <img src={bike.primaryImage} alt={bike.title} className="w-full h-full object-cover" />
-                <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-black/70 text-white uppercase">
+                <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-white/90 backdrop-blur-md text-slate-800 uppercase shadow-sm">
                   {bike.category}
                 </span>
               </div>
@@ -49,7 +49,7 @@ export const ComparePage: React.FC = () => {
                     if (idx === 1) setBike2Id(e.target.value);
                     if (idx === 2) setBike3Id(e.target.value);
                   }}
-                  className="w-full bg-forest-950 text-white text-xs font-bold border border-forest-800 rounded-xl px-3 py-2"
+                  className="w-full bg-slate-50 text-slate-900 text-xs font-bold border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-slate-400"
                 >
                   {SEED_LISTINGS.map((b) => (
                     <option key={b.id} value={b.id}>
@@ -58,8 +58,8 @@ export const ComparePage: React.FC = () => {
                   ))}
                 </select>
                 <div className="flex items-center justify-between pt-2">
-                  <span className="font-heading font-extrabold text-xl text-white">{formatINR(bike.price)}</span>
-                  <Link to={`/bike/${bike.id}`} className="text-xs text-forest-300 font-bold hover:underline">
+                  <span className="font-heading font-extrabold text-xl text-slate-900">{formatINR(bike.price)}</span>
+                  <Link to={`/bike/${bike.id}`} className="text-xs text-blue-600 font-bold hover:underline">
                     Details →
                   </Link>
                 </div>
@@ -69,80 +69,80 @@ export const ComparePage: React.FC = () => {
         </div>
 
         {/* Comparison Table */}
-        <div className="rounded-3xl bg-[#101D19] border border-forest-800 overflow-hidden shadow-2xl">
-          <div className="p-5 bg-forest-950 border-b border-forest-800 flex items-center justify-between">
-            <h3 className="font-heading font-bold text-base text-white">Full Specifications Comparison</h3>
-            <span className="text-xs text-forest-300 font-medium">3 Rides Selected</span>
+        <div className="rounded-3xl bg-white border border-slate-200 overflow-hidden shadow-sm">
+          <div className="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+            <h3 className="font-heading font-bold text-base text-slate-900">Full Specifications Comparison</h3>
+            <span className="text-xs text-slate-500 font-medium">3 Rides Selected</span>
           </div>
 
-          <div className="divide-y divide-forest-900/60 text-xs">
+          <div className="divide-y divide-slate-100 text-xs">
             {/* Manufacturing Year */}
             <div className="grid grid-cols-4 p-4 items-center">
-              <span className="text-slate-400 font-semibold">Manufacturing Year</span>
+              <span className="text-slate-500 font-semibold">Manufacturing Year</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="font-bold text-white">{b.year} ({b.regState})</span>
+                <span key={i} className="font-bold text-slate-900">{b.year} ({b.regState})</span>
               ))}
             </div>
 
             {/* Odometer */}
-            <div className="grid grid-cols-4 p-4 items-center bg-forest-950/30">
-              <span className="text-slate-400 font-semibold">Odometer (KM)</span>
+            <div className="grid grid-cols-4 p-4 items-center bg-slate-50/50">
+              <span className="text-slate-500 font-semibold">Odometer (KM)</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="font-bold text-white">{b.km.toLocaleString('en-IN')} km</span>
+                <span key={i} className="font-bold text-slate-900">{b.km.toLocaleString('en-IN')} km</span>
               ))}
             </div>
 
             {/* Fuel / Powertrain */}
             <div className="grid grid-cols-4 p-4 items-center">
-              <span className="text-slate-400 font-semibold">Powertrain</span>
+              <span className="text-slate-500 font-semibold">Powertrain</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="font-bold text-white capitalize">{b.fuel}</span>
+                <span key={i} className="font-bold text-slate-900 capitalize">{b.fuel}</span>
               ))}
             </div>
 
             {/* Power Output */}
-            <div className="grid grid-cols-4 p-4 items-center bg-forest-950/30">
-              <span className="text-slate-400 font-semibold">Max Power</span>
+            <div className="grid grid-cols-4 p-4 items-center bg-slate-50/50">
+              <span className="text-slate-500 font-semibold">Max Power</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="font-bold text-forest-300">{b.specs.powerBhp || 'N/A'}</span>
+                <span key={i} className="font-bold text-blue-700">{b.specs.powerBhp || 'N/A'}</span>
               ))}
             </div>
 
             {/* Fuel Mileage / EV Range */}
             <div className="grid grid-cols-4 p-4 items-center">
-              <span className="text-slate-400 font-semibold">Efficiency / Range</span>
+              <span className="text-slate-500 font-semibold">Efficiency / Range</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="font-bold text-emerald-400">
+                <span key={i} className="font-bold text-emerald-700">
                   {b.specs.mileageKmpl ? `${b.specs.mileageKmpl} kmpl` : `${b.specs.rangeKm} km Range`}
                 </span>
               ))}
             </div>
 
-            {/* Estimated Running Cost per Month (assuming 500 km/month) */}
-            <div className="grid grid-cols-4 p-4 items-center bg-forest-950/30">
-              <span className="text-slate-400 font-semibold">Running Cost (500 km/mo)</span>
+            {/* Estimated Running Cost per Month */}
+            <div className="grid grid-cols-4 p-4 items-center bg-slate-50/50">
+              <span className="text-slate-500 font-semibold">Running Cost (500 km/mo)</span>
               {selectedBikes.map((b, i) => {
                 const cost = b.fuel === 'electric' ? '₹125 / month' : '₹1,450 / month';
                 return (
-                  <span key={i} className="font-bold text-gold-light">{cost}</span>
+                  <span key={i} className="font-bold text-slate-900">{cost}</span>
                 );
               })}
             </div>
 
             {/* Inspection Score */}
             <div className="grid grid-cols-4 p-4 items-center">
-              <span className="text-slate-400 font-semibold">120-Point Inspection</span>
+              <span className="text-slate-500 font-semibold">120-Point Inspection</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="font-bold text-white">{b.inspectionScore} / 5.0</span>
+                <span key={i} className="font-bold text-slate-900">{b.inspectionScore} / 5.0</span>
               ))}
             </div>
 
             {/* Document Verification */}
-            <div className="grid grid-cols-4 p-4 items-center bg-forest-950/30">
-              <span className="text-slate-400 font-semibold">RTO Verified</span>
+            <div className="grid grid-cols-4 p-4 items-center bg-slate-50/50">
+              <span className="text-slate-500 font-semibold">RTO Verified</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="flex items-center gap-1 text-emerald-400 font-bold">
-                  <CheckCircle2 className="w-4 h-4" /> Yes (Parivahan)
+                <span key={i} className="flex items-center gap-1 text-emerald-700 font-bold">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Yes (Parivahan)
                 </span>
               ))}
             </div>
@@ -150,9 +150,9 @@ export const ComparePage: React.FC = () => {
         </div>
 
         {/* AI Final Verdict Box */}
-        <div className="p-6 rounded-3xl bg-gradient-to-r from-[#142B23] to-[#0D1C17] border border-forest-600/70 space-y-3">
+        <div className="p-6 rounded-3xl bg-slate-900 text-white shadow-elevated space-y-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-emerald-400" />
+            <Sparkles className="w-5 h-5 text-blue-400" />
             <h3 className="font-heading font-bold text-base text-white">AI Verdict & Recommendations</h3>
           </div>
           <p className="text-xs text-slate-300 leading-relaxed">

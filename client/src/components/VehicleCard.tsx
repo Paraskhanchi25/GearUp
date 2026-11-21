@@ -13,7 +13,7 @@ import {
   Heart
 } from 'lucide-react';
 import { VehicleListing } from '../types';
-import { formatINR, formatINRLakh } from '../utils/geo';
+import { formatINR } from '../utils/geo';
 
 interface VehicleCardProps {
   vehicle: VehicleListing;
@@ -35,14 +35,14 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   return (
     <div
       onClick={onSelect}
-      className={`group relative rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer border ${
+      className={`group relative rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer border bg-white ${
         isSelected
-          ? 'bg-[#152721] border-forest-400 shadow-glow ring-1 ring-forest-400'
-          : 'bg-[#101D19] border-[#1C362D] hover:border-forest-600/70 hover:shadow-elevated'
+          ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-elevated'
+          : 'border-slate-200/80 hover:border-slate-300 hover:shadow-elevated'
       }`}
     >
       {/* Top Image & Badges */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-forest-950">
+      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
         <img
           src={vehicle.primaryImage}
           alt={vehicle.title}
@@ -50,14 +50,14 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
           loading="lazy"
         />
         
-        {/* Subtle Dark Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#101D19] via-transparent to-black/30 pointer-events-none" />
+        {/* Subtle Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-auto">
           {/* Category Tag */}
-          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-black/70 backdrop-blur-md text-white border border-white/10 uppercase tracking-wider">
-            {vehicle.category === 'electric' && <Zap className="w-3 h-3 text-emerald-400" />}
+          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/90 backdrop-blur-md text-slate-800 shadow-sm uppercase tracking-wider">
+            {vehicle.category === 'electric' && <Zap className="w-3 h-3 text-emerald-600" />}
             {vehicle.category}
           </span>
 
@@ -67,28 +67,28 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
               e.stopPropagation();
               onToggleSave?.(vehicle.id);
             }}
-            className="w-8 h-8 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white hover:text-red-400 hover:scale-110 transition-transform"
+            className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-md shadow-sm flex items-center justify-center text-slate-600 hover:text-red-500 hover:scale-110 transition-transform"
             aria-label="Save listing"
           >
-            <Heart className={`w-4 h-4 ${isSaved ? 'fill-red-500 text-red-500' : 'text-white'}`} />
+            <Heart className={`w-4 h-4 ${isSaved ? 'fill-red-500 text-red-500' : 'text-slate-600'}`} />
           </button>
         </div>
 
         {/* Verification Tier Badge */}
         <div className="absolute bottom-3 left-3 flex flex-wrap gap-1.5">
           {vehicle.verificationTier === 'physically_inspected' && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-forest-700/90 text-white backdrop-blur-md border border-forest-500/50 shadow-sm">
-              <ShieldCheck className="w-3 h-3 text-forest-200" /> 120-pt Inspected ({vehicle.inspectionScore})
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-600/90 text-white backdrop-blur-md shadow-sm">
+              <ShieldCheck className="w-3 h-3 text-white" /> 120-pt Inspected ({vehicle.inspectionScore})
             </span>
           )}
           {vehicle.verificationTier === 'document_verified' && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-900/90 text-emerald-200 backdrop-blur-md border border-emerald-500/40">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" /> RTO Verified
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-blue-600/90 text-white backdrop-blur-md shadow-sm">
+              <CheckCircle2 className="w-3 h-3 text-white" /> RTO Verified
             </span>
           )}
           {vehicle.batteryHealth && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-cyan-900/90 text-cyan-200 backdrop-blur-md border border-cyan-500/40">
-              <Zap className="w-3 h-3 text-cyan-400" /> Batt: {vehicle.batteryHealth}%
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-slate-900/90 text-white backdrop-blur-md shadow-sm">
+              <Zap className="w-3 h-3 text-emerald-400" /> Batt: {vehicle.batteryHealth}%
             </span>
           )}
         </div>
@@ -100,9 +100,9 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
               e.stopPropagation();
               onOpenAudio?.(vehicle);
             }}
-            className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-semibold bg-amber-900/80 hover:bg-amber-800 text-amber-200 backdrop-blur-md border border-amber-600/50 shadow-sm transition-colors"
+            className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-white/90 hover:bg-white text-slate-800 backdrop-blur-md shadow-sm transition-colors"
           >
-            <Volume2 className="w-3 h-3 animate-pulse text-amber-300" />
+            <Volume2 className="w-3 h-3 text-blue-600" />
             <span>Hear Story</span>
           </button>
         )}
@@ -112,56 +112,56 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
       <div className="p-4 space-y-3">
         {/* Title & Brand */}
         <div>
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
             <span className="font-medium">{vehicle.brand} • {vehicle.variant}</span>
             {vehicle.distanceKm !== undefined && (
-              <span className="font-semibold text-forest-300 flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-forest-400" />
+              <span className="font-semibold text-blue-600 flex items-center gap-1">
+                <MapPin className="w-3 h-3 text-blue-600" />
                 {vehicle.distanceKm} km away
               </span>
             )}
           </div>
-          <h3 className="font-heading font-bold text-base text-white group-hover:text-forest-200 transition-colors line-clamp-1">
+          <h3 className="font-heading font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">
             {vehicle.title}
           </h3>
         </div>
 
         {/* Specs Pills */}
-        <div className="flex items-center gap-2 text-xs text-slate-300 bg-forest-950/60 p-2 rounded-xl border border-forest-900/60">
+        <div className="flex items-center gap-2 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
           <span className="flex items-center gap-1">
             <Calendar className="w-3 h-3 text-slate-400" />
             {vehicle.year}
           </span>
-          <span className="text-slate-600">•</span>
+          <span className="text-slate-300">•</span>
           <span className="flex items-center gap-1">
             <Gauge className="w-3 h-3 text-slate-400" />
             {vehicle.km.toLocaleString('en-IN')} km
           </span>
-          <span className="text-slate-600">•</span>
+          <span className="text-slate-300">•</span>
           <span className="flex items-center gap-1 capitalize">
             <Fuel className="w-3 h-3 text-slate-400" />
             {vehicle.fuel}
           </span>
-          <span className="text-slate-600">•</span>
+          <span className="text-slate-300">•</span>
           <span>{vehicle.owners === 1 ? '1st Owner' : `${vehicle.owners} Owners`}</span>
         </div>
 
         {/* AI Deal Detector Badge */}
         <div className="flex items-center justify-between text-xs pt-0.5">
-          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400">
-            <span className="px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-[10px] text-emerald-300 font-bold flex items-center gap-1 shadow-sm">
-              <Sparkles className="w-3 h-3 text-emerald-400" />
-              {vehicle.price < 100000 ? 'AI Deal: Attractive Value' : 'AI Deal: Fair Market Value'}
+          <div className="flex items-center gap-1.5">
+            <span className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] text-emerald-800 font-bold flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-emerald-600" />
+              {vehicle.price < 100000 ? 'Attractive Value' : 'Fair Market Value'}
             </span>
           </div>
-          <span className="text-[11px] text-slate-400 font-medium">{vehicle.pickupLocality || vehicle.area || vehicle.city}</span>
+          <span className="text-[11px] text-slate-500 font-medium truncate max-w-[130px]">{vehicle.pickupLocality || vehicle.area || vehicle.city}</span>
         </div>
 
         {/* Price & CTA */}
-        <div className="pt-2 border-t border-[#1C362D] flex items-center justify-between">
+        <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
           <div>
             <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Asking Price</span>
-            <div className="font-heading font-extrabold text-xl text-white">
+            <div className="font-heading font-extrabold text-xl text-slate-900">
               {formatINR(vehicle.price)}
             </div>
           </div>
@@ -169,7 +169,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
           <Link
             to={`/bike/${vehicle.id}`}
             onClick={(e) => e.stopPropagation()}
-            className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-forest-800 hover:bg-forest-700 text-forest-100 hover:text-white border border-forest-600/50 transition-all shadow-sm"
+            className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white transition-all shadow-sm"
           >
             View Details
           </Link>

@@ -7,7 +7,7 @@ import {
   ArrowUpDown, 
   X, 
   Crosshair, 
-  RotateCcw,
+  RotateCcw, 
   Sparkles,
   Map as MapIcon,
   List,
@@ -29,7 +29,6 @@ interface ExplorePageProps {
   onOpenAudio: (vehicle: VehicleListing) => void;
 }
 
-// 2km, 5km, 10km, 15km, 25km, 50km, 100km, Anywhere (Phase 5 Requirement)
 const RADIUS_OPTIONS = [
   { label: '2 km', value: 2 },
   { label: '5 km', value: 5 },
@@ -62,7 +61,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
   const [radiusKm, setRadiusKm] = useState<number>(15);
   const [customRadiusActive, setCustomRadiusActive] = useState<boolean>(false);
 
-  // Custom Polygon Search Area coordinates (Phase 6 Requirement)
+  // Custom Polygon Search Area coordinates
   const [polygonCoords, setPolygonCoords] = useState<[number, number][]>([]);
 
   // Filter States
@@ -160,32 +159,32 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0A1411]">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
       {/* Top Filter & Radius Control Bar */}
-      <div className="sticky top-20 z-30 bg-[#0E1A16]/95 backdrop-blur-md border-b border-[#1A332B] px-4 sm:px-6 py-3">
+      <div className="sticky top-20 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm px-4 sm:px-6 py-3">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Left: Origin & Radius Filter Pills */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-forest-950 border border-forest-800 text-xs text-white">
-              <MapPin className="w-3.5 h-3.5 text-forest-400" />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-800">
+              <MapPin className="w-3.5 h-3.5 text-blue-600" />
               <span className="font-semibold truncate max-w-[140px]">{searchCenter.name}</span>
             </div>
 
             {/* Polygon Active Badge if drawn */}
             {polygonCoords.length >= 3 ? (
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gold/20 border border-gold/60 text-gold-light text-xs font-bold animate-fade-in">
-                <PenTool className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold animate-fade-in">
+                <PenTool className="w-3.5 h-3.5 text-amber-600" />
                 <span>Custom Polygon Active ({polygonCoords.length} pts)</span>
                 <button
                   onClick={() => setPolygonCoords([])}
-                  className="ml-1 hover:text-white"
+                  className="ml-1 hover:text-black"
                   title="Clear polygon"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : (
-              /* Radius Options (Phase 5 Requirement) */
+              /* Radius Options */
               <div className="flex items-center gap-1 overflow-x-auto py-1">
                 {RADIUS_OPTIONS.map((opt) => (
                   <button
@@ -197,8 +196,8 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                     }}
                     className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                       radiusKm === opt.value && !customRadiusActive
-                        ? 'bg-forest-600 text-white shadow-sm'
-                        : 'bg-forest-950/70 text-slate-300 hover:text-white border border-forest-900'
+                        ? 'bg-slate-900 text-white shadow-sm'
+                        : 'bg-slate-50 text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
                     }`}
                   >
                     {opt.label}
@@ -213,8 +212,8 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                   }}
                   className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors ${
                     customRadiusActive
-                      ? 'bg-gold text-slate-950 font-bold'
-                      : 'bg-forest-950/70 text-slate-400 hover:text-white border border-forest-900'
+                      ? 'bg-blue-600 text-white font-bold shadow-sm'
+                      : 'bg-slate-50 text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
                   }`}
                 >
                   Custom {customRadiusActive ? `(${radiusKm} km)` : ''}
@@ -225,8 +224,8 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
 
           {/* Right: Results Count, Sort & Mobile Map/List Toggle */}
           <div className="flex items-center justify-between md:justify-end gap-3 text-xs">
-            <span className="text-slate-300 font-medium">
-              <strong className="text-forest-300 font-bold">{filteredVehicles.length}</strong> rides in{' '}
+            <span className="text-slate-600 font-medium">
+              <strong className="text-slate-900 font-bold">{filteredVehicles.length}</strong> rides in{' '}
               {polygonCoords.length >= 3 ? 'custom area' : radiusKm === 0 ? 'anywhere' : `${radiusKm} km`}
             </span>
 
@@ -236,7 +235,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-forest-950 text-slate-200 text-xs border border-forest-800 rounded-lg px-2 py-1 focus:outline-none"
+                className="bg-slate-50 text-slate-700 text-xs border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-slate-400"
               >
                 <option value="distance">Nearest First</option>
                 <option value="price_low">Price: Low to High</option>
@@ -246,17 +245,17 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
             </div>
 
             {/* Mobile View Toggle */}
-            <div className="flex lg:hidden rounded-lg bg-forest-950 p-0.5 border border-forest-800">
+            <div className="flex lg:hidden rounded-lg bg-slate-100 p-0.5 border border-slate-200">
               <button
                 onClick={() => setMobileView('map')}
-                className={`p-1.5 rounded ${mobileView === 'map' ? 'bg-forest-700 text-white' : 'text-slate-400'}`}
+                className={`p-1.5 rounded ${mobileView === 'map' ? 'bg-slate-900 text-white' : 'text-slate-500'}`}
                 title="Map View"
               >
                 <MapIcon className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setMobileView('list')}
-                className={`p-1.5 rounded ${mobileView === 'list' ? 'bg-forest-700 text-white' : 'text-slate-400'}`}
+                className={`p-1.5 rounded ${mobileView === 'list' ? 'bg-slate-900 text-white' : 'text-slate-500'}`}
                 title="List View"
               >
                 <List className="w-4 h-4" />
@@ -268,27 +267,27 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
         {/* Custom Slider Drawer when active */}
         {customRadiusActive && polygonCoords.length === 0 && (
           <div className="max-w-7xl mx-auto pt-3 flex items-center gap-4 text-xs">
-            <span className="text-slate-300 font-semibold">Custom Radius:</span>
+            <span className="text-slate-700 font-semibold">Custom Radius:</span>
             <input
               type="range"
               min="1"
               max="100"
               value={radiusKm}
               onChange={(e) => setRadiusKm(Number(e.target.value))}
-              className="flex-1 accent-forest-500 cursor-pointer"
+              className="flex-1 accent-slate-900 cursor-pointer"
             />
-            <span className="font-mono text-forest-300 font-bold w-12">{radiusKm} km</span>
+            <span className="font-mono text-slate-900 font-bold w-12">{radiusKm} km</span>
           </div>
         )}
       </div>
 
       {/* Secondary Quick Filters Bar */}
-      <div className="bg-[#0C1713] border-b border-[#172E26] px-4 sm:px-6 py-2.5">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5">
         <div className="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto text-xs">
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-forest-950 text-slate-200 border border-forest-800 rounded-lg px-2.5 py-1.5 focus:outline-none"
+            className="bg-slate-50 text-slate-700 border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-slate-400 font-medium"
           >
             <option value="all">All Types</option>
             <option value="motorcycle">Motorcycle</option>
@@ -299,7 +298,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
           <select
             value={selectedBrand}
             onChange={(e) => setSelectedBrand(e.target.value)}
-            className="bg-forest-950 text-slate-200 border border-forest-800 rounded-lg px-2.5 py-1.5 focus:outline-none"
+            className="bg-slate-50 text-slate-700 border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-slate-400 font-medium"
           >
             <option value="all">All Brands</option>
             <option value="royal enfield">Royal Enfield</option>
@@ -315,10 +314,10 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
 
           <button
             onClick={() => setVerifiedOnly(!verifiedOnly)}
-            className={`px-3 py-1.5 rounded-lg border flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg border flex items-center gap-1.5 transition-colors whitespace-nowrap font-medium ${
               verifiedOnly
-                ? 'bg-forest-700/80 border-forest-400 text-white'
-                : 'bg-forest-950 text-slate-400 border-forest-900 hover:text-white'
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                : 'bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-900'
             }`}
           >
             <span>Verified / Inspected Only</span>
@@ -326,7 +325,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
 
           <button
             onClick={resetFilters}
-            className="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white flex items-center gap-1 ml-auto text-xs whitespace-nowrap"
+            className="px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-slate-900 flex items-center gap-1 ml-auto text-xs whitespace-nowrap"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset All</span>
@@ -336,7 +335,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
 
       {/* Main Content Area: Synchronized Map & Listing Cards */}
       <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-180px)]">
-        {/* Left Column: Interactive Map (55-60% width on Desktop) */}
+        {/* Left Column: Interactive Map */}
         <div
           className={`lg:col-span-7 h-[550px] lg:h-full min-h-[480px] sticky top-36 ${
             mobileView === 'list' ? 'hidden lg:block' : 'block'
@@ -355,7 +354,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
           />
         </div>
 
-        {/* Right Column: Listing Cards List (Remaining width on Desktop) */}
+        {/* Right Column: Listing Cards List */}
         <div
           className={`lg:col-span-5 space-y-4 overflow-y-auto max-h-[calc(100vh-180px)] pr-1 ${
             mobileView === 'map' ? 'hidden lg:block' : 'block'
@@ -376,15 +375,15 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
               ))}
             </div>
           ) : (
-            <div className="p-8 rounded-3xl bg-[#101D19] border border-forest-800 text-center space-y-4 my-10">
-              <div className="w-14 h-14 rounded-2xl bg-forest-900/80 border border-forest-700/60 flex items-center justify-center text-forest-300 mx-auto">
+            <div className="p-8 rounded-3xl bg-white border border-slate-200 text-center space-y-4 my-10 shadow-sm">
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 mx-auto">
                 <Compass className="w-7 h-7" />
               </div>
               <div>
-                <h3 className="font-heading font-bold text-lg text-white">
+                <h3 className="font-heading font-bold text-lg text-slate-900">
                   No rides found within {polygonCoords.length >= 3 ? 'custom boundary' : `${radiusKm} km`}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+                <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
                   Expand your radius or clear the polygon boundary to view listings in neighboring sectors.
                 </p>
               </div>
@@ -395,13 +394,13 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                     setPolygonCoords([]);
                     setRadiusKm(radiusKm * 2 || 25);
                   }}
-                  className="px-4 py-2 rounded-xl bg-forest-700 hover:bg-forest-600 text-white font-bold text-xs"
+                  className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs"
                 >
                   Expand to {radiusKm ? radiusKm * 2 : 25} km
                 </button>
                 <button
                   onClick={resetFilters}
-                  className="px-4 py-2 rounded-xl bg-forest-950 hover:bg-forest-900 text-slate-300 border border-forest-800 font-medium text-xs"
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-medium text-xs"
                 >
                   Clear Filters
                 </button>

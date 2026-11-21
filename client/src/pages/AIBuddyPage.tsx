@@ -71,7 +71,6 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  // Audio recording timer simulation
   useEffect(() => {
     let interval: any;
     if (isListening) {
@@ -106,14 +105,12 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
     setIsTyping(true);
 
     try {
-      // 1. Send to AI Buddy Service (Gemini API with Strict Boundaries + Grounded Marketplace Retrieval)
       const res = await sendAIBuddyMessage({
         message: q || (hadImage ? 'Photo component inspection' : 'Engine audio sound check'),
         language,
         vehicle_context: selectedProfile
       });
 
-      // 2. Also run complementary local diagnostic checks if it's a mechanical query
       const diagnosis = diagnoseTwoWheelerQuery(
         q || (hadImage ? 'Inspect bike component image' : 'Unusual engine sound recording'),
         selectedProfile,
@@ -132,7 +129,6 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
 
       setMessages((prev) => [...prev, aiMsg]);
 
-      // Spoken narration
       if ('speechSynthesis' in window && language !== 'pa' && !res.is_refusal) {
         const briefUtterance = new SpeechSynthesisUtterance(diagnosis.title || 'Technical assessment generated');
         briefUtterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
@@ -159,9 +155,7 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
 
     if (!isListening) {
       setIsListening(true);
-      setAttachedAudio(true);
       recognition.start();
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
@@ -188,61 +182,61 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1411] text-slate-100 flex flex-col">
-      {/* Top Header & Vehicle Profile Switcher */}
-      <div className="border-b border-[#1A332B] bg-[#0E1A16] px-4 sm:px-6 py-3.5 sticky top-20 z-20">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+    <div className="min-h-screen bg-slate-50 flex flex-col text-slate-800">
+      {/* Top Header */}
+      <div className="border-b border-slate-200 bg-white sticky top-20 z-20 px-4 sm:px-6 py-3 shadow-sm">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-forest-700 text-white flex items-center justify-center border border-forest-500/50 shadow-glow flex-shrink-0">
-              <Bot className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+              <Bot className="w-5 h-5 text-blue-400" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-heading font-extrabold text-base text-white">AI Bike Buddy</h1>
-                <span className="px-2 py-0.5 rounded-full bg-forest-900 border border-forest-700 text-[10px] text-forest-300 font-bold uppercase tracking-wider">
+                <h1 className="font-heading font-extrabold text-base text-slate-900">AI Bike Buddy</h1>
+                <span className="px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] text-slate-700 font-bold uppercase tracking-wider">
                   Master Mechanic
                 </span>
               </div>
-              <p className="text-xs text-slate-400">24/7 Diagnostics, Audio Engine Sound Scanner & Servicing Guide</p>
+              <p className="text-xs text-slate-500">24/7 Diagnostics, Audio Engine Sound Scanner & Servicing Guide</p>
             </div>
           </div>
 
           {/* Vehicle Profile Selector & Language Pill */}
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-1.5 bg-forest-950 px-3 py-1.5 rounded-xl border border-forest-800 text-xs">
-              <span className="text-slate-400 text-[11px]">Active Profile:</span>
+            <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
+              <span className="text-slate-500 text-[11px]">Active Profile:</span>
               <select
                 value={selectedProfile.model}
                 onChange={(e) => {
                   const p = POPULAR_PROFILES.find((prof) => prof.model === e.target.value);
                   if (p) setSelectedProfile(p);
                 }}
-                className="bg-transparent font-bold text-forest-200 focus:outline-none cursor-pointer"
+                className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer"
               >
                 {POPULAR_PROFILES.map((p) => (
-                  <option key={p.model} value={p.model} className="bg-[#101D19] text-white">
+                  <option key={p.model} value={p.model} className="bg-white text-slate-900">
                     {p.brand} {p.model} ({p.year})
                   </option>
                 ))}
               </select>
             </div>
 
-            <div className="flex items-center rounded-xl bg-forest-950 p-1 border border-forest-800 text-[11px] font-bold">
+            <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200 text-[11px] font-bold">
               <button
                 onClick={() => setLanguage('en')}
-                className={`px-2 py-0.5 rounded-lg ${language === 'en' ? 'bg-forest-600 text-white' : 'text-slate-400'}`}
+                className={`px-2.5 py-0.5 rounded-lg transition-colors ${language === 'en' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
               >
                 EN
               </button>
               <button
                 onClick={() => setLanguage('hi')}
-                className={`px-2 py-0.5 rounded-lg ${language === 'hi' ? 'bg-forest-600 text-white' : 'text-slate-400'}`}
+                className={`px-2.5 py-0.5 rounded-lg transition-colors ${language === 'hi' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
               >
                 हिन्दी
               </button>
               <button
                 onClick={() => setLanguage('pa')}
-                className={`px-2 py-0.5 rounded-lg ${language === 'pa' ? 'bg-forest-600 text-white' : 'text-slate-400'}`}
+                className={`px-2.5 py-0.5 rounded-lg transition-colors ${language === 'pa' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
               >
                 ਪੰਜਾਬੀ
               </button>
@@ -255,7 +249,7 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
       <div className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 overflow-y-auto space-y-5">
         {messages.map((m) => (
           <div key={m.id} className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'}`}>
-            <div className="flex items-center gap-2 mb-1 text-[11px] text-slate-500">
+            <div className="flex items-center gap-2 mb-1 text-[11px] text-slate-400">
               <span>{m.sender === 'user' ? 'You' : 'AI Bike Buddy (Mechanic)'}</span>
               <span>•</span>
               <span>{m.timestamp}</span>
@@ -263,18 +257,18 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
 
             {/* Attached User Photo Preview */}
             {m.imageAttachment && (
-              <div className="mb-2 max-w-xs rounded-2xl overflow-hidden border border-forest-700 bg-black">
+              <div className="mb-2 max-w-xs rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-sm">
                 <img src={m.imageAttachment} alt="User Upload" className="w-full h-40 object-cover" />
-                <div className="p-2 bg-[#0C1713] text-[10px] text-forest-300 font-bold flex items-center gap-1.5">
-                  <Camera className="w-3.5 h-3.5" /> Attached Component Photo
+                <div className="p-2 bg-white text-[10px] text-slate-700 font-bold flex items-center gap-1.5 border-t border-slate-200">
+                  <Camera className="w-3.5 h-3.5 text-blue-600" /> Attached Component Photo
                 </div>
               </div>
             )}
 
             {/* Attached Audio Badge */}
             {m.audioAttachment && (
-              <div className="mb-2 p-2.5 rounded-xl bg-amber-950/80 border border-amber-600/50 text-amber-300 text-xs flex items-center gap-2">
-                <Volume2 className="w-4 h-4 animate-pulse" />
+              <div className="mb-2 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2 shadow-sm">
+                <Volume2 className="w-4 h-4 animate-pulse text-amber-600" />
                 <span>Engine Sound Acoustic Recording Uploaded</span>
               </div>
             )}
@@ -283,42 +277,42 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
             <div
               className={`max-w-[85%] sm:max-w-[75%] p-4 rounded-3xl text-sm leading-relaxed ${
                 m.sender === 'user'
-                  ? 'bg-forest-600 text-white rounded-br-none shadow-md'
-                  : 'bg-[#101D19] border border-forest-800/80 text-slate-200 rounded-bl-none shadow-elevated'
+                  ? 'bg-slate-900 text-white rounded-br-none shadow-sm'
+                  : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-sm'
               }`}
             >
               <div className="whitespace-pre-line">{m.text}</div>
 
               {/* Structured Diagnostic Card */}
               {m.diagnosis && (
-                <div className="mt-4 p-4 rounded-2xl bg-[#091411] border border-forest-700 space-y-3 text-xs">
-                  <div className="flex items-center justify-between pb-2 border-b border-forest-900">
-                    <span className="font-heading font-extrabold text-sm text-forest-200">
+                <div className="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 text-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+                    <span className="font-heading font-extrabold text-sm text-slate-900">
                       {m.diagnosis.title}
                     </span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-forest-950 text-forest-400 border border-forest-800">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-200 text-slate-700 border border-slate-300">
                       {m.diagnosis.category}
                     </span>
                   </div>
 
                   {/* Critical Safety Alert */}
                   {m.diagnosis.isSafetyCritical && m.diagnosis.safetyWarning && (
-                    <div className="p-3 rounded-xl bg-red-950/80 border border-red-700/80 text-red-200 flex items-start gap-2">
-                      <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+                    <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-bold text-[11px] text-red-300">Safety Critical Notice</p>
-                        <p className="text-[11px] text-red-200 mt-0.5">{m.diagnosis.safetyWarning}</p>
+                        <p className="font-bold text-[11px] text-red-900">Safety Critical Notice</p>
+                        <p className="text-[11px] text-red-800 mt-0.5">{m.diagnosis.safetyWarning}</p>
                       </div>
                     </div>
                   )}
 
                   {/* Possible Causes */}
                   <div>
-                    <h5 className="font-bold text-white mb-1.5 flex items-center gap-1.5">
-                      <Wrench className="w-3.5 h-3.5 text-forest-400" />
+                    <h5 className="font-bold text-slate-900 mb-1.5 flex items-center gap-1.5">
+                      <Wrench className="w-3.5 h-3.5 text-blue-600" />
                       Possible Root Causes:
                     </h5>
-                    <ul className="list-disc list-inside space-y-1 text-slate-300 text-[11px]">
+                    <ul className="list-disc list-inside space-y-1 text-slate-600 text-[11px]">
                       {m.diagnosis.possibleCauses.map((c, i) => (
                         <li key={i}>{c}</li>
                       ))}
@@ -327,11 +321,11 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
 
                   {/* Safe DIY Checks */}
                   <div>
-                    <h5 className="font-bold text-white mb-1.5 flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <h5 className="font-bold text-slate-900 mb-1.5 flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                       Safe Checks to Perform Yourself:
                     </h5>
-                    <ul className="list-disc list-inside space-y-1 text-slate-300 text-[11px]">
+                    <ul className="list-disc list-inside space-y-1 text-slate-600 text-[11px]">
                       {m.diagnosis.diyChecks.map((check, i) => (
                         <li key={i}>{check}</li>
                       ))}
@@ -339,8 +333,8 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
                   </div>
 
                   {/* Professional Recommendation */}
-                  <div className="p-2.5 rounded-xl bg-forest-950 border border-forest-900 text-[11px] text-slate-300">
-                    <strong className="text-white">When to visit a mechanic: </strong>
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-[11px] text-slate-700">
+                    <strong className="text-slate-900">When to visit a mechanic: </strong>
                     {m.diagnosis.professionalAction}
                   </div>
                 </div>
@@ -357,14 +351,14 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
                     <Link
                       key={item.id}
                       to={`/bike/${item.id}`}
-                      className="p-3 rounded-2xl bg-[#12221D] hover:bg-forest-900/60 border border-forest-700/60 transition-all flex items-center gap-3 group"
+                      className="p-3 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 transition-all flex items-center gap-3 group shadow-sm"
                     >
-                      <img src={item.primaryImage} alt={item.title} className="w-14 h-14 rounded-xl object-cover" />
+                      <img src={item.primaryImage} alt={item.title} className="w-14 h-14 rounded-xl object-cover bg-slate-100" />
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-xs text-white group-hover:text-forest-200 truncate">{item.title}</p>
-                        <p className="font-heading font-extrabold text-sm text-forest-300 mt-0.5">{formatINR(item.price)}</p>
-                        <p className="text-[10px] text-slate-400 flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-forest-400" />
+                        <p className="font-bold text-xs text-slate-900 group-hover:text-blue-600 truncate">{item.title}</p>
+                        <p className="font-heading font-extrabold text-sm text-slate-900 mt-0.5">{formatINR(item.price)}</p>
+                        <p className="text-[10px] text-slate-500 flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-blue-600" />
                           {item.area}, {item.city}
                         </p>
                       </div>
@@ -379,11 +373,11 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
 
         {/* Typing indicator */}
         {isTyping && (
-          <div className="flex items-center gap-2 p-3 rounded-2xl bg-[#101D19] border border-forest-800 text-xs text-slate-400 w-44">
+          <div className="flex items-center gap-2 p-3 rounded-2xl bg-white border border-slate-200 text-xs text-slate-500 w-44 shadow-sm">
             <div className="flex gap-1">
-              <span className="w-2 h-2 rounded-full bg-forest-400 animate-bounce" />
-              <span className="w-2 h-2 rounded-full bg-forest-400 animate-bounce [animation-delay:0.2s]" />
-              <span className="w-2 h-2 rounded-full bg-forest-400 animate-bounce [animation-delay:0.4s]" />
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-bounce" />
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-bounce [animation-delay:0.2s]" />
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-bounce [animation-delay:0.4s]" />
             </div>
             <span>Analyzing diagnostics...</span>
           </div>
@@ -393,36 +387,36 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
       </div>
 
       {/* Suggested Starters */}
-      <div className="px-4 sm:px-6 py-2 bg-[#0C1613] border-t border-[#162922]">
+      <div className="px-4 sm:px-6 py-2 bg-white border-t border-slate-200">
         <div className="max-w-5xl mx-auto flex items-center gap-2 overflow-x-auto text-[11px]">
-          <span className="text-slate-500 font-semibold whitespace-nowrap">Try asking:</span>
+          <span className="text-slate-400 font-semibold whitespace-nowrap">Try asking:</span>
           <button
             onClick={() => handleSend('My bike makes a clicking sound when pressing the starter button')}
-            className="px-3 py-1 rounded-full bg-forest-950 border border-forest-800 text-slate-300 hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 whitespace-nowrap"
           >
             Starter clicking sound
           </button>
           <button
             onClick={() => handleSend('My scooter vibrates violently between 15-20 km/h on pickup')}
-            className="px-3 py-1 rounded-full bg-forest-950 border border-forest-800 text-slate-300 hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 whitespace-nowrap"
           >
             CVT pickup vibration
           </button>
           <button
             onClick={() => handleSend('My front brake lever feels very spongy and soft')}
-            className="px-3 py-1 rounded-full bg-forest-950 border border-forest-800 text-slate-300 hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 whitespace-nowrap"
           >
             Spongy brake lever
           </button>
           <button
             onClick={() => handleSend('Mileage suddenly dropped from 48 kmpl to 32 kmpl')}
-            className="px-3 py-1 rounded-full bg-forest-950 border border-forest-800 text-slate-300 hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 whitespace-nowrap"
           >
             Sudden mileage drop
           </button>
           <button
             onClick={() => handleSend('How to optimize Ather EV battery range in Indian summers?')}
-            className="px-3 py-1 rounded-full bg-forest-950 border border-forest-800 text-slate-300 hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 whitespace-nowrap"
           >
             EV battery tips
           </button>
@@ -431,22 +425,22 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
 
       {/* Image / Audio Attachment Staging Area */}
       {(attachedImage || isListening) && (
-        <div className="px-4 sm:px-6 py-2 bg-[#0E1A16] border-t border-forest-800">
+        <div className="px-4 sm:px-6 py-2 bg-slate-100 border-t border-slate-200">
           <div className="max-w-5xl mx-auto flex items-center gap-3">
             {attachedImage && (
-              <div className="relative w-14 h-14 rounded-xl overflow-hidden border border-forest-500">
+              <div className="relative w-14 h-14 rounded-xl overflow-hidden border border-slate-300">
                 <img src={attachedImage} alt="Preview" className="w-full h-full object-cover" />
                 <button
                   onClick={() => setAttachedImage(null)}
-                  className="absolute top-0 right-0 p-0.5 bg-black/80 text-white rounded-bl"
+                  className="absolute top-0 right-0 p-0.5 bg-black/70 text-white rounded-bl"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
             {isListening && (
-              <div className="flex items-center gap-2 text-xs text-red-400 animate-pulse font-bold">
-                <span className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="flex items-center gap-2 text-xs text-red-600 animate-pulse font-bold">
+                <span className="w-3 h-3 rounded-full bg-red-600" />
                 <span>Recording engine acoustic sound... ({audioRecordingSeconds}s)</span>
               </div>
             )}
@@ -455,7 +449,7 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
       )}
 
       {/* Input Control Bar */}
-      <div className="border-t border-[#1A332B] bg-[#0E1A16] px-4 sm:px-6 py-4">
+      <div className="border-t border-slate-200 bg-white px-4 sm:px-6 py-4 shadow-sm">
         <div className="max-w-5xl mx-auto flex items-center gap-2">
           {/* Hidden Image File Input */}
           <input
@@ -469,10 +463,10 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
           {/* Photo Upload Button */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="p-3 rounded-2xl bg-forest-950 border border-forest-800 text-slate-300 hover:text-white transition-colors"
+            className="p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-600 transition-colors"
             title="Attach photo of tyres, leak, warning lights"
           >
-            <Camera className="w-5 h-5 text-forest-400" />
+            <Camera className="w-5 h-5" />
           </button>
 
           {/* Microphone Audio Button */}
@@ -481,11 +475,11 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
             className={`p-3 rounded-2xl border transition-colors ${
               isListening
                 ? 'bg-red-500 text-white border-red-400 animate-pulse'
-                : 'bg-forest-950 text-slate-300 border-forest-800 hover:text-white'
+                : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
             }`}
             title="Record engine sound or speak question"
           >
-            {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5 text-forest-400" />}
+            {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5 text-slate-600" />}
           </button>
 
           {/* Main Text Input */}
@@ -495,13 +489,13 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder={`Describe symptoms for ${selectedProfile.brand} ${selectedProfile.model} (e.g. clicking sound, mileage drop)...`}
-            className="flex-1 bg-forest-950 border border-forest-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-forest-500"
+            className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400"
           />
 
           <button
             onClick={() => handleSend()}
             disabled={!input.trim() && !attachedImage && !attachedAudio}
-            className="px-6 py-3 rounded-2xl bg-forest-600 hover:bg-forest-500 disabled:opacity-40 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-elevated"
+            className="px-6 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-sm"
           >
             <span>Ask</span>
             <Send className="w-4 h-4" />

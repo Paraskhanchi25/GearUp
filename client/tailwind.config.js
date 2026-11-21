@@ -8,48 +8,62 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Professional, executive corporate palette
+        brand: {
+          950: '#0B132B',
+          900: '#0F172A', // Deep Executive Slate
+          800: '#1E293B',
+          700: '#334155',
+          600: '#475569',
+          500: '#2563EB', // Muted Executive Blue Accent
+          400: '#3B82F6',
+          300: '#93C5FD',
+          200: '#BFDBFE',
+          100: '#EFF6FF',
+          50: '#F8FAFC',
+        },
         forest: {
-          950: '#0B221C',
-          900: '#123C32', // Deep Forest Green
-          800: '#155244',
-          700: '#176B50', // Primary Green
-          600: '#1E8263',
-          500: '#2A9D79',
-          400: '#52BE9B',
-          300: '#8CD8BF',
-          200: '#B8EADB',
-          100: '#DDF3E8', // Fresh Mint
-          50: '#F0F9F5',
+          950: '#0F172A',
+          900: '#1E293B',
+          800: '#334155',
+          700: '#1E3A8A',
+          600: '#2563EB',
+          500: '#3B82F6',
+          400: '#60A5FA',
+          300: '#93C5FD',
+          200: '#BFDBFE',
+          100: '#EFF6FF',
+          50: '#F8FAFC',
         },
         charcoal: {
-          950: '#111513',
-          900: '#1A211D',
-          800: '#202824', // Charcoal
-          700: '#323E38',
-          600: '#4D5D55',
-          500: '#78837D', // Muted Grey
-          400: '#9DA8A2',
-          300: '#C2CCC7',
-          200: '#E1E6E3',
-          100: '#F0F3F1',
+          950: '#020617',
+          900: '#0F172A',
+          800: '#1E293B',
+          700: '#334155',
+          600: '#475569',
+          500: '#64748B',
+          400: '#94A3B8',
+          300: '#CBD5E1',
+          200: '#E2E8F0',
+          100: '#F1F5F9',
         },
         gold: {
-          DEFAULT: '#D6AD62',
-          light: '#E7C88C',
-          dark: '#B0883E',
+          DEFAULT: '#B45309', // Muted professional amber
+          light: '#FDE68A',
+          dark: '#92400E',
         },
-        ivory: '#F8F7F2',
-        borderLight: '#E8ECE8',
-        borderDark: '#2C3831',
+        ivory: '#FFFFFF',
+        borderLight: '#E2E8F0',
+        borderDark: '#CBD5E1',
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         heading: ['Plus Jakarta Sans', 'Manrope', 'sans-serif'],
       },
       boxShadow: {
-        'subtle': '0 4px 20px -2px rgba(18, 60, 50, 0.06)',
-        'elevated': '0 10px 30px -4px rgba(18, 60, 50, 0.12)',
-        'glow': '0 0 25px -5px rgba(42, 157, 121, 0.35)',
+        'subtle': '0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05)',
+        'elevated': '0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03)',
+        'glow': '0 0 20px -3px rgba(37, 99, 235, 0.15)',
       }
     },
   },
