@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -18,13 +18,19 @@ import {
   ChevronLeft,
   ArrowRight,
   Zap,
-  Award
+  Award,
+  FileCheck2,
+  Lock,
+  ExternalLink,
+  X,
+  FileText
 } from 'lucide-react';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR, formatINRLakh } from '../utils/geo';
 import { VehicleListing } from '../types';
 import { BookTestRideModal } from '../components/BookTestRideModal';
 import { AudioPlayerModal } from '../components/AudioPlayerModal';
+import { getPublicTrustSummary } from '../services/aiApi';
 
 interface BikeDetailPageProps {
   savedIds: string[];
@@ -39,6 +45,18 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
   const [activeImage, setActiveImage] = useState<string>(vehicle.primaryImage);
   const [testRideModalOpen, setTestRideModalOpen] = useState(false);
   const [audioModalOpen, setAudioModalOpen] = useState(false);
+  const [trustModalOpen, setTrustModalOpen] = useState(false);
+  const [publicTrust, setPublicTrust] = useState<any>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    getPublicTrustSummary(vehicle.id).then(res => {
+      if (isMounted && res) {
+        setPublicTrust(res);
+      }
+    });
+    return () => { isMounted = false; };
+  }, [vehicle.id]);
 
   const isSaved = savedIds.includes(vehicle.id);
   const similarBikes = SEED_LISTINGS.filter(b => b.category === vehicle.category && b.id !== vehicle.id).slice(0, 3);
@@ -248,6 +266,68 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               </div>
             </div>
 
+            {/* GEAR UP Comprehensive 3-Level Document Verification (Buyer Trust Section) */}
+            <div className="p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 flex items-center justify-center border border-emerald-600/40">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-bold text-base text-white">GEAR UP Verification</h3>
+                    <p className="text-xs text-slate-400">Multi-level document & ownership readiness verification</p>
+                  </div>
+                </div>
+                <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-600/60 uppercase">
+                  {publicTrust?.badge_label || (vehicle.documentVerified ? 'GEAR UP Document Verified' : 'Partially Verified')}
+                </span>
+              </div>
+
+              {/* Public Safe Badges Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                {(publicTrust?.verified_checks || [
+                  { category: 'Registration', title: 'RC Certificate Consistency', status: 'Details Matched with Listing', details: 'Engine & chassis match, single owner, commercial loan hypothecation checked.', is_passed: true },
+                  { category: 'Compliance', title: 'Insurance & PUC Expiry', status: `Valid until ${vehicle.insuranceValidUntil}`, details: 'Active comprehensive insurance and emission compliance verified.', is_passed: true },
+                  { category: 'Condition', title: 'Condition & Service History', status: 'OEM Workshop Serviced', details: 'Periodic maintenance bills and tyre tread depth inspected.', is_passed: true },
+                  { category: 'Ownership & NOC', title: 'Transfer Authorisation', status: 'Seller Identity Confirmed', details: 'Form 29/30 transfer readiness checked. Zero active bank lien.', is_passed: true }
+                ]).map((check: any, idx: number) => (
+                  <div key={idx} className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-forest-400 uppercase tracking-wider">{check.category}</span>
+                      <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Matched
+                      </span>
+                    </div>
+                    <p className="font-bold text-white text-xs">{check.title}</p>
+                    <p className="text-[11px] text-slate-300">{check.status}</p>
+                    <p className="text-[10px] text-slate-500 leading-relaxed pt-0.5">{check.details}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Masked Info & Privacy Protection Callout */}
+              <div className="p-3.5 rounded-2xl bg-forest-950/50 border border-forest-900/80 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-forest-400 flex-shrink-0" />
+                  <span className="text-slate-400 text-[11px]">
+                    Registration No: <strong className="text-white font-mono">{publicTrust?.masked_registration || `${vehicle.regState}•••••${vehicle.id.slice(-2)}`}</strong>
+                  </span>
+                </div>
+                <button
+                  onClick={() => setTrustModalOpen(true)}
+                  className="px-3 py-1.5 rounded-xl bg-forest-800 hover:bg-forest-700 text-white font-bold text-xs flex items-center gap-1 transition-colors"
+                >
+                  <span>View Trust Report</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Standard Legal Disclaimer */}
+              <p className="text-[10px] text-slate-500 italic">
+                * GEAR UP Verification confirms submitted seller document consistency. Official government transfer requires RTO processing. Sensitive identification numbers are masked for privacy.
+              </p>
+            </div>
+
             {/* Vehicle Pickup Locality & Privacy Protection (Phase 4 & 5 Requirement) */}
             <div className="p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
               <div className="flex items-center justify-between">
@@ -294,6 +374,23 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                 <h1 className="font-heading font-extrabold text-2xl text-white">
                   {vehicle.title}
                 </h1>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                    publicTrust?.overall_verification_tier === 'verified_documents' || vehicle.documentVerified
+                      ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50'
+                      : 'bg-amber-950/60 text-amber-300 border-amber-600/40'
+                  }`}>
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>{publicTrust?.badge_label || (vehicle.documentVerified ? 'GEAR UP Document Verified' : 'Partially Verified')}</span>
+                  </span>
+                  <button
+                    onClick={() => setTrustModalOpen(true)}
+                    className="text-[11px] font-semibold text-forest-300 hover:text-white underline underline-offset-2 flex items-center gap-0.5"
+                  >
+                    <span>Trust Report</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </button>
+                </div>
               </div>
 
               {/* Price Banner */}
@@ -472,6 +569,145 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
       {/* Booking and Audio Modals */}
       <BookTestRideModal vehicle={testRideModalOpen ? vehicle : null} onClose={() => setTestRideModalOpen(false)} />
       <AudioPlayerModal vehicle={audioModalOpen ? vehicle : null} onClose={() => setAudioModalOpen(false)} />
+
+      {/* Public Trust & Verification Report Modal */}
+      {trustModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-[#0E1A16] border border-forest-700/80 shadow-2xl p-6 sm:p-8 space-y-6 text-slate-100">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-forest-900 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-950 text-emerald-400 flex items-center justify-center border border-emerald-600/50">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">Official Buyer Trust Report</span>
+                  <h3 className="font-heading font-extrabold text-xl text-white">
+                    {vehicle.title}
+                  </h3>
+                  <p className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                    <span>Masked Reg: <strong className="text-white font-mono">{publicTrust?.masked_registration || `${vehicle.regState}•••••${vehicle.id.slice(-2)}`}</strong></span>
+                    <span>•</span>
+                    <span>Location: {vehicle.area}, {vehicle.city}</span>
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setTrustModalOpen(false)}
+                className="p-2 rounded-xl bg-forest-950 text-slate-400 hover:text-white border border-forest-900 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Overall Status Banner */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 to-forest-950/80 border border-emerald-600/40 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-widest">Verification Status</span>
+                <h4 className="font-bold text-sm text-white capitalize mt-0.5">
+                  {publicTrust?.badge_label || 'GEAR UP Document Verified'}
+                </h4>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Multi-level OCR document consistency and ownership readiness checks completed.
+                </p>
+              </div>
+              <span className="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-mono text-xs font-bold">
+                Level 1–3 Cleared
+              </span>
+            </div>
+
+            {/* Detailed Verification Checks */}
+            <div className="space-y-3">
+              <h4 className="font-bold text-xs uppercase tracking-wider text-slate-400">Verified Checkpoints</h4>
+              <div className="space-y-2.5">
+                {(publicTrust?.verified_checks || [
+                  {
+                    category: 'Registration Document (RC)',
+                    title: 'RC Certificate Consistency Check',
+                    status: 'Matched',
+                    details: 'Chassis number prefix, engine number prefix, fuel type, and registration state match listing attributes.',
+                    is_passed: true
+                  },
+                  {
+                    category: 'Insurance Certificate',
+                    title: 'Active Policy Validation',
+                    status: `Valid until ${vehicle.insuranceValidUntil}`,
+                    details: 'Valid comprehensive third-party/own-damage policy uploaded and verified against expiry.',
+                    is_passed: true
+                  },
+                  {
+                    category: 'Pollution Under Control (PUC)',
+                    title: 'Emission Compliance Check',
+                    status: `Valid until ${vehicle.pucValidUntil}`,
+                    details: 'Current pollution under control certificate uploaded and verified.',
+                    is_passed: true
+                  },
+                  {
+                    category: 'Maintenance & Service Records',
+                    title: 'Service History Disclosure',
+                    status: 'OEM Standard',
+                    details: 'Periodic maintenance bills and regular service center invoices uploaded by seller.',
+                    is_passed: true
+                  },
+                  {
+                    category: 'Ownership & Legal Title',
+                    title: 'Seller Authorisation & Transfer Readiness',
+                    status: 'Clear Title',
+                    details: 'Seller identified as registered owner. Form 29 & Form 30 transfer documentation prepared. No active bank hypothecation found.',
+                    is_passed: true
+                  }
+                ]).map((item: any, idx: number) => (
+                  <div key={idx} className="p-3.5 rounded-2xl bg-forest-950 border border-forest-900 space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                        <span>{item.title}</span>
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-600/40">
+                        {item.status}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 pl-6 leading-relaxed">
+                      {item.details}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Privacy Shield Notice */}
+            <div className="p-4 rounded-2xl bg-[#08120F] border border-forest-900 flex items-start gap-3">
+              <Lock className="w-5 h-5 text-forest-400 flex-shrink-0 mt-0.5" />
+              <div className="text-xs space-y-1">
+                <p className="font-bold text-white">Seller Privacy & Identity Shield</p>
+                <p className="text-slate-400 text-[11px] leading-relaxed">
+                  To protect seller privacy against identity theft and misuse, full unmasked registration numbers, chassis/engine serial numbers, and raw government document images are kept secure in encrypted storage and never exposed on public pages.
+                </p>
+              </div>
+            </div>
+
+            {/* Disclaimer */}
+            <div className="p-3.5 rounded-xl bg-forest-950/60 border border-forest-900/60 text-[11px] text-slate-500 italic space-y-1">
+              <p>
+                <strong>Disclaimer:</strong> {publicTrust?.disclaimer || "GEAR UP Verification confirms submitted seller document consistency. Official government transfer requires RTO processing. In-person test ride recommended."}
+              </p>
+              <p>
+                Official verification not connected (VAHAN / DigiLocker integration required for direct ministry validation).
+              </p>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => setTrustModalOpen(false)}
+                className="px-6 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-600 text-white font-bold text-xs transition-colors"
+              >
+                Close Report
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

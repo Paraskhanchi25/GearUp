@@ -362,3 +362,121 @@ export async function processVoiceQuery(sampleText: string, language: string = '
     suggested_module: 'ai_buddy',
   };
 }
+
+// 9. Document & Vehicle Verification API (3-Level System)
+export async function uploadVerificationDocument(formData: FormData) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/upload-document`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (res.ok) {
+      return await res.json();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || `Upload failed (${res.status})`);
+    }
+  } catch (err: any) {
+    console.error('Verification upload error:', err);
+    throw err;
+  }
+}
+
+export async function submitLevel2Condition(payload: any) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/level2-condition`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Level 2 submission error:', err);
+  }
+  return null;
+}
+
+export async function submitLevel3Ownership(payload: any) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/level3-ownership`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Level 3 submission error:', err);
+  }
+  return null;
+}
+
+export async function getVerificationReport(listingId: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/report/${listingId}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Verification report error:', err);
+  }
+  return null;
+}
+
+export async function getPublicTrustSummary(listingId: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/public-summary/${listingId}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Public summary fetch error:', err);
+  }
+  return null;
+}
+
+export async function getAdminVerificationQueue(status?: string) {
+  try {
+    const url = status && status !== 'all' 
+      ? `${API_BASE}/verification/admin/queue?status=${status}` 
+      : `${API_BASE}/verification/admin/queue`;
+    const res = await fetch(url);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Admin queue fetch error:', err);
+  }
+  return null;
+}
+
+export async function getAdminListingDetail(listingId: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/admin/listing/${listingId}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Admin detail fetch error:', err);
+  }
+  return null;
+}
+
+export async function recordReviewerDecision(payload: any) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/admin/decision`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Reviewer decision error:', err);
+  }
+  return null;
+}

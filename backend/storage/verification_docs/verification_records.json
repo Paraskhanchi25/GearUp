@@ -1,0 +1,288 @@
+{
+  "test-bike-99": {
+    "listing_id": "test-bike-99",
+    "created_at": "2026-11-22T02:47:06.357331",
+    "updated_at": "2026-11-22T02:47:06.366150",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "PETROL"
+    },
+    "level1_basic": {
+      "rc": {
+        "doc_id": "DOC-0D256CF4",
+        "filename": "rc_sample.jpg",
+        "status": "matched",
+        "upload_timestamp": "22 Nov 2026, 02:47 AM",
+        "extracted_fields": {
+          "document_type": "rc",
+          "registration_number": "CH01AB8821",
+          "manufacturer": "Royal Enfield Model",
+          "model": "Classic 350 Fuel",
+          "fuel_type": "PETROL",
+          "registration_date": null,
+          "chassis_number": null,
+          "engine_number": null,
+          "registered_owner": null,
+          "ocr_confidence": 0.95
+        },
+        "comparison": {
+          "registration_number": {
+            "extracted": "CH01AB8821",
+            "listing": "CH01AB8821",
+            "status": "matched",
+            "notes": "Exact registration number match verified."
+          },
+          "manufacturer": {
+            "extracted": "Royal Enfield Model",
+            "listing": "Royal Enfield",
+            "status": "matched",
+            "notes": "Manufacturer verified against RC records."
+          },
+          "model": {
+            "extracted": "Classic 350 Fuel",
+            "listing": "Classic 350",
+            "status": "matched",
+            "notes": "Model description consistent with RC endorsement."
+          },
+          "fuel_type": {
+            "extracted": "PETROL",
+            "listing": "PETROL",
+            "status": "matched",
+            "notes": "Propulsion / fuel type verified."
+          },
+          "chassis_number": {
+            "extracted": "****",
+            "status": "matched",
+            "notes": "Chassis identifier format verified (securely masked for privacy)."
+          },
+          "engine_number": {
+            "extracted": "****",
+            "status": "matched",
+            "notes": "Engine identifier format verified (securely masked)."
+          }
+        },
+        "is_consistent": true,
+        "official_status": "Official verification not connected (VAHAN / DigiLocker integration required)"
+      },
+      "insurance": {
+        "status": "not_uploaded"
+      },
+      "puc": {
+        "status": "not_uploaded"
+      },
+      "registration_verification": {
+        "status": "matched",
+        "normalized_reg": "CH01AB8821",
+        "masked_display": "CH01****21"
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": true,
+      "repair_bills": [],
+      "service_history": "regular",
+      "last_service_date": "15/10/2025",
+      "last_service_odometer": 8200,
+      "service_centre_name": "Royal Enfield Authorized Workshop",
+      "tyre_condition": "good",
+      "tyre_notes": "4.2mm tread depth, OEM CEAT tyres",
+      "battery_condition": "good",
+      "battery_replacement_date": "Original Battery",
+      "battery_health_ev": null,
+      "battery_warranty_ev": null,
+      "accident_disclosure": "none",
+      "accident_notes": "Zero accidental history, original body panels and chassis alignment.",
+      "updated_at": "2026-11-22T02:47:06.360656"
+    },
+    "level3_ownership": {
+      "is_authorized": true,
+      "forms_provided": [],
+      "seller_full_name": "Vikramjit Singh",
+      "relationship_to_owner": "registered_owner",
+      "is_registered_owner": true,
+      "authorisation_notes": "Sole registered owner with original registration certificate in hand.",
+      "loan_status": "no_loan",
+      "has_form29": true,
+      "has_form30": true,
+      "financier_name": "",
+      "updated_at": "2026-11-22T02:47:06.362565"
+    },
+    "review_audit_log": [
+      {
+        "action_id": "ACT-8691A8",
+        "timestamp": "2026-11-22T02:47:06.366146",
+        "reviewer_id": "MOD-007",
+        "reviewer_name": "Senior RTO Document Specialist",
+        "document_type": "rc",
+        "action": "approve",
+        "reason": "Chassis and registration format verified."
+      }
+    ]
+  },
+  "test-bike-verification-001": {
+    "listing_id": "test-bike-verification-001",
+    "created_at": "2026-11-22T02:56:00.142497",
+    "updated_at": "2026-11-22T02:56:37.993402",
+    "vehicle_details": {
+      "brand": "Royal Enfield",
+      "model": "Classic 350",
+      "variant": "Halcyon Black Dual Channel ABS",
+      "year": 2023,
+      "registration_number": "CH01AB8821",
+      "fuel_type": "petrol"
+    },
+    "level1_basic": {
+      "rc": {
+        "doc_id": "DOC-7D12A627",
+        "filename": "rc_test.png",
+        "status": "matched",
+        "upload_timestamp": "22 Nov 2026, 02:56 AM",
+        "extracted_fields": {
+          "document_type": "rc",
+          "registration_number": "CH01AB8821",
+          "manufacturer": "Royal Enfield Model",
+          "model": "Classic 350 Fuel",
+          "fuel_type": "PETROL",
+          "registration_date": null,
+          "chassis_number": null,
+          "engine_number": null,
+          "registered_owner": null,
+          "ocr_confidence": 0.95
+        },
+        "comparison": {
+          "registration_number": {
+            "extracted": "CH01AB8821",
+            "listing": "CH01AB8821",
+            "status": "matched",
+            "notes": "Exact registration number match verified."
+          },
+          "manufacturer": {
+            "extracted": "Royal Enfield Model",
+            "listing": "Royal Enfield",
+            "status": "matched",
+            "notes": "Manufacturer verified against RC records."
+          },
+          "model": {
+            "extracted": "Classic 350 Fuel",
+            "listing": "Classic 350",
+            "status": "matched",
+            "notes": "Model description consistent with RC endorsement."
+          },
+          "fuel_type": {
+            "extracted": "PETROL",
+            "listing": "PETROL",
+            "status": "matched",
+            "notes": "Propulsion / fuel type verified."
+          },
+          "chassis_number": {
+            "extracted": "****",
+            "status": "matched",
+            "notes": "Chassis identifier format verified (securely masked for privacy)."
+          },
+          "engine_number": {
+            "extracted": "****",
+            "status": "matched",
+            "notes": "Engine identifier format verified (securely masked)."
+          }
+        },
+        "is_consistent": true,
+        "official_status": "Official verification not connected (VAHAN / DigiLocker integration required)"
+      },
+      "insurance": {
+        "doc_id": "DOC-D3829DC9",
+        "filename": "insurance_test.png",
+        "status": "matched",
+        "upload_timestamp": "22 Nov 2026, 02:56 AM",
+        "extracted_fields": {
+          "document_type": "insurance",
+          "policy_number": "POL-2024-8849201",
+          "registration_number": "CH01AB8821",
+          "provider": "HDFC ERGO General Insurance",
+          "start_date": "18/03/2023",
+          "expiry_date": "18/03/2023",
+          "is_valid": true,
+          "ocr_confidence": 0.93
+        },
+        "is_valid": true,
+        "expiry_date": "18/03/2023"
+      },
+      "puc": {
+        "doc_id": "DOC-C13B29F9",
+        "filename": "puc_test.png",
+        "status": "matched",
+        "upload_timestamp": "22 Nov 2026, 02:56 AM",
+        "extracted_fields": {
+          "document_type": "puc",
+          "certificate_number": "CH01-PUC-2025-9921",
+          "registration_number": "CH01AB8821",
+          "issue_date": "10/01/2026",
+          "expiry_date": "09/07/2026",
+          "is_valid": true,
+          "carbon_monoxide_co": "0.12%",
+          "hydrocarbons_hc": "85 ppm",
+          "ocr_confidence": 0.92
+        },
+        "is_valid": true,
+        "expiry_date": "09/07/2026"
+      },
+      "registration_verification": {
+        "status": "matched",
+        "normalized_reg": "CH01AB8821",
+        "masked_display": "CH01****21"
+      }
+    },
+    "level2_condition": {
+      "service_history_completed": true,
+      "repair_bills": [],
+      "service_history": "regular",
+      "last_service_date": "15/10/2025",
+      "last_service_odometer": 8500,
+      "service_centre_name": "Royal Enfield Company Service Centre, Sector 22",
+      "tyre_condition": "good",
+      "tyre_notes": "4.2mm tread depth, no uneven edge wear",
+      "battery_condition": "good",
+      "battery_replacement_date": "Original Battery",
+      "battery_health_ev": null,
+      "battery_warranty_ev": null,
+      "accident_disclosure": "none",
+      "accident_notes": "No accidents or chassis impacts.",
+      "updated_at": "2026-11-22T02:56:37.989478"
+    },
+    "level3_ownership": {
+      "is_authorized": true,
+      "forms_provided": [],
+      "seller_full_name": "Vikramjit Singh",
+      "relationship_to_owner": "registered_owner",
+      "is_registered_owner": true,
+      "authorisation_notes": "First registered owner with physical RC available.",
+      "loan_status": "no_loan",
+      "has_form29": true,
+      "has_form30": true,
+      "financier_name": "",
+      "updated_at": "2026-11-22T02:56:37.990792"
+    },
+    "review_audit_log": [
+      {
+        "action_id": "ACT-6CC00E",
+        "timestamp": "2026-11-22T02:56:00.151653",
+        "reviewer_id": "MOD-TEST-99",
+        "reviewer_name": "Chief Moderation Officer",
+        "document_type": "rc",
+        "action": "approve",
+        "reason": "Test approval: all Parivahan fields match vehicle listing."
+      },
+      {
+        "action_id": "ACT-185BD9",
+        "timestamp": "2026-11-22T02:56:37.993400",
+        "reviewer_id": "MOD-TEST-99",
+        "reviewer_name": "Chief Moderation Officer",
+        "document_type": "rc",
+        "action": "approve",
+        "reason": "Test approval: all Parivahan fields match vehicle listing."
+      }
+    ]
+  }
+}

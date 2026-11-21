@@ -86,3 +86,7 @@ env/
 venv/
 .venv/
 .pytest_cache/
+backend/storage/verification_docs/*.pdf
+backend/storage/verification_docs/*.png
+backend/storage/verification_docs/*.jpg
+backend/storage/verification_docs/*.jpeg
