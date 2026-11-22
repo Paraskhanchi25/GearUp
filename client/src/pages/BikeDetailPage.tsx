@@ -712,7 +712,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                   className="w-full py-3.5 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2"
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>Book Free Test Ride</span>
+                  <span>Book Test Ride</span>
                 </button>
               </div>
 
