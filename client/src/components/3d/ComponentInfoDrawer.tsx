@@ -143,7 +143,7 @@ export const ComponentInfoDrawer: React.FC<ComponentInfoDrawerProps> = ({
           </div>
 
           <div className="divide-y divide-forest-900 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] overflow-hidden">
-            {Object.entries(component.specs).map(([label, val], idx) => (
+            {Object.entries(component.getSpecs ? component.getSpecs(vehicle) : component.specs).map(([label, val], idx) => (
               <div key={idx} className="flex justify-between items-center px-3 py-2 text-[11px]">
                 <span className="text-[#85857E]">{label}</span>
                 <span className="font-semibold text-[#242622] text-right">{val}</span>

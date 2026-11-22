@@ -75,9 +75,16 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   const [activePreset, setActivePreset] = useState<string>('perspective');
   const [projectedHotspots, setProjectedHotspots] = useState<Array<{ id: string; name: string; category: string; x: number; y: number; visible: boolean }>>([]);
 
-  // Model URL determination (scooter vs motorcycle)
-  const isScooter = vehicle?.category === 'scooter' || vehicle?.model?.toLowerCase().includes('activa') || vehicle?.model?.toLowerCase().includes('jupiter');
-  // For standard motorcycle or scooter, use representative high-detail GLB
+  // Model URL determination (scooter vs motorcycle from existing data)
+  const isScooter =
+    vehicle?.category === 'scooter' ||
+    vehicle?.category === 'electric' ||
+    vehicle?.model?.toLowerCase().includes('activa') ||
+    vehicle?.model?.toLowerCase().includes('jupiter') ||
+    vehicle?.model?.toLowerCase().includes('ather') ||
+    vehicle?.model?.toLowerCase().includes('s1') ||
+    vehicle?.model?.toLowerCase().includes('chetak') ||
+    vehicle?.model?.toLowerCase().includes('access');
   const modelUrl = isScooter ? '/models/scooter.glb' : '/models/motorcycle.glb';
 
   // ---------------------------------------------------------------------------
@@ -564,14 +571,19 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
       {/* Top Floating Badge: Discloses Representative 3D Model with Real Inspection Data */}
       <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <div className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] shadow-2xl text-xs">
-          <Sparkles className="w-4 h-4 text-[#242622] flex-shrink-0" />
+        <div className="pointer-events-auto flex items-center gap-2.5 px-3.5 py-2 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] shadow-xl text-xs">
+          <Sparkles className="w-4 h-4 text-[#35483C] flex-shrink-0" />
           <div className="leading-tight">
-            <span className="font-bold text-[#242622] block text-[11px]">
-              {vehicle?.brand || 'Royal Enfield'} {vehicle?.model || 'Classic 350'} 3D Digital Twin
-            </span>
-            <span className="text-[10px] text-[#242622]">
-              Representative Asset • Actual Seller Condition Displayed in Real-Time
+            <div className="flex items-center gap-2">
+              <span className="font-heading font-extrabold text-[#242622] text-xs">
+                {vehicle?.brand} {vehicle?.model}
+              </span>
+              <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-[#E9E3D8] text-[#242622]">
+                {isScooter ? 'Illustrative Scooter 3D' : 'Illustrative Motorcycle 3D'}
+              </span>
+            </div>
+            <span className="text-[10px] text-[#85857E] block mt-0.5">
+              360° Interactive Digital Twin • Real 120-Point Mechanical Audit Data
             </span>
           </div>
         </div>

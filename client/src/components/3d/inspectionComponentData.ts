@@ -18,6 +18,8 @@ export interface InspectionComponentDef {
   explodedOffset: [number, number, number];
   // Standard specifications / OEM features
   specs: Record<string, string>;
+  // Dynamic specs extractor based on active vehicle model
+  getSpecs?: (vehicle?: VehicleListing) => Record<string, string>;
   // Key mechanical features
   features: string[];
   // Function to extract seller's actual physical inspection condition
@@ -71,6 +73,64 @@ export const MOTORCYCLE_COMPONENTS: InspectionComponentDef[] = [
       'Fuel Delivery': 'Electronic Fuel Injection (EFI)',
       'Max Power': '20.2 BHP @ 6,100 RPM',
       'Max Torque': '27.0 Nm @ 4,000 RPM'
+    },
+    getSpecs: (v?: VehicleListing): Record<string, string> => {
+      if (v?.fuel === 'electric' || v?.category === 'electric') {
+        const isAther = v?.model?.toLowerCase().includes('ather');
+        return {
+          'Motor Type': 'Permanent Magnet Synchronous Motor (PMSM)',
+          'Peak Power': isAther ? '6.2 kW (8.3 BHP)' : '8.5 kW (11.4 BHP)',
+          'Battery Pack': isAther ? '3.7 kWh Lithium-ion (IP67)' : '4.0 kWh Lithium-ion',
+          'Certified Range': isAther ? '150 km IDC' : '181 km TrueRange',
+          'Cooling': 'Fan-Assisted Thermal Management',
+          'Transmission': 'High-Efficiency Belt Reduction Drive'
+        };
+      }
+      if (v?.category === 'scooter' || v?.model?.toLowerCase().includes('activa') || v?.model?.toLowerCase().includes('jupiter')) {
+        const isJupiter = v?.model?.toLowerCase().includes('jupiter');
+        return {
+          'Displacement': isJupiter ? '124.8 cc Single Cylinder' : '109.51 cc PGM-FI eSP',
+          'Engine Architecture': '4-Stroke, SI Engine, Fan Cooled',
+          'Fuel Delivery': isJupiter ? 'ET-Fi (EcoThrust Fuel Injection)' : 'PGM-FI Electronic Fuel Injection',
+          'Max Power': isJupiter ? '8.04 BHP @ 6,500 RPM' : '7.79 BHP @ 8,000 RPM',
+          'Max Torque': isJupiter ? '10.5 Nm @ 4,500 RPM' : '8.84 Nm @ 5,500 RPM',
+          'Transmission': 'V-Matic CVT Automatic'
+        };
+      }
+      if (v?.model?.toLowerCase().includes('r15')) {
+        return {
+          'Displacement': '155 cc Liquid-Cooled 4-Stroke SOHC',
+          'Valve System': '4-Valve with Variable Valve Actuation (VVA)',
+          'Max Power': '18.4 BHP @ 10,000 RPM',
+          'Max Torque': '14.2 Nm @ 7,500 RPM',
+          'Transmission': '6-Speed with Assist & Slipper Clutch'
+        };
+      }
+      if (v?.model?.toLowerCase().includes('pulsar')) {
+        return {
+          'Displacement': '199.5 cc Triple-Spark 4-Valve DTS-i',
+          'Cooling': 'Liquid-Cooled with Thermostat Relay',
+          'Max Power': '24.5 BHP @ 9,750 RPM',
+          'Max Torque': '18.74 Nm @ 8,000 RPM',
+          'Transmission': '6-Speed Constant Mesh'
+        };
+      }
+      if (v?.model?.toLowerCase().includes('splendor')) {
+        return {
+          'Displacement': '97.2 cc Air-Cooled Single Cylinder',
+          'Engine Architecture': '4-Stroke, OHC, Programmed FI with i3S',
+          'Max Power': '7.91 BHP @ 8,000 RPM',
+          'Max Torque': '8.05 Nm @ 6,000 RPM',
+          'Transmission': '4-Speed Constant Mesh All-Up'
+        };
+      }
+      return {
+        'Displacement': '349 cc J-Series Single Cylinder',
+        'Engine Architecture': '4-Stroke, SOHC, Air-Oil Cooled',
+        'Max Power': '20.2 BHP @ 6,100 RPM',
+        'Max Torque': '27.0 Nm @ 4,000 RPM',
+        'Transmission': '5-Speed Constant Mesh'
+      };
     },
     features: [
       'Counterbalancer shaft reducing high-RPM vibrations',
