@@ -13,8 +13,6 @@ import {
   AlertCircle, 
   Share2, 
   Heart, 
-  Phone, 
-  MessageCircle, 
   ChevronLeft,
   ArrowRight, 
   Zap, 
@@ -707,7 +705,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                 </div>
               </div>
 
-              {/* Action Buttons: Test Ride & WhatsApp Contact */}
+              {/* Action Buttons: Test Ride */}
               <div className="space-y-3 pt-2">
                 <button
                   onClick={() => setTestRideModalOpen(true)}
@@ -716,26 +714,6 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                   <Calendar className="w-4 h-4" />
                   <span>Book Free Test Ride</span>
                 </button>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <a
-                    href={`https://wa.me/919876543210?text=Hi,%20I%20am%20interested%20in%20your%20${encodeURIComponent(vehicle.title)}%20listed%20on%20GEAR%20UP`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="py-2.5 rounded-none bg-[#242622] hover:bg-[#35483C] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>WhatsApp</span>
-                  </a>
-
-                  <button
-                    onClick={() => alert(`Connecting you to ${vehicle.sellerName}: ${vehicle.sellerPhone || '+91 98765 43210'}`)}
-                    className="py-2.5 rounded-none bg-white hover:bg-[#F7F5EF] border border-[#E9E3D8] text-[#242622] font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                  >
-                    <Phone className="w-4 h-4 text-[#242622]" />
-                    <span>Call Seller</span>
-                  </button>
-                </div>
               </div>
 
               {/* Resale Studio Cross-Promotion */}
