@@ -42,13 +42,32 @@ import {
   getAdminRevenueStats,
   getAdminRCReviews,
   getAdminRCDetail,
-  submitAdminRCReview
+  submitAdminRCReview,
+  getPlatformFeeConfig,
+  updatePlatformFeeConfig,
+  getAdminPlatformFeeRevenue,
+  getAdminPlatformFeeTransactions,
+  getPlatformFeeExportUrl
 } from '../services/aiApi';
 
 export const AdminPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'verification_desk' | 'smart_rc_desk' | 'marketplace_moderation' | 'location_revenue'>('verification_desk');
+  const [activeTab, setActiveTab] = useState<'verification_desk' | 'smart_rc_desk' | 'marketplace_moderation' | 'location_revenue' | 'platform_fee_desk'>('verification_desk');
   const [listings, setListings] = useState(SEED_LISTINGS);
   const [revenueStats, setRevenueStats] = useState<any>(null);
+
+  // Platform Listing Fee Admin State
+  const [platformFeeConfig, setPlatformFeeConfig] = useState<any>(null);
+  const [platformFeeRevenue, setPlatformFeeRevenue] = useState<any>(null);
+  const [platformFeeTransactions, setPlatformFeeTransactions] = useState<any[]>([]);
+  const [platformFeeFilterStatus, setPlatformFeeFilterStatus] = useState<string>('all');
+  const [platformFeeSearch, setPlatformFeeSearch] = useState<string>('');
+  const [platformFeeStartDate, setPlatformFeeStartDate] = useState<string>('');
+  const [platformFeeEndDate, setPlatformFeeEndDate] = useState<string>('');
+  const [newFeeAmount, setNewFeeAmount] = useState<number>(299);
+  const [newRefundPolicy, setNewRefundPolicy] = useState<string>('');
+  const [isUpdatingFeeConfig, setIsUpdatingFeeConfig] = useState<boolean>(false);
+  const [feeConfigSuccessMsg, setFeeConfigSuccessMsg] = useState<string | null>(null);
+  const [isLoadingFeeData, setIsLoadingFeeData] = useState<boolean>(false);
 
   // Smart RC Desk State
   const [smartRcQueue, setSmartRcQueue] = useState<any[]>([]);
@@ -102,13 +121,64 @@ export const AdminPage: React.FC = () => {
     }
   };
 
+  const fetchPlatformFeeData = async () => {
+    setIsLoadingFeeData(true);
+    try {
+      const [cfg, rev, txs] = await Promise.all([
+        getPlatformFeeConfig().catch(() => null),
+        getAdminPlatformFeeRevenue().catch(() => null),
+        getAdminPlatformFeeTransactions({
+          status: platformFeeFilterStatus !== 'all' ? platformFeeFilterStatus : undefined,
+          search: platformFeeSearch || undefined,
+          start_date: platformFeeStartDate || undefined,
+          end_date: platformFeeEndDate || undefined
+        }).catch(() => null)
+      ]);
+      if (cfg) {
+        setPlatformFeeConfig(cfg);
+        setNewFeeAmount(cfg.listing_fee_inr);
+        setNewRefundPolicy(cfg.refund_policy || '');
+      }
+      if (rev) setPlatformFeeRevenue(rev);
+      if (txs && txs.transactions) setPlatformFeeTransactions(txs.transactions);
+    } catch (err) {
+      console.warn('Error fetching platform fee data:', err);
+    } finally {
+      setIsLoadingFeeData(false);
+    }
+  };
+
+  const handleUpdateFeeConfig = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUpdatingFeeConfig(true);
+    setFeeConfigSuccessMsg(null);
+    try {
+      const res = await updatePlatformFeeConfig({
+        listing_fee_inr: Number(newFeeAmount),
+        refund_policy: newRefundPolicy,
+        updated_by: 'Platform Superadmin'
+      });
+      if (res && res.status === 'success') {
+        setFeeConfigSuccessMsg(`Platform listing fee successfully updated to ₹${newFeeAmount}.`);
+        setPlatformFeeConfig(res.config);
+        fetchPlatformFeeData();
+      }
+    } catch (err: any) {
+      alert(err.message || 'Failed to update platform fee');
+    } finally {
+      setIsUpdatingFeeConfig(false);
+    }
+  };
+
   useEffect(() => {
     if (activeTab === 'location_revenue') {
       fetchRevenue();
     } else if (activeTab === 'smart_rc_desk') {
       fetchSmartRcQueue();
+    } else if (activeTab === 'platform_fee_desk') {
+      fetchPlatformFeeData();
     }
-  }, [activeTab]);
+  }, [activeTab, platformFeeFilterStatus, platformFeeStartDate, platformFeeEndDate]);
 
   const fetchSmartRcQueue = async () => {
     setIsLoadingSmartRc(true);
@@ -304,7 +374,18 @@ export const AdminPage: React.FC = () => {
               }`}
             >
               <DollarSign className="w-4 h-4" />
-              <span>Monetization</span>
+              <span>Location Monetization</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('platform_fee_desk')}
+              className={`flex-1 md:flex-none px-4 py-2 rounded-full font-bold transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap tactile-btn ${
+                activeTab === 'platform_fee_desk'
+                  ? 'bg-[#35483C] text-white shadow-sm'
+                  : 'text-[#85857E] hover:text-[#242622]'
+              }`}
+            >
+              <CreditCard className="w-4 h-4" />
+              <span>Platform Listing Fees</span>
             </button>
           </div>
         </div>
@@ -1410,6 +1491,291 @@ export const AdminPage: React.FC = () => {
                     </div>
                   ))
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* TAB 5: PLATFORM LISTING FEE MONETIZATION & CONTROLS */}
+        {/* ======================================================== */}
+        {activeTab === 'platform_fee_desk' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Config & Revenue Header */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Fee Configuration Control (5 cols) */}
+              <div className="lg:col-span-5 p-6 rounded-3xl border border-[#242622]/[0.08] bg-white shadow-md space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-5 h-5 text-[#35483C]" />
+                    <h3 className="font-heading font-bold text-base text-[#242622]">Platform Fee Configuration</h3>
+                  </div>
+                  <span className="text-[10px] uppercase font-mono font-bold bg-[#FAF9F5] text-[#35483C] px-2.5 py-0.5 rounded-full border border-[#242622]/10">
+                    Live Setting
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#85857E] font-sans">
+                  Configure the mandatory listing fee charged to sellers when publishing vehicles on GEAR UP.
+                </p>
+
+                {feeConfigSuccessMsg && (
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>{feeConfigSuccessMsg}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleUpdateFeeConfig} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#242622] mb-1">
+                      Listing Fee Amount (INR ₹)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3.5 top-2.5 font-bold text-[#85857E]">₹</span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="10"
+                        value={newFeeAmount}
+                        onChange={(e) => setNewFeeAmount(Number(e.target.value))}
+                        className="w-full pl-8 pr-4 py-2.5 rounded-xl border border-[#242622]/15 bg-[#FAF9F5] font-mono font-bold text-sm text-[#242622] focus:outline-none focus:border-[#35483C]"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#242622] mb-1">
+                      Configured Refund Policy
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={newRefundPolicy}
+                      onChange={(e) => setNewRefundPolicy(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#242622]/15 bg-[#FAF9F5] text-xs text-[#242622] focus:outline-none focus:border-[#35483C] font-sans"
+                      placeholder="Specify official refund policy for sellers..."
+                      required
+                    />
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-amber-900 text-[11px] flex items-start gap-2 font-sans">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <span>
+                      Changing the fee amount applies strictly to new vehicle listings. Existing paid listings retain their verified status and will not be charged again.
+                    </span>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isUpdatingFeeConfig}
+                    className="w-full py-2.5 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all tactile-btn shadow-sm"
+                  >
+                    {isUpdatingFeeConfig ? (
+                      <>
+                        <Clock className="w-3.5 h-3.5 animate-spin" />
+                        <span>Updating Setting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Save Listing Fee Settings</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+
+              {/* Revenue & Transaction Metrics (7 cols) */}
+              <div className="lg:col-span-7 space-y-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="p-4 rounded-2xl bg-white border border-[#242622]/[0.08] shadow-sm space-y-1">
+                    <span className="text-[10px] uppercase font-mono font-bold text-[#85857E]">Total Revenue</span>
+                    <p className="font-heading font-extrabold text-2xl text-[#35483C]">
+                      {formatINR(platformFeeRevenue?.total_revenue_inr || 0)}
+                    </p>
+                    <p className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3" /> Realized Revenue
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white border border-[#242622]/[0.08] shadow-sm space-y-1">
+                    <span className="text-[10px] uppercase font-mono font-bold text-[#85857E]">Paid Listings</span>
+                    <p className="font-heading font-extrabold text-2xl text-[#242622]">
+                      {platformFeeRevenue?.successful_payments || 0}
+                    </p>
+                    <p className="text-[10px] text-[#85857E]">Verified Transactions</p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white border border-[#242622]/[0.08] shadow-sm space-y-1">
+                    <span className="text-[10px] uppercase font-mono font-bold text-[#85857E]">Awaiting Payment</span>
+                    <p className="font-heading font-extrabold text-2xl text-amber-600">
+                      {platformFeeRevenue?.pending_payments || 0}
+                    </p>
+                    <p className="text-[10px] text-[#85857E]">In Listing Funnel</p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white border border-[#242622]/[0.08] shadow-sm space-y-1">
+                    <span className="text-[10px] uppercase font-mono font-bold text-[#85857E]">Failed / Retried</span>
+                    <p className="font-heading font-extrabold text-2xl text-red-600">
+                      {platformFeeRevenue?.failed_payments || 0}
+                    </p>
+                    <p className="text-[10px] text-[#85857E]">Retryable Drafts</p>
+                  </div>
+                </div>
+
+                {/* Audit & Monetization Overview */}
+                <div className="p-5 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.08] space-y-2 text-xs">
+                  <h4 className="font-bold text-sm text-[#242622] flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>Cryptographic Audit & Security Standards</span>
+                  </h4>
+                  <p className="text-[#85857E] leading-relaxed font-sans">
+                    All seller listing payments are authenticated via server-side HMAC-SHA256 signature verification and Razorpay webhook callbacks. The application never relies on frontend payment signals alone. Card details and UPI credentials are never stored.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Filter Bar & Export */}
+            <div className="p-5 rounded-2xl bg-white border border-[#242622]/[0.08] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-mono">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-[#85857E]" />
+                  <input
+                    type="text"
+                    value={platformFeeSearch}
+                    onChange={(e) => setPlatformFeeSearch(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && fetchPlatformFeeData()}
+                    placeholder="Search listing, order, tx..."
+                    className="pl-8 pr-3 py-2 rounded-xl border border-[#242622]/15 bg-[#FAF9F5] text-xs text-[#242622] focus:outline-none focus:border-[#35483C]"
+                  />
+                </div>
+
+                <select
+                  value={platformFeeFilterStatus}
+                  onChange={(e) => setPlatformFeeFilterStatus(e.target.value)}
+                  className="px-3 py-2 rounded-xl border border-[#242622]/15 bg-[#FAF9F5] text-xs text-[#242622] focus:outline-none focus:border-[#35483C]"
+                >
+                  <option value="all">All Payment Statuses</option>
+                  <option value="success">Paid & Verified</option>
+                  <option value="pending">Awaiting Payment</option>
+                  <option value="failed">Payment Failed</option>
+                  <option value="refunded">Refunded</option>
+                </select>
+
+                <div className="flex items-center gap-1.5 text-[#85857E] text-[11px]">
+                  <span>From:</span>
+                  <input
+                    type="date"
+                    value={platformFeeStartDate}
+                    onChange={(e) => setPlatformFeeStartDate(e.target.value)}
+                    className="px-2 py-1.5 rounded-lg border border-[#242622]/15 bg-[#FAF9F5] text-[11px]"
+                  />
+                  <span>To:</span>
+                  <input
+                    type="date"
+                    value={platformFeeEndDate}
+                    onChange={(e) => setPlatformFeeEndDate(e.target.value)}
+                    className="px-2 py-1.5 rounded-lg border border-[#242622]/15 bg-[#FAF9F5] text-[11px]"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={fetchPlatformFeeData}
+                  className="px-3.5 py-2 rounded-xl bg-[#FAF9F5] hover:bg-[#242622]/5 border border-[#242622]/10 text-[#242622] text-xs font-bold flex items-center gap-1.5 tactile-btn"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingFeeData ? 'animate-spin' : ''}`} />
+                  <span>Refresh</span>
+                </button>
+
+                <a
+                  href={getPlatformFeeExportUrl()}
+                  download="gearup_platform_fees.csv"
+                  className="px-4 py-2 rounded-xl bg-[#35483C] hover:bg-[#242622] text-white text-xs font-bold flex items-center gap-1.5 tactile-btn shadow-sm"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Export CSV</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Platform Fee Transactions Ledger Table */}
+            <div className="p-6 rounded-3xl border border-[#242622]/[0.08] bg-white shadow-md space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-heading font-bold text-base text-[#242622]">Platform Listing Fee Transactions</h4>
+                <span className="text-xs font-mono font-bold text-[#85857E]">
+                  {platformFeeTransactions.length} Record(s) Found
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs font-sans">
+                  <thead>
+                    <tr className="border-b border-[#242622]/10 text-[10px] font-mono uppercase text-[#85857E]">
+                      <th className="py-3 px-3">Transaction ID</th>
+                      <th className="py-3 px-3">Order & Payment ID</th>
+                      <th className="py-3 px-3">Listing ID</th>
+                      <th className="py-3 px-3">Seller Details</th>
+                      <th className="py-3 px-3">Amount</th>
+                      <th className="py-3 px-3">Status</th>
+                      <th className="py-3 px-3 text-right">Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#242622]/5">
+                    {platformFeeTransactions.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="py-10 text-center text-[#85857E]">
+                          No platform fee transactions found matching the current filters.
+                        </td>
+                      </tr>
+                    ) : (
+                      platformFeeTransactions.map((tx: any, idx: number) => (
+                        <tr key={idx} className="hover:bg-[#FAF9F5] transition-colors">
+                          <td className="py-3.5 px-3 font-mono font-bold text-[#242622]">
+                            {tx.transaction_id}
+                          </td>
+                          <td className="py-3.5 px-3 font-mono text-[11px] text-[#85857E]">
+                            <div>{tx.order_id}</div>
+                            {tx.payment_id && (
+                              <div className="text-emerald-700 font-semibold">{tx.payment_id}</div>
+                            )}
+                          </td>
+                          <td className="py-3.5 px-3 font-mono font-bold text-[#35483C]">
+                            {tx.listing_id}
+                          </td>
+                          <td className="py-3.5 px-3 text-xs text-[#242622]">
+                            <div className="font-bold">{tx.seller_name || tx.seller_id}</div>
+                            <div className="text-[10px] text-[#85857E]">{tx.seller_email || 'Verified Seller'}</div>
+                          </td>
+                          <td className="py-3.5 px-3 font-mono font-bold text-sm text-[#242622]">
+                            {formatINR(tx.amount_inr || 299)}
+                          </td>
+                          <td className="py-3.5 px-3">
+                            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                              tx.payment_status === 'success'
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                : tx.payment_status === 'failed'
+                                ? 'bg-red-50 text-red-800 border border-red-200'
+                                : 'bg-amber-50 text-amber-800 border border-amber-200'
+                            }`}>
+                              {tx.payment_status === 'success' && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
+                              {tx.payment_status === 'failed' && <X className="w-3 h-3 text-red-600" />}
+                              {tx.payment_status === 'pending' && <Clock className="w-3 h-3 text-amber-600" />}
+                              <span className="uppercase">{tx.payment_status}</span>
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-3 text-right font-mono text-[11px] text-[#85857E]">
+                            {tx.created_at ? new Date(tx.created_at).toLocaleString() : 'N/A'}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

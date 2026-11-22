@@ -146,17 +146,11 @@ export interface WorkshopEnvironmentResult {
 
 /**
  * Builds the complete 3D Workshop precisely matching the reference photograph.
- * Layout:
- * - Central runway aisle with dual dashed yellow lines
- * - Pitched vaulted ceiling with central skylight corridor
- * - Symmetrical angled gull-wing LED strip luminaires
- * - Vertical wall-mounted LED tubes
- * - Central elevated red hydraulic scissor lift table under the inspection motorcycle
- * - Secondary red scissor lifts along the left wall with blue pneumatic air coiled lines
- * - Heavy-duty 3-tier black industrial tire rack along the right wall packed with tires
- * - Rear wall with office access door, mezzanine observation window, and brand plaques
+ * Optimized with high-efficiency emissive luminaires and adaptive shadow mapping.
  */
-export function buildWorkshopEnvironment(): WorkshopEnvironmentResult {
+export function buildWorkshopEnvironment(
+  qualityProfile: 'high' | 'balanced' | 'performance' = 'high'
+): WorkshopEnvironmentResult {
   const workshop = new THREE.Group();
   workshop.name = 'Realistic_Garage_Workshop';
 
@@ -299,7 +293,8 @@ export function buildWorkshopEnvironment(): WorkshopEnvironmentResult {
   const endZ = 6.5;
   const zStep = (endZ - startZ) / (numRows - 1);
 
-  const ledTubeGeo = new THREE.CylinderGeometry(0.04, 0.04, 2.8, 12);
+  const tubeRadialSegs = qualityProfile === 'performance' ? 8 : 12;
+  const ledTubeGeo = new THREE.CylinderGeometry(0.04, 0.04, 2.8, tubeRadialSegs);
   ledTubeGeo.rotateZ(Math.PI / 2); // horizontal tube
 
   for (let i = 0; i < numRows; i++) {
@@ -312,17 +307,9 @@ export function buildWorkshopEnvironment(): WorkshopEnvironmentResult {
     leftFixture.rotation.z = -0.18; // angled downward towards the central aisle
     workshop.add(leftFixture);
 
-    // Spotlight below the fixture
-    const leftSpot = new THREE.SpotLight(0xffffff, 1.4, 12, Math.PI / 3, 0.4, 1.2);
-    leftSpot.position.set(-2.5, ceilingHeight - 0.8, zPos);
-    leftSpot.target.position.set(-2.5, 0, zPos);
-    workshop.add(leftSpot);
-    workshop.add(leftSpot.target);
-
     overheadLights.push({
       mesh: leftFixture,
-      light: leftSpot,
-      targetIntensity: 1.4,
+      targetIntensity: 1.6,
       rowOrder
     });
 
@@ -332,24 +319,30 @@ export function buildWorkshopEnvironment(): WorkshopEnvironmentResult {
     rightFixture.rotation.z = 0.18;
     workshop.add(rightFixture);
 
-    const rightSpot = new THREE.SpotLight(0xffffff, 1.4, 12, Math.PI / 3, 0.4, 1.2);
-    rightSpot.position.set(2.5, ceilingHeight - 0.8, zPos);
-    rightSpot.target.position.set(2.5, 0, zPos);
-    workshop.add(rightSpot);
-    workshop.add(rightSpot.target);
-
     overheadLights.push({
       mesh: rightFixture,
-      light: rightSpot,
-      targetIntensity: 1.4,
+      targetIntensity: 1.6,
       rowOrder
     });
   }
 
+  // 2 Optimized Broad Aisle Runway Illuminators (Replaces 36 heavy individual lights)
+  const frontAisleSpot = new THREE.SpotLight(0xffffff, 1.8, 16, Math.PI / 2.8, 0.5, 1.0);
+  frontAisleSpot.position.set(0, ceilingHeight - 0.5, 3.2);
+  frontAisleSpot.target.position.set(0, 0, 3.2);
+  workshop.add(frontAisleSpot);
+  workshop.add(frontAisleSpot.target);
+
+  const rearAisleSpot = new THREE.SpotLight(0xffffff, 1.8, 16, Math.PI / 2.8, 0.5, 1.0);
+  rearAisleSpot.position.set(0, ceilingHeight - 0.5, -3.2);
+  rearAisleSpot.target.position.set(0, 0, -3.2);
+  workshop.add(rearAisleSpot);
+  workshop.add(rearAisleSpot.target);
+
   // ---------------------------------------------------------------------------
   // 4. VERTICAL WALL-MOUNTED LED LIGHT TUBES
   // ---------------------------------------------------------------------------
-  const vertTubeGeo = new THREE.CylinderGeometry(0.035, 0.035, 2.2, 12);
+  const vertTubeGeo = new THREE.CylinderGeometry(0.035, 0.035, 2.2, tubeRadialSegs);
   const wallLightSpacing = 1.6;
 
   for (let z = -6.5; z <= 6.0; z += wallLightSpacing) {
@@ -358,14 +351,9 @@ export function buildWorkshopEnvironment(): WorkshopEnvironmentResult {
     vLeft.position.set(-6.85, 2.0, z);
     workshop.add(vLeft);
 
-    const vLeftPoint = new THREE.PointLight(0xffffff, 0.8, 4.5);
-    vLeftPoint.position.set(-6.65, 2.0, z);
-    workshop.add(vLeftPoint);
-
     verticalWallLights.push({
       mesh: vLeft,
-      light: vLeftPoint,
-      targetIntensity: 0.8,
+      targetIntensity: 1.2,
       rowOrder: Math.round((z + 7) / wallLightSpacing)
     });
 
@@ -374,14 +362,9 @@ export function buildWorkshopEnvironment(): WorkshopEnvironmentResult {
     vRight.position.set(6.85, 2.0, z);
     workshop.add(vRight);
 
-    const vRightPoint = new THREE.PointLight(0xffffff, 0.8, 4.5);
-    vRightPoint.position.set(6.65, 2.0, z);
-    workshop.add(vRightPoint);
-
     verticalWallLights.push({
       mesh: vRight,
-      light: vRightPoint,
-      targetIntensity: 0.8,
+      targetIntensity: 1.2,
       rowOrder: Math.round((z + 7) / wallLightSpacing)
     });
   }
@@ -557,10 +540,17 @@ export function buildWorkshopEnvironment(): WorkshopEnvironmentResult {
   const inspectionSpot = new THREE.SpotLight(0xffffff, 2.6, 14, Math.PI / 4, 0.35, 1.1);
   inspectionSpot.position.set(0, ceilingHeight - 0.4, 0);
   inspectionSpot.target.position.set(0, 0.6, 0);
-  inspectionSpot.castShadow = true;
-  inspectionSpot.shadow.mapSize.width = 2048;
-  inspectionSpot.shadow.mapSize.height = 2048;
-  inspectionSpot.shadow.bias = -0.0004;
+
+  if (qualityProfile === 'performance') {
+    inspectionSpot.castShadow = false;
+  } else {
+    inspectionSpot.castShadow = true;
+    const shadowMapDim = qualityProfile === 'high' ? 2048 : 1024;
+    inspectionSpot.shadow.mapSize.width = shadowMapDim;
+    inspectionSpot.shadow.mapSize.height = shadowMapDim;
+    inspectionSpot.shadow.bias = -0.0004;
+  }
+
   workshop.add(inspectionSpot);
   workshop.add(inspectionSpot.target);
 

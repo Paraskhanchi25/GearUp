@@ -122,12 +122,12 @@ export const ComparePage: React.FC = () => {
     setIsComparing(true);
 
     compareLiveListings(selectedIds)
-      .then((res) => {
+      .then((res: any) => {
         if (isMounted && res && res.status === 'success') {
           setComparisonResult(res);
         }
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.warn('Backend compare error, computing locally:', err);
         // Fallback local comparison generator
         if (isMounted) {

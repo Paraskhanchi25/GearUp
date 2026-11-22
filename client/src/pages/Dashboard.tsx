@@ -21,11 +21,104 @@ import {
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
 import { Link } from 'react-router-dom';
-import { getBuyerPurchases } from '../services/aiApi';
+import { getBuyerPurchases, getListingFeeStatus, getPlatformFeeConfig } from '../services/aiApi';
+import { PlatformListingFeeModal } from '../components/PlatformListingFeeModal';
+import { 
+  CreditCard, 
+  RotateCcw, 
+  Plus, 
+  AlertCircle 
+} from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
   const [role, setRole] = useState<'buyer' | 'seller' | 'dealer' | 'admin'>('dealer');
   const [buyerPurchases, setBuyerPurchases] = useState<any[]>([]);
+  const [sellerListings, setSellerListings] = useState<any[]>([]);
+  const [feeConfig, setFeeConfig] = useState<any>({ listing_fee_inr: 299, currency: 'INR' });
+  const [paymentModalState, setPaymentModalState] = useState<{
+    isOpen: boolean;
+    listingId: string;
+    vehicleTitle: string;
+  }>({
+    isOpen: false,
+    listingId: '',
+    vehicleTitle: ''
+  });
+
+  const loadSellerData = async () => {
+    try {
+      const cfg = await getPlatformFeeConfig().catch(() => null);
+      if (cfg) setFeeConfig(cfg);
+
+      const customListings = JSON.parse(localStorage.getItem('gearup_custom_listings') || '[]');
+      
+      // Also inspect active draft in local storage
+      const activeDraftId = localStorage.getItem('gearup_current_listing_id');
+      const draftDataRaw = activeDraftId ? localStorage.getItem('gearup_seller_draft_' + activeDraftId) : null;
+      let draftItem: any = null;
+      if (draftDataRaw && activeDraftId) {
+        try {
+          const parsed = JSON.parse(draftDataRaw);
+          draftItem = {
+            id: activeDraftId,
+            title: `${parsed.year || 2023} ${parsed.brand || 'Vehicle'} ${parsed.model || ''}`,
+            price: parsed.askingPrice || 0,
+            km: parsed.km || 0,
+            area: parsed.city || 'Chandigarh',
+            primaryImage: '',
+            isDraft: true,
+            status: 'draft'
+          };
+        } catch (e) {}
+      }
+
+      const allListings = [...customListings];
+      if (draftItem && !allListings.some(l => l.id === draftItem.id)) {
+        allListings.unshift(draftItem);
+      }
+
+      // If empty, add a demonstration seller listing
+      if (allListings.length === 0) {
+        allListings.push({
+          id: 'GEAR-UP-101',
+          title: '2023 Royal Enfield Classic 350 Stealth Black',
+          price: 182000,
+          km: 14000,
+          area: 'Sector 17, Chandigarh',
+          primaryImage: SEED_LISTINGS[0]?.primaryImage || '',
+          isPublished: true,
+          status: 'published',
+          paymentStatus: 'paid'
+        });
+      }
+
+      // Fetch payment statuses from backend for each listing
+      const enriched = await Promise.all(
+        allListings.map(async (item) => {
+          try {
+            const st = await getListingFeeStatus(item.id);
+            return {
+              ...item,
+              paymentInfo: st,
+              status: item.isDraft
+                ? (st.status === 'payment_failed' ? 'payment_failed' : 'awaiting_payment')
+                : (st.is_paid ? 'published' : st.status)
+            };
+          } catch (e) {
+            return {
+              ...item,
+              paymentInfo: { is_paid: item.paymentStatus === 'paid', status: item.paymentStatus || 'paid' },
+              status: item.status || 'published'
+            };
+          }
+        })
+      );
+
+      setSellerListings(enriched);
+    } catch (err) {
+      console.warn('Error loading seller data:', err);
+    }
+  };
 
   useEffect(() => {
     const buyerId = localStorage.getItem('gearup_buyer_id') || 'buyer-101';
@@ -34,6 +127,8 @@ export const DashboardPage: React.FC = () => {
         setBuyerPurchases(res.purchases);
       }
     });
+
+    loadSellerData();
   }, []);
 
   return (
@@ -83,7 +178,162 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* BUYER VIEW: UNLOCKED MEETUP LOCATIONS & PURCHASES */}
+        {/* SELLER VIEW: VEHICLE LISTINGS & PAYMENT STATUSES */}
+        {role === 'seller' && (
+          <div className="p-6 sm:p-8 rounded-3xl border border-[#242622]/[0.08] bg-white space-y-6 shadow-lg animate-fade-in">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#242622]/10 pb-5">
+              <div>
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-[#35483C]" />
+                  <h3 className="font-heading font-extrabold text-xl text-[#242622]">My Vehicle Listings & Platform Fees</h3>
+                </div>
+                <p className="text-xs text-[#85857E] mt-0.5 font-sans">
+                  Manage your marketplace submissions, track verification, and complete mandatory listing fee payments.
+                </p>
+              </div>
+
+              <Link
+                to="/sell"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm tactile-btn shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>List Another Two-Wheeler</span>
+              </Link>
+            </div>
+
+            {/* Seller Listings Cards Grid */}
+            <div className="space-y-4">
+              {sellerListings.map((listing) => {
+                const status = listing.status || 'published';
+                const isPaid = listing.paymentInfo?.is_paid;
+
+                return (
+                  <div
+                    key={listing.id}
+                    className="p-5 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.08] hover:border-[#35483C]/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs"
+                  >
+                    <div className="flex items-start gap-4">
+                      {listing.primaryImage ? (
+                        <img
+                          src={listing.primaryImage}
+                          alt={listing.title}
+                          className="w-20 h-16 rounded-xl object-cover bg-black/10 border border-[#242622]/10 shrink-0"
+                        />
+                      ) : (
+                        <div className="w-20 h-16 rounded-xl bg-[#242622]/5 border border-dashed border-[#242622]/20 flex items-center justify-center text-[#85857E] text-[10px] font-mono shrink-0">
+                          Photos
+                        </div>
+                      )}
+
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-mono font-bold text-[10px] uppercase text-[#35483C] bg-white px-2 py-0.5 rounded border border-[#242622]/10">
+                            {listing.id}
+                          </span>
+
+                          {/* Payment & Publication Status Indicator Badges */}
+                          {status === 'published' && (
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span>PUBLISHED LIVE</span>
+                            </span>
+                          )}
+                          {status === 'paid' && (
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span>PAID • READY TO PUBLISH</span>
+                            </span>
+                          )}
+                          {status === 'awaiting_payment' && (
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1">
+                              <Clock className="w-3 h-3 text-amber-600" />
+                              <span>AWAITING PAYMENT</span>
+                            </span>
+                          )}
+                          {status === 'payment_failed' && (
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-red-50 text-red-800 border border-red-200 flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3 text-red-600" />
+                              <span>PAYMENT FAILED</span>
+                            </span>
+                          )}
+                          {status === 'draft' && (
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                              DRAFT
+                            </span>
+                          )}
+                        </div>
+
+                        <h4 className="font-heading font-bold text-base text-[#242622]">
+                          {listing.title}
+                        </h4>
+
+                        <div className="flex items-center gap-3 text-[#85857E] text-[11px] font-mono">
+                          <span>{listing.km ? `${listing.km.toLocaleString('en-IN')} km` : '0 km'}</span>
+                          <span>•</span>
+                          <span>{listing.area || 'Chandigarh'}</span>
+                          <span>•</span>
+                          <span className="font-bold text-[#242622]">{formatINR(listing.price || 0)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Next Action Buttons for Each Status */}
+                    <div className="flex items-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-[#242622]/10 shrink-0">
+                      {status === 'payment_failed' && (
+                        <button
+                          type="button"
+                          onClick={() => setPaymentModalState({
+                            isOpen: true,
+                            listingId: listing.id,
+                            vehicleTitle: listing.title
+                          })}
+                          className="px-4 py-2 rounded-full bg-red-600 hover:bg-red-700 text-white font-mono font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all tactile-btn"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span>Retry Payment ({formatINR(feeConfig.listing_fee_inr || 299)})</span>
+                        </button>
+                      )}
+
+                      {(status === 'awaiting_payment' || status === 'draft') && !isPaid && (
+                        <button
+                          type="button"
+                          onClick={() => setPaymentModalState({
+                            isOpen: true,
+                            listingId: listing.id,
+                            vehicleTitle: listing.title
+                          })}
+                          className="px-4 py-2 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-mono font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all tactile-btn"
+                        >
+                          <CreditCard className="w-3.5 h-3.5" />
+                          <span>Pay Listing Fee ({formatINR(feeConfig.listing_fee_inr || 299)})</span>
+                        </button>
+                      )}
+
+                      {isPaid && status !== 'published' && (
+                        <Link
+                          to="/sell"
+                          className="px-4 py-2 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-mono font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all tactile-btn"
+                        >
+                          <span>Complete & Publish Live</span>
+                        </Link>
+                      )}
+
+                      {status === 'published' && (
+                        <Link
+                          to={`/bike/${listing.id}`}
+                          className="px-4 py-2 rounded-full bg-white hover:bg-[#FAF9F5] border border-[#242622]/15 text-[#242622] font-mono font-bold text-xs flex items-center gap-1.5 transition-all tactile-btn shadow-sm"
+                        >
+                          <span>View Live Listing</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
         {role === 'buyer' && (
           <div className="p-6 sm:p-8 rounded-3xl border border-[#242622]/[0.08] bg-white space-y-5 shadow-lg">
             <div className="flex items-center justify-between">
@@ -271,6 +521,18 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Platform Listing Fee Modal */}
+      <PlatformListingFeeModal
+        isOpen={paymentModalState.isOpen}
+        onClose={() => setPaymentModalState({ isOpen: false, listingId: '', vehicleTitle: '' })}
+        listingId={paymentModalState.listingId}
+        vehicleTitle={paymentModalState.vehicleTitle}
+        feeConfig={feeConfig}
+        onPaymentSuccess={() => {
+          loadSellerData();
+        }}
+      />
     </div>
   );
 };

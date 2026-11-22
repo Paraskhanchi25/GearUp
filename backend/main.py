@@ -35,6 +35,7 @@ from routers.verification import router as verification_router
 from routers.location_monetization import router as location_monetization_router
 from routers.rc_verification import router as rc_verification_router
 from routers.models_3d import router as models_3d_router
+from routers.platform_fee import router as platform_fee_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -86,6 +87,7 @@ app.include_router(verification_router, prefix=settings.API_PREFIX)
 app.include_router(location_monetization_router, prefix=settings.API_PREFIX)
 app.include_router(rc_verification_router, prefix=settings.API_PREFIX)
 app.include_router(models_3d_router, prefix=settings.API_PREFIX)
+app.include_router(platform_fee_router, prefix=settings.API_PREFIX)
 
 @app.get("/")
 async def root():

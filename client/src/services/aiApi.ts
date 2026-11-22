@@ -887,5 +887,131 @@ export async function compareLiveListings(listingIds: string[]) {
   return data;
 }
 
+// ==============================================================================
+// GEAR UP Platform Listing Fee & Monetization API
+// ==============================================================================
+
+export async function getPlatformFeeConfig() {
+  const res = await fetch(`${API_BASE}/platform-fee/config`);
+  if (!res.ok) {
+    throw new Error(`Failed to load platform fee config (${res.status})`);
+  }
+  return await res.json();
+}
+
+export async function updatePlatformFeeConfig(payload: {
+  listing_fee_inr: number;
+  refund_policy?: string;
+  is_active?: boolean;
+  description?: string;
+  updated_by?: string;
+}) {
+  const res = await fetch(`${API_BASE}/platform-fee/admin/config`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || 'Failed to update platform fee config');
+  }
+  return await res.json();
+}
+
+export async function getListingFeeStatus(listingId: string) {
+  const res = await fetch(`${API_BASE}/platform-fee/status/${listingId}`);
+  if (!res.ok) {
+    throw new Error(`Failed to check listing fee status (${res.status})`);
+  }
+  return await res.json();
+}
+
+export async function createListingPaymentOrder(payload: {
+  listing_id: string;
+  seller_id?: string;
+  seller_name?: string;
+  seller_email?: string;
+  seller_phone?: string;
+}) {
+  const res = await fetch(`${API_BASE}/platform-fee/create-order`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail || 'Failed to create payment order');
+  }
+  return data;
+}
+
+export async function verifyListingPayment(payload: {
+  listing_id: string;
+  order_id: string;
+  payment_id: string;
+  signature: string;
+  seller_id?: string;
+}) {
+  const res = await fetch(`${API_BASE}/platform-fee/verify-payment`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Listing payment verification failed.');
+  }
+  return data;
+}
+
+export async function retryListingPayment(payload: {
+  listing_id: string;
+  seller_id?: string;
+}) {
+  const res = await fetch(`${API_BASE}/platform-fee/retry`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail || 'Failed to retry payment');
+  }
+  return data;
+}
+
+export async function getAdminPlatformFeeRevenue() {
+  const res = await fetch(`${API_BASE}/platform-fee/admin/revenue`);
+  if (!res.ok) {
+    throw new Error('Failed to load admin fee revenue');
+  }
+  return await res.json();
+}
+
+export async function getAdminPlatformFeeTransactions(params?: {
+  status?: string;
+  search?: string;
+  start_date?: string;
+  end_date?: string;
+}) {
+  const q = new URLSearchParams();
+  if (params?.status) q.append('status', params.status);
+  if (params?.search) q.append('search', params.search);
+  if (params?.start_date) q.append('start_date', params.start_date);
+  if (params?.end_date) q.append('end_date', params.end_date);
+
+  const url = `${API_BASE}/platform-fee/admin/transactions${q.toString() ? `?${q.toString()}` : ''}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error('Failed to load fee transactions');
+  }
+  return await res.json();
+}
+
+export function getPlatformFeeExportUrl(): string {
+  return `${API_BASE}/platform-fee/admin/export`;
+}
+
+
 
 

@@ -423,6 +423,9 @@ async def get_gate_status(listing_id: str):
     return {
         "listing_id": listing_id,
         "is_published": record.get("is_published", False),
+        "is_platform_fee_paid": record.get("platform_fee_paid", False),
+        "platform_fee_amount": record.get("platform_fee_amount"),
+        "platform_fee_paid_at": record.get("platform_fee_paid_at"),
         "gate": gate_summary
     }
 
@@ -471,7 +474,23 @@ async def publish_listing(payload: PublishListingPayload):
             }
         )
 
-    # If all 4 documents passed and all 8 photos are uploaded, publish listing live
+    # Enforce verified platform listing fee payment
+    is_fee_paid = record.get("platform_fee_paid", False)
+    if not is_fee_paid:
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "message": "Listing publication blocked: GEAR UP platform listing fee must be paid and verified before publication.",
+                "reason": "platform_fee_unpaid",
+                "listing_id": payload.listing_id,
+                "passed_count": gate_summary["passed_count"],
+                "photos_count": photos_count,
+                "blocking_reasons": gate_summary["blocking_reasons"] + ["GEAR UP platform listing fee payment required before publication."],
+                "requires_platform_fee": True
+            }
+        )
+
+    # If all 4 documents passed, all 8 photos are uploaded, and platform fee is verified: publish listing live
     record["is_published"] = True
     record["published_at"] = datetime.now().isoformat()
     record["publication_event"] = {

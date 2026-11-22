@@ -75,6 +75,10 @@ export interface EnvironmentControlPanelProps {
   onResetAppearance: () => void;
   onPlayCinematicIntro?: () => void;
 
+  // Performance Profile
+  qualityProfile?: 'high' | 'balanced' | 'performance';
+  onQualityProfileChange?: (profile: 'high' | 'balanced' | 'performance') => void;
+
   // UI Drawer State
   isOpen: boolean;
   onToggleOpen: () => void;
@@ -116,6 +120,8 @@ export const EnvironmentControlPanel: React.FC<EnvironmentControlPanelProps> = (
   onCaptureScreenshot,
   onResetAppearance,
   onPlayCinematicIntro,
+  qualityProfile = 'high',
+  onQualityProfileChange,
   isOpen,
   onToggleOpen,
   className = ''
@@ -599,6 +605,37 @@ export const EnvironmentControlPanel: React.FC<EnvironmentControlPanelProps> = (
                     Enable real-time bloom glow, floor contact reflection, and topology wireframe.
                   </p>
                 </div>
+
+                {/* Adaptive Performance Profile */}
+                {onQualityProfileChange && (
+                  <div className="p-3 border border-white/10 bg-black/30 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-white">Adaptive Performance Profile</span>
+                      <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold">{qualityProfile}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5 text-xs font-mono">
+                      {[
+                        { id: 'performance', label: '⚡ Fast', desc: 'Mobile' },
+                        { id: 'balanced', label: '⚖️ Balanced', desc: 'Laptop' },
+                        { id: 'high', label: '💎 High', desc: 'Desktop' }
+                      ].map((p) => (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => onQualityProfileChange(p.id as any)}
+                          className={`p-2 text-center border transition-all ${
+                            qualityProfile === p.id
+                              ? 'bg-emerald-600 border-emerald-400 text-white font-bold'
+                              : 'bg-white/5 border-white/15 text-[#85857E] hover:text-white'
+                          }`}
+                        >
+                          <span className="block text-[11px]">{p.label}</span>
+                          <span className="block text-[9px] opacity-75">{p.desc}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-2.5">
                   {/* Bloom Toggle */}

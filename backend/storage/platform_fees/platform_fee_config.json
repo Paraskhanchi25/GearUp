@@ -1,0 +1,17 @@
+{
+  "listing_fee_inr": 299,
+  "currency": "INR",
+  "is_active": true,
+  "fee_title": "GEAR UP Verified Marketplace Listing Fee",
+  "description": "One-time publication fee for 120-pt verified listing, 3D Digital Twin linking, and verified buyer reach.",
+  "refund_policy": "Full refund if vehicle fails RTO verification; non-refundable once live.",
+  "included_features": [
+    "Interactive 3D Digital Twin linking based on vehicle platform specifications",
+    "Mandatory 4-certificate AI OCR & RTO government document validation badge",
+    "8-angle high-resolution vehicle photo inspection showcase",
+    "AI Resale Price recommendation and Deal Detector optimization",
+    "Protected seller location privacy with verified buyer screening"
+  ],
+  "updated_at": "2026-11-22T12:49:56.756834",
+  "updated_by": "SuperAdmin-Test"
+}

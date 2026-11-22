@@ -39,12 +39,14 @@ import {
   Navigation,
   Crosshair,
   Compass,
-  Cpu
+  Cpu,
+  CreditCard
 } from 'lucide-react';
 import { formatINR } from '../utils/geo';
 import { PickupLocation } from '../types';
 import { SellerPickupLocationPicker } from '../components/SellerPickupLocationPicker';
 import { SmartRCVerificationModal } from '../components/SmartRCVerificationModal';
+import { PlatformListingFeeModal } from '../components/PlatformListingFeeModal';
 import { Vehicle3DViewer } from '../components/3d/Vehicle3DViewer';
 import { 
   getVehicleCatalog,
@@ -57,7 +59,9 @@ import {
   uploadVehiclePhoto,
   getVehiclePhotos,
   deleteVehiclePhoto,
-  setSellerLocationConfig
+  setSellerLocationConfig,
+  getPlatformFeeConfig,
+  getListingFeeStatus
 } from '../services/aiApi';
 
 // 8 Mandatory Vehicle Photo Angles (Strictly no stock photos)
@@ -149,7 +153,28 @@ export const SellBikePage: React.FC = () => {
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(false);
   const [draftSavedToast, setDraftSavedToast] = useState(false);
 
-  // Synchronize Gate Status & Uploaded Photos from Server
+  // Platform Listing Fee State
+  const [feeConfig, setFeeConfig] = useState<any>({
+    listing_fee_inr: 299,
+    currency: 'INR',
+    fee_title: 'GEAR UP Verified Marketplace Listing Fee',
+    refund_policy: 'Full refund if vehicle fails mandatory RTO document verification; non-refundable once listing is published live on the marketplace.',
+    included_features: [
+      'Interactive 3D Digital Twin linking based on vehicle platform specifications',
+      'Mandatory 4-certificate AI OCR & RTO government document validation badge',
+      '8-angle high-resolution vehicle photo inspection showcase',
+      'AI Resale Price recommendation and Deal Detector optimization',
+      'Protected seller location privacy with verified buyer screening'
+    ]
+  });
+  const [feeStatus, setFeeStatus] = useState<any>({
+    is_paid: false,
+    status: 'awaiting_payment',
+    amount_inr: 299
+  });
+  const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
+
+  // Synchronize Gate Status, Uploaded Photos & Platform Fee from Server
   const refreshStatus = async () => {
     try {
       const gateData = await getVerificationGateStatus(listingId);
@@ -174,6 +199,14 @@ export const SellBikePage: React.FC = () => {
         });
         setUploadedPhotos(photoMap);
       }
+
+      // Fetch platform fee config and listing payment status
+      const [configData, statusData] = await Promise.all([
+        getPlatformFeeConfig().catch(() => null),
+        getListingFeeStatus(listingId).catch(() => null)
+      ]);
+      if (configData) setFeeConfig(configData);
+      if (statusData) setFeeStatus(statusData);
     } catch (err) {
       console.warn('Error fetching listing status:', err);
     }
@@ -409,6 +442,16 @@ export const SellBikePage: React.FC = () => {
   const handlePublishListing = async () => {
     setIsPublishing(true);
     setPublishBlockedAlert(null);
+
+    // Platform listing fee payment requirement check
+    if (!feeStatus?.is_paid) {
+      setIsPublishing(false);
+      setPublishBlockedAlert([
+        `GEAR UP platform listing fee (${formatINR(feeConfig.listing_fee_inr)}) is required before publication. Please complete the payment below.`
+      ]);
+      setIsFeeModalOpen(true);
+      return;
+    }
 
     try {
       const res = await publishListing({
@@ -1728,6 +1771,77 @@ export const SellBikePage: React.FC = () => {
               </div>
             </div>
 
+            {/* Section E: GEAR UP Platform Listing Fee & Verification Monetization */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.08] space-y-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="w-4 h-4 text-[#35483C]" />
+                  <h4 className="font-bold text-sm text-[#242622]">GEAR UP Platform Listing Fee</h4>
+                </div>
+                {feeStatus?.is_paid ? (
+                  <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>PAID & VERIFIED</span>
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-amber-600" />
+                    <span>AWAITING PAYMENT</span>
+                  </span>
+                )}
+              </div>
+
+              <p className="text-xs text-[#85857E] font-sans">
+                A one-time platform listing fee is required to verify and publish your vehicle listing on GEAR UP. This covers AI document extraction, 3D Digital Twin linking, and verified buyer fraud protection.
+              </p>
+
+              {/* Fee Breakdown Table */}
+              <div className="p-4 rounded-xl bg-white border border-[#242622]/10 space-y-2.5 text-xs">
+                <div className="flex items-center justify-between text-[#85857E] pb-2 border-b border-[#242622]/10 text-[11px]">
+                  <span>Description</span>
+                  <span className="font-mono font-bold">Amount</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[#242622]">Platform listing fee</span>
+                  <span className="font-mono font-bold text-[#242622]">{formatINR(feeConfig.listing_fee_inr || 299)}</span>
+                </div>
+                <div className="flex items-center justify-between text-[#85857E]">
+                  <span>Additional charges / Gateway fee</span>
+                  <span className="font-mono font-semibold text-emerald-700">₹0 (Waived)</span>
+                </div>
+                <div className="pt-2 border-t border-[#242622]/10 flex items-center justify-between font-bold">
+                  <span className="text-[#242622]">Total Payable</span>
+                  <span className="font-mono text-sm text-[#35483C]">{formatINR(feeConfig.listing_fee_inr || 299)}</span>
+                </div>
+              </div>
+
+              {/* Policy & Action */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                <p className="text-[11px] text-[#85857E] max-w-md font-sans">
+                  <strong>Policy:</strong> {feeConfig.refund_policy || 'Full refund if vehicle fails mandatory RTO document verification; non-refundable once listing is published live on the marketplace.'}
+                </p>
+                {!feeStatus?.is_paid ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsFeeModalOpen(true)}
+                    className="px-5 py-2.5 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all tactile-btn shrink-0"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Pay Listing Fee ({formatINR(feeConfig.listing_fee_inr || 299)})</span>
+                  </button>
+                ) : (
+                  <div className="text-right">
+                    <span className="text-[10px] font-mono text-emerald-700 block font-bold">
+                      Tx: {feeStatus.transaction_id || 'VERIFIED'}
+                    </span>
+                    <span className="text-[9px] text-[#85857E] block">
+                      Paid: {feeStatus.paid_at ? new Date(feeStatus.paid_at).toLocaleDateString() : 'Active'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Final Publish Gate Action Buttons */}
             <div className="pt-4 flex justify-between items-center border-t border-[#242622]/[0.08]">
               <button
@@ -1739,28 +1853,41 @@ export const SellBikePage: React.FC = () => {
                 <span>Back to Location</span>
               </button>
 
-              <button
-                type="button"
-                disabled={!isPhotosComplete || !isDocumentsComplete || isPublishing}
-                onClick={handlePublishListing}
-                className={`px-8 py-3.5 min-h-[44px] rounded-full font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2.5 transition-all tactile-btn shadow-sm ${
-                  isPhotosComplete && isDocumentsComplete && !isPublishing
-                    ? 'bg-[#35483C] hover:bg-[#242622] text-white cursor-pointer border border-[#35483C]'
-                    : 'bg-[#FAF9F5] border border-[#242622]/10 text-[#85857E] cursor-not-allowed'
-                }`}
-              >
-                {isPublishing ? (
-                  <>
-                    <Clock className="w-4 h-4 animate-spin text-white" />
-                    <span>Publishing Live...</span>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>Publish Listing Live Now</span>
-                  </>
+              <div className="flex items-center gap-3">
+                {!feeStatus?.is_paid && (
+                  <button
+                    type="button"
+                    onClick={() => setIsFeeModalOpen(true)}
+                    className="px-5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-mono font-bold text-xs flex items-center gap-2 shadow-sm transition-all tactile-btn"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    <span>Pay Platform Fee ({formatINR(feeConfig.listing_fee_inr || 299)})</span>
+                  </button>
                 )}
-              </button>
+
+                <button
+                  type="button"
+                  disabled={!isPhotosComplete || !isDocumentsComplete || !feeStatus?.is_paid || isPublishing}
+                  onClick={handlePublishListing}
+                  className={`px-8 py-3.5 min-h-[44px] rounded-full font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2.5 transition-all tactile-btn shadow-sm ${
+                    isPhotosComplete && isDocumentsComplete && feeStatus?.is_paid && !isPublishing
+                      ? 'bg-[#35483C] hover:bg-[#242622] text-white cursor-pointer border border-[#35483C]'
+                      : 'bg-[#FAF9F5] border border-[#242622]/10 text-[#85857E] cursor-not-allowed'
+                  }`}
+                >
+                  {isPublishing ? (
+                    <>
+                      <Clock className="w-4 h-4 animate-spin text-white" />
+                      <span>Publishing Live...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <span>Publish Listing Live Now</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -1863,6 +1990,25 @@ export const SellBikePage: React.FC = () => {
             });
             refreshStatus();
           }
+        }}
+      />
+
+      {/* GEAR UP Platform Listing Fee Payment Modal */}
+      <PlatformListingFeeModal
+        isOpen={isFeeModalOpen}
+        onClose={() => setIsFeeModalOpen(false)}
+        listingId={listingId}
+        vehicleTitle={`${year} ${brand} ${model} ${variant}`}
+        feeConfig={feeConfig}
+        onPaymentSuccess={(paymentRes) => {
+          setFeeStatus({
+            is_paid: true,
+            status: 'paid',
+            amount_inr: paymentRes.amount_inr || feeConfig.listing_fee_inr,
+            transaction_id: paymentRes.transaction_id,
+            paid_at: paymentRes.paid_at || new Date().toISOString()
+          });
+          refreshStatus();
         }}
       />
     </div>

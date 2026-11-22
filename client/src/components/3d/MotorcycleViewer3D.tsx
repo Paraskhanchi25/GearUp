@@ -46,7 +46,8 @@ import {
   Loader2,
   SlidersHorizontal,
   Camera,
-  Check
+  Check,
+  FastForward
 } from 'lucide-react';
 
 export interface MotorcycleViewer3DProps {
@@ -141,10 +142,23 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   const [autoRotateSpeed, setAutoRotateSpeed] = useState<number>(0.8);
   const [fov, setFov] = useState<number>(45);
 
-  // Rendering FX
+  // Rendering FX & Adaptive Performance
   const [wireframe, setWireframe] = useState<boolean>(false);
   const [bloomEnabled, setBloomEnabled] = useState<boolean>(false);
   const [floorReflection, setFloorReflection] = useState<boolean>(true);
+  const [qualityProfile, setQualityProfile] = useState<'high' | 'balanced' | 'performance'>(() => {
+    if (typeof window === 'undefined') return 'high';
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    if (isMobile) return 'performance';
+    if (window.innerWidth < 1280) return 'balanced';
+    return 'high';
+  });
+  const [isIntroPlaying, setIsIntroPlaying] = useState<boolean>(false);
+
+  // Performance cache refs (eliminates per-frame heap allocations & React re-render thrash)
+  const tempVectorRef = useRef(new THREE.Vector3());
+  const hotspotFrameCountRef = useRef(0);
+  const lastCameraPosRef = useRef(new THREE.Vector3());
 
   // Paint Customization
   const [selectedColorHex, setSelectedColorHex] = useState<string>('#dc2626');
@@ -304,6 +318,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       introTimelineRef.current.kill();
     }
 
+    setIsIntroPlaying(true);
     controls.enabled = false;
     onSelectComponent(null);
 
@@ -328,6 +343,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       onComplete: () => {
         controls.enabled = true;
         applyCameraPreset('perspective');
+        setIsIntroPlaying(false);
       }
     });
 
@@ -355,7 +371,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       const delay = 0.8 + (rowOrder / 8) * 1.4;
       tl.to(
         (mesh.material as THREE.MeshStandardMaterial),
-        { emissiveIntensity: 1.6, duration: 0.3, ease: 'power2.out' },
+        { emissiveIntensity: 1.2, duration: 0.3, ease: 'power2.out' },
         delay
       );
       if (light) {
@@ -393,6 +409,33 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       0.8
     );
   }, [keyLightIntensity, rimLightIntensity, onSelectComponent, applyCameraPreset]);
+
+  const skipCinematicIntro = useCallback(() => {
+    if (introTimelineRef.current) {
+      introTimelineRef.current.kill();
+    }
+    if (workshopResultRef.current) {
+      const { overheadLights, verticalWallLights, inspectionSpot } = workshopResultRef.current;
+      overheadLights.forEach(({ mesh, light, targetIntensity }) => {
+        (mesh.material as THREE.MeshStandardMaterial).emissiveIntensity = 1.6;
+        if (light) light.intensity = targetIntensity;
+      });
+      verticalWallLights.forEach(({ mesh, light, targetIntensity }) => {
+        (mesh.material as THREE.MeshStandardMaterial).emissiveIntensity = 1.2;
+        if (light) light.intensity = targetIntensity;
+      });
+      if (inspectionSpot) inspectionSpot.intensity = 2.6;
+    }
+    if (ambientLightRef.current) ambientLightRef.current.intensity = ambientIntensity;
+    if (keyLightRef.current) keyLightRef.current.intensity = keyLightIntensity;
+    if (rimLightRef.current) rimLightRef.current.intensity = rimLightIntensity;
+
+    if (cameraRef.current && controlsRef.current) {
+      controlsRef.current.enabled = true;
+      applyCameraPreset('perspective');
+    }
+    setIsIntroPlaying(false);
+  }, [ambientIntensity, keyLightIntensity, rimLightIntensity, applyCameraPreset]);
 
   // ---------------------------------------------------------------------------
   // 3. SCENE INITIALIZATION & CLEANUP
@@ -435,10 +478,11 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       alpha: true
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const targetPixelRatio = qualityProfile === 'high' ? Math.min(window.devicePixelRatio, 1.5) : (qualityProfile === 'balanced' ? Math.min(window.devicePixelRatio, 1.25) : 1.0);
+    renderer.setPixelRatio(targetPixelRatio);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
-    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.enabled = qualityProfile !== 'performance';
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
@@ -513,9 +557,10 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
     const keyLight = new THREE.DirectionalLight(currentPreset.keyLight.color, keyLightIntensity);
     keyLight.position.set(...currentPreset.keyLight.position);
-    keyLight.castShadow = true;
-    keyLight.shadow.mapSize.width = 2048;
-    keyLight.shadow.mapSize.height = 2048;
+    keyLight.castShadow = qualityProfile !== 'performance';
+    const shadowMapRes = qualityProfile === 'high' ? 2048 : 1024;
+    keyLight.shadow.mapSize.width = shadowMapRes;
+    keyLight.shadow.mapSize.height = shadowMapRes;
     keyLight.shadow.camera.near = 0.5;
     keyLight.shadow.camera.far = 12;
     keyLight.shadow.bias = -0.0005;
@@ -538,7 +583,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     underLightRef.current = underLight;
 
     // 7. Complete 3D Motorcycle Service Workshop Environment
-    const workshopResult = buildWorkshopEnvironment();
+    const workshopResult = buildWorkshopEnvironment(qualityProfile);
     workshopResultRef.current = workshopResult;
     workshopGroupRef.current = workshopResult.group;
     const floorMesh = workshopResult.group.getObjectByName('workshop_floor_mesh') as THREE.Mesh;
@@ -668,37 +713,43 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
       controls.update();
 
-      // Project 3D Hotspot positions to 2D screen coordinates
-      if (cameraRef.current && container) {
-        const w = container.clientWidth;
-        const h = container.clientHeight;
-        const hotspots = MOTORCYCLE_COMPONENTS.map((comp) => {
-          const pos = new THREE.Vector3(...comp.hotspotPosition);
-          pos.project(cameraRef.current!);
+      // Project 3D Hotspot positions to 2D screen coordinates (Throttled & Memoized to avoid React re-render lag)
+      hotspotFrameCountRef.current++;
+      if (cameraRef.current && container && (hotspotFrameCountRef.current % 3 === 0)) {
+        const camPos = cameraRef.current.position;
+        const hasMoved = isTransitioning.current || isUserInteracting.current || camPos.distanceToSquared(lastCameraPosRef.current) > 0.0001;
+        if (hasMoved) {
+          lastCameraPosRef.current.copy(camPos);
+          const w = container.clientWidth;
+          const h = container.clientHeight;
+          const hotspots = MOTORCYCLE_COMPONENTS.map((comp) => {
+            tempVectorRef.current.set(comp.hotspotPosition[0], comp.hotspotPosition[1], comp.hotspotPosition[2]);
+            tempVectorRef.current.project(cameraRef.current!);
 
-          const isBehind = pos.z > 1;
-          const x = (pos.x * 0.5 + 0.5) * w;
-          const y = (-(pos.y * 0.5) + 0.5) * h;
+            const isBehind = tempVectorRef.current.z > 1;
+            const x = (tempVectorRef.current.x * 0.5 + 0.5) * w;
+            const y = (-(tempVectorRef.current.y * 0.5) + 0.5) * h;
 
-          const matchesCat = activeCategory === 'all' || comp.category === activeCategory;
-          const isVisible = !isBehind && matchesCat && x >= 10 && x <= w - 10 && y >= 10 && y <= h - 10;
+            const matchesCat = activeCategory === 'all' || comp.category === activeCategory;
+            const isVisible = !isBehind && matchesCat && x >= 10 && x <= w - 10 && y >= 10 && y <= h - 10;
 
-          return {
-            id: comp.id,
-            name: comp.shortName,
-            category: comp.category,
-            x,
-            y,
-            visible: isVisible
-          };
-        });
+            return {
+              id: comp.id,
+              name: comp.shortName,
+              category: comp.category,
+              x,
+              y,
+              visible: isVisible
+            };
+          });
 
-        screenHotspotsRef.current = hotspots;
-        setProjectedHotspots(hotspots);
+          screenHotspotsRef.current = hotspots;
+          setProjectedHotspots(hotspots);
+        }
       }
 
       // Render via Bloom EffectComposer or direct standard renderer
-      if (bloomEnabled && composerRef.current) {
+      if (bloomEnabled && qualityProfile !== 'performance' && composerRef.current) {
         composerRef.current.render();
       } else {
         renderer.render(scene, camera);
@@ -1210,6 +1261,18 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           );
         })}
 
+      {/* Floating Skip Intro Control During Cinematic Intro Sequence */}
+      {isIntroPlaying && (
+        <button
+          type="button"
+          onClick={skipCinematicIntro}
+          className="absolute top-6 left-1/2 -translate-x-1/2 z-30 px-5 py-2.5 rounded-full bg-black/85 hover:bg-black text-white font-mono font-bold text-xs border border-white/25 backdrop-blur-md flex items-center gap-2 shadow-2xl transition-all active:scale-95 cursor-pointer"
+        >
+          <FastForward className="w-4 h-4 text-amber-400" />
+          <span>Skip Workshop Intro</span>
+        </button>
+      )}
+
       {/* Floating HUD Camera Presets & Zoom Toolstrip (Bottom-Left) */}
       <div className="absolute bottom-4 left-4 z-20 flex flex-wrap items-center gap-1.5 bg-[#060C0A]/85 backdrop-blur-md p-1.5 border border-white/10 text-white shadow-2xl">
         <button
@@ -1320,6 +1383,8 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           onCaptureScreenshot={handleCaptureScreenshot}
           onResetAppearance={handleResetAppearance}
           onPlayCinematicIntro={playCinematicIntro}
+          qualityProfile={qualityProfile}
+          onQualityProfileChange={setQualityProfile}
           isOpen={isStudioDrawerOpen}
           onToggleOpen={() => setIsStudioDrawerOpen(!isStudioDrawerOpen)}
         />
