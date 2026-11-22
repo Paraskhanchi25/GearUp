@@ -36,6 +36,8 @@ import { formatINR } from '../utils/geo';
 import { VehicleListing } from '../types';
 import { BookTestRideModal } from '../components/BookTestRideModal';
 import { AudioPlayerModal } from '../components/AudioPlayerModal';
+import { Vehicle3DViewer } from '../components/3d/Vehicle3DViewer';
+import { getVehicle3DMetadata } from '../services/vehicle3DRegistry';
 import { 
   getPublicTrustSummary, 
   getLocationAccess, 
@@ -64,6 +66,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
   const vehicle = allListings.find((b) => b.id === id) || SEED_LISTINGS[0];
 
   const [activeImage, setActiveImage] = useState<string>(vehicle.primaryImage);
+  const [mediaMode, setMediaMode] = useState<'photos' | '3d'>('photos');
   const [testRideModalOpen, setTestRideModalOpen] = useState(false);
   const [audioModalOpen, setAudioModalOpen] = useState(false);
   const [trustModalOpen, setTrustModalOpen] = useState(false);
@@ -155,58 +158,133 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Visual Gallery & Detailed AI Reports (7 Cols) */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Main Stage Image & Gallery Presentation */}
-            <div className="bg-white rounded-3xl border border-[#242622]/[0.08] p-3.5 sm:p-4 shadow-subtle overflow-hidden">
-              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-[#FAF9F5] flex items-center justify-center">
-                {activeImage ? (
-                  <img
-                    src={activeImage}
-                    alt={vehicle.title}
-                    className="w-full h-full object-cover transition-all duration-300"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-center p-8 space-y-2">
-                    <Camera className="w-12 h-12 text-[#85857E]/40 mb-1" />
-                    <p className="font-heading font-medium text-base text-[#242622]">No vehicle photos uploaded yet.</p>
-                    <p className="text-xs text-[#85857E] max-w-xs">
-                      The seller has not uploaded the required vehicle photographs for this listing.
-                    </p>
-                  </div>
-                )}
-                
-                {/* Badges Overlay */}
-                <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                  <span className="px-3.5 py-1 rounded-full text-xs font-semibold tracking-wider uppercase bg-[#161816]/80 backdrop-blur-md text-white border border-white/10 shadow-sm">
-                    {vehicle.category}
-                  </span>
-                  {vehicle.batteryHealth && (
-                    <span className="px-3.5 py-1 rounded-full text-xs font-semibold bg-[#35483C]/90 backdrop-blur-md text-white flex items-center gap-1.5 shadow-sm border border-white/10">
-                      <Zap className="w-3.5 h-3.5" /> Battery Health: {vehicle.batteryHealth}%
-                    </span>
-                  )}
-                </div>
-
-                <div className="absolute bottom-4 right-4">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-white/90 backdrop-blur-md text-[#242622] border border-[#242622]/[0.08] shadow-sm">
-                    {1 + (vehicle.galleryImages?.length || 0)} Certified Photos
-                  </span>
-                </div>
-              </div>
-
-              {/* Gallery Thumbnails */}
-              <div className="flex items-center gap-2.5 overflow-x-auto pt-3 px-1 pb-1">
-                {[vehicle.primaryImage, ...(vehicle.galleryImages || [])].map((img, idx) => (
+            {/* Main Stage Presentation with Mode Switcher */}
+            <div className="bg-white rounded-3xl border border-[#242622]/[0.08] p-3.5 sm:p-4 shadow-subtle overflow-hidden space-y-3">
+              {/* Media Switcher Header */}
+              <div className="flex items-center justify-between border-b border-[#242622]/[0.06] pb-2.5">
+                <div className="flex items-center gap-1.5 p-1 bg-[#FAF9F5] rounded-full border border-[#242622]/[0.08]">
                   <button
-                    key={idx}
-                    onClick={() => setActiveImage(img)}
-                    className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 tactile-btn ${
-                      activeImage === img ? 'border-[#35483C] shadow-md scale-105' : 'border-[#242622]/[0.08] opacity-60 hover:opacity-100'
+                    type="button"
+                    onClick={() => setMediaMode('photos')}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 tactile-btn ${
+                      mediaMode === 'photos'
+                        ? 'bg-[#35483C] text-white shadow-sm'
+                        : 'text-[#85857E] hover:text-[#242622]'
                     }`}
                   >
-                    <img src={img} alt="Thumb" className="w-full h-full object-cover" />
+                    <Camera className="w-3.5 h-3.5" />
+                    <span>Certified Photos ({1 + (vehicle.galleryImages?.length || 0)})</span>
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => setMediaMode('3d')}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 tactile-btn ${
+                      mediaMode === '3d'
+                        ? 'bg-[#35483C] text-white shadow-sm'
+                        : 'text-[#85857E] hover:text-[#242622]'
+                    }`}
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <span>3D Digital Twin</span>
+                  </button>
+                </div>
+
+                {mediaMode === '3d' ? (
+                  <Link
+                    to={`/inspect/${vehicle.id}`}
+                    className="text-[11px] font-bold text-[#35483C] hover:text-[#242622] flex items-center gap-1 hover:underline underline-offset-2"
+                  >
+                    <span>Full 120-Pt Inspection Lab</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </Link>
+                ) : (
+                  <span className="text-[11px] text-[#85857E] font-medium hidden sm:inline">
+                    High-res unedited inspection photos
+                  </span>
+                )}
               </div>
+
+              {/* View 1: 3D Digital Twin View */}
+              {mediaMode === '3d' ? (
+                <div className="space-y-2">
+                  <div className="relative rounded-2xl overflow-hidden border border-[#242622]/[0.08] bg-[#060C0A]">
+                    <Vehicle3DViewer
+                      vehicle={vehicle}
+                      height="480px"
+                      showControls={true}
+                      enableColorCustomization={true}
+                      enableComponentInspection={true}
+                      inspectionOverlay={true}
+                    />
+                  </div>
+                  <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-center justify-between text-xs text-[#85857E]">
+                    <div className="flex items-center gap-2">
+                      <Layers className="w-4 h-4 text-[#35483C]" />
+                      <span>Click parts or hotspots for diagnostics. Rotate & zoom with mouse/touch.</span>
+                    </div>
+                    <Link
+                      to={`/inspect/${vehicle.id}`}
+                      className="px-4 py-1.5 rounded-full bg-white border border-[#35483C] text-[#35483C] hover:bg-[#35483C] hover:text-white font-bold text-xs transition-colors shrink-0 tactile-btn active:scale-95 shadow-sm"
+                    >
+                      Open Full 3D Inspection
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                /* View 2: High-Res Photo Gallery */
+                <div>
+                  <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-[#FAF9F5] flex items-center justify-center">
+                    {activeImage ? (
+                      <img
+                        src={activeImage}
+                        alt={vehicle.title}
+                        className="w-full h-full object-cover transition-all duration-300"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-center p-8 space-y-2">
+                        <Camera className="w-12 h-12 text-[#85857E]/40 mb-1" />
+                        <p className="font-heading font-medium text-base text-[#242622]">No vehicle photos uploaded yet.</p>
+                        <p className="text-xs text-[#85857E] max-w-xs">
+                          The seller has not uploaded the required vehicle photographs for this listing.
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Badges Overlay */}
+                    <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                      <span className="px-3.5 py-1 rounded-full text-xs font-semibold tracking-wider uppercase bg-[#161816]/80 backdrop-blur-md text-white border border-white/10 shadow-sm">
+                        {vehicle.category}
+                      </span>
+                      {vehicle.batteryHealth && (
+                        <span className="px-3.5 py-1 rounded-full text-xs font-semibold bg-[#35483C]/90 backdrop-blur-md text-white flex items-center gap-1.5 shadow-sm border border-white/10">
+                          <Zap className="w-3.5 h-3.5" /> Battery Health: {vehicle.batteryHealth}%
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="absolute bottom-4 right-4">
+                      <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-white/90 backdrop-blur-md text-[#242622] border border-[#242622]/[0.08] shadow-sm">
+                        {1 + (vehicle.galleryImages?.length || 0)} Certified Photos
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Gallery Thumbnails */}
+                  <div className="flex items-center gap-2.5 overflow-x-auto pt-3 px-1 pb-1">
+                    {[vehicle.primaryImage, ...(vehicle.galleryImages || [])].map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveImage(img)}
+                        className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 tactile-btn ${
+                          activeImage === img ? 'border-[#35483C] shadow-md scale-105' : 'border-[#242622]/[0.08] opacity-60 hover:opacity-100'
+                        }`}
+                      >
+                        <img src={img} alt="Thumb" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Rider Audio Story Banner (if available) */}

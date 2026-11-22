@@ -63,15 +63,15 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Column 3: AI Telemetry & Diagnostics */}
+          {/* Column 3: AI Telemetry & Intelligence */}
           <div className="space-y-3">
             <span className="block text-[10px] font-bold text-white uppercase tracking-[0.25em]">
               [ TELEMETRY ]
             </span>
             <ul className="space-y-2 text-[11px]">
               <li>
-                <Link to="/bike-doctor" className="hover:text-white transition-colors">
-                  01 // Acoustic Stethoscope
+                <Link to="/inspect/bike-001" className="hover:text-white transition-colors">
+                  01 // 3D Digital Twin Viewer
                 </Link>
               </li>
               <li>

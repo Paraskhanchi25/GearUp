@@ -4,7 +4,6 @@ Independent, modular AI micro-services for the GEAR UP two-wheeler marketplace:
 - /api/ai-buddy/
 - /api/price-estimator/
 - /api/deal-detector/
-- /api/bike-doctor/
 - /api/listing-assistant/
 - /api/upgrade-studio/
 - /api/bike-comparison/
@@ -28,7 +27,6 @@ from config import settings
 from routers.ai_buddy import router as ai_buddy_router
 from routers.price_estimator import router as price_estimator_router
 from routers.deal_detector import router as deal_detector_router
-from routers.bike_doctor import router as bike_doctor_router
 from routers.listing_assistant import router as listing_assistant_router
 from routers.upgrade_studio import router as upgrade_studio_router
 from routers.bike_comparison import router as bike_comparison_router
@@ -36,11 +34,12 @@ from routers.voice import router as voice_router
 from routers.verification import router as verification_router
 from routers.location_monetization import router as location_monetization_router
 from routers.rc_verification import router as rc_verification_router
+from routers.models_3d import router as models_3d_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="Dedicated AI services for Indian two-wheeler marketplace (ML valuation, Gemini AI Buddy, Deal Detector, Bike Doctor, Listing Assistant, Upgrade Studio, Comparison, and Voice AI)",
+    description="Dedicated AI services for Indian two-wheeler marketplace (ML valuation, Gemini AI Buddy, Deal Detector, Listing Assistant, Upgrade Studio, Comparison, and Voice AI)",
 )
 
 # CORS Middleware (allowing client Vite app on 5173 and standard web clients)
@@ -79,7 +78,6 @@ async def security_and_timing_middleware(request: Request, call_next):
 app.include_router(ai_buddy_router, prefix=settings.API_PREFIX)
 app.include_router(price_estimator_router, prefix=settings.API_PREFIX)
 app.include_router(deal_detector_router, prefix=settings.API_PREFIX)
-app.include_router(bike_doctor_router, prefix=settings.API_PREFIX)
 app.include_router(listing_assistant_router, prefix=settings.API_PREFIX)
 app.include_router(upgrade_studio_router, prefix=settings.API_PREFIX)
 app.include_router(bike_comparison_router, prefix=settings.API_PREFIX)
@@ -87,6 +85,7 @@ app.include_router(voice_router, prefix=settings.API_PREFIX)
 app.include_router(verification_router, prefix=settings.API_PREFIX)
 app.include_router(location_monetization_router, prefix=settings.API_PREFIX)
 app.include_router(rc_verification_router, prefix=settings.API_PREFIX)
+app.include_router(models_3d_router, prefix=settings.API_PREFIX)
 
 @app.get("/")
 async def root():
@@ -97,7 +96,6 @@ async def root():
             "/api/ai-buddy/",
             "/api/price-estimator/",
             "/api/deal-detector/",
-            "/api/bike-doctor/",
             "/api/listing-assistant/",
             "/api/upgrade-studio/",
             "/api/bike-comparison/",

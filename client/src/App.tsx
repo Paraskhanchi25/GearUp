@@ -15,7 +15,6 @@ import { BikeDetailPage } from './pages/BikeDetailPage';
 import { SellBikePage } from './pages/SellBikePage';
 import { ResaleStudioPage } from './pages/ResaleStudioPage';
 import { AIBuddyPage } from './pages/AIBuddyPage';
-import { BikeDoctorPage } from './pages/BikeDoctorPage';
 import { ComparePage } from './pages/ComparePage';
 import { PriceEstimatorPage } from './pages/PriceEstimatorPage';
 import { DashboardPage } from './pages/Dashboard';
@@ -115,7 +114,7 @@ const AppContent: React.FC = () => {
           <Route path="/inspect/:id" element={<MotorcycleInspectionPage />} />
           <Route path="/sell" element={<SellBikePage />} />
           <Route path="/resale-studio" element={<ResaleStudioPage />} />
-          <Route path="/bike-doctor" element={<BikeDoctorPage />} />
+          <Route path="/bike-doctor" element={<Navigate to="/" replace />} />
           <Route path="/ai-buddy" element={<AIBuddyPage />} />
           <Route path="/compare" element={<ComparePage />} />
           <Route path="/price-estimator" element={<PriceEstimatorPage />} />

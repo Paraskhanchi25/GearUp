@@ -13,7 +13,7 @@ class VoiceResponse(BaseModel):
     recognized_text: str
     detected_language: str
     normalized_english_intent: str
-    suggested_module: str  # "ai_buddy", "bike_doctor", "price_estimator"
+    suggested_module: str  # "ai_buddy", "price_estimator"
     spoken_audio_url: Optional[str] = None
 
 # Multilingual Voice Intent Dictionary (English, Hindi, Punjabi)
@@ -23,14 +23,14 @@ MULTILINGUAL_INTENTS = [
         "text": "Meri bike start nahi ho rahi",
         "lang": "hi",
         "intent": "Motorcycle or scooter failing to start, weak self-starter or spark issue",
-        "module": "bike_doctor"
+        "module": "ai_buddy"
     },
     {
         "patterns": ["sound aa rahi hai", "aawaz aundi hai", "tappet aawaz", "engine se awaz", "khad khad aawaz"],
         "text": "Engine se ajeeb aawaz aa rahi hai",
         "lang": "hi",
         "intent": "Unusual engine clicking, knocking or valve tappet noise",
-        "module": "bike_doctor"
+        "module": "ai_buddy"
     },
     {
         "patterns": ["kitne ki bikegi", "kinne di bikugi", "price estimate", "resale value kinni hai", "kya rate chal raha"],

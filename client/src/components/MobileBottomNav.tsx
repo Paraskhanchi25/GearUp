@@ -29,7 +29,6 @@ export const MobileBottomNav: React.FC = () => {
   const moreLinks = [
     { label: 'CatBoost Valuation', path: '/price-estimator', icon: Gauge, desc: 'ML fair market appraisal' },
     { label: '3D Digital Twin', path: '/inspect/bike-001', icon: Layers, desc: '360° vehicle component viewer' },
-    { label: 'Bike Doctor Stethoscope', path: '/bike-doctor', icon: Wrench, desc: 'Acoustic engine diagnostics' },
     { label: 'Resale Upgrade Studio', path: '/resale-studio', icon: Sparkles, desc: 'Resale value enhancement' },
     { label: 'Side-by-Side Compare', path: '/compare', icon: Columns3, desc: 'Detailed specs comparison' },
     { label: 'Inspection Standards', path: '/trust', icon: ShieldCheck, desc: '120-point verification checklist' },
