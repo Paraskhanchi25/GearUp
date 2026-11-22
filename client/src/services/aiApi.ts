@@ -867,4 +867,42 @@ export async function getHackathonDemoScenarios() {
   return await res.json();
 }
 
+// ==============================================================================
+// Live Selling Vehicle Comparison API
+// ==============================================================================
+
+export async function getLiveComparisonListings(params?: {
+  category?: string;
+  city?: string;
+  brand?: string;
+  search?: string;
+}) {
+  const q = new URLSearchParams();
+  if (params?.category) q.append('category', params.category);
+  if (params?.city) q.append('city', params.city);
+  if (params?.brand) q.append('brand', params.brand);
+  if (params?.search) q.append('search', params.search);
+
+  const url = `${API_BASE}/bike-comparison/live-listings${q.toString() ? `?${q.toString()}` : ''}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch live comparison listings (${res.status})`);
+  }
+  return await res.json();
+}
+
+export async function compareLiveListings(listingIds: string[]) {
+  const res = await fetch(`${API_BASE}/bike-comparison/compare-live`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ listing_ids: listingIds }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Live vehicle comparison failed.');
+  }
+  return data;
+}
+
+
 

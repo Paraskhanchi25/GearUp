@@ -102,7 +102,7 @@ export const Footer: React.FC = () => {
           <p>© 2026 GEAR UP Automotive Ltd. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link to="/trust" className="hover:text-[#242923] transition-colors">Privacy Policy</Link>
-            <Link to="/how-it-works" className="hover:text-[#242923] transition-colors">Terms of Service</Link>
+            <Link to="/trust" className="hover:text-[#242923] transition-colors">Terms of Service</Link>
             <Link to="/trust" className="hover:text-[#242923] transition-colors">Security & RC Protection</Link>
           </div>
         </div>

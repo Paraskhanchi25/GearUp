@@ -13160,5 +13160,1668 @@
       }
     ],
     "statusReason": "Approved by Trust & Safety reviewer (rev-senior-07): Verified manual physical stamp on Parivahan smart card."
+  },
+  "RC-VERIFY-E371E1A5": {
+    "verificationId": "RC-VERIFY-E371E1A5",
+    "listingId": "LIST-97EFDF",
+    "sellerId": "seller-test-01",
+    "filename": "rc_parivahan.pdf",
+    "fileSize": 299,
+    "mimeType": "application/pdf",
+    "sha256": "26d34749c784b9cbd92c958a0d8d969ddbd491a0ecf4cf6e8d57d1d868fc0b35",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-E371E1A5.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "MATCHED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "DOCUMENT_MATCHED",
+    "uploadedAt": "2026-11-22T06:50:51.741138",
+    "updatedAt": "2026-11-22T06:50:51.781580",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "CH01AB8821",
+      "ownerName": "VIKRAMJIT SINGH\nMAKER",
+      "manufacturer": "Royal Enfield",
+      "model": "CLASSIC 350",
+      "vehicleClass": "2W - Motorcycle",
+      "fuelType": "PETROL",
+      "registrationDate": "18/03/2022",
+      "registrationYear": 2022,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "GOVERNMENT OF INDIA\nCERTIFICATE OF REGISTRATION\nREGISTRATION NO: CH01AB8821\nREGISTERED OWNER: VIKRAMJIT SINGH\nMAKER: ROYAL ENFIELD\nMODEL: CLASSIC 350\nVEHICLE CLASS: 2W - MOTORCYCLE\nFUEL TYPE: PETROL\nDATE OF REGISTRATION: 18/03/2022\nCHASSIS NO: ME4JC54E9PR881290\nENGINE NO: JC54E991024",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "ownerName": 0.9,
+        "manufacturer": 0.94,
+        "model": 0.88,
+        "vehicleClass": 0.95,
+        "fuelType": 0.98,
+        "registrationDate": 0.92,
+        "registrationYear": 0.95
+      },
+      "missingFields": [
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "ownerName": 0.9,
+      "manufacturer": 0.94,
+      "model": 0.88,
+      "vehicleClass": 0.95,
+      "fuelType": 0.98,
+      "registrationDate": 0.92,
+      "registrationYear": 0.95
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": {
+      "overallComparison": "MATCHED",
+      "matchedCount": 5,
+      "totalCompared": 5,
+      "summaryScore": "5/5 fields matched",
+      "fieldComparisons": {
+        "registrationNumber": {
+          "status": "MATCH",
+          "sellerValue": "CH 01 AB 8821",
+          "extractedValue": "CH01AB8821",
+          "confidence": 0.95,
+          "explanation": "Registration number matches listing exactly after format normalization."
+        },
+        "manufacturer": {
+          "status": "MATCH",
+          "sellerValue": "Royal Enfield",
+          "extractedValue": "Royal Enfield",
+          "confidence": 0.95,
+          "explanation": "Vehicle manufacturer matches catalog identity."
+        },
+        "model": {
+          "status": "MATCH",
+          "sellerValue": "Classic 350",
+          "extractedValue": "CLASSIC 350",
+          "confidence": 0.95,
+          "explanation": "Vehicle model tokens match listing specification."
+        },
+        "registrationYear": {
+          "status": "MATCH",
+          "sellerValue": 2022,
+          "extractedValue": 2022,
+          "confidence": 0.95,
+          "explanation": "Registration year aligns with vehicle model year (+/- 1 year allowance for registration timing)."
+        },
+        "fuelType": {
+          "status": "MATCH",
+          "sellerValue": "PETROL",
+          "extractedValue": "PETROL",
+          "confidence": 0.95,
+          "explanation": "Fuel type confirmed consistent."
+        }
+      }
+    },
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    },
+    "statusReason": "All available document fields successfully match listing details. Document verified at marketplace tier."
+  },
+  "RC-VERIFY-90D0E8A9": {
+    "verificationId": "RC-VERIFY-90D0E8A9",
+    "listingId": "LIST-429B99",
+    "sellerId": "seller-default",
+    "filename": "rc_dl.pdf",
+    "fileSize": 163,
+    "mimeType": "application/pdf",
+    "sha256": "9d2b4c25f0908f2e307d1a0d679bb3f2ac52c8017b43453a697e76c69869b556",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-90D0E8A9.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "MISMATCHED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:51.788034",
+    "updatedAt": "2026-11-22T06:50:51.800616",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "DL04BC9999",
+      "ownerName": null,
+      "manufacturer": "Royal Enfield",
+      "model": "CLASSIC 350",
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": "18/03/2022",
+      "registrationYear": 2022,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "GOVERNMENT OF INDIA\nCERTIFICATE OF REGISTRATION\nREGISTRATION NO: DL04BC9999\nMAKER: ROYAL ENFIELD\nMODEL: CLASSIC 350\nDATE OF REGISTRATION: 18/03/2022",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "manufacturer": 0.94,
+        "model": 0.88,
+        "registrationDate": 0.92,
+        "registrationYear": 0.95
+      },
+      "missingFields": [
+        "ownerName",
+        "vehicleClass",
+        "fuelType",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "manufacturer": 0.94,
+      "model": 0.88,
+      "registrationDate": 0.92,
+      "registrationYear": 0.95
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": {
+      "overallComparison": "MISMATCHED",
+      "matchedCount": 3,
+      "totalCompared": 4,
+      "summaryScore": "3/4 fields matched",
+      "fieldComparisons": {
+        "registrationNumber": {
+          "status": "MISMATCH",
+          "sellerValue": "CH01AB8821",
+          "extractedValue": "DL04BC9999",
+          "confidence": 0.95,
+          "explanation": "Registration number mismatch: RC states 'DL04BC9999' but listing says 'CH01AB8821'."
+        },
+        "manufacturer": {
+          "status": "MATCH",
+          "sellerValue": "Royal Enfield",
+          "extractedValue": "Royal Enfield",
+          "confidence": 0.95,
+          "explanation": "Vehicle manufacturer matches catalog identity."
+        },
+        "model": {
+          "status": "MATCH",
+          "sellerValue": "Classic 350",
+          "extractedValue": "CLASSIC 350",
+          "confidence": 0.95,
+          "explanation": "Vehicle model tokens match listing specification."
+        },
+        "registrationYear": {
+          "status": "MATCH",
+          "sellerValue": 2022,
+          "extractedValue": 2022,
+          "confidence": 0.95,
+          "explanation": "Registration year aligns with vehicle model year (+/- 1 year allowance for registration timing)."
+        },
+        "fuelType": {
+          "status": "UNREADABLE",
+          "sellerValue": "PETROL",
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'fuelType' could not be extracted with confidence from the uploaded RC."
+        }
+      }
+    },
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    },
+    "statusReason": "Discrepancy detected between extracted RC values and vehicle listing. Review required by trust & safety team."
+  },
+  "RC-VERIFY-D56A76E2": {
+    "verificationId": "RC-VERIFY-D56A76E2",
+    "listingId": "LIST-F07159",
+    "sellerId": "seller-default",
+    "filename": "rc_bajaj.pdf",
+    "fileSize": 139,
+    "mimeType": "application/pdf",
+    "sha256": "edc911320415aa04769a65fe5dd657a00b054f87615dbd2ce4946b2bd40ea24c",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-D56A76E2.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "MISMATCHED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:51.806885",
+    "updatedAt": "2026-11-22T06:50:51.819687",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "CH01AB8821",
+      "ownerName": null,
+      "manufacturer": "Bajaj",
+      "model": "PULSAR 150",
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": "18/03/2022",
+      "registrationYear": 2022,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "CERTIFICATE OF REGISTRATION\nREGISTRATION NO: CH01AB8821\nMAKER: BAJAJ AUTO\nMODEL: PULSAR 150\nDATE OF REGISTRATION: 18/03/2022",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "manufacturer": 0.94,
+        "model": 0.88,
+        "registrationDate": 0.92,
+        "registrationYear": 0.95
+      },
+      "missingFields": [
+        "ownerName",
+        "vehicleClass",
+        "fuelType",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "manufacturer": 0.94,
+      "model": 0.88,
+      "registrationDate": 0.92,
+      "registrationYear": 0.95
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": {
+      "overallComparison": "MISMATCHED",
+      "matchedCount": 2,
+      "totalCompared": 4,
+      "summaryScore": "2/4 fields matched",
+      "fieldComparisons": {
+        "registrationNumber": {
+          "status": "MATCH",
+          "sellerValue": "CH01AB8821",
+          "extractedValue": "CH01AB8821",
+          "confidence": 0.95,
+          "explanation": "Registration number matches listing exactly after format normalization."
+        },
+        "manufacturer": {
+          "status": "MISMATCH",
+          "sellerValue": "Royal Enfield",
+          "extractedValue": "Bajaj",
+          "confidence": 0.95,
+          "explanation": "Manufacturer mismatch: RC states 'Bajaj' but listing brand is 'Royal Enfield'."
+        },
+        "model": {
+          "status": "MISMATCH",
+          "sellerValue": "Classic 350",
+          "extractedValue": "PULSAR 150",
+          "confidence": 0.95,
+          "explanation": "Model discrepancy: RC states 'PULSAR 150' while listing specifies 'Classic 350'."
+        },
+        "registrationYear": {
+          "status": "MATCH",
+          "sellerValue": 2022,
+          "extractedValue": 2022,
+          "confidence": 0.95,
+          "explanation": "Registration year aligns with vehicle model year (+/- 1 year allowance for registration timing)."
+        },
+        "fuelType": {
+          "status": "UNREADABLE",
+          "sellerValue": "PETROL",
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'fuelType' could not be extracted with confidence from the uploaded RC."
+        }
+      }
+    },
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    },
+    "statusReason": "Discrepancy detected between extracted RC values and vehicle listing. Review required by trust & safety team."
+  },
+  "RC-VERIFY-D618B029": {
+    "verificationId": "RC-VERIFY-D618B029",
+    "listingId": "LIST-F84E2C",
+    "sellerId": "seller-default",
+    "filename": "rc_activa.pdf",
+    "fileSize": 133,
+    "mimeType": "application/pdf",
+    "sha256": "02f59b78b6eac00c40f2e1cddad0eef869540d0681db379de0d706755799cc5f",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-D618B029.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "MISMATCHED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:51.825885",
+    "updatedAt": "2026-11-22T06:50:51.838786",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "CH01AB8821",
+      "ownerName": null,
+      "manufacturer": "Honda",
+      "model": "ACTIVA 6G",
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": "18/03/2022",
+      "registrationYear": 2022,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "CERTIFICATE OF REGISTRATION\nREGISTRATION NO: CH01AB8821\nMAKER: HONDA\nMODEL: ACTIVA 6G\nDATE OF REGISTRATION: 18/03/2022",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "manufacturer": 0.94,
+        "model": 0.88,
+        "registrationDate": 0.92,
+        "registrationYear": 0.95
+      },
+      "missingFields": [
+        "ownerName",
+        "vehicleClass",
+        "fuelType",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "manufacturer": 0.94,
+      "model": 0.88,
+      "registrationDate": 0.92,
+      "registrationYear": 0.95
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": {
+      "overallComparison": "MISMATCHED",
+      "matchedCount": 3,
+      "totalCompared": 4,
+      "summaryScore": "3/4 fields matched",
+      "fieldComparisons": {
+        "registrationNumber": {
+          "status": "MATCH",
+          "sellerValue": "CH01AB8821",
+          "extractedValue": "CH01AB8821",
+          "confidence": 0.95,
+          "explanation": "Registration number matches listing exactly after format normalization."
+        },
+        "manufacturer": {
+          "status": "MATCH",
+          "sellerValue": "Honda",
+          "extractedValue": "Honda",
+          "confidence": 0.95,
+          "explanation": "Vehicle manufacturer matches catalog identity."
+        },
+        "model": {
+          "status": "MISMATCH",
+          "sellerValue": "Shine 125",
+          "extractedValue": "ACTIVA 6G",
+          "confidence": 0.95,
+          "explanation": "Model discrepancy: RC states 'ACTIVA 6G' while listing specifies 'Shine 125'."
+        },
+        "registrationYear": {
+          "status": "MATCH",
+          "sellerValue": 2022,
+          "extractedValue": 2022,
+          "confidence": 0.95,
+          "explanation": "Registration year aligns with vehicle model year (+/- 1 year allowance for registration timing)."
+        },
+        "fuelType": {
+          "status": "UNREADABLE",
+          "sellerValue": "PETROL",
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'fuelType' could not be extracted with confidence from the uploaded RC."
+        }
+      }
+    },
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    },
+    "statusReason": "Discrepancy detected between extracted RC values and vehicle listing. Review required by trust & safety team."
+  },
+  "RC-VERIFY-166EF47F": {
+    "verificationId": "RC-VERIFY-166EF47F",
+    "listingId": "LIST-C85168",
+    "sellerId": "seller-default",
+    "filename": "rc_2017.pdf",
+    "fileSize": 143,
+    "mimeType": "application/pdf",
+    "sha256": "d2e7664adb6cd8c420e1bdc6f19a0b3abdbeb6b448ed59cd9feffdd9dfd700ec",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-166EF47F.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "MISMATCHED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:51.844997",
+    "updatedAt": "2026-11-22T06:50:51.857865",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "CH01AB8821",
+      "ownerName": null,
+      "manufacturer": "Royal Enfield",
+      "model": "CLASSIC 350",
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": "15/03/2017",
+      "registrationYear": 2017,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "CERTIFICATE OF REGISTRATION\nREGISTRATION NO: CH01AB8821\nMAKER: ROYAL ENFIELD\nMODEL: CLASSIC 350\nDATE OF REGISTRATION: 15/03/2017",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "manufacturer": 0.94,
+        "model": 0.88,
+        "registrationDate": 0.92,
+        "registrationYear": 0.95
+      },
+      "missingFields": [
+        "ownerName",
+        "vehicleClass",
+        "fuelType",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "manufacturer": 0.94,
+      "model": 0.88,
+      "registrationDate": 0.92,
+      "registrationYear": 0.95
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": {
+      "overallComparison": "MISMATCHED",
+      "matchedCount": 3,
+      "totalCompared": 4,
+      "summaryScore": "3/4 fields matched",
+      "fieldComparisons": {
+        "registrationNumber": {
+          "status": "MATCH",
+          "sellerValue": "CH01AB8821",
+          "extractedValue": "CH01AB8821",
+          "confidence": 0.95,
+          "explanation": "Registration number matches listing exactly after format normalization."
+        },
+        "manufacturer": {
+          "status": "MATCH",
+          "sellerValue": "Royal Enfield",
+          "extractedValue": "Royal Enfield",
+          "confidence": 0.95,
+          "explanation": "Vehicle manufacturer matches catalog identity."
+        },
+        "model": {
+          "status": "MATCH",
+          "sellerValue": "Classic 350",
+          "extractedValue": "CLASSIC 350",
+          "confidence": 0.95,
+          "explanation": "Vehicle model tokens match listing specification."
+        },
+        "registrationYear": {
+          "status": "MISMATCH",
+          "sellerValue": 2023,
+          "extractedValue": 2017,
+          "confidence": 0.95,
+          "explanation": "Year mismatch: RC registration year is 2017 but listing claims 2023."
+        },
+        "fuelType": {
+          "status": "UNREADABLE",
+          "sellerValue": "PETROL",
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'fuelType' could not be extracted with confidence from the uploaded RC."
+        }
+      }
+    },
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    },
+    "statusReason": "Discrepancy detected between extracted RC values and vehicle listing. Review required by trust & safety team."
+  },
+  "RC-VERIFY-6BC756F9": {
+    "verificationId": "RC-VERIFY-6BC756F9",
+    "listingId": "LIST-CD8840",
+    "sellerId": "seller-default",
+    "filename": "rc_no_owner.pdf",
+    "fileSize": 143,
+    "mimeType": "application/pdf",
+    "sha256": "fbbfe65bd8acac437319fc40b4f26efa4ca5d48de07166d144d608ed8ba21000",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-6BC756F9.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:51.864329",
+    "updatedAt": "2026-11-22T06:50:51.870939",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "CH01AB8821",
+      "ownerName": null,
+      "manufacturer": "Royal Enfield",
+      "model": "CLASSIC 350",
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": "18/03/2022",
+      "registrationYear": 2022,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "CERTIFICATE OF REGISTRATION\nREGISTRATION NO: CH01AB8821\nMAKER: ROYAL ENFIELD\nMODEL: CLASSIC 350\nDATE OF REGISTRATION: 18/03/2022",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "manufacturer": 0.94,
+        "model": 0.88,
+        "registrationDate": 0.92,
+        "registrationYear": 0.95
+      },
+      "missingFields": [
+        "ownerName",
+        "vehicleClass",
+        "fuelType",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "manufacturer": 0.94,
+      "model": 0.88,
+      "registrationDate": 0.92,
+      "registrationYear": 0.95
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    }
+  },
+  "RC-VERIFY-E613E4DC": {
+    "verificationId": "RC-VERIFY-E613E4DC",
+    "listingId": "LIST-EF095A",
+    "sellerId": "seller-default",
+    "filename": "rc_no_chassis.pdf",
+    "fileSize": 143,
+    "mimeType": "application/pdf",
+    "sha256": "fbbfe65bd8acac437319fc40b4f26efa4ca5d48de07166d144d608ed8ba21000",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-E613E4DC.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:51.877426",
+    "updatedAt": "2026-11-22T06:50:51.884035",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "CH01AB8821",
+      "ownerName": null,
+      "manufacturer": "Royal Enfield",
+      "model": "CLASSIC 350",
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": "18/03/2022",
+      "registrationYear": 2022,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "CERTIFICATE OF REGISTRATION\nREGISTRATION NO: CH01AB8821\nMAKER: ROYAL ENFIELD\nMODEL: CLASSIC 350\nDATE OF REGISTRATION: 18/03/2022",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "manufacturer": 0.94,
+        "model": 0.88,
+        "registrationDate": 0.92,
+        "registrationYear": 0.95
+      },
+      "missingFields": [
+        "ownerName",
+        "vehicleClass",
+        "fuelType",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "manufacturer": 0.94,
+      "model": 0.88,
+      "registrationDate": 0.92,
+      "registrationYear": 0.95
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    }
+  },
+  "RC-VERIFY-2BB21F4B": {
+    "verificationId": "RC-VERIFY-2BB21F4B",
+    "listingId": "LIST-3B1698",
+    "sellerId": "seller-default",
+    "filename": "blurred_rc.jpg",
+    "fileSize": 8225,
+    "mimeType": "image/jpeg",
+    "sha256": "b6fe6ceb1f40d4d0f88c7547ef0f44c33ccf3752ae65415f1cf13dd46fb00e3a",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-2BB21F4B.jpg",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:51.904703",
+    "updatedAt": "2026-11-22T06:50:51.917998",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": null,
+      "ownerName": null,
+      "manufacturer": null,
+      "model": null,
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": null,
+      "registrationYear": null,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "\u0000\u0010JFIF\u0000\u0001\u0001\u0000\u0000\u0001\u0000\u0001\u0000\u0000\u0000C\u0000\b\u0006\u0006\u0007\u0006\u0005\b\u0007\u0007\u0007\t\t\b\n\f\u0014\r\f\u000b\u000b\f\u0019\u0012\u0013\u000f\u0014\u001d\u001a\u001f\u001e\u001d\u001a\u001c\u001c $.' \",#\u001c\u001c(7),01444\u001f'9=82<.342\u0000C\u0001\t\t\t\f\u000b\f\u0018\r\r\u00182!\u001c!22222222222222222222222222222222222222222222222222\u0000\u0011\b\u0002X\u0003 \u0003\u0001\"\u0000\u0002\u0011\u0001\u0003\u0011\u0001\u0000\u001f\u0000\u0000\u0001\u0005\u0001\u0001\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\u0000\u0010\u0000\u0002\u0001\u0003\u0003\u0002\u0004\u0003\u0005\u0005\u0004\u0004\u0000\u0000\u0001}\u0001\u0002\u0003\u0000\u0004\u0011\u0005\u0012!1A\u0006\u0013Qa\u0007\"q\u00142\b#B\u0015R$3br\t\n\u0016\u0017\u0018\u0019\u001a%&'()*456789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz\u0000\u001f\u0001...",
+      "extractionConfidence": {},
+      "missingFields": [
+        "registrationNumber",
+        "ownerName",
+        "manufacturer",
+        "model",
+        "vehicleClass",
+        "fuelType",
+        "registrationDate",
+        "registrationYear",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": [
+        "Document image blur detected. Please verify extracted fields.",
+        "Image is blurred (Laplacian variance 0.0 < 100). Please provide a steadier photo."
+      ]
+    },
+    "fieldConfidence": {},
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": {
+      "anomaly_score": 0.85,
+      "risk_level": "HIGH_RISK",
+      "anomaly_flags": [
+        "Registration number could not be detected from document.",
+        "Vehicle manufacturer / maker missing from RC extraction.",
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document.",
+        "Document image blur level is high (variance: 0.0). OCR accuracy may be degraded."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 0.0,
+      "is_blurred": true,
+      "brightness": 128.0,
+      "contrast": 0.0,
+      "width": 800,
+      "height": 600,
+      "quality_grade": "FAIL",
+      "warnings": [
+        "Image is blurred (Laplacian variance 0.0 < 100). Please provide a steadier photo."
+      ]
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "UNREADABLE",
+    "classificationConfidence": 0.3142,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": true,
+      "method": "OpenCV-CLAHE-Bilateral"
+    }
+  },
+  "RC-VERIFY-BABB3AE4": {
+    "verificationId": "RC-VERIFY-BABB3AE4",
+    "listingId": "LIST-D5F079",
+    "sellerId": "seller-default",
+    "filename": "rotated_rc.jpg",
+    "fileSize": 218400,
+    "mimeType": "image/jpeg",
+    "sha256": "26008e6063863392a04cf70af385476c755af16b61e5ecc6bf634d16b2908f60",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-BABB3AE4.jpg",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:51.934097",
+    "updatedAt": "2026-11-22T06:50:51.976704",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": null,
+      "ownerName": null,
+      "manufacturer": "Royal Enfield",
+      "model": null,
+      "vehicleClass": null,
+      "fuelType": "ELECTRIC",
+      "registrationDate": null,
+      "registrationYear": null,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "\u0000\u0010JFIF\u0000\u0001\u0001\u0000\u0000\u0001\u0000\u0001\u0000\u0000\u0000C\u0000\b\u0006\u0006\u0007\u0006\u0005\b\u0007\u0007\u0007\t\t\b\n\f\u0014\r\f\u000b\u000b\f\u0019\u0012\u0013\u000f\u0014\u001d\u001a\u001f\u001e\u001d\u001a\u001c\u001c $.' \",#\u001c\u001c(7),01444\u001f'9=82<.342\u0000C\u0001\t\t\t\f\u000b\f\u0018\r\r\u00182!\u001c!22222222222222222222222222222222222222222222222222\u0000\u0011\b\u0002X\u0003 \u0003\u0001\"\u0000\u0002\u0011\u0001\u0003\u0011\u0001\u0000\u001f\u0000\u0000\u0001\u0005\u0001\u0001\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\u0000\u0010\u0000\u0002\u0001\u0003\u0003\u0002\u0004\u0003\u0005\u0005\u0004\u0004\u0000\u0000\u0001}\u0001\u0002\u0003\u0000\u0004\u0011\u0005\u0012!1A\u0006\u0013Qa\u0007\"q\u00142\b#B\u0015R$3br\t\n\u0016\u0017\u0018\u0019\u001a%&'()*456789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz\u0000\u001f\u0001...",
+      "extractionConfidence": {
+        "manufacturer": 0.94,
+        "fuelType": 0.98
+      },
+      "missingFields": [
+        "registrationNumber",
+        "ownerName",
+        "model",
+        "vehicleClass",
+        "registrationDate",
+        "registrationYear",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "manufacturer": 0.94,
+      "fuelType": 0.98
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": {
+      "anomaly_score": 0.85,
+      "risk_level": "HIGH_RISK",
+      "anomaly_flags": [
+        "Registration number could not be detected from document.",
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 19908.7,
+      "is_blurred": false,
+      "brightness": 124.6,
+      "contrast": 30.6,
+      "width": 800,
+      "height": 600,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "UNREADABLE",
+    "classificationConfidence": 0.3583,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": true,
+      "method": "OpenCV-CLAHE-Bilateral"
+    }
+  },
+  "RC-VERIFY-A2A8179C": {
+    "verificationId": "RC-VERIFY-A2A8179C",
+    "listingId": "LIST-CA9DBF",
+    "sellerId": "seller-default",
+    "filename": "electricity_bill.pdf",
+    "fileSize": 140,
+    "mimeType": "application/pdf",
+    "sha256": "0c836999caf538fb754baab425f9ce4685a6bd5267c897070bdd7d250db91778",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-A2A8179C.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "MISMATCHED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "VERIFICATION_FAILED",
+    "uploadedAt": "2026-11-22T06:50:52.012357",
+    "updatedAt": "2026-11-22T06:50:52.025782",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": null,
+      "ownerName": "AMIT SHARMA\nUNITS CONSUMED",
+      "manufacturer": null,
+      "model": null,
+      "vehicleClass": null,
+      "fuelType": "ELECTRIC",
+      "registrationDate": null,
+      "registrationYear": null,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "ELECTRICITY CONSUMER DISCOM BILL\nBILL MONTH: OCTOBER 2025\nNAME: AMIT SHARMA\nUNITS CONSUMED: 450 KWH\nAMOUNT PAYABLE: RS. 3,400",
+      "extractionConfidence": {
+        "ownerName": 0.9,
+        "fuelType": 0.98
+      },
+      "missingFields": [
+        "registrationNumber",
+        "manufacturer",
+        "model",
+        "vehicleClass",
+        "registrationDate",
+        "registrationYear",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "ownerName": 0.9,
+      "fuelType": 0.98
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": {
+      "overallComparison": "MISMATCHED",
+      "matchedCount": 0,
+      "totalCompared": 1,
+      "summaryScore": "0/1 fields matched",
+      "fieldComparisons": {
+        "registrationNumber": {
+          "status": "UNREADABLE",
+          "sellerValue": "CH01AB8821",
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'registrationNumber' could not be extracted with confidence from the uploaded RC."
+        },
+        "manufacturer": {
+          "status": "UNREADABLE",
+          "sellerValue": "Honda",
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'manufacturer' could not be extracted with confidence from the uploaded RC."
+        },
+        "model": {
+          "status": "UNREADABLE",
+          "sellerValue": "Activa 6G",
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'model' could not be extracted with confidence from the uploaded RC."
+        },
+        "registrationYear": {
+          "status": "UNREADABLE",
+          "sellerValue": 2022,
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'registrationYear' could not be extracted with confidence from the uploaded RC."
+        },
+        "fuelType": {
+          "status": "MISMATCH",
+          "sellerValue": "PETROL",
+          "extractedValue": "ELECTRIC",
+          "confidence": 0.95,
+          "explanation": "Fuel type mismatch: RC specifies ELECTRIC vs listing None."
+        }
+      }
+    },
+    "anomalyAssessment": {
+      "anomaly_score": 0.85,
+      "risk_level": "HIGH_RISK",
+      "anomaly_flags": [
+        "Registration number could not be detected from document.",
+        "Vehicle manufacturer / maker missing from RC extraction.",
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "OTHER",
+    "classificationConfidence": 0.6925,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    },
+    "statusReason": "Uploaded document classified as non-vehicle document ('OTHER'). Please upload an authentic RC."
+  },
+  "RC-VERIFY-670DBD5D": {
+    "verificationId": "RC-VERIFY-670DBD5D",
+    "listingId": "LIST-FE467E",
+    "sellerId": "seller-default",
+    "filename": "multipage_rc.pdf",
+    "fileSize": 102,
+    "mimeType": "application/pdf",
+    "sha256": "8c5e0c727704015394f5ad01f868e28fdd473e3c81e16785da0d6777308d42d0",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-670DBD5D.pdf",
+    "documentProcessingStatus": "UPLOADED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:52.032196",
+    "updatedAt": "2026-11-22T06:50:52.032199",
+    "extractedFields": null,
+    "fieldConfidence": {},
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": null,
+    "imageQuality": null,
+    "externalVerification": null,
+    "reviewAudit": []
+  },
+  "RC-VERIFY-682611E6": {
+    "verificationId": "RC-VERIFY-682611E6",
+    "listingId": "LIST-7DF99B",
+    "sellerId": "seller-default",
+    "filename": "unreadable_scan.pdf",
+    "fileSize": 62,
+    "mimeType": "application/pdf",
+    "sha256": "9705bdda1d8801c09656fec067e6a4674dc537460bd9a6b711e51b9a23f8db31",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-682611E6.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:52.038673",
+    "updatedAt": "2026-11-22T06:50:52.045396",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": null,
+      "ownerName": null,
+      "manufacturer": null,
+      "model": null,
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": null,
+      "registrationYear": null,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "SCAN_CORRUPTED: ??? %%% ___ [UNREADABLE PIXELS]",
+      "extractionConfidence": {},
+      "missingFields": [
+        "registrationNumber",
+        "ownerName",
+        "manufacturer",
+        "model",
+        "vehicleClass",
+        "fuelType",
+        "registrationDate",
+        "registrationYear",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {},
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": {
+      "anomaly_score": 0.85,
+      "risk_level": "HIGH_RISK",
+      "anomaly_flags": [
+        "Registration number could not be detected from document.",
+        "Vehicle manufacturer / maker missing from RC extraction.",
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document.",
+        "Document has insufficient text density for authentic Parivahan RC."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "UNREADABLE",
+    "classificationConfidence": 0.3162,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    }
+  },
+  "RC-VERIFY-2EF5E47B": {
+    "verificationId": "RC-VERIFY-2EF5E47B",
+    "listingId": "LIST-0CCBCE",
+    "sellerId": "seller-default",
+    "filename": "rc_typo.pdf",
+    "fileSize": 124,
+    "mimeType": "application/pdf",
+    "sha256": "40abf778585f18435d3fb4fbfc9cfccf32f306ba97a5e6bc47d99eecd0214f82",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-2EF5E47B.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "MATCHED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "DOCUMENT_MATCHED",
+    "uploadedAt": "2026-11-22T06:50:52.051722",
+    "updatedAt": "2026-11-22T06:50:52.071569",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "CH01AB8821",
+      "ownerName": null,
+      "manufacturer": "Royal Enfield",
+      "model": "CLASIC 350",
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": "18/03/2022",
+      "registrationYear": 2022,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "CERTIFICATE OF REGISTRATION\nREG NO: CH01AB8821\nMAKER: ROYAL ENFIELD\nMODEL: CLASIC 350 (TYPO)\nDATE: 18/03/2022",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "manufacturer": 0.94,
+        "model": 0.88,
+        "registrationDate": 0.92,
+        "registrationYear": 0.95
+      },
+      "missingFields": [
+        "ownerName",
+        "vehicleClass",
+        "fuelType",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "manufacturer": 0.94,
+      "model": 0.88,
+      "registrationDate": 0.92,
+      "registrationYear": 0.95
+    },
+    "sellerConfirmedFields": {
+      "registrationNumber": "CH01AB8821",
+      "manufacturer": "Royal Enfield",
+      "model": "Classic 350",
+      "registrationDate": "18/03/2022",
+      "fuelType": null,
+      "vehicleClass": null,
+      "sellerNotes": "Corrected OCR typo from CLASIC to Classic 350",
+      "confirmedAt": "2026-11-22T06:50:52.065079",
+      "registrationYear": 2022
+    },
+    "comparisonResults": {
+      "overallComparison": "MATCHED",
+      "matchedCount": 4,
+      "totalCompared": 4,
+      "summaryScore": "4/4 fields matched",
+      "fieldComparisons": {
+        "registrationNumber": {
+          "status": "MATCH",
+          "sellerValue": "CH01AB8821",
+          "extractedValue": "CH01AB8821",
+          "confidence": 0.95,
+          "explanation": "Registration number matches listing exactly after format normalization."
+        },
+        "manufacturer": {
+          "status": "MATCH",
+          "sellerValue": "Royal Enfield",
+          "extractedValue": "Royal Enfield",
+          "confidence": 0.95,
+          "explanation": "Vehicle manufacturer matches catalog identity."
+        },
+        "model": {
+          "status": "MATCH",
+          "sellerValue": "Classic 350",
+          "extractedValue": "Classic 350",
+          "confidence": 0.95,
+          "explanation": "Vehicle model tokens match listing specification."
+        },
+        "registrationYear": {
+          "status": "MATCH",
+          "sellerValue": 2022,
+          "extractedValue": 2022,
+          "confidence": 0.95,
+          "explanation": "Registration year aligns with vehicle model year (+/- 1 year allowance for registration timing)."
+        },
+        "fuelType": {
+          "status": "UNREADABLE",
+          "sellerValue": "PETROL",
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'fuelType' could not be extracted with confidence from the uploaded RC."
+        }
+      }
+    },
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    },
+    "statusReason": "All available document fields successfully match listing details. Document verified at marketplace tier."
+  },
+  "RC-VERIFY-ECE4B862": {
+    "verificationId": "RC-VERIFY-ECE4B862",
+    "listingId": "LIST-65E894",
+    "sellerId": "seller-default",
+    "filename": "hash_test.pdf",
+    "fileSize": 61,
+    "mimeType": "application/pdf",
+    "sha256": "039e076432231e57a1a75149b00d89f191c28c312c3200fff3116c8211dca507",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-ECE4B862.pdf",
+    "documentProcessingStatus": "UPLOADED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:52.078155",
+    "updatedAt": "2026-11-22T06:50:52.078156",
+    "extractedFields": null,
+    "fieldConfidence": {},
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": null,
+    "imageQuality": null,
+    "externalVerification": null,
+    "reviewAudit": []
+  },
+  "RC-VERIFY-3B9C8B14": {
+    "verificationId": "RC-VERIFY-3B9C8B14",
+    "listingId": "LIST-858DA2",
+    "sellerId": "seller-default",
+    "filename": "recompare.pdf",
+    "fileSize": 134,
+    "mimeType": "application/pdf",
+    "sha256": "23eb4b3581bdd908aeef1426cf6ced946aa85c58316fa4629150cf069c375463",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-3B9C8B14.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "MATCHED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "DOCUMENT_MATCHED",
+    "uploadedAt": "2026-11-22T06:50:52.085647",
+    "updatedAt": "2026-11-22T06:50:52.104581",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "CH01AB8821",
+      "ownerName": null,
+      "manufacturer": "Royal Enfield",
+      "model": "CLASSIC 350",
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": "18/03/2022",
+      "registrationYear": 2022,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "CERTIFICATE OF REGISTRATION\nREG NO: CH01AB8821\nMAKER: ROYAL ENFIELD\nMODEL: CLASSIC 350\nDATE OF REGISTRATION: 18/03/2022",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "manufacturer": 0.94,
+        "model": 0.88,
+        "registrationDate": 0.92,
+        "registrationYear": 0.95
+      },
+      "missingFields": [
+        "ownerName",
+        "vehicleClass",
+        "fuelType",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "manufacturer": 0.94,
+      "model": 0.88,
+      "registrationDate": 0.92,
+      "registrationYear": 0.95
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": {
+      "overallComparison": "MATCHED",
+      "matchedCount": 4,
+      "totalCompared": 4,
+      "summaryScore": "4/4 fields matched",
+      "fieldComparisons": {
+        "registrationNumber": {
+          "status": "MATCH",
+          "sellerValue": "CH01AB8821",
+          "extractedValue": "CH01AB8821",
+          "confidence": 0.95,
+          "explanation": "Registration number matches listing exactly after format normalization."
+        },
+        "manufacturer": {
+          "status": "MATCH",
+          "sellerValue": "Royal Enfield",
+          "extractedValue": "Royal Enfield",
+          "confidence": 0.95,
+          "explanation": "Vehicle manufacturer matches catalog identity."
+        },
+        "model": {
+          "status": "MATCH",
+          "sellerValue": "Classic 350",
+          "extractedValue": "CLASSIC 350",
+          "confidence": 0.95,
+          "explanation": "Vehicle model tokens match listing specification."
+        },
+        "registrationYear": {
+          "status": "MATCH",
+          "sellerValue": 2022,
+          "extractedValue": 2022,
+          "confidence": 0.95,
+          "explanation": "Registration year aligns with vehicle model year (+/- 1 year allowance for registration timing)."
+        },
+        "fuelType": {
+          "status": "UNREADABLE",
+          "sellerValue": "PETROL",
+          "extractedValue": null,
+          "confidence": 0.0,
+          "explanation": "Field 'fuelType' could not be extracted with confidence from the uploaded RC."
+        }
+      }
+    },
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": null,
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    },
+    "statusReason": "All available document fields successfully match listing details. Document verified at marketplace tier."
+  },
+  "RC-VERIFY-968471B8": {
+    "verificationId": "RC-VERIFY-968471B8",
+    "listingId": "LIST-3EB6FB",
+    "sellerId": "seller-default",
+    "filename": "doc1.pdf",
+    "fileSize": 20,
+    "mimeType": "application/pdf",
+    "sha256": "eae1d7e709855989aeecafb287545fd75f9b27e51448a9862741ff5813cff8e8",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-968471B8.pdf",
+    "documentProcessingStatus": "UPLOADED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:52.111057",
+    "updatedAt": "2026-11-22T06:50:52.111059",
+    "extractedFields": null,
+    "fieldConfidence": {},
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": null,
+    "imageQuality": null,
+    "externalVerification": null,
+    "reviewAudit": []
+  },
+  "RC-VERIFY-1E05F1D5": {
+    "verificationId": "RC-VERIFY-1E05F1D5",
+    "listingId": "LIST-35CCAE",
+    "sellerId": "seller-default",
+    "filename": "doc2.pdf",
+    "fileSize": 20,
+    "mimeType": "application/pdf",
+    "sha256": "03a6a055f0cf4cd9f522e65bdfd789a2ec0174ddba99162f046459b1cc7ce625",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-1E05F1D5.pdf",
+    "documentProcessingStatus": "UPLOADED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:52.117317",
+    "updatedAt": "2026-11-22T06:50:52.117319",
+    "extractedFields": null,
+    "fieldConfidence": {},
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": null,
+    "imageQuality": null,
+    "externalVerification": null,
+    "reviewAudit": []
+  },
+  "RC-VERIFY-D0A5A1F0": {
+    "verificationId": "RC-VERIFY-D0A5A1F0",
+    "listingId": "LIST-575D8B",
+    "sellerId": "seller-default",
+    "filename": "ext_test.pdf",
+    "fileSize": 101,
+    "mimeType": "application/pdf",
+    "sha256": "23fdc4c98ec774bc22abc5ac1090a79cb5408c991264256be7d667899e917b72",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-D0A5A1F0.pdf",
+    "documentProcessingStatus": "OCR_COMPLETED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "MANUAL_REVIEW",
+    "uploadedAt": "2026-11-22T06:50:52.124929",
+    "updatedAt": "2026-11-22T06:50:52.138357",
+    "extractedFields": {
+      "documentType": "RC",
+      "registrationNumber": "CH01AB8821",
+      "ownerName": null,
+      "manufacturer": "Royal Enfield",
+      "model": "CLASSIC 350",
+      "vehicleClass": null,
+      "fuelType": null,
+      "registrationDate": null,
+      "registrationYear": null,
+      "chassisNumberMasked": null,
+      "engineNumberMasked": null,
+      "registeringAuthority": null,
+      "hypothecation": "NOT SPECIFIED",
+      "rawTextSnippet": "CERTIFICATE OF REGISTRATION\nREG NO: CH01AB8821\nMAKER: ROYAL ENFIELD\nMODEL: CLASSIC 350",
+      "extractionConfidence": {
+        "registrationNumber": 0.96,
+        "manufacturer": 0.94,
+        "model": 0.88
+      },
+      "missingFields": [
+        "ownerName",
+        "vehicleClass",
+        "fuelType",
+        "registrationDate",
+        "registrationYear",
+        "chassisNumberMasked",
+        "engineNumberMasked"
+      ],
+      "processingWarnings": []
+    },
+    "fieldConfidence": {
+      "registrationNumber": 0.96,
+      "manufacturer": 0.94,
+      "model": 0.88
+    },
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": {
+      "anomaly_score": 0.5,
+      "risk_level": "MEDIUM",
+      "anomaly_flags": [
+        "Chassis number not detected on document.",
+        "Engine / Motor number not detected on document."
+      ],
+      "requires_manual_review": true
+    },
+    "imageQuality": {
+      "blur_score": 250.0,
+      "is_blurred": false,
+      "brightness": 128.0,
+      "contrast": 60.0,
+      "width": 1200,
+      "height": 800,
+      "quality_grade": "PASS",
+      "warnings": []
+    },
+    "externalVerification": {
+      "provider": "VAHAN_SANDBOX_DEMO_GATEWAY",
+      "status": "NOT_CONNECTED",
+      "is_government_verified": false,
+      "verification_reference": "REF-DEMO-C4A70379",
+      "registration_number": "CH01AB8821",
+      "timestamp": "2026-11-22T06:50:52.138354",
+      "message": "Demonstration sandbox mode. Official government verification requires live VAHAN / DigiLocker ministry API credentials."
+    },
+    "reviewAudit": [],
+    "documentType": "RC",
+    "classificationConfidence": 0.92,
+    "deskewMetadata": {
+      "deskew_angle_deg": 0.0,
+      "enhanced": false,
+      "method": "OpenCV-CLAHE-Bilateral"
+    },
+    "statusReason": "Extraction partial or pending reviewer sign-off."
+  },
+  "RC-VERIFY-2184BFCA": {
+    "verificationId": "RC-VERIFY-2184BFCA",
+    "listingId": "LIST-492B0D",
+    "sellerId": "seller-default",
+    "filename": "admin_test.pdf",
+    "fileSize": 61,
+    "mimeType": "application/pdf",
+    "sha256": "039e076432231e57a1a75149b00d89f191c28c312c3200fff3116c8211dca507",
+    "documentStorageReference": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/verification_docs/RC-VERIFY-2184BFCA.pdf",
+    "documentProcessingStatus": "UPLOADED",
+    "fieldComparisonStatus": "NOT_EVALUATED",
+    "externalVerificationStatus": "NOT_CONNECTED",
+    "finalWorkflowStatus": "DOCUMENT_MATCHED",
+    "uploadedAt": "2026-11-22T06:50:52.145259",
+    "updatedAt": "2026-11-22T06:50:52.162362",
+    "extractedFields": null,
+    "fieldConfidence": {},
+    "sellerConfirmedFields": null,
+    "comparisonResults": null,
+    "anomalyAssessment": null,
+    "imageQuality": null,
+    "externalVerification": null,
+    "reviewAudit": [
+      {
+        "reviewerId": "rev-senior-07",
+        "action": "approve",
+        "notes": "Verified manual physical stamp on Parivahan smart card.",
+        "correctedFields": null,
+        "timestamp": "2026-11-22T06:50:52.162358"
+      }
+    ],
+    "statusReason": "Approved by Trust & Safety reviewer (rev-senior-07): Verified manual physical stamp on Parivahan smart card."
   }
 }
