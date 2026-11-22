@@ -54,9 +54,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     { num: '02', label: 'Valuation', path: '/price-estimator' },
     { num: '03', label: '3D Twin', path: '/inspect/bike-001' },
     { num: '04', label: 'Resale Studio', path: '/resale-studio' },
-    { num: '05', label: 'Bike Doctor', path: '/bike-doctor' },
-    { num: '06', label: 'Compare', path: '/compare' },
-    { num: '07', label: 'Standards', path: '/trust' },
+    { num: '05', label: 'Compare', path: '/compare' },
+    { num: '06', label: 'Standards', path: '/trust' },
   ];
 
   return (

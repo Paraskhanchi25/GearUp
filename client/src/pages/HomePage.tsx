@@ -215,14 +215,14 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="standard-pillar p-5 sm:p-8 bg-white border border-[#E9E3D8] space-y-3.5 hover:border-[#35483C] transition-colors">
               <span className="font-mono text-xs text-[#A4AD98] font-bold">01 //</span>
               <h3 className="font-heading font-bold text-base sm:text-lg uppercase text-[#242622]">
-                Acoustic Diagnostics
+                3D Digital Twin
               </h3>
               <p className="text-xs text-[#85857E] leading-relaxed font-sans">
-                Real engine stethoscope recording and spectral frequency analysis to detect valve tappet clearance, piston slap, and bearing rumble.
+                Interactive 360° WebGL vehicle twin allowing virtual mechanical inspection, exploded component views, and chassis scrutiny.
               </p>
               <div className="pt-2">
-                <Link to="/bike-doctor" className="font-mono text-[10px] uppercase tracking-wider text-[#35483C] font-bold flex items-center gap-1 min-h-[38px]">
-                  <span>Diagnose Engine</span>
+                <Link to="/inspect/bike-001" className="font-mono text-[10px] uppercase tracking-wider text-[#35483C] font-bold flex items-center gap-1 min-h-[38px]">
+                  <span>Inspect 3D Twin</span>
                   <span>→</span>
                 </Link>
               </div>

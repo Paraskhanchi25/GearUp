@@ -124,32 +124,6 @@ export interface DealDetectorPayload {
   inspection_score?: number;
 }
 
-export interface BikeDoctorPayload {
-  symptom_text: string;
-  brand?: string;
-  model?: string;
-  category?: string;
-  year?: number;
-  km?: number;
-  fuel_type?: string;
-  engine_cc?: number;
-  has_image?: boolean;
-  has_audio?: boolean;
-}
-
-export interface BikeDoctorFeedbackPayload {
-  diagnosis_id: string;
-  actual_fault_component: string;
-  actual_fault_category: string;
-  was_accurate: boolean;
-  resolution_notes?: string;
-  verified_by_mechanic?: boolean;
-  mechanic_shop_name?: string;
-  replaced_parts?: string[];
-  cost_paid?: number;
-  rating?: number;
-}
-
 export interface ListingAssistantPayload {
   brand: string;
   model: string;
@@ -317,64 +291,7 @@ export async function evaluateDeal(payload: DealDetectorPayload) {
   };
 }
 
-// 4. AI Bike Doctor Diagnostic API
-export async function diagnoseProblem(payload: BikeDoctorPayload) {
-  try {
-    const res = await fetch(`${API_BASE}/bike-doctor/diagnose`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (res.ok) {
-      return await res.json();
-    }
-  } catch (err) {
-    console.warn('Bike Doctor API fetch error:', err);
-  }
-
-  return {
-    reported_symptom: payload.symptom_text,
-    urgency_level: 'caution',
-    possible_causes: [
-      { component: 'Tappet Slack or Chain Wear', probability: 'High', explanation: 'Mechanical clearance wear or dry chain links creating friction.' }
-    ],
-    clarifying_questions: ['Does the symptom change with throttle or speed?'],
-    safe_diy_checks: ['Verify engine oil level on level ground', 'Inspect chain tension'],
-    suggested_next_steps: ['Have a qualified two-wheeler mechanic inspect before long highway rides'],
-    professional_inspection_required: false,
-    safety_disclaimer: '⚠️ AI Bike Doctor provides remote advisory analysis. Always inspect brakes and steering in-person.'
-  };
-}
-
-export async function submitBikeDoctorFeedback(payload: BikeDoctorFeedbackPayload) {
-  try {
-    const res = await fetch(`${API_BASE}/bike-doctor/feedback`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (res.ok) {
-      return await res.json();
-    }
-  } catch (err) {
-    console.warn('Bike Doctor feedback error:', err);
-  }
-  return { status: 'fallback', message: 'Feedback recorded locally' };
-}
-
-export async function getBikeDoctorMLStatus() {
-  try {
-    const res = await fetch(`${API_BASE}/bike-doctor/ml-status`);
-    if (res.ok) {
-      return await res.json();
-    }
-  } catch (err) {
-    console.warn('Bike Doctor ML Status error:', err);
-  }
-  return null;
-}
-
-// 5. AI Listing Assistant API
+// 4. AI Listing Assistant API
 export async function generateListing(payload: ListingAssistantPayload) {
   try {
     const res = await fetch(`${API_BASE}/listing-assistant/generate`, {

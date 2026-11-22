@@ -86,24 +86,8 @@ def test_ai_ecosystem():
     print(f"  ✓ Below-market listing correctly identified as: '{deal_data['deal_badge']}'")
     print(f"  ✓ Difference calculated: ₹{int(abs(deal_data['price_difference_inr'])):,} ({abs(deal_data['percentage_difference'])}% discount)")
 
-    # 4. AI Bike Doctor
-    print("\n[TEST 4] AI Bike Doctor Diagnostics:")
-    doc_res = client.post("/api/bike-doctor/diagnose", json={
-        "symptom_text": "Spongy front brake lever with delayed stopping power",
-        "brand": "Honda",
-        "model": "Activa 6G"
-    })
-    assert doc_res.status_code == 200
-    doc_data = doc_res.json()
-    assert doc_data["urgency_level"] in ["caution", "urgent_do_not_ride"]
-    assert len(doc_data["possible_causes"]) > 0
-    assert len(doc_data["safe_diy_checks"]) > 0
-    assert "Important Safety Notice" in doc_data["safety_disclaimer"]
-    print(f"  ✓ Critical symptom diagnosed: {doc_data['urgency_level']} with {len(doc_data['possible_causes'])} ranked causes.")
-    print(f"  ✓ Safety disclaimer enforced: Yes.")
-
-    # 5. AI Listing Assistant
-    print("\n[TEST 5] AI Listing Assistant:")
+    # 4. AI Listing Assistant
+    print("\n[TEST 4] AI Listing Assistant:")
     list_res = client.post("/api/listing-assistant/generate", json={
         "brand": "Honda",
         "model": "Activa 6G",
@@ -120,8 +104,8 @@ def test_ai_ecosystem():
     print(f"  ✓ Auto-drafted title: '{list_data['title']}'")
     print(f"  ✓ Suggested asking price: ₹{list_data['suggested_asking_price']:,}")
 
-    # 6. AI Resale Upgrade Studio
-    print("\n[TEST 6] AI Resale Upgrade Studio:")
+    # 5. AI Resale Upgrade Studio
+    print("\n[TEST 5] AI Resale Upgrade Studio:")
     up_res = client.post("/api/upgrade-studio/recommend", json={
         "brand": "Royal Enfield",
         "model": "Classic 350",
@@ -138,8 +122,8 @@ def test_ai_ecosystem():
     print(f"  ✓ Generated {len(up_data['upgrades'])} targeted upgrades with {up_data['roi_percentage']}% projected ROI.")
     print(f"  ✓ AI concept labeling verified: Yes.")
 
-    # 7. AI Bike Comparison
-    print("\n[TEST 7] AI Bike Comparison:")
+    # 6. AI Bike Comparison
+    print("\n[TEST 6] AI Bike Comparison:")
     comp_res = client.post("/api/bike-comparison/compare", json={
         "bike1": "Royal Enfield Classic 350",
         "bike2": "Honda Activa 6G"
@@ -152,19 +136,19 @@ def test_ai_ecosystem():
     print(f"  ✓ Head-to-head comparison generated: {len(comp_data['specs_comparison'])} verified spec categories.")
     print(f"  ✓ Synthesis: \"{comp_data['ai_verdict'][:75]}...\"")
 
-    # 8. Shared Voice AI Service
-    print("\n[TEST 8] Shared Voice AI Multilingual Service:")
+    # 7. Shared Voice AI Service
+    print("\n[TEST 7] Shared Voice AI Multilingual Service:")
     voice_res = client.post("/api/voice/process", json={
         "sample_text": "Meri bike start nahi ho rahi",
         "language": "hi"
     })
     assert voice_res.status_code == 200
     voice_data = voice_res.json()
-    assert voice_data["suggested_module"] == "bike_doctor"
+    assert voice_data["suggested_module"] == "ai_buddy"
     print(f"  ✓ Hindi voice phrase parsed: '{voice_data['recognized_text']}' -> Routed to {voice_data['suggested_module']}.")
 
     print("\n" + "=" * 70)
-    print("🎉 ALL 8 AI MODULES PASSED VERIFICATION WITH 100% SUCCESS!")
+    print("🎉 ALL 7 AI MODULES PASSED VERIFICATION WITH 100% SUCCESS!")
     print("=" * 70)
 
 if __name__ == "__main__":
