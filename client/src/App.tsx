@@ -22,7 +22,6 @@ import { HowItWorksPage } from './pages/HowItWorksPage';
 import { TrustPage } from './pages/TrustPage';
 import { AuthPage } from './pages/AuthPage';
 import { AdminPage } from './pages/AdminPage';
-import { MotorcycleInspectionPage } from './pages/MotorcycleInspectionPage';
 
 export const App: React.FC = () => {
   // Default Search Origin: Chandigarh (Sector 17)
@@ -110,7 +109,6 @@ export const App: React.FC = () => {
                 />
               }
             />
-            <Route path="/inspect/:id" element={<MotorcycleInspectionPage />} />
             <Route path="/sell" element={<SellBikePage />} />
             <Route path="/resale-studio" element={<ResaleStudioPage />} />
             <Route path="/bike-doctor" element={<BikeDoctorPage />} />

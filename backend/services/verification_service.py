@@ -20,8 +20,15 @@ import hashlib
 from datetime import datetime, date
 from typing import Dict, Any, List, Optional, Tuple
 from io import BytesIO
-from pypdf import PdfReader
-from PIL import Image
+try:
+    from pypdf import PdfReader
+except ImportError:
+    PdfReader = None
+
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
 
 # Secure Storage Directory
 STORAGE_DIR = os.path.join(os.path.dirname(__file__), "..", "storage", "verification_docs")

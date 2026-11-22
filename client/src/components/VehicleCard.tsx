@@ -86,13 +86,6 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
               <CheckCircle2 className="w-3 h-3 text-emerald-400" /> RTO Verified
             </span>
           )}
-          <Link
-            to={`/inspect/${vehicle.id}`}
-            onClick={(e) => e.stopPropagation()}
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-950/90 text-emerald-300 backdrop-blur-md border border-emerald-500/50 hover:bg-emerald-900 transition-colors shadow-sm"
-          >
-            <span>🏍️ 3D Inspect</span>
-          </Link>
           {vehicle.batteryHealth && (
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-cyan-900/90 text-cyan-200 backdrop-blur-md border border-cyan-500/40">
               <Zap className="w-3 h-3 text-cyan-400" /> Batt: {vehicle.batteryHealth}%

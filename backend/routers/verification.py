@@ -629,7 +629,7 @@ async def get_3d_inspection_data(listing_id: str):
     Returns 3D digital twin assets, certified physical inspection metrics,
     and YOLO/OpenCV exterior surface observations for the interactive 3D motorcycle inspection experience.
     """
-    record = get_or_create_record(listing_id)
+    record = VERIFICATION_STORE.get(listing_id, {})
     v_details = record.get("vehicle_details", {})
     brand = v_details.get("brand", "Royal Enfield")
     model = v_details.get("model", "Classic 350")

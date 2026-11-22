@@ -14,12 +14,18 @@ import {
   TrendingUp,
   Award,
   SlidersHorizontal,
-  Compass
+  Compass,
+  FileCheck2,
+  Gauge,
+  Calendar,
+  Layers,
+  Check,
+  Star
 } from 'lucide-react';
 import { VehicleListing, SearchCenter } from '../types';
 import { SEED_LISTINGS } from '../data/seedListings';
-import { VehicleCard } from '../components/VehicleCard';
 import { formatINR } from '../utils/geo';
+import { CinematicMotorcycleHero } from '../components/3d/CinematicMotorcycleHero';
 
 interface HomePageProps {
   currentLocation: SearchCenter;
@@ -36,547 +42,493 @@ export const HomePage: React.FC<HomePageProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  // Hero Search Fields
-  const [searchCategory, setSearchCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [searchBudget, setSearchBudget] = useState<string>('all');
+  // Category filter for inventory showcase
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  const handleHeroSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate(`/explore?category=${searchCategory}&q=${searchQuery}&budget=${searchBudget}`);
-  };
-
-  const featuredBikes = SEED_LISTINGS.slice(0, 6);
-  const electricBikes = SEED_LISTINGS.filter(b => b.category === 'electric').slice(0, 3);
+  const filteredInventory = SEED_LISTINGS.filter(
+    (b) => selectedCategory === 'all' || b.category.toLowerCase() === selectedCategory.toLowerCase()
+  ).slice(0, 6);
 
   return (
-    <div className="space-y-24 pb-20 overflow-hidden">
-      {/* 1. HERO SECTION (Automotive-first editorial styling as per visual reference) */}
-      <section className="relative min-h-[85vh] flex items-center justify-center bg-gradient-to-b from-[#0B1512] via-[#0E1F1A] to-[#0A1411] border-b border-[#1A332B] pt-8 pb-16 px-4 sm:px-6 lg:px-8">
-        {/* Subtle Ambient Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-forest-600/10 rounded-full blur-[120px] pointer-events-none" />
+    <div className="bg-deepBlack text-sand-light selection:bg-sage-dark selection:text-sand-light overflow-x-hidden">
+      {/* =========================================================================
+          SECTION 2: CINEMATIC 3D MOTORCYCLE HERO (Scroll-driven Anduril style)
+         ========================================================================= */}
+      <CinematicMotorcycleHero />
 
-        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-          {/* Left Hero Content */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-forest-900/80 border border-forest-600/50 text-xs text-forest-200">
-              <span className="w-2 h-2 rounded-full bg-forest-400 animate-pulse"></span>
-              <span className="font-semibold tracking-wide">AI-Powered Used Two-Wheeler Platform</span>
-              <span className="text-forest-400 font-bold">•</span>
-              <span className="text-slate-300">India First</span>
+      {/* =========================================================================
+          SECTION 3: BRAND PHILOSOPHY (Warm Sand Background & Deep Black Typography)
+         ========================================================================= */}
+      <section className="relative py-28 px-6 sm:px-12 lg:px-20 bg-sand-light text-deepBlack transition-colors">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+            <div className="lg:col-span-8 space-y-4">
+              <span className="text-xs uppercase font-mono tracking-widest text-darkSage font-bold">
+                01 // THE GEAR UP PHILOSOPHY
+              </span>
+              <h2 className="font-heading font-extrabold text-4xl sm:text-6xl text-deepBlack tracking-tight leading-[1.05]">
+                MORE THAN JUST A MOTORCYCLE.
+              </h2>
             </div>
+            <div className="lg:col-span-4">
+              <p className="text-charcoal/80 text-sm sm:text-base leading-relaxed">
+                We believe trust is not a buzzword — it is an engineered certainty. By marrying advanced machine learning with rigorous physical hub inspections, we transform second-hand two-wheelers into certified assets.
+              </p>
+            </div>
+          </div>
 
-            <div className="space-y-3">
-              <h1 className="font-heading font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1]">
-                Your next ride is <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-forest-200 via-forest-400 to-emerald-400">
-                  closer than you think.
-                </span>
-              </h1>
-              <p className="text-slate-300 text-base sm:text-lg max-w-xl font-normal leading-relaxed">
-                Discover trusted pre-owned bikes and scooters within 2 to 50 km of your coordinates. Compare smarter and unlock fair market pricing with AI.
+          {/* 4 Architectural Pillar Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
+            <div className="p-8 rounded-2xl bg-sand-offWhite border border-sand-warm/60 shadow-sm space-y-4">
+              <div className="w-10 h-10 rounded-xl bg-darkSage text-sand-light flex items-center justify-center font-mono font-bold text-sm">
+                01
+              </div>
+              <h3 className="font-heading font-bold text-xl text-deepBlack">
+                Transparent Telemetry
+              </h3>
+              <p className="text-xs text-charcoal/80 leading-relaxed">
+                No masked defects or misleading cosmetic polish. Every motorcycle displays authentic hub compression data, rotor wear, and tyre tread depth.
               </p>
             </div>
 
-            {/* Spec Highlights Pill (As requested in prompt & visual references) */}
-            <div className="flex flex-wrap items-center gap-3 pt-2 text-xs">
-              <div className="px-3 py-2 rounded-xl bg-[#142620] border border-[#214339] text-slate-200 flex items-center gap-2">
-                <span className="font-bold text-forest-300">120-Point</span>
-                <span className="text-slate-400">Physical Inspection</span>
+            <div className="p-8 rounded-2xl bg-sand-offWhite border border-sand-warm/60 shadow-sm space-y-4">
+              <div className="w-10 h-10 rounded-xl bg-darkSage text-sand-light flex items-center justify-center font-mono font-bold text-sm">
+                02
               </div>
-              <div className="px-3 py-2 rounded-xl bg-[#142620] border border-[#214339] text-slate-200 flex items-center gap-2">
-                <span className="font-bold text-emerald-400">0% Deposit</span>
-                <span className="text-slate-400">Doorstep Test Rides</span>
+              <h3 className="font-heading font-bold text-xl text-deepBlack">
+                Data-Driven Valuation
+              </h3>
+              <p className="text-xs text-charcoal/80 leading-relaxed">
+                Trained on 45,000+ real Indian market sales. Our gradient-boosted ML engine evaluates true residual value based on mechanical health, not guesswork.
+              </p>
+            </div>
+
+            <div className="p-8 rounded-2xl bg-sand-offWhite border border-sand-warm/60 shadow-sm space-y-4">
+              <div className="w-10 h-10 rounded-xl bg-darkSage text-sand-light flex items-center justify-center font-mono font-bold text-sm">
+                03
               </div>
-              <div className="px-3 py-2 rounded-xl bg-[#142620] border border-gold/40 text-gold-light flex items-center gap-2">
-                <span className="font-bold text-gold">AI Resale</span>
-                <span className="text-slate-300">Upgrade Studio</span>
+              <h3 className="font-heading font-bold text-xl text-deepBlack">
+                Verified RTO Titles
+              </h3>
+              <p className="text-xs text-charcoal/80 leading-relaxed">
+                3-level document verification ensures chassis and engine number consistency, active insurance validation, PUC compliance, and zero active loan encumbrances.
+              </p>
+            </div>
+
+            <div className="p-8 rounded-2xl bg-sand-offWhite border border-sand-warm/60 shadow-sm space-y-4">
+              <div className="w-10 h-10 rounded-xl bg-darkSage text-sand-light flex items-center justify-center font-mono font-bold text-sm">
+                04
+              </div>
+              <h3 className="font-heading font-bold text-xl text-deepBlack">
+                Zero-Friction Buying
+              </h3>
+              <p className="text-xs text-charcoal/80 leading-relaxed">
+                Experience doorstep test rides, transparent escrow holding, and doorstep RTO ownership transfers without dealing with unverified middlemen.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 4: HOW GEARUP WORKS (Dark Minimalist Numbered Stages)
+         ========================================================================= */}
+      <section className="py-28 px-6 sm:px-12 lg:px-20 bg-deepBlack border-t border-darkSage/40">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="space-y-4 max-w-2xl">
+            <span className="text-xs uppercase font-mono tracking-widest text-sage-muted font-bold">
+              02 // THE PROCESS
+            </span>
+            <h2 className="font-heading font-extrabold text-4xl sm:text-5xl text-sand-offWhite tracking-tight">
+              ENGINEERED FOR ABSOLUTE CONFIDENCE.
+            </h2>
+            <p className="text-sand-light/70 text-sm sm:text-base leading-relaxed">
+              From first exploration to handing over the keys, each stage is structured for total transparency.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Stage 1 */}
+            <div className="relative p-6 rounded-2xl bg-charcoal border border-darkSage space-y-4 group hover:border-sage-muted transition-colors">
+              <div className="text-3xl font-heading font-extrabold text-sand-warm">01</div>
+              <h3 className="text-lg font-heading font-bold text-sand-offWhite">Discover</h3>
+              <p className="text-xs text-sand-light/70 leading-relaxed">
+                Explore real inventory mapped with live GPS coordinates across Tri-City, Delhi NCR, Bengaluru, Pune, and Jaipur.
+              </p>
+              <div className="pt-2 text-[11px] font-mono text-sage-muted flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5" />
+                <span>Geographic Proximity</span>
               </div>
             </div>
 
-            {/* Interactive Search Bar directly in Hero */}
-            <form
-              onSubmit={handleHeroSearch}
-              className="p-3 bg-[#13231E]/95 backdrop-blur-md rounded-2xl border border-forest-600/50 shadow-2xl space-y-3 sm:space-y-0 sm:flex sm:items-center sm:gap-2"
-            >
-              <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-forest-950/80 rounded-xl border border-forest-900">
-                <Search className="w-4 h-4 text-forest-400" />
-                <input
-                  type="text"
-                  placeholder="Brand, model (e.g. Classic 350, Activa)"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
-                />
+            {/* Stage 2 */}
+            <div className="relative p-6 rounded-2xl bg-charcoal border border-darkSage space-y-4 group hover:border-sage-muted transition-colors">
+              <div className="text-3xl font-heading font-extrabold text-sand-warm">02</div>
+              <h3 className="text-lg font-heading font-bold text-sand-offWhite">Evaluate</h3>
+              <p className="text-xs text-sand-light/70 leading-relaxed">
+                Understand vehicle health with our ML valuation engine that dynamically adjusts for mechanical and component wear.
+              </p>
+              <div className="pt-2 text-[11px] font-mono text-sage-muted flex items-center gap-1.5">
+                <Gauge className="w-3.5 h-3.5" />
+                <span>ML Fair Price Engine</span>
               </div>
+            </div>
 
-              <div className="flex items-center gap-2">
-                <select
-                  value={searchCategory}
-                  onChange={(e) => setSearchCategory(e.target.value)}
-                  className="bg-forest-950/80 text-xs text-slate-200 border border-forest-900 rounded-xl px-3 py-2.5 focus:outline-none focus:border-forest-500"
-                >
-                  <option value="all">All Rides</option>
-                  <option value="motorcycle">Motorcycle</option>
-                  <option value="scooter">Scooter</option>
-                  <option value="electric">Electric EV</option>
-                </select>
+            {/* Stage 3 */}
+            <div className="relative p-6 rounded-2xl bg-charcoal border border-darkSage space-y-4 group hover:border-sage-muted transition-colors">
+              <div className="text-3xl font-heading font-extrabold text-sand-warm">03</div>
+              <h3 className="text-lg font-heading font-bold text-sand-offWhite">Verify</h3>
+              <p className="text-xs text-sand-light/70 leading-relaxed">
+                Examine comprehensive 120-point certified hub inspection results, compression test logs, and verified RTO certificates.
+              </p>
+              <div className="pt-2 text-[11px] font-mono text-sage-muted flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>120-Point Certification</span>
+              </div>
+            </div>
 
-                <select
-                  value={searchBudget}
-                  onChange={(e) => setSearchBudget(e.target.value)}
-                  className="bg-forest-950/80 text-xs text-slate-200 border border-forest-900 rounded-xl px-3 py-2.5 focus:outline-none focus:border-forest-500"
-                >
-                  <option value="all">Any Budget</option>
-                  <option value="under50k">Under ₹50k</option>
-                  <option value="under1lakh">Under ₹1 Lakh</option>
-                  <option value="under2lakh">Under ₹2 Lakh</option>
-                  <option value="above2lakh">Above ₹2 Lakh</option>
-                </select>
+            {/* Stage 4 */}
+            <div className="relative p-6 rounded-2xl bg-charcoal border border-darkSage space-y-4 group hover:border-sage-muted transition-colors">
+              <div className="text-3xl font-heading font-extrabold text-sand-warm">04</div>
+              <h3 className="text-lg font-heading font-bold text-sand-offWhite">Connect</h3>
+              <p className="text-xs text-sand-light/70 leading-relaxed">
+                Book a hub or doorstep test ride, initiate secure paperless booking, and let GearUp manage RC transfer and title clearance.
+              </p>
+              <div className="pt-2 text-[11px] font-mono text-sage-muted flex items-center gap-1.5">
+                <FileCheck2 className="w-3.5 h-3.5" />
+                <span>Direct Handover</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
+      {/* =========================================================================
+          SECTION 5: EXPLORE MOTORCYCLES (Actual Seed Inventory Showcase)
+         ========================================================================= */}
+      <section className="py-28 px-6 sm:px-12 lg:px-20 bg-charcoal border-t border-darkSage/40">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-darkSage/60 pb-8">
+            <div className="space-y-3">
+              <span className="text-xs uppercase font-mono tracking-widest text-sand-warm font-bold">
+                03 // CERTIFIED INVENTORY
+              </span>
+              <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-sand-offWhite">
+                EXPLORE VERIFIED MOTORCYCLES.
+              </h2>
+              <p className="text-xs sm:text-sm text-sand-light/70 max-w-lg">
+                Inspected on 120 mechanical parameters. Tested, certified, and ready for immediate ownership.
+              </p>
+            </div>
+
+            {/* Category Filter Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+              {[
+                { id: 'all', label: 'All Machines' },
+                { id: 'motorcycle', label: 'Cruisers & Street' },
+                { id: 'scooter', label: 'Scooters' },
+                { id: 'electric', label: 'EV Mobility' }
+              ].map((cat) => (
                 <button
-                  type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-forest-500 hover:bg-forest-400 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-elevated whitespace-nowrap"
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`px-4 py-2 rounded-xl text-xs font-heading font-semibold whitespace-nowrap transition-all ${
+                    selectedCategory === cat.id
+                      ? 'bg-sand-warm text-deepBlack shadow-sm'
+                      : 'bg-deepBlack text-sand-light hover:text-white border border-darkSage'
+                  }`}
                 >
-                  <span>Find My Ride</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  {cat.label}
                 </button>
-              </div>
-            </form>
-
-            {/* Current Search Origin indicator */}
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <MapPin className="w-3.5 h-3.5 text-forest-400" />
-              <span>Current search hub:</span>
-              <span className="font-semibold text-forest-200 underline cursor-pointer" onClick={() => navigate('/explore')}>
-                {currentLocation.name}
-              </span>
-              <span className="text-slate-500">({SEED_LISTINGS.length} rides in live database)</span>
+              ))}
             </div>
           </div>
 
-          {/* Right Hero Visual Card (Royal Enfield Classic 500 / 350 editorial showpiece) */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl overflow-hidden border border-forest-600/40 bg-gradient-to-br from-[#152B24] to-[#0D1815] p-5 shadow-2xl group">
-              <div className="flex items-center justify-between pb-3">
-                <span className="text-[11px] font-extrabold uppercase tracking-widest text-forest-300">
-                  FEATURED SPOTLIGHT
-                </span>
-                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-forest-800 text-forest-200 border border-forest-600/50">
-                  Verified Inspection 4.9/5.0
-                </span>
-              </div>
-
-              <div className="relative aspect-[16/11] rounded-2xl overflow-hidden mb-4">
-                <img
-                  src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1200&q=80"
-                  alt="Royal Enfield Classic 350"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-3 left-3 text-white">
-                  <h3 className="font-heading font-extrabold text-2xl tracking-wide">
-                    ROYAL ENFIELD CLASSIC 350
-                  </h3>
-                  <p className="text-xs text-forest-300 font-medium">J-Series Dual Channel ABS • Sector 35, Chandigarh</p>
-                </div>
-              </div>
-
-              {/* Spec Pills directly matching visual reference */}
-              <div className="grid grid-cols-3 gap-2 text-center text-xs mb-4">
-                <div className="p-2.5 rounded-xl bg-forest-950/80 border border-forest-800">
-                  <p className="text-slate-400 text-[10px] uppercase">Fuel Tank</p>
-                  <p className="font-heading font-bold text-white text-sm">13 L</p>
-                </div>
-                <div className="p-2.5 rounded-xl bg-forest-950/80 border border-forest-800">
-                  <p className="text-slate-400 text-[10px] uppercase">Max Power</p>
-                  <p className="font-heading font-bold text-white text-sm">20.2 BHP</p>
-                </div>
-                <div className="p-2.5 rounded-xl bg-forest-950/80 border border-forest-800">
-                  <p className="text-slate-400 text-[10px] uppercase">Real Mileage</p>
-                  <p className="font-heading font-bold text-white text-sm">36 kmpl</p>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-2 border-t border-forest-800">
-                <div>
-                  <span className="text-[10px] text-slate-400 block">Estimated Fair Price</span>
-                  <span className="font-heading font-extrabold text-xl text-white">₹1,85,000</span>
-                </div>
-                <Link
-                  to="/bike/bike-001"
-                  className="px-4 py-2 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-elevated"
+          {/* Machine Inventory Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredInventory.map((bike) => {
+              const isSaved = savedIds.includes(bike.id);
+              return (
+                <div
+                  key={bike.id}
+                  className="group rounded-2xl bg-deepBlack border border-darkSage hover:border-sage-muted transition-all duration-300 overflow-hidden shadow-subtle hover:shadow-elevated flex flex-col"
                 >
-                  Book Test Ride
-                </Link>
+                  {/* Image Stage */}
+                  <div className="relative aspect-[16/10] overflow-hidden bg-[#0A0D0B]">
+                    <img
+                      src={bike.primaryImage}
+                      alt={bike.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-deepBlack/90 via-transparent to-black/20 pointer-events-none" />
+
+                    <div className="absolute top-3 left-3 flex gap-2">
+                      <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-black/70 backdrop-blur-md text-sand-light uppercase tracking-wider border border-white/10">
+                        {bike.category}
+                      </span>
+                    </div>
+
+                    <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-darkSage/90 text-sand-light border border-sage/40 backdrop-blur-md">
+                        <ShieldCheck className="w-3 h-3 text-sage" /> Hub Score: {bike.inspectionScore} / 5.0
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-sage-muted mb-1 font-mono">
+                        <span>{bike.brand} • {bike.variant}</span>
+                        <span>{bike.city}</span>
+                      </div>
+                      <h3 className="font-heading font-bold text-lg text-sand-offWhite group-hover:text-sand-warm transition-colors line-clamp-1">
+                        {bike.title}
+                      </h3>
+                    </div>
+
+                    {/* Quick Specs */}
+                    <div className="grid grid-cols-3 gap-2 py-2 border-y border-darkSage/60 text-center text-xs">
+                      <div>
+                        <p className="text-[10px] text-sage-muted font-mono uppercase">Year</p>
+                        <p className="font-bold text-sand-light">{bike.year}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-sage-muted font-mono uppercase">Mileage</p>
+                        <p className="font-bold text-sand-light">{bike.km.toLocaleString('en-IN')} km</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-sage-muted font-mono uppercase">Owner</p>
+                        <p className="font-bold text-sand-light">{bike.owners === 1 ? '1st' : `${bike.owners}nd`}</p>
+                      </div>
+                    </div>
+
+                    {/* Price and CTA */}
+                    <div className="flex items-center justify-between pt-1">
+                      <div>
+                        <span className="text-[10px] font-mono text-sage-muted uppercase">Asking Price</span>
+                        <div className="font-heading font-extrabold text-xl text-sand-offWhite">
+                          {formatINR(bike.price)}
+                        </div>
+                      </div>
+
+                      <Link
+                        to={`/bike/${bike.id}`}
+                        className="px-4 py-2 rounded-xl bg-darkSage hover:bg-sage-dark text-sand-light hover:text-white text-xs font-heading font-bold tracking-wide transition-all border border-sage/30 flex items-center gap-1.5"
+                      >
+                        <span>View Details</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="pt-6 text-center">
+            <Link
+              to="/explore"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-sand-warm hover:bg-sand-light text-deepBlack font-heading font-bold text-sm tracking-wide transition-all shadow-glow-sand"
+            >
+              <span>Explore All {SEED_LISTINGS.length} Motorcycles & Scooters</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 6: SELL WITH GEARUP (Editorial Seller Section)
+         ========================================================================= */}
+      <section className="py-28 px-6 sm:px-12 lg:px-20 bg-deepBlack border-t border-darkSage/40">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-7 space-y-6">
+            <span className="text-xs uppercase font-mono tracking-widest text-sand-warm font-bold">
+              04 // SELLER ECOSYSTEM
+            </span>
+            <h2 className="font-heading font-extrabold text-4xl sm:text-6xl text-sand-offWhite tracking-tight leading-[1.05]">
+              SELL YOUR TWO-WHEELER <br />
+              <span className="text-sage-muted">AT ITS TRUE RESIDUAL VALUE.</span>
+            </h2>
+            <p className="text-sand-light/80 text-sm sm:text-base max-w-xl leading-relaxed">
+              Forget endless negotiations and lowball dealer margins. GearUp uses machine learning trained on actual resale transactions to provide instant, authentic market valuations.
+            </p>
+
+            <div className="space-y-3 pt-2">
+              <div className="flex items-start gap-3 text-xs sm:text-sm text-sand-light">
+                <Check className="w-4 h-4 text-sand-warm mt-0.5 flex-shrink-0" />
+                <span><strong>Instant Algorithmic Valuation:</strong> Enter make, model, year, and condition for an immediate market prediction.</span>
+              </div>
+              <div className="flex items-start gap-3 text-xs sm:text-sm text-sand-light">
+                <Check className="w-4 h-4 text-sand-warm mt-0.5 flex-shrink-0" />
+                <span><strong>Free Hub Certification:</strong> Verified 120-point inspection badge commands up to 14% higher resale value.</span>
+              </div>
+              <div className="flex items-start gap-3 text-xs sm:text-sm text-sand-light">
+                <Check className="w-4 h-4 text-sand-warm mt-0.5 flex-shrink-0" />
+                <span><strong>Paperless Handover:</strong> Secure payment escrow and RTO title transfer handled end-to-end.</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 2. CATEGORY BROWSER PILLS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-white tracking-tight">
-              Browse by Two-Wheeler Category
-            </h2>
-            <p className="text-sm text-slate-400 mt-1">
-              Curated for Indian city traffic, highways, and college campuses
-            </p>
-          </div>
-          <Link to="/explore" className="text-xs font-bold text-forest-300 hover:text-white flex items-center gap-1">
-            <span>View All</span>
-            <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {/* Motorcycles Card */}
-          <Link
-            to="/explore?category=motorcycle"
-            className="group relative rounded-3xl p-6 bg-gradient-to-br from-[#12241E] to-[#0C1613] border border-forest-800 hover:border-forest-500 transition-all shadow-elevated overflow-hidden"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-bold text-forest-300 uppercase tracking-wider">Cruisers & Commuters</span>
-              <span className="text-xs bg-forest-950 px-2 py-1 rounded-md text-slate-300 border border-forest-800">
-                18+ Models
-              </span>
-            </div>
-            <h3 className="font-heading font-bold text-xl text-white group-hover:text-forest-200 transition-colors">
-              Motorcycles
-            </h3>
-            <p className="text-xs text-slate-400 mt-1 mb-4">
-              Royal Enfield, Pulsar, Apache, FZ, MT-15, Duke & Splendor
-            </p>
-            <div className="flex items-center justify-between text-xs font-bold text-forest-300 group-hover:translate-x-1 transition-transform">
-              <span>Explore Bikes</span>
-              <ArrowRight className="w-4 h-4" />
-            </div>
-          </Link>
-
-          {/* Scooters Card */}
-          <Link
-            to="/explore?category=scooter"
-            className="group relative rounded-3xl p-6 bg-gradient-to-br from-[#12241E] to-[#0C1613] border border-forest-800 hover:border-forest-500 transition-all shadow-elevated overflow-hidden"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-bold text-forest-300 uppercase tracking-wider">City Runabouts</span>
-              <span className="text-xs bg-forest-950 px-2 py-1 rounded-md text-slate-300 border border-forest-800">
-                12+ Models
-              </span>
-            </div>
-            <h3 className="font-heading font-bold text-xl text-white group-hover:text-forest-200 transition-colors">
-              Scooters
-            </h3>
-            <p className="text-xs text-slate-400 mt-1 mb-4">
-              Honda Activa 6G, TVS Jupiter, Suzuki Access 125 & Fascino
-            </p>
-            <div className="flex items-center justify-between text-xs font-bold text-forest-300 group-hover:translate-x-1 transition-transform">
-              <span>Explore Scooters</span>
-              <ArrowRight className="w-4 h-4" />
-            </div>
-          </Link>
-
-          {/* Electric EVs Card */}
-          <Link
-            to="/explore?category=electric"
-            className="group relative rounded-3xl p-6 bg-gradient-to-br from-[#0F2821] to-[#0A1A15] border border-emerald-600/40 hover:border-emerald-400 transition-all shadow-elevated overflow-hidden"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1">
-                <Zap className="w-3.5 h-3.5 text-emerald-400" /> Battery Certified
-              </span>
-              <span className="text-xs bg-emerald-950 px-2 py-1 rounded-md text-emerald-200 border border-emerald-800">
-                Low Running Cost
-              </span>
-            </div>
-            <h3 className="font-heading font-bold text-xl text-white group-hover:text-emerald-200 transition-colors">
-              Electric Two-Wheelers
-            </h3>
-            <p className="text-xs text-slate-400 mt-1 mb-4">
-              Ather 450X, Ola S1 Pro, TVS iQube & Chetak with battery diagnostic
-            </p>
-            <div className="flex items-center justify-between text-xs font-bold text-emerald-300 group-hover:translate-x-1 transition-transform">
-              <span>Explore EVs</span>
-              <ArrowRight className="w-4 h-4" />
-            </div>
-          </Link>
-        </div>
-      </section>
-
-      {/* 3. DEDICATED MAP DISCOVERY TEASER BANNER */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl bg-gradient-to-r from-[#122A22] via-[#10241E] to-[#0A1613] border border-forest-600/50 p-8 sm:p-12 overflow-hidden shadow-2xl">
-          <div className="max-w-2xl space-y-4 relative z-10">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 border border-forest-500 text-xs font-bold text-forest-200">
-              <Compass className="w-3.5 h-3.5 text-forest-400" />
-              <span>CORE MARKETPLACE EXPERIENCE</span>
-            </div>
-            <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight leading-tight">
-              Explore Available Rides on an Interactive GPS Map
-            </h2>
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              Filter with real-world radius circles: 2 km, 5 km, 10 km, 25 km, or 50 km from your doorstep. See actual motorcycle, scooter and EV markers updated in real time.
-            </p>
-            <div className="pt-2 flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4 pt-4">
               <Link
-                to="/explore"
-                className="px-6 py-3 rounded-xl bg-forest-500 hover:bg-forest-400 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-glow"
+                to="/sell"
+                className="px-7 py-3.5 rounded-xl bg-sand-warm hover:bg-sand-light text-deepBlack font-heading font-bold text-sm tracking-wide transition-all shadow-glow-sand flex items-center gap-2"
               >
-                <span>Launch Interactive Map</span>
+                <span>List Your Motorcycle Now</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <span className="text-xs text-slate-400">
-                Calculated with true Haversine distance coordinates
+              <Link
+                to="/price-estimator"
+                className="px-7 py-3.5 rounded-xl bg-charcoal hover:bg-darkSage text-sand-light border border-darkSage font-heading font-semibold text-sm tracking-wide transition-all"
+              >
+                Calculate Fair Price
+              </Link>
+            </div>
+          </div>
+
+          {/* Seller Preview Card */}
+          <div className="lg:col-span-5 p-8 rounded-3xl bg-charcoal border border-darkSage shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-darkSage/60 pb-4">
+              <div>
+                <p className="text-[11px] font-mono text-sage-muted uppercase">Sample Valuation</p>
+                <h4 className="font-heading font-bold text-lg text-sand-offWhite">Royal Enfield Classic 350</h4>
+              </div>
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-darkSage text-sand-light border border-sage/40">
+                2023 Model
               </span>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 4. POPULAR BIKES & SCOOTERS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-white tracking-tight">
-                Top Rated Two-Wheelers Near You
-              </h2>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-forest-900 text-forest-300 border border-forest-700">
-                Live
-              </span>
-            </div>
-            <p className="text-sm text-slate-400 mt-1">
-              RTO document verified, 120-point inspected with AI price insights
-            </p>
-          </div>
-          <Link to="/explore" className="text-xs font-bold text-forest-300 hover:text-white flex items-center gap-1">
-            <span>Explore All</span>
-            <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredBikes.map((bike) => (
-            <VehicleCard
-              key={bike.id}
-              vehicle={bike}
-              isSaved={savedIds.includes(bike.id)}
-              onToggleSave={onToggleSave}
-              onOpenAudio={onOpenAudio}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* 5. SIGNATURE FEATURE PROMOTION: RESALE UPGRADE STUDIO */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-br from-[#1A2616] via-[#141F16] to-[#0D1510] border border-gold/40 p-8 sm:p-12 shadow-2xl relative overflow-hidden">
-          {/* Subtle Golden Glow */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-gold/10 rounded-full blur-[100px] pointer-events-none" />
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-            <div className="lg:col-span-7 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/40 text-xs font-bold text-gold-light">
-                <Wrench className="w-3.5 h-3.5 text-gold" />
-                <span>SIGNATURE SELLER FEATURE</span>
+            <div className="space-y-3 text-xs">
+              <div className="flex justify-between py-1.5 border-b border-darkSage/40">
+                <span className="text-sage-muted">Original Ex-Showroom</span>
+                <span className="font-mono text-sand-light">₹2,14,000</span>
               </div>
-              <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight">
-                AI Resale Upgrade Studio
-              </h2>
-              <p className="text-slate-300 text-sm leading-relaxed">
-                Don&apos;t sell your bike as-is at a heavy discount. Our AI models analyze photos of your vehicle, identify easy cosmetic & mechanical touchups (seat leather, chain detailing, paint correction), and calculate the exact projected ROI in Indian Rupees before you list.
+              <div className="flex justify-between py-1.5 border-b border-darkSage/40">
+                <span className="text-sage-muted">Kilometres Driven</span>
+                <span className="font-mono text-sand-light">12,400 km</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-darkSage/40">
+                <span className="text-sage-muted">Mechanical Grade</span>
+                <span className="font-mono text-sage font-bold">Grade A+ (Certified)</span>
+              </div>
+              <div className="flex justify-between py-2 items-center">
+                <span className="font-heading font-bold text-sm text-sand-warm">AI Suggested Resale</span>
+                <span className="font-heading font-extrabold text-2xl text-sand-offWhite">₹1,73,000</span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-deepBlack/80 border border-darkSage text-[11px] text-sand-light/70 space-y-1">
+              <p className="font-bold text-sand-warm flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" /> High Buyer Demand Index
               </p>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-                <div className="p-3 rounded-xl bg-forest-950/80 border border-gold/30">
-                  <p className="text-[11px] text-slate-400">Average Spend</p>
-                  <p className="font-heading font-bold text-white text-base">₹1,500 - ₹3,000</p>
-                </div>
-                <div className="p-3 rounded-xl bg-forest-950/80 border border-gold/30">
-                  <p className="text-[11px] text-slate-400">Resale Increase</p>
-                  <p className="font-heading font-bold text-emerald-400 text-base">+₹7,500 to ₹12k</p>
-                </div>
-                <div className="p-3 rounded-xl bg-forest-950/80 border border-gold/30">
-                  <p className="text-[11px] text-slate-400">Avg. Selling Time</p>
-                  <p className="font-heading font-bold text-gold-light text-base">3.4x Faster</p>
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <Link
-                  to="/resale-studio"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-gold to-gold-dark text-slate-950 font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-all shadow-elevated"
-                >
-                  <span>Launch Resale Studio</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 p-4 rounded-2xl bg-black/50 border border-gold/30 space-y-3">
-              <div className="flex items-center justify-between text-xs text-slate-300 pb-2 border-b border-forest-900">
-                <span className="font-bold text-white">Before vs After AI Transformation</span>
-                <span className="text-gold font-semibold">Factory Restore Theme</span>
-              </div>
-              <div className="relative aspect-[16/10] rounded-xl overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80"
-                  alt="Transformation"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/70 text-[10px] text-slate-300 font-bold">
-                  After Detailing Preview
-                </div>
-                <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-emerald-950/90 text-emerald-300 border border-emerald-600/50 text-[10px] font-bold">
-                  Net Gain: +₹6,200
-                </div>
-              </div>
-              <p className="text-[11px] text-slate-400 italic">
-                *Visual preview generated to demonstrate potential return. Never substitutes for actual uploaded photos.
-              </p>
+              <p>Average time to sell this model on GearUp: 4.2 days.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. HOW BUYING & SELLING WORKS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-          <span className="text-xs font-bold text-forest-300 uppercase tracking-widest">
-            TRANSPARENT WORKFLOWS
-          </span>
-          <h2 className="font-heading font-extrabold text-3xl text-white">
-            How GEAR UP Works for You
-          </h2>
-          <p className="text-sm text-slate-400">
-            No unverified middlemen. No hidden paperwork fees. Complete confidence.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-forest-800 text-forest-200 flex items-center justify-center font-bold text-lg border border-forest-600/50">
-              1
-            </div>
-            <h3 className="font-heading font-bold text-lg text-white">Discover on Map</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Find rides in your exact sector or neighborhood using accurate GPS radius filters. Listen to real rider audio stories.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-forest-800 text-forest-200 flex items-center justify-center font-bold text-lg border border-forest-600/50">
-              2
-            </div>
-            <h3 className="font-heading font-bold text-lg text-white">120-Point Inspection</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Every certified bike undergoes strict cosmetic, battery, and engine diagnostics. Zero guesswork on accident history.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-forest-800 text-forest-200 flex items-center justify-center font-bold text-lg border border-forest-600/50">
-              3
-            </div>
-            <h3 className="font-heading font-bold text-lg text-white">Hassle-Free RTO Transfer</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              We handle Form 29/30 transfer directly with Parivahan RTO across Punjab, Haryana, Delhi, Karnataka, and Maharashtra.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. CUSTOMER TESTIMONIALS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-[#0E1B17] border border-forest-800 space-y-8">
-          <div className="text-center space-y-2">
-            <span className="text-xs font-bold text-forest-300 uppercase tracking-widest">
-              VERIFIED RIDER REVIEWS
+      {/* =========================================================================
+          SECTION 7: TRUST AND TRANSPARENCY (Technical Verification System)
+         ========================================================================= */}
+      <section className="py-28 px-6 sm:px-12 lg:px-20 bg-charcoal border-t border-darkSage/40">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <span className="text-xs uppercase font-mono tracking-widest text-sand-warm font-bold">
+              05 // TRUST ARCHITECTURE
             </span>
-            <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-white">
-              Loved by Riders Across Indian Cities
+            <h2 className="font-heading font-extrabold text-4xl sm:text-5xl text-sand-offWhite">
+              VERIFICATION OVER ASSUMPTION.
             </h2>
+            <p className="text-sand-light/70 text-sm sm:text-base leading-relaxed">
+              Every two-wheeler on GearUp is backed by physical verification checkpoints that guarantee quality, roadworthiness, and clean legal ownership.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-5 rounded-2xl bg-forest-950/70 border border-forest-900 space-y-3">
-              <div className="flex items-center gap-1 text-gold text-xs">★★★★★</div>
-              <p className="text-xs text-slate-300 italic leading-relaxed">
-                &ldquo;Found a 2023 Classic 350 just 2 km away in Sector 35 Chandigarh. Booked a doorstep test ride within 1 hour. The AI inspection report matched the bike 100%.&rdquo;
-              </p>
-              <div className="text-xs">
-                <p className="font-bold text-white">Gurpreet Singh</p>
-                <p className="text-slate-500">Chandigarh</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-8 rounded-2xl bg-deepBlack border border-darkSage space-y-4">
+              <div className="w-12 h-12 rounded-xl bg-darkSage text-sand-light flex items-center justify-center border border-sage/40">
+                <ShieldCheck className="w-6 h-6 text-sand-warm" />
               </div>
+              <h3 className="font-heading font-bold text-xl text-sand-offWhite">
+                120-Point Physical Inspection
+              </h3>
+              <p className="text-xs text-sand-light/70 leading-relaxed">
+                Performed at authorized GearUp Hubs. Includes digital compression gauges (PSI), laser frame alignment check, tyre tread depth micrometer, and cold-crank battery testing.
+              </p>
+              <Link to="/trust" className="text-xs text-sand-warm font-bold inline-flex items-center gap-1 hover:underline">
+                View Inspection Standards <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
 
-            <div className="p-5 rounded-2xl bg-forest-950/70 border border-forest-900 space-y-3">
-              <div className="flex items-center gap-1 text-gold text-xs">★★★★★</div>
-              <p className="text-xs text-slate-300 italic leading-relaxed">
-                &ldquo;Used the Resale Upgrade Studio before listing my Activa 6G. Spent ₹1,200 on deep detailing and seat restoration, and sold it for ₹6,000 more than what local dealers offered.&rdquo;
-              </p>
-              <div className="text-xs">
-                <p className="font-bold text-white">Priya Sharma</p>
-                <p className="text-slate-500">Mohali</p>
+            <div className="p-8 rounded-2xl bg-deepBlack border border-darkSage space-y-4">
+              <div className="w-12 h-12 rounded-xl bg-darkSage text-sand-light flex items-center justify-center border border-sage/40">
+                <FileCheck2 className="w-6 h-6 text-sand-warm" />
               </div>
+              <h3 className="font-heading font-bold text-xl text-sand-offWhite">
+                3-Level RTO Title Verification
+              </h3>
+              <p className="text-xs text-sand-light/70 leading-relaxed">
+                Optical character recognition checks Registration Certificates (RC) against listing attributes. Verifies active PUC, insurance validity, Form 29/30 signing, and bank NOC clearance.
+              </p>
+              <Link to="/how-it-works" className="text-xs text-sand-warm font-bold inline-flex items-center gap-1 hover:underline">
+                Learn About RTO Clearance <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
 
-            <div className="p-5 rounded-2xl bg-forest-950/70 border border-forest-900 space-y-3">
-              <div className="flex items-center gap-1 text-gold text-xs">★★★★★</div>
-              <p className="text-xs text-slate-300 italic leading-relaxed">
-                &ldquo;The battery health diagnostic on the Ather 450X was a game changer. I knew the exact battery condition before making an offer in Bengaluru.&rdquo;
-              </p>
-              <div className="text-xs">
-                <p className="font-bold text-white">Nikhil R.</p>
-                <p className="text-slate-500">Bengaluru</p>
+            <div className="p-8 rounded-2xl bg-deepBlack border border-darkSage space-y-4">
+              <div className="w-12 h-12 rounded-xl bg-darkSage text-sand-light flex items-center justify-center border border-sage/40">
+                <Sparkles className="w-6 h-6 text-sand-warm" />
               </div>
+              <h3 className="font-heading font-bold text-xl text-sand-offWhite">
+                Machine Learning Fair Valuation
+              </h3>
+              <p className="text-xs text-sand-light/70 leading-relaxed">
+                Gradient Boosting model trained on thousands of Indian two-wheeler transactions. Factoring in mechanical sound, tyre health, cosmetic grade, and current market demand.
+              </p>
+              <Link to="/price-estimator" className="text-xs text-sand-warm font-bold inline-flex items-center gap-1 hover:underline">
+                Explore ML Valuation <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 8. FAQ SECTION */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-bold text-forest-300 uppercase tracking-widest">FAQ</span>
-          <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-white">
-            Frequently Asked Questions
+      {/* =========================================================================
+          SECTION 8: FINAL CTA
+         ========================================================================= */}
+      <section className="relative py-28 px-6 sm:px-12 lg:px-20 bg-deepBlack border-t border-darkSage/40 overflow-hidden">
+        {/* Subtle Ambient Radial Highlight */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-darkSage/25 rounded-full blur-[140px] pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto text-center space-y-8 relative z-10">
+          <span className="text-xs uppercase font-mono tracking-widest text-sand-warm font-bold">
+            THE NEXT STEP
+          </span>
+
+          <h2 className="font-heading font-extrabold text-4xl sm:text-6xl text-sand-offWhite tracking-tight">
+            YOUR NEXT RIDE IS WAITING.
           </h2>
-        </div>
 
-        <div className="space-y-3">
-          <details className="group p-4 rounded-2xl bg-[#101D19] border border-forest-800 text-xs">
-            <summary className="font-bold text-white cursor-pointer list-none flex items-center justify-between">
-              <span>How does the GPS radius discovery work?</span>
-              <ChevronRight className="w-4 h-4 text-forest-400 group-open:rotate-90 transition-transform" />
-            </summary>
-            <p className="pt-3 text-slate-400 leading-relaxed">
-              We calculate distances using the true Haversine geometric formula from your device coordinates or chosen city center (e.g. Sector 17 Chandigarh, CP Delhi, Koramangala Bengaluru). You can adjust the radius from 2 km to 50 km or anywhere.
-            </p>
-          </details>
+          <p className="text-sand-light/80 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
+            Discover verified motorcycles, check honest machine telemetry, and buy or sell with complete peace of mind.
+          </p>
 
-          <details className="group p-4 rounded-2xl bg-[#101D19] border border-forest-800 text-xs">
-            <summary className="font-bold text-white cursor-pointer list-none flex items-center justify-between">
-              <span>Does AI inspection claim to test engine internals?</span>
-              <ChevronRight className="w-4 h-4 text-forest-400 group-open:rotate-90 transition-transform" />
-            </summary>
-            <p className="pt-3 text-slate-400 leading-relaxed">
-              Never. Our AI photo analyzer examines visible cosmetic traits (scratches, panel alignment, rust, tyre wear). Mechanical inspection is performed in-person by certified human technicians following our 120-point checklist.
-            </p>
-          </details>
-
-          <details className="group p-4 rounded-2xl bg-[#101D19] border border-forest-800 text-xs">
-            <summary className="font-bold text-white cursor-pointer list-none flex items-center justify-between">
-              <span>Who handles the RC ownership transfer?</span>
-              <ChevronRight className="w-4 h-4 text-forest-400 group-open:rotate-90 transition-transform" />
-            </summary>
-            <p className="pt-3 text-slate-400 leading-relaxed">
-              GEAR UP coordinates the transfer with the respective RTO office via Parivahan Sewa, assisting both buyer and seller with Form 29, Form 30, and insurance endorsements.
-            </p>
-          </details>
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <Link
+              to="/explore"
+              className="px-8 py-4 rounded-xl bg-sand-warm hover:bg-sand-light text-deepBlack font-heading font-bold text-sm tracking-wide transition-all shadow-glow-sand flex items-center gap-2"
+            >
+              <span>Explore Verified Motorcycles</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/sell"
+              className="px-8 py-4 rounded-xl bg-charcoal hover:bg-darkSage text-sand-light border border-darkSage font-heading font-semibold text-sm tracking-wide transition-all"
+            >
+              Sell Your Two-Wheeler
+            </Link>
+          </div>
         </div>
       </section>
     </div>
