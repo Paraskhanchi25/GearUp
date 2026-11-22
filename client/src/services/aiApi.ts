@@ -10,6 +10,10 @@ export interface ChatMessagePayload {
   history?: { role?: string; sender?: string; text?: string; content?: string }[];
   language?: string;
   vehicle_context?: any;
+  image_data?: string | null;
+  mime_type?: string | null;
+  audio_data?: string | null;
+  audio_mime_type?: string | null;
 }
 
 export interface ValuationPayload {
@@ -159,6 +163,19 @@ export interface ComparisonPayload {
 // 1. AI Buddy Chat API
 export async function sendAIBuddyMessage(payload: ChatMessagePayload) {
   const res = await fetch(`${API_BASE}/ai-buddy/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Server returned ${res.status}`);
+  }
+  return await res.json();
+}
+
+export async function transcribeAudio(payload: { audio_data: string; mime_type?: string }) {
+  const res = await fetch(`${API_BASE}/ai-buddy/transcribe-audio`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),

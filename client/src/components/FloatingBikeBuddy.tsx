@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Bot, X, Send, Sparkles, Mic, MicOff, ChevronRight, Wrench, AlertTriangle, Loader2 } from 'lucide-react';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
 import { diagnoseTwoWheelerQuery } from '../utils/mechanicAI';
-import { sendAIBuddyMessage } from '../services/aiApi';
+import { sendAIBuddyMessage, transcribeAudio } from '../services/aiApi';
 import { Link } from 'react-router-dom';
 
 interface Message {
@@ -76,7 +76,97 @@ export const FloatingBikeBuddy: React.FC = () => {
     }
   };
 
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioStreamRef = useRef<MediaStream | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+
+  const startAudioRecording = async () => {
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        fallbackSpeechRecognition();
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioStreamRef.current = stream;
+      audioChunksRef.current = [];
+
+      let mimeType = 'audio/webm';
+      if (typeof MediaRecorder !== 'undefined') {
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+          mimeType = 'audio/webm;codecs=opus';
+        } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+          mimeType = 'audio/webm';
+        }
+      }
+
+      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+      mediaRecorderRef.current = recorder;
+
+      recorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: recorder.mimeType || 'audio/webm' });
+        audioStreamRef.current?.getTracks().forEach((track) => track.stop());
+        audioStreamRef.current = null;
+
+        if (audioBlob.size > 200) {
+          setIsTranscribing(true);
+          try {
+            const reader = new FileReader();
+            reader.onload = async () => {
+              const base64Audio = reader.result as string;
+              try {
+                const transRes = await transcribeAudio({
+                  audio_data: base64Audio,
+                  mime_type: audioBlob.type || 'audio/webm',
+                });
+                if (transRes && transRes.transcript) {
+                  setInput((prev) => (prev ? `${prev} ${transRes.transcript}` : transRes.transcript));
+                }
+              } catch (err) {
+                console.warn('Audio transcription error:', err);
+              } finally {
+                setIsTranscribing(false);
+              }
+            };
+            reader.readAsDataURL(audioBlob);
+          } catch (e) {
+            setIsTranscribing(false);
+          }
+        } else {
+          setIsTranscribing(false);
+        }
+      };
+
+      recorder.start(250);
+      setIsListening(true);
+    } catch (err) {
+      console.warn('Microphone error:', err);
+      fallbackSpeechRecognition();
+    }
+  };
+
+  const stopAudioRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    setIsListening(false);
+  };
+
   const toggleSpeech = () => {
+    if (isListening) {
+      stopAudioRecording();
+    } else {
+      startAudioRecording();
+    }
+  };
+
+  const fallbackSpeechRecognition = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -87,21 +177,16 @@ export const FloatingBikeBuddy: React.FC = () => {
     recognition.lang = 'en-IN';
     recognition.continuous = false;
 
-    if (!isListening) {
-      setIsListening(true);
-      recognition.start();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInput(transcript);
-        setIsListening(false);
-      };
-      recognition.onerror = () => setIsListening(false);
-      recognition.onend = () => setIsListening(false);
-    } else {
+    setIsListening(true);
+    recognition.start();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
       setIsListening(false);
-      recognition.stop();
-    }
+    };
+    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => setIsListening(false);
   };
 
   return (
@@ -131,7 +216,7 @@ export const FloatingBikeBuddy: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h4 className="font-heading font-bold text-sm text-[#242622]">AI Bike Buddy</h4>
+                  <h4 className="font-heading font-bold text-sm text-white">AI Bike Buddy</h4>
                   <span className="text-[10px] bg-[#35483C]/60 text-[#35483C] px-1.5 rounded font-mono">Mechanic</span>
                 </div>
                 <p className="text-[10px] text-[#242622]">2-Wheeler Diagnostic Expert</p>
@@ -142,13 +227,13 @@ export const FloatingBikeBuddy: React.FC = () => {
               <Link
                 to="/ai-buddy"
                 onClick={() => setIsOpen(false)}
-                className="text-[10px] font-bold text-[#242622] hover:text-[#242622] bg-white px-2 py-1 rounded-md border border-[#E9E3D8]"
+                className="text-[10px] font-bold text-[#242622] hover:text-white bg-white px-2 py-1 rounded-md border border-[#E9E3D8]"
               >
                 Expand
               </Link>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622]"
+                className="p-1.5 rounded-lg bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-white"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -232,14 +317,15 @@ export const FloatingBikeBuddy: React.FC = () => {
           <div className="p-3 bg-white border-t border-[#E9E3D8] flex items-center gap-2">
             <button
               onClick={toggleSpeech}
+              disabled={isTranscribing}
               className={`p-2 rounded-none border transition-colors ${
                 isListening
                   ? 'bg-red-500 text-white border-red-400 animate-pulse'
-                  : 'bg-[#E9E3D8] text-[#242622] border-[#E9E3D8] hover:text-[#242622]'
+                  : 'bg-[#E9E3D8] text-[#242622] border-[#E9E3D8] hover:text-[#35483C]'
               }`}
               title="Voice Input"
             >
-              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              {isTranscribing ? <Loader2 className="w-4 h-4 animate-spin text-[#35483C]" /> : (isListening ? <MicOff className="w-4 h-4 text-white" /> : <Mic className="w-4 h-4" />)}
             </button>
 
             <input
@@ -248,7 +334,7 @@ export const FloatingBikeBuddy: React.FC = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && !isTyping && handleSend()}
               disabled={isTyping}
-              placeholder="Ask anything about 2-wheelers or market..."
+              placeholder={isTranscribing ? "Transcribing speech..." : "Ask anything about 2-wheelers or market..."}
               className="flex-1 bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-[#242622] focus:outline-none focus:border-[#35483C] disabled:opacity-50"
             />
 

@@ -1,14 +1,16 @@
 """
 Google AI Studio Gemini Service for GEAR UP
-Optimized for high-speed, direct, domain-specific Indian two-wheeler intelligence.
+Optimized for high-speed, direct, domain-specific Indian two-wheeler intelligence
+and multimodal image understanding & voice transcription.
 Enforces strict concise answer policy (30-80 words), query intent understanding,
-zero repetitive statements, and real marketplace inventory grounding.
+zero repetitive statements, real marketplace inventory grounding, and faithful image analysis.
 """
 
 import os
 import re
 import time
-from typing import Dict, Any, List, Optional
+import base64
+from typing import Dict, Any, List, Optional, Tuple
 from config import settings
 from services.marketplace_service import (
     search_marketplace_listings,
@@ -24,7 +26,7 @@ GEMINI_MODELS = [
     "gemini-3.8-flash"
 ]
 
-# Strict Disallowed Topics (Non-Vehicle)
+# Strict Disallowed Topics (Non-Vehicle text-only queries)
 DISALLOWED_TOPICS = [
     "python", "javascript", "react", "programming", "write code", "html", "css", "sql", "java", "c++",
     "bollywood", "hollywood", "celebrity gossip", "cricket match score", "ipl score", "politics", "election result",
@@ -39,44 +41,51 @@ POLITE_REFUSAL_MESSAGE = (
     "Please ask me any two-wheeler or marketplace question, and I will be glad to assist!"
 )
 
-SYSTEM_INSTRUCTION = """You are GEAR UP AI Buddy, a specialized AI assistant for India's used two-wheeler marketplace.
+SYSTEM_INSTRUCTION = """You are GEAR UP AI Buddy, an intelligent AI assistant for GEAR UP, India's used two-wheeler marketplace.
 
-Your primary job is to understand the user's intent and answer the exact question in a short, accurate and useful manner.
+Your primary job is to understand the user's intent and answer the exact question in a clear, accurate, and direct manner.
 
-Before responding, determine what the user is actually asking. Use relevant conversation context and available GEAR UP data.
+MULTIMODAL & IMAGE UNDERSTANDING RULES:
+- When an image is provided:
+  - Inspect the image carefully and answer the user's question directly.
+  - NEVER assume that every uploaded image is a motorcycle photograph or vehicle component.
+  - If the image contains handwritten notes, notebook pages, documents, signs, printed papers, or screenshots, faithfully read and transcribe or summarize what is written. Never fabricate spark plug, fuel contamination, or engine issues for notes, documents, or screenshots!
+  - If the image contains a math problem, calculation, or diagram, solve and explain it clearly and step-by-step.
+  - If the image shows a motorcycle, scooter, or two-wheeler component: identify the make, model, visible condition, wear and tear, or visible damage, and provide practical automotive advice.
+  - If an image has no vehicle in it and the user asks "What is written into it?" or "What is this?", describe what is actually in the image.
 
 RESPONSE RULES:
 - Be direct and precise.
 - Prefer short answers.
-- Target approximately 30–80 words for ordinary questions.
-- Simple questions (definitions, specs): 1–3 direct sentences.
-- Normal questions: 3–5 short bullet points or sentences.
-- Comparisons: compact side-by-side comparison with a short conclusion.
+- Target approximately 30–80 words for ordinary questions. (Transcriptions or math solutions can be as detailed as necessary to accurately capture the content).
+- Simple questions: 1–3 direct sentences.
 - Use simple English.
-- Avoid unnecessary introductions, generic fillers, or greetings (never start with "Sure!", "Absolutely!", "Of course!", "Hey there!", or "Namaste!").
+- Avoid unnecessary conversational filler (never start with "Sure!", "Certainly!", "Of course!", "Hey there!", or "Namaste!").
 - Never repeat the user's question before answering it.
 - Never repeat sentences or information.
-- Never repeat the same explanation in different words.
-- Answer the current question, not a different question.
-- Do not repeat earlier messages unless asked.
-- Ask only one necessary follow-up question at a time, and only if essential information is missing.
-- Remember relevant information from the current conversation.
-- If you do not know something, say so honestly.
 - Never invent specifications, prices, listing details or verification results.
-- Do not give arbitrary resale valuations. When asked for resale price, explain the key factors (year, km, condition, owners) and recommend using GEAR UP's Price Estimator for a data-driven valuation.
+- Do not give arbitrary resale valuations. When asked for resale price, explain the key factors (year, km, condition, owners) and recommend using GEAR UP's Price Estimator.
 - Use actual GEAR UP services and records when available.
-- Clearly distinguish general knowledge from verified platform information.
 
 DOMAIN:
 You are knowledgeable about Indian motorcycles, scooters, electric two-wheelers, vehicle brands (Hero, Honda, TVS, Bajaj, Royal Enfield, Yamaha, Suzuki, KTM, Kawasaki, Jawa, Yezdi, Triumph, Harley-Davidson, Ather, Ola, Chetak, Vida, Revolt, Ultraviolette), models, variants, used-vehicle buying and selling, resale valuation, maintenance, mileage, ownership documents, RC, insurance, PUC and vehicle verification.
-
-You are an assistant for GEAR UP, not an official government verification authority or a substitute for a qualified mechanic.
-
-LANGUAGE:
-Respond in English by default. Understand common Indian vehicle terminology.
-
-Your goal is to make every interaction feel like a knowledgeable two-wheeler expert giving a clear, useful answer without wasting the user's time.
 """
+
+def parse_base64_media(data_str: str, default_mime: str) -> Tuple[bytes, str]:
+    """Extracts raw bytes and MIME type from base64 string or Data URL."""
+    if not data_str:
+        return b"", default_mime
+    mime = default_mime
+    if data_str.startswith("data:") and ";base64," in data_str:
+        header, b64_part = data_str.split(";base64,", 1)
+        mime = header.replace("data:", "").strip()
+        data_str = b64_part
+    try:
+        raw_bytes = base64.b64decode(data_str)
+        return raw_bytes, mime
+    except Exception as e:
+        print(f"[GeminiAIService] Base64 decode error: {e}")
+        return b"", mime
 
 def clean_response(text: str) -> str:
     """
@@ -105,7 +114,6 @@ def clean_response(text: str) -> str:
         if not line_stripped:
             deduped_lines.append(line)
             continue
-        # Only dedup if non-empty and length > 10 chars
         if len(line_stripped) > 10 and line_stripped in seen_lines:
             continue
         if len(line_stripped) > 10:
@@ -114,6 +122,28 @@ def clean_response(text: str) -> str:
 
     result = '\n'.join(deduped_lines).strip()
     return result or text.strip()
+
+def classify_response_type(user_query: str, cleaned_text: str, has_image: bool, has_audio: bool) -> str:
+    q_low = user_query.lower()
+    t_low = cleaned_text.lower()
+    
+    if has_image:
+        if any(w in q_low for w in ["written", "transcribe", "read", "handwriting", "notes", "text", "what does this say"]):
+            return "IMAGE_TRANSCRIPTION"
+        if any(w in q_low for w in ["math", "equation", "solve", "calculate", "algebra", "integral", "derivative"]):
+            return "MATH_SOLUTION"
+        if any(w in q_low for w in ["which bike", "identify", "what model", "what bike", "what scooter"]):
+            return "VEHICLE_IDENTIFICATION"
+        if any(w in q_low for w in ["damage", "scratch", "dent", "broken", "leak", "rust", "sound", "issue", "problem", "diagnos"]):
+            return "VEHICLE_DIAGNOSTIC"
+        if "transcription" in t_low or "written in" in t_low or "reads:" in t_low or "heading" in t_low:
+            return "IMAGE_TRANSCRIPTION"
+        return "GENERAL_TEXT"
+    
+    if any(w in q_low for w in ["starting problem", "not starting", "engine sound", "smoke", "mileage drop", "vibration", "brakes failing", "knocking"]):
+        return "VEHICLE_DIAGNOSTIC"
+        
+    return "GENERAL_TEXT"
 
 class GeminiAIService:
     def __init__(self):
@@ -140,8 +170,10 @@ class GeminiAIService:
         key = settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY", "")
         return bool(key and len(key.strip()) > 10)
 
-    def is_disallowed_topic(self, text: str) -> bool:
-        """Checks if user query is strictly about a non-vehicle topic."""
+    def is_disallowed_topic(self, text: str, has_multimodal: bool = False) -> bool:
+        """Checks if user query is strictly about a non-vehicle topic when NO attachment is provided."""
+        if has_multimodal:
+            return False
         t_low = text.lower().strip()
         for dis in DISALLOWED_TOPICS:
             pattern = r'\b' + re.escape(dis) + r'\b'
@@ -211,7 +243,7 @@ class GeminiAIService:
 
             results = search_marketplace_listings(category=cat, max_price=max_p, city=city)
             if results:
-                matched_listings = results[:2]  # Keep concise
+                matched_listings = results[:2]
                 grounded_text += "\n\nACTIVE GEAR UP LISTINGS:\n"
                 for l in matched_listings:
                     grounded_text += f"- {l['title']}: ₹{l['price']:,} in {l['locality']}, {l['city']} ({l['km']:,} km driven)\n"
@@ -226,41 +258,51 @@ class GeminiAIService:
         user_query: str,
         history: Optional[List[Dict[str, str]]] = None,
         vehicle_context: Optional[Dict[str, Any]] = None,
-        language: str = "en"
+        language: str = "en",
+        image_data: Optional[str] = None,
+        mime_type: Optional[str] = None,
+        audio_data: Optional[str] = None,
+        audio_mime_type: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Executes genuine Google AI Studio Gemini API conversation with multi-turn history,
-        intent understanding, strict short responses, and resilient model failover.
+        intent understanding, multimodal image analysis & voice comprehension.
         """
         start_time = time.time()
-        query_clean = user_query.strip()
+        query_clean = (user_query or "").strip()
+        has_image = bool(image_data and len(image_data) > 50)
+        has_audio = bool(audio_data and len(audio_data) > 50)
+        has_multimodal = has_image or has_audio
 
         # Input validation
-        if not query_clean:
+        if not query_clean and not has_multimodal:
             return {
-                "text": "Please enter a question or topic about two-wheelers to chat with AI Buddy.",
+                "text": "Please enter a question or upload an image to chat with AI Buddy.",
                 "is_refusal": False,
+                "response_type": "GENERAL_TEXT",
                 "confidence": "high",
                 "matched_listings": [],
                 "error": "Empty message",
                 "latency_ms": 0.0
             }
 
-        if len(query_clean) > 2500:
+        if len(query_clean) > 3500:
             return {
                 "text": "Your query is too long. Please summarize it in 1–2 sentences so I can give you a direct, accurate answer.",
                 "is_refusal": False,
+                "response_type": "GENERAL_TEXT",
                 "confidence": "medium",
                 "matched_listings": [],
                 "error": "Message exceeds length limit",
                 "latency_ms": 0.0
             }
 
-        # Topic boundary check
-        if self.is_disallowed_topic(query_clean):
+        # Topic boundary check (only enforce on plain text queries with no attachments)
+        if self.is_disallowed_topic(query_clean, has_multimodal=has_multimodal):
             return {
                 "text": POLITE_REFUSAL_MESSAGE,
                 "is_refusal": True,
+                "response_type": "REFUSAL",
                 "confidence": "high",
                 "matched_listings": [],
                 "latency_ms": round((time.time() - start_time) * 1000, 1)
@@ -272,6 +314,7 @@ class GeminiAIService:
             return {
                 "text": "GEAR UP AI Buddy is currently offline because the server GEMINI_API_KEY is not configured.",
                 "is_refusal": False,
+                "response_type": "GENERAL_TEXT",
                 "confidence": "low",
                 "matched_listings": [],
                 "error": "API key unconfigured",
@@ -289,6 +332,7 @@ class GeminiAIService:
             return {
                 "text": "The official google-genai package is not installed on this server.",
                 "is_refusal": False,
+                "response_type": "GENERAL_TEXT",
                 "confidence": "low",
                 "matched_listings": [],
                 "error": "google-genai package missing",
@@ -300,7 +344,7 @@ class GeminiAIService:
         # Deduplicate and build previous conversation history
         if history:
             seen_texts = set()
-            for item in history[-6:]:  # Keep last 6 turns for tight context window
+            for item in history[-6:]:
                 role_val = "user"
                 sender = item.get("sender") or item.get("role") or ""
                 if sender in ["ai", "assistant", "model"]:
@@ -312,14 +356,28 @@ class GeminiAIService:
                         types.Content(role=role_val, parts=[types.Part.from_text(text=msg_text)])
                     )
 
-        # Append current user turn
-        full_user_turn = query_clean
+        # Build current user turn with multimodal attachments
+        user_parts: List[types.Part] = []
+
+        # 1. Attach image part if present
+        if has_image:
+            img_bytes, img_mime = parse_base64_media(image_data, mime_type or "image/jpeg")
+            if len(img_bytes) > 20:
+                user_parts.append(types.Part.from_bytes(data=img_bytes, mime_type=img_mime))
+
+        # 2. Attach audio part if present
+        if has_audio:
+            aud_bytes, aud_mime = parse_base64_media(audio_data, audio_mime_type or "audio/webm")
+            if len(aud_bytes) > 20:
+                user_parts.append(types.Part.from_bytes(data=aud_bytes, mime_type=aud_mime))
+
+        # 3. Add text prompt
+        full_user_turn = query_clean or ("What is shown or written in this image?" if has_image else "Transcribe and analyze this audio.")
         if context_addon:
             full_user_turn += f"\n\n[GEAR UP CONTEXT]:{context_addon}"
 
-        contents_payload.append(
-            types.Content(role="user", parts=[types.Part.from_text(text=full_user_turn)])
-        )
+        user_parts.append(types.Part.from_text(text=full_user_turn))
+        contents_payload.append(types.Content(role="user", parts=user_parts))
 
         # Call Gemini with resilient model fallback
         last_error = None
@@ -336,11 +394,13 @@ class GeminiAIService:
 
                 raw_text = response.text or ""
                 cleaned_text = clean_response(raw_text)
+                resp_type = classify_response_type(query_clean, cleaned_text, has_image, has_audio)
                 latency = round((time.time() - start_time) * 1000, 1)
 
                 return {
                     "text": cleaned_text,
                     "is_refusal": False,
+                    "response_type": resp_type,
                     "confidence": "high",
                     "matched_listings": matched_listings,
                     "model_used": model_name,
@@ -356,15 +416,83 @@ class GeminiAIService:
         return {
             "text": "I could not reach Gemini AI at the moment. Please verify internet connectivity or quota limits.",
             "is_refusal": False,
+            "response_type": "GENERAL_TEXT",
             "confidence": "low",
             "matched_listings": matched_listings,
             "error": last_error,
             "latency_ms": latency
         }
 
+    def transcribe_audio(self, audio_data: str, mime_type: str = "audio/webm") -> Dict[str, Any]:
+        """
+        Accurately transcribes spoken audio into text using Google AI Studio Gemini API.
+        """
+        start_time = time.time()
+        client = self.get_client()
+        if not client or not self.is_configured():
+            return {
+                "transcript": "",
+                "status": "error",
+                "error": "Gemini API key unconfigured",
+                "latency_ms": 0.0
+            }
+
+        raw_bytes, actual_mime = parse_base64_media(audio_data, mime_type or "audio/webm")
+        if len(raw_bytes) < 50:
+            return {
+                "transcript": "",
+                "status": "error",
+                "error": "Audio recording is empty or corrupt. Please speak into your microphone and try again.",
+                "latency_ms": round((time.time() - start_time) * 1000, 1)
+            }
+
+        try:
+            from google.genai import types
+            part = types.Part.from_bytes(data=raw_bytes, mime_type=actual_mime)
+            prompt = (
+                "Accurately transcribe the spoken words in this audio into text. "
+                "Output only the transcribed words without filler, commentary, quotation marks, or explanations. "
+                "If completely silent, return an empty string."
+            )
+
+            last_error = None
+            for model_name in GEMINI_MODELS:
+                try:
+                    resp = client.models.generate_content(
+                        model=model_name,
+                        contents=[part, prompt]
+                    )
+                    transcription = (resp.text or "").strip()
+                    # Clean surrounding quotes
+                    if transcription.startswith('"') and transcription.endswith('"'):
+                        transcription = transcription[1:-1].strip()
+                    return {
+                        "transcript": transcription,
+                        "status": "success",
+                        "latency_ms": round((time.time() - start_time) * 1000, 1)
+                    }
+                except Exception as e:
+                    last_error = str(e)
+                    print(f"[GeminiAIService] Audio transcription failed on {model_name}: {e}")
+                    continue
+
+            return {
+                "transcript": "",
+                "status": "error",
+                "error": last_error or "Could not transcribe audio.",
+                "latency_ms": round((time.time() - start_time) * 1000, 1)
+            }
+        except Exception as e:
+            return {
+                "transcript": "",
+                "status": "error",
+                "error": str(e),
+                "latency_ms": round((time.time() - start_time) * 1000, 1)
+            }
+
     def run_diagnostics(self) -> Dict[str, Any]:
         """
-        Executes the Phase 5 automated diagnostics test suite against Google AI Studio Gemini API.
+        Executes automated diagnostics test suite against Google AI Studio Gemini API.
         """
         results: Dict[str, Any] = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -438,7 +566,7 @@ class GeminiAIService:
             test3_res = {"status": "PASS", "detail": f"Caught initialization error: {e}"}
         results["tests"]["TEST_3_INVALID_API_KEY"] = test3_res
 
-        # TEST 4: Network Failure / Timeout Simulation
+        # TEST 4: Network Resilience
         test4_res = {
             "status": "PASS",
             "detail": "Model failover array [gemini-3.1-flash-lite -> gemini-flash-lite-latest -> gemini-3.5-flash -> gemini-3.8-flash] handles upstream quota exhaustion and downtime cleanly."
@@ -454,7 +582,7 @@ class GeminiAIService:
         results["tests"]["TEST_5_EMPTY_MESSAGE"] = test5_res
 
         # TEST 6: Long Message Limit Validation
-        long_query = "bike " * 700  # 3500 chars
+        long_query = "bike " * 750  # 3750 chars
         long_check = self.chat(user_query=long_query)
         test6_res = {
             "status": "PASS" if long_check.get("error") == "Message exceeds length limit" else "FAIL",
