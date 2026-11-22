@@ -64,7 +64,7 @@ export const MotorcycleInspectionPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <Link
               to={`/bike/${vehicle.id}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white hover:border-emerald-500/50 text-xs font-medium transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] hover:border-emerald-500/50 text-xs font-medium transition-all"
             >
               <ChevronLeft className="w-4 h-4 text-[#242622]" />
               <span>Back to Listing</span>
@@ -74,7 +74,7 @@ export const MotorcycleInspectionPage: React.FC = () => {
 
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-heading font-bold text-white tracking-wide">
+                <h1 className="text-sm sm:text-base font-heading font-bold text-[#242622] tracking-wide">
                   {vehicle.title}
                 </h1>
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-950 text-[#242622] border border-emerald-600/40">
@@ -136,7 +136,7 @@ export const MotorcycleInspectionPage: React.FC = () => {
                 className={`px-3 py-1.5 rounded-none text-xs font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                   selectedCategory === cat.id
                     ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-950 font-semibold'
-                    : 'bg-white text-[#85857E] hover:text-white hover:bg-[#152722] border border-[#E9E3D8]'
+                    : 'bg-white text-[#85857E] hover:text-[#242622] hover:bg-[#152722] border border-[#E9E3D8]'
                 }`}
               >
                 {cat.label}
@@ -169,7 +169,7 @@ export const MotorcycleInspectionPage: React.FC = () => {
                       className={`px-3 py-1.5 rounded-none text-xs flex items-center gap-1.5 transition-all whitespace-nowrap flex-shrink-0 ${
                         isSelected
                           ? 'bg-emerald-500 text-slate-950 font-bold shadow-md'
-                          : 'bg-white text-[#85857E] hover:text-white hover:bg-[#152722] border border-[#E9E3D8]'
+                          : 'bg-white text-[#85857E] hover:text-[#242622] hover:bg-[#152722] border border-[#E9E3D8]'
                       }`}
                     >
                       <span className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -185,7 +185,7 @@ export const MotorcycleInspectionPage: React.FC = () => {
                   className={`px-3 py-1.5 rounded-none text-xs font-bold flex items-center gap-1.5 transition-all ${
                     explodedView
                       ? 'bg-amber-500 text-slate-950 shadow-md'
-                      : 'bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]'
+                      : 'bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8]'
                   }`}
                   title="Toggle Exploded Mechanical Assembly"
                 >
@@ -194,7 +194,7 @@ export const MotorcycleInspectionPage: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setSelectedComponentId(null)}
-                  className="p-1.5 rounded-none bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]"
+                  className="p-1.5 rounded-none bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8]"
                   title="Clear Selection"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />

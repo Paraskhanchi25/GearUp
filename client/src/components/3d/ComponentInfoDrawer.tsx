@@ -92,7 +92,7 @@ export const ComponentInfoDrawer: React.FC<ComponentInfoDrawerProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-none bg-white text-[#85857E] hover:text-white border border-[#E9E3D8] hover:border-[#35483C] transition-colors flex-shrink-0"
+            className="p-1.5 rounded-none bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8] hover:border-[#35483C] transition-colors flex-shrink-0"
             title="Close Component View (Show Full Motorcycle)"
           >
             <X className="w-4 h-4" />
@@ -104,7 +104,7 @@ export const ComponentInfoDrawer: React.FC<ComponentInfoDrawerProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-[#242622] flex-shrink-0" />
-              <span className="font-bold text-white text-[11px]">120-Point Certified Physical Inspection</span>
+              <span className="font-bold text-[#242622] text-[11px]">120-Point Certified Physical Inspection</span>
             </div>
             <span className="px-2 py-0.5 rounded-md bg-white border border-[#E9E3D8] font-mono text-[10px] font-bold text-[#242622]">
               {inspection.score}% Health
@@ -239,7 +239,7 @@ export const ComponentInfoDrawer: React.FC<ComponentInfoDrawerProps> = ({
                 <button
                   key={c.id}
                   onClick={() => onSelectComponent(c.id)}
-                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-white border border-[#E9E3D8] text-[10px] transition-colors flex items-center gap-1"
+                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622] border border-[#E9E3D8] text-[10px] transition-colors flex items-center gap-1"
                 >
                   <span>{c.shortName}</span>
                   <ChevronRight className="w-3 h-3 text-forest-500" />

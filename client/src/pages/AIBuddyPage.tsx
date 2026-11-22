@@ -208,7 +208,7 @@ export const AIBuddyPage: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-heading font-extrabold text-base text-white">AI Bike Buddy</h1>
+                <h1 className="font-heading font-extrabold text-base text-[#242622]">AI Bike Buddy</h1>
                 <span className="px-2 py-0.5 rounded-full bg-[#E9E3D8] border border-[#E9E3D8] text-[10px] text-[#242622] font-bold uppercase tracking-wider">
                   Master Mechanic
                 </span>
@@ -230,7 +230,7 @@ export const AIBuddyPage: React.FC = () => {
                 className="bg-transparent font-bold text-[#35483C] focus:outline-none cursor-pointer"
               >
                 {POPULAR_PROFILES.map((p) => (
-                  <option key={p.model} value={p.model} className="bg-white text-white">
+                  <option key={p.model} value={p.model} className="bg-white text-[#242622]">
                     {p.brand} {p.model} ({p.year})
                   </option>
                 ))}
@@ -249,7 +249,7 @@ export const AIBuddyPage: React.FC = () => {
                   },
                 ]);
               }}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-forest-950 hover:bg-forest-900 border border-forest-800 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-forest-950 hover:bg-forest-900 border border-forest-800 text-xs font-semibold text-slate-300 hover:text-[#242622] transition-colors"
               title="Clear & Start New Conversation"
             >
               <Trash2 className="w-3.5 h-3.5 text-forest-400" />
@@ -322,7 +322,7 @@ export const AIBuddyPage: React.FC = () => {
 
                   {/* Possible Causes */}
                   <div>
-                    <h5 className="font-bold text-white mb-1.5 flex items-center gap-1.5">
+                    <h5 className="font-bold text-[#242622] mb-1.5 flex items-center gap-1.5">
                       <Wrench className="w-3.5 h-3.5 text-[#242622]" />
                       Possible Root Causes:
                     </h5>
@@ -335,7 +335,7 @@ export const AIBuddyPage: React.FC = () => {
 
                   {/* Safe DIY Checks */}
                   <div>
-                    <h5 className="font-bold text-white mb-1.5 flex items-center gap-1.5">
+                    <h5 className="font-bold text-[#242622] mb-1.5 flex items-center gap-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-[#242622]" />
                       Safe Checks to Perform Yourself:
                     </h5>
@@ -348,7 +348,7 @@ export const AIBuddyPage: React.FC = () => {
 
                   {/* Professional Recommendation */}
                   <div className="p-2.5 rounded-none bg-white border border-[#E9E3D8] text-[11px] text-[#85857E]">
-                    <strong className="text-white">When to visit a mechanic: </strong>
+                    <strong className="text-[#242622]">When to visit a mechanic: </strong>
                     {m.diagnosis.professionalAction}
                   </div>
                 </div>
@@ -365,11 +365,11 @@ export const AIBuddyPage: React.FC = () => {
                     <Link
                       key={item.id}
                       to={`/bike/${item.id}`}
-                      className="p-3 rounded-none bg-[#12221D] hover:bg-[#E9E3D8]/60 border border-[#E9E3D8] transition-all flex items-center gap-3 group"
+                      className="p-3 rounded-none bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] transition-all flex items-center gap-3 group"
                     >
                       <img src={item.primaryImage} alt={item.title} className="w-14 h-14 rounded-none object-cover" />
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-xs text-white group-hover:text-[#35483C] truncate">{item.title}</p>
+                        <p className="font-bold text-xs text-[#242622] group-hover:text-[#35483C] truncate">{item.title}</p>
                         <p className="font-heading font-extrabold text-sm text-[#242622] mt-0.5">{formatINR(item.price)}</p>
                         <p className="text-[10px] text-[#85857E] flex items-center gap-1">
                           <MapPin className="w-3 h-3 text-[#242622]" />
@@ -406,31 +406,31 @@ export const AIBuddyPage: React.FC = () => {
           <span className="text-slate-500 font-semibold whitespace-nowrap">Try asking:</span>
           <button
             onClick={() => handleSend('My bike makes a clicking sound when pressing the starter button')}
-            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] whitespace-nowrap"
           >
             Starter clicking sound
           </button>
           <button
             onClick={() => handleSend('My scooter vibrates violently between 15-20 km/h on pickup')}
-            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] whitespace-nowrap"
           >
             CVT pickup vibration
           </button>
           <button
             onClick={() => handleSend('My front brake lever feels very spongy and soft')}
-            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] whitespace-nowrap"
           >
             Spongy brake lever
           </button>
           <button
             onClick={() => handleSend('Mileage suddenly dropped from 48 kmpl to 32 kmpl')}
-            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] whitespace-nowrap"
           >
             Sudden mileage drop
           </button>
           <button
             onClick={() => handleSend('How to optimize Ather EV battery range in Indian summers?')}
-            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white whitespace-nowrap"
+            className="px-3 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] whitespace-nowrap"
           >
             EV battery tips
           </button>
@@ -477,7 +477,7 @@ export const AIBuddyPage: React.FC = () => {
           {/* Photo Upload Button */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="p-3 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white transition-colors"
+            className="p-3 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] transition-colors"
             title="Attach photo of tyres, leak, warning lights"
           >
             <Camera className="w-5 h-5 text-[#242622]" />
@@ -489,7 +489,7 @@ export const AIBuddyPage: React.FC = () => {
             className={`p-3 rounded-none border transition-colors ${
               isListening
                 ? 'bg-red-500 text-white border-red-400 animate-pulse'
-                : 'bg-white text-[#85857E] border-[#E9E3D8] hover:text-white'
+                : 'bg-white text-[#85857E] border-[#E9E3D8] hover:text-[#242622]'
             }`}
             title="Record engine sound or speak question"
           >

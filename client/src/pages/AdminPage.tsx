@@ -252,7 +252,7 @@ export const AdminPage: React.FC = () => {
               <ShieldCheck className="w-4 h-4 text-red-400" />
               <span>SUPERADMIN MODERATION ENGINE</span>
             </span>
-            <h1 className="font-heading font-extrabold text-2xl text-white mt-1">
+            <h1 className="font-heading font-extrabold text-2xl text-[#242622] mt-1">
               GEAR UP Trust & Verification Desk
             </h1>
             <p className="text-xs text-[#85857E] mt-0.5">
@@ -267,7 +267,7 @@ export const AdminPage: React.FC = () => {
               className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'verification_desk'
                   ? 'bg-[#35483C] text-white shadow-sm'
-                  : 'text-[#85857E] hover:text-white'
+                  : 'text-[#85857E] hover:text-[#242622]'
               }`}
             >
               <FileSearch className="w-4 h-4" />
@@ -278,7 +278,7 @@ export const AdminPage: React.FC = () => {
               className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'smart_rc_desk'
                   ? 'bg-[#35483C] text-white shadow-sm'
-                  : 'text-[#85857E] hover:text-white'
+                  : 'text-[#85857E] hover:text-[#242622]'
               }`}
             >
               <Cpu className="w-4 h-4 text-[#242622]" />
@@ -289,7 +289,7 @@ export const AdminPage: React.FC = () => {
               className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'marketplace_moderation'
                   ? 'bg-[#35483C] text-white shadow-sm'
-                  : 'text-[#85857E] hover:text-white'
+                  : 'text-[#85857E] hover:text-[#242622]'
               }`}
             >
               <Users className="w-4 h-4" />
@@ -300,7 +300,7 @@ export const AdminPage: React.FC = () => {
               className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'location_revenue'
                   ? 'bg-[#35483C] text-white shadow-sm'
-                  : 'text-[#85857E] hover:text-white'
+                  : 'text-[#85857E] hover:text-[#242622]'
               }`}
             >
               <DollarSign className="w-4 h-4 text-[#242622]" />
@@ -315,7 +315,7 @@ export const AdminPage: React.FC = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="p-4 rounded-none bg-white border border-[#E9E3D8]">
                 <span className="text-[10px] uppercase font-bold text-[#85857E]">Total in Queue</span>
-                <p className="font-heading font-extrabold text-2xl text-white mt-1">{queue.length || 2}</p>
+                <p className="font-heading font-extrabold text-2xl text-[#242622] mt-1">{queue.length || 2}</p>
                 <p className="text-[10px] text-slate-500">Listings awaiting moderation</p>
               </div>
               <div className="p-4 rounded-none bg-white border border-amber-800/40">
@@ -348,14 +348,14 @@ export const AdminPage: React.FC = () => {
               <div className="lg:col-span-4 space-y-4">
                 <div className="p-4 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-heading font-bold text-sm text-white flex items-center gap-1.5">
+                    <h3 className="font-heading font-bold text-sm text-[#242622] flex items-center gap-1.5">
                       <Clock className="w-4 h-4 text-[#242622]" />
                       <span>Review Queue</span>
                     </h3>
                     <button 
                       onClick={fetchQueue}
                       disabled={isLoadingQueue}
-                      className="p-1.5 rounded-lg bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]"
+                      className="p-1.5 rounded-lg bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8]"
                       title="Refresh queue"
                     >
                       <RefreshCw className={`w-3.5 h-3.5 ${isLoadingQueue ? 'animate-spin' : ''}`} />
@@ -412,12 +412,12 @@ export const AdminPage: React.FC = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-bold text-white text-xs line-clamp-1">{item.vehicle_title}</h4>
+                            <h4 className="font-bold text-[#242622] text-xs line-clamp-1">{item.vehicle_title}</h4>
                             <p className="text-[11px] text-[#85857E]">Seller: {item.seller_name}</p>
                           </div>
 
                           <div className="flex items-center justify-between text-[10px] text-[#85857E] pt-1 border-t border-[#E9E3D8]/60">
-                            <span>Reg: <strong className="text-white font-mono">{item.registration_number}</strong></span>
+                            <span>Reg: <strong className="text-[#242622] font-mono">{item.registration_number}</strong></span>
                             <span className="text-[#242622] font-semibold">{Math.round((item.ocr_confidence || 0.94) * 100)}% OCR match</span>
                           </div>
                         </div>
@@ -438,12 +438,12 @@ export const AdminPage: React.FC = () => {
                         <span className="font-mono text-xs px-2 py-0.5 rounded bg-white text-[#242622] border border-[#E9E3D8] font-bold">
                           {selectedListingId}
                         </span>
-                        <h2 className="font-heading font-extrabold text-lg text-white">
+                        <h2 className="font-heading font-extrabold text-lg text-[#242622]">
                           {vehicle.year || 2023} {vehicle.brand || 'Vehicle'} {vehicle.model || 'Model'}
                         </h2>
                       </div>
                       <p className="text-xs text-[#85857E] mt-0.5">
-                        Seller: <strong className="text-[#242622]">{currentL3.seller_full_name || 'Vikramjit Singh'}</strong> • Reg: <strong className="text-white font-mono">{vehicle.registration_number || 'CH01AB8821'}</strong>
+                        Seller: <strong className="text-[#242622]">{currentL3.seller_full_name || 'Vikramjit Singh'}</strong> • Reg: <strong className="text-[#242622] font-mono">{vehicle.registration_number || 'CH01AB8821'}</strong>
                       </p>
                     </div>
 
@@ -473,7 +473,7 @@ export const AdminPage: React.FC = () => {
                         className={`px-3.5 py-2 rounded-none font-bold whitespace-nowrap transition-colors flex items-center gap-2 ${
                           activeDocTab === t.id
                             ? 'bg-[#35483C]/30 text-white shadow-sm'
-                            : 'bg-white/70 text-[#85857E] hover:text-white border border-[#E9E3D8]'
+                            : 'bg-white/70 text-[#85857E] hover:text-[#242622] border border-[#E9E3D8]'
                         }`}
                       >
                         <span>{t.label}</span>
@@ -571,7 +571,7 @@ export const AdminPage: React.FC = () => {
                           {/* Row: Owner Name */}
                           <div className="p-2.5 grid grid-cols-12 items-center">
                             <span className="col-span-4 text-[#85857E] font-medium">Owner Name</span>
-                            <span className="col-span-4 text-white font-medium">{currentL3.seller_full_name || 'Vikramjit Singh'}</span>
+                            <span className="col-span-4 text-[#242622] font-medium">{currentL3.seller_full_name || 'Vikramjit Singh'}</span>
                             <span className="col-span-4 text-right font-bold text-[#242622] flex items-center justify-end gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Confirmed
                             </span>
@@ -580,7 +580,7 @@ export const AdminPage: React.FC = () => {
                           {/* Row: Vehicle Model */}
                           <div className="p-2.5 grid grid-cols-12 items-center bg-white/40">
                             <span className="col-span-4 text-[#85857E] font-medium">Brand & Model</span>
-                            <span className="col-span-4 text-white">{vehicle.brand || 'Royal Enfield'} {vehicle.model || 'Classic 350'}</span>
+                            <span className="col-span-4 text-[#242622]">{vehicle.brand || 'Royal Enfield'} {vehicle.model || 'Classic 350'}</span>
                             <span className="col-span-4 text-right font-bold text-[#242622] flex items-center justify-end gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Matched
                             </span>
@@ -589,7 +589,7 @@ export const AdminPage: React.FC = () => {
                           {/* Row: Fuel Type */}
                           <div className="p-2.5 grid grid-cols-12 items-center">
                             <span className="col-span-4 text-[#85857E] font-medium">Fuel Type</span>
-                            <span className="col-span-4 text-white capitalize">{vehicle.fuel || 'Petrol'}</span>
+                            <span className="col-span-4 text-[#242622] capitalize">{vehicle.fuel || 'Petrol'}</span>
                             <span className="col-span-4 text-right font-bold text-[#242622] flex items-center justify-end gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Matched
                             </span>
@@ -615,8 +615,8 @@ export const AdminPage: React.FC = () => {
                         </div>
 
                         {/* Extra Level 2 & 3 summary pills */}
-                        <div className="p-3 rounded-none bg-[#0D1815] border border-[#E9E3D8]/60 text-xs space-y-1">
-                          <p className="font-bold text-white text-[11px]">Level 2 Condition & Maintenance Disclosures:</p>
+                        <div className="p-3 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] text-xs space-y-1">
+                          <p className="font-bold text-[#242622] text-[11px]">Level 2 Condition & Maintenance Disclosures:</p>
                           <p className="text-[11px] text-[#85857E]">
                             Service: <strong className="text-[#242622] capitalize">{currentL2.service_history || 'Regular (OEM Workshop)'}</strong> • Tyres: <strong className="text-[#242622] capitalize">{currentL2.tyre_condition || 'Good'}</strong> • Accidental: <strong className="text-[#242622]">{currentL2.accident_disclosure || 'None reported'}</strong>
                           </p>
@@ -628,7 +628,7 @@ export const AdminPage: React.FC = () => {
                   {/* Reviewer Action Bar */}
                   <div className="p-5 rounded-none bg-white border border-[#E9E3D8] space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-[#242622] uppercase tracking-wider flex items-center gap-1.5">
                         <UserCheck className="w-4 h-4 text-[#242622]" />
                         <span>Moderator Decision Desk</span>
                       </span>
@@ -644,7 +644,7 @@ export const AdminPage: React.FC = () => {
                         value={reviewerNotes}
                         onChange={(e) => setReviewerNotes(e.target.value)}
                         placeholder="e.g. Parivahan RTO extracted chassis prefix matches listing. Cleared for publication."
-                        className="w-full px-3.5 py-2.5 rounded-none bg-white border border-[#E9E3D8] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#35483C]"
+                        className="w-full px-3.5 py-2.5 rounded-none bg-white border border-[#E9E3D8] text-xs text-[#242622] placeholder-slate-500 focus:outline-none focus:border-[#35483C]"
                       />
                     </div>
 
@@ -728,7 +728,7 @@ export const AdminPage: React.FC = () => {
                         <div key={idx} className="p-2.5 rounded-none bg-white border border-[#E9E3D8] flex items-start justify-between">
                           <div className="space-y-0.5">
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-white capitalize">{entry.action?.replace('_', ' ')}</span>
+                              <span className="font-bold text-[#242622] capitalize">{entry.action?.replace('_', ' ')}</span>
                               <span className="text-[10px] font-mono text-[#242622]">by {entry.reviewer_id} ({entry.reviewer_name})</span>
                             </div>
                             <p className="text-[11px] text-[#85857E]">{entry.reason}</p>
@@ -757,7 +757,7 @@ export const AdminPage: React.FC = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="p-4 rounded-none bg-white border border-[#E9E3D8]">
                 <span className="text-[10px] uppercase font-bold text-[#85857E]">Total RC Submissions</span>
-                <p className="font-heading font-extrabold text-2xl text-white mt-1">{smartRcQueue.length}</p>
+                <p className="font-heading font-extrabold text-2xl text-[#242622] mt-1">{smartRcQueue.length}</p>
                 <p className="text-[10px] text-slate-500">Pipeline audits logged</p>
               </div>
               <div className="p-4 rounded-none bg-white border border-amber-800/40">
@@ -797,7 +797,7 @@ export const AdminPage: React.FC = () => {
                       className={`px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase transition-colors ${
                         smartRcFilter === st
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]'
+                          : 'bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8]'
                       }`}
                     >
                       {st.replace('_', ' ')}
@@ -856,7 +856,7 @@ export const AdminPage: React.FC = () => {
                         >
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <span className="font-bold text-sm text-white font-mono tracking-wide">
+                              <span className="font-bold text-sm text-[#242622] font-mono tracking-wide">
                                 {item.registration_number || 'REG PENDING'}
                               </span>
                               <p className="text-[11px] text-[#85857E] mt-0.5">
@@ -908,7 +908,7 @@ export const AdminPage: React.FC = () => {
                           <span className="font-mono text-xs text-slate-500 font-bold">VERIFICATION RECORD:</span>
                           <span className="font-mono text-xs text-[#242622] font-bold">{smartRcDetail.id}</span>
                         </div>
-                        <h2 className="text-xl font-heading font-extrabold text-white mt-1">
+                        <h2 className="text-xl font-heading font-extrabold text-[#242622] mt-1">
                           {smartRcDetail.sellerConfirmedFields?.registrationNumber || smartRcDetail.extractedFields?.registrationNumber || 'Registration Certificate'}
                         </h2>
                         <p className="text-xs text-[#85857E] mt-0.5">
@@ -945,7 +945,7 @@ export const AdminPage: React.FC = () => {
                           <FileText className="w-3.5 h-3.5 text-blue-400" />
                           <span>ML Classification</span>
                         </span>
-                        <p className="font-heading font-extrabold text-lg text-white">
+                        <p className="font-heading font-extrabold text-lg text-[#242622]">
                           {smartRcDetail.documentClassification?.document_type || 'RC'}
                         </p>
                         <p className="text-[11px] text-[#85857E]">
@@ -962,7 +962,7 @@ export const AdminPage: React.FC = () => {
                           <Eye className="w-3.5 h-3.5 text-[#242622]" />
                           <span>Image Quality (CV)</span>
                         </span>
-                        <p className="font-heading font-extrabold text-lg text-white flex items-center gap-2">
+                        <p className="font-heading font-extrabold text-lg text-[#242622] flex items-center gap-2">
                           <span>{smartRcDetail.qualityAssessment?.blurScore?.toFixed(1) || '145.0'}</span>
                           <span className={`text-[11px] px-1.5 py-0.5 rounded font-normal ${
                             smartRcDetail.qualityAssessment?.isBlurred
@@ -1079,7 +1079,7 @@ export const AdminPage: React.FC = () => {
                         ].map((row, idx) => (
                           <div key={idx} className="p-3 grid grid-cols-12 gap-2 items-center hover:bg-white/30">
                             <span className="col-span-3 text-[#85857E] font-semibold">{row.label}</span>
-                            <span className="col-span-3 text-white font-mono">{row.extracted || '—'}</span>
+                            <span className="col-span-3 text-[#242622] font-mono">{row.extracted || '—'}</span>
                             <span className="col-span-3 text-[#85857E] font-mono">{row.confirmed || '—'}</span>
                             <div className="col-span-3 flex items-center justify-between">
                               <span className="text-[#85857E] font-mono">{row.vahan || '—'}</span>
@@ -1107,7 +1107,7 @@ export const AdminPage: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <UserCheck className="w-4 h-4 text-[#242622]" />
-                          <h4 className="font-heading font-bold text-sm text-white">Reviewer Audit Decision</h4>
+                          <h4 className="font-heading font-bold text-sm text-[#242622]">Reviewer Audit Decision</h4>
                         </div>
                         <span className="text-[10px] text-slate-500">Moderator ID: RTO-CHIEF-01</span>
                       </div>
@@ -1120,7 +1120,7 @@ export const AdminPage: React.FC = () => {
                           value={smartRcNotes}
                           onChange={(e) => setSmartRcNotes(e.target.value)}
                           placeholder="e.g. Confirmed chassis and engine serial against physical image; verified fuel and model match."
-                          className="w-full px-3 py-2.5 rounded-none bg-white border border-[#E9E3D8] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2.5 rounded-none bg-white border border-[#E9E3D8] text-xs text-[#242622] placeholder-slate-600 focus:outline-none focus:border-emerald-500"
                           rows={2}
                         />
                       </div>
@@ -1178,7 +1178,7 @@ export const AdminPage: React.FC = () => {
                             <div key={idx} className="p-2.5 rounded-none bg-white border border-[#E9E3D8] flex items-start justify-between">
                               <div className="space-y-0.5">
                                 <div className="flex items-center gap-2">
-                                  <span className="font-bold text-white capitalize">{log.action?.replace('_', ' ')}</span>
+                                  <span className="font-bold text-[#242622] capitalize">{log.action?.replace('_', ' ')}</span>
                                   <span className="text-[10px] font-mono text-[#242622]">by {log.reviewer_id}</span>
                                 </div>
                                 <p className="text-[11px] text-[#85857E]">{log.notes}</p>
@@ -1216,13 +1216,13 @@ export const AdminPage: React.FC = () => {
                   <div className="col-span-4 flex items-center gap-3 min-w-0">
                     <img src={bike.primaryImage} alt={bike.title} className="w-12 h-10 rounded-lg object-cover" />
                     <div className="min-w-0">
-                      <p className="font-bold text-white truncate">{bike.title}</p>
+                      <p className="font-bold text-[#242622] truncate">{bike.title}</p>
                       <p className="text-[#85857E] text-[11px]">{bike.area}, {bike.city}</p>
                     </div>
                   </div>
 
                   <div className="col-span-2">
-                    <p className="font-heading font-bold text-white">{formatINR(bike.price)}</p>
+                    <p className="font-heading font-bold text-[#242622]">{formatINR(bike.price)}</p>
                     <p className="text-[10px] text-slate-500">{bike.km.toLocaleString('en-IN')} km</p>
                   </div>
 
@@ -1241,7 +1241,7 @@ export const AdminPage: React.FC = () => {
                   <div className="col-span-3 flex items-center justify-end gap-2">
                     <button
                       onClick={() => toggleVerify(bike.id)}
-                      className="px-2.5 py-1 rounded-lg bg-[#E9E3D8]/40 hover:bg-[#35483C]/30 text-white text-[11px] font-semibold transition-colors"
+                      className="px-2.5 py-1 rounded-lg bg-[#35483C] hover:bg-[#242622] text-white text-[11px] font-semibold transition-colors"
                     >
                       Toggle Cert
                     </button>
@@ -1268,7 +1268,7 @@ export const AdminPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="p-5 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-1">
                 <span className="text-[10px] uppercase font-bold text-[#85857E]">Total Location Unlocks</span>
-                <p className="font-heading font-extrabold text-3xl text-white mt-1">
+                <p className="font-heading font-extrabold text-3xl text-[#242622] mt-1">
                   {revenueStats?.total_location_unlocks || 0}
                 </p>
                 <p className="text-[11px] text-[#242622] font-semibold flex items-center gap-1">
@@ -1308,7 +1308,7 @@ export const AdminPage: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-[#242622]" />
-                    <h3 className="font-heading font-bold text-base text-white">Daily Unlocks Breakdown</h3>
+                    <h3 className="font-heading font-bold text-base text-[#242622]">Daily Unlocks Breakdown</h3>
                   </div>
                   <span className="text-xs text-[#242622] font-semibold">Real-Time Ledger</span>
                 </div>
@@ -1321,7 +1321,7 @@ export const AdminPage: React.FC = () => {
                   ) : (
                     Object.entries(revenueStats?.daily_breakdown || {}).map(([day, count]) => (
                       <div key={day} className="py-3 flex items-center justify-between">
-                        <span className="font-semibold text-white">{day}</span>
+                        <span className="font-semibold text-[#242622]">{day}</span>
                         <div className="flex items-center gap-3">
                           <span className="px-2.5 py-0.5 rounded-full bg-white text-[#242622] font-bold border border-[#E9E3D8]">
                             {Number(count)} unlock(s)
@@ -1340,25 +1340,25 @@ export const AdminPage: React.FC = () => {
               <div className="lg:col-span-5 p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-4 text-xs">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-[#242622]" />
-                  <h3 className="font-heading font-bold text-base text-white">Monetization Engine Rules</h3>
+                  <h3 className="font-heading font-bold text-base text-[#242622]">Monetization Engine Rules</h3>
                 </div>
 
                 <div className="space-y-3 text-[#85857E]">
                   <div className="p-3.5 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] space-y-1">
                     <span className="text-[#85857E] text-[10px] block uppercase font-bold">Pricing Model</span>
-                    <p className="font-semibold text-white">₹49 Flat Location Access Fee</p>
+                    <p className="font-semibold text-[#242622]">₹49 Flat Location Access Fee</p>
                     <p className="text-[11px] text-[#85857E]">One-time payment per buyer per listing. No vehicle percentage cut.</p>
                   </div>
 
                   <div className="p-3.5 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] space-y-1">
                     <span className="text-[#85857E] text-[10px] block uppercase font-bold">Privacy Guard</span>
-                    <p className="font-semibold text-white">Strict Approximate Masking</p>
+                    <p className="font-semibold text-[#242622]">Strict Approximate Masking</p>
                     <p className="text-[11px] text-[#85857E]">Before payment, APIs and frontend omit exact GPS coordinates and house numbers.</p>
                   </div>
 
                   <div className="p-3.5 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] space-y-1">
                     <span className="text-[#85857E] text-[10px] block uppercase font-bold">Access Duration</span>
-                    <p className="font-semibold text-white">7 Calendar Days Validity</p>
+                    <p className="font-semibold text-[#242622]">7 Calendar Days Validity</p>
                     <p className="text-[11px] text-[#85857E]">Buyer cannot be double-charged during active entitlement term.</p>
                   </div>
                 </div>
@@ -1370,7 +1370,7 @@ export const AdminPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CreditCard className="w-4 h-4 text-[#242622]" />
-                  <h3 className="font-heading font-bold text-base text-white">Recent Payment Transactions</h3>
+                  <h3 className="font-heading font-bold text-base text-[#242622]">Recent Payment Transactions</h3>
                 </div>
                 <button
                   type="button"
@@ -1392,7 +1392,7 @@ export const AdminPage: React.FC = () => {
                     <div key={idx} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-white font-mono">{txn.transaction_id}</span>
+                          <span className="font-bold text-[#242622] font-mono">{txn.transaction_id}</span>
                           <span className="px-2 py-0.5 rounded bg-emerald-950 text-[#242622] text-[10px] font-bold">
                             Success
                           </span>

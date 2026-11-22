@@ -131,7 +131,7 @@ export const FloatingBikeBuddy: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h4 className="font-heading font-bold text-sm text-white">AI Bike Buddy</h4>
+                  <h4 className="font-heading font-bold text-sm text-[#242622]">AI Bike Buddy</h4>
                   <span className="text-[10px] bg-[#35483C]/60 text-[#35483C] px-1.5 rounded font-mono">Mechanic</span>
                 </div>
                 <p className="text-[10px] text-[#242622]">2-Wheeler Diagnostic Expert</p>
@@ -142,13 +142,13 @@ export const FloatingBikeBuddy: React.FC = () => {
               <Link
                 to="/ai-buddy"
                 onClick={() => setIsOpen(false)}
-                className="text-[10px] font-bold text-[#242622] hover:text-white bg-white px-2 py-1 rounded-md border border-[#E9E3D8]"
+                className="text-[10px] font-bold text-[#242622] hover:text-[#242622] bg-white px-2 py-1 rounded-md border border-[#E9E3D8]"
               >
                 Expand
               </Link>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-white"
+                className="p-1.5 rounded-lg bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -235,7 +235,7 @@ export const FloatingBikeBuddy: React.FC = () => {
               className={`p-2 rounded-none border transition-colors ${
                 isListening
                   ? 'bg-red-500 text-white border-red-400 animate-pulse'
-                  : 'bg-[#E9E3D8] text-[#242622] border-[#E9E3D8] hover:text-white'
+                  : 'bg-[#E9E3D8] text-[#242622] border-[#E9E3D8] hover:text-[#242622]'
               }`}
               title="Voice Input"
             >

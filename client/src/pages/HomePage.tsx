@@ -20,6 +20,8 @@ import { VehicleListing, SearchCenter } from '../types';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
 import { VehicleCard } from '../components/VehicleCard';
+import { initHeroEntrance, initScrollSections } from '../utils/motion';
+import { gsap } from 'gsap';
 
 interface HomePageProps {
   currentLocation: SearchCenter;
@@ -38,6 +40,9 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [heroIndex, setHeroIndex] = useState<number>(0);
+
+  const heroRef = useRef<HTMLElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
 
   const heroMachines = [
     {
@@ -74,13 +79,35 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   const currentHero = heroMachines[heroIndex];
 
-  // Rotate hero machines smoothly
+  // GSAP Entrance & ScrollTrigger initialization
+  useEffect(() => {
+    const cleanupHero = initHeroEntrance(heroRef.current);
+    const cleanupScroll = initScrollSections(pageRef.current);
+
+    return () => {
+      cleanupHero?.();
+      cleanupScroll?.();
+    };
+  }, []);
+
+  // Rotate hero machines smoothly with motion
   useEffect(() => {
     const timer = setInterval(() => {
-      setHeroIndex((prev) => (prev + 1) % heroMachines.length);
+      setHeroIndex((prev) => {
+        const nextIdx = (prev + 1) % heroMachines.length;
+        gsap.fromTo('.hero-bg-img', { opacity: 0.65, scale: 1.05 }, { opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out' });
+        gsap.fromTo('.hero-spec-strip', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' });
+        return nextIdx;
+      });
     }, 8000);
     return () => clearInterval(timer);
   }, [heroMachines.length]);
+
+  const handleManualSwitchHero = (idx: number) => {
+    setHeroIndex(idx);
+    gsap.fromTo('.hero-bg-img', { opacity: 0.65, scale: 1.05 }, { opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out' });
+    gsap.fromTo('.hero-spec-strip', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' });
+  };
 
   const filteredInventory = SEED_LISTINGS.filter(
     (b) => selectedCategory === 'all' || b.category.toLowerCase() === selectedCategory.toLowerCase()
@@ -92,28 +119,27 @@ export const HomePage: React.FC<HomePageProps> = ({
   };
 
   return (
-    <div className="bg-[#F7F5EF] text-[#242622] selection:bg-[#35483C] selection:text-white">
+    <div ref={pageRef} className="bg-[#F7F5EF] text-[#242622] selection:bg-[#35483C] selection:text-white overflow-hidden">
       
       {/* =========================================================================
-          SECTION 1: CINEMATIC FULL-WIDTH HERO (AC MOTORSPORT INSPIRED)
+          SECTION 1: CINEMATIC FULL-WIDTH HERO (AC MOTORSPORT MOTION)
          ========================================================================= */}
-      <section className="relative min-h-[90vh] lg:min-h-[94vh] flex flex-col justify-between border-b border-[#E9E3D8] overflow-hidden bg-[#242622]">
+      <section ref={heroRef} className="relative min-h-[90vh] lg:min-h-[94vh] flex flex-col justify-between border-b border-[#E9E3D8] overflow-hidden bg-[#242622]">
         
-        {/* Full-bleed background image with subtle zoom */}
-        <div className="absolute inset-0 z-0">
+        {/* Full-bleed background image with subtle parallax & scale */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             key={currentHero.image}
             src={currentHero.image}
             alt={currentHero.title}
-            className="w-full h-full object-cover object-center brightness-[0.70] contrast-[1.1] scale-100 transition-all duration-1000 ease-out"
+            className="hero-bg-img w-full h-full object-cover object-center brightness-[0.70] contrast-[1.1] will-change-transform"
           />
-          {/* Subtle gradient vignette */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#242622] via-[#242622]/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#242622]/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#242622]/80 via-transparent to-transparent" />
         </div>
 
         {/* Top Telemetry Header Ticker */}
-        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 sm:px-12 pt-8 flex items-center justify-between text-white/70 text-[10px] font-mono tracking-[0.25em] uppercase border-b border-white/10 pb-4">
+        <div className="hero-ticker relative z-10 max-w-7xl mx-auto w-full px-6 sm:px-12 pt-8 flex items-center justify-between text-white/70 text-[10px] font-mono tracking-[0.25em] uppercase border-b border-white/10 pb-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#A4AD98] animate-ping" />
             <span className="text-white font-bold">RTO PARIVAHAN ESCROW ACTIVE</span>
@@ -125,8 +151,17 @@ export const HomePage: React.FC<HomePageProps> = ({
             <span>•</span>
             <span>BENGALURU</span>
           </div>
-          <div className="text-white font-mono">
-            MACHINE [ 0{heroIndex + 1} / 0{heroMachines.length} ]
+          <div className="flex items-center gap-2">
+            {heroMachines.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => handleManualSwitchHero(i)}
+                className={`w-6 h-1 transition-all ${
+                  heroIndex === i ? 'bg-[#A4AD98] w-8' : 'bg-white/30 hover:bg-white/60'
+                }`}
+                title={`Select machine 0${i + 1}`}
+              />
+            ))}
           </div>
         </div>
 
@@ -135,30 +170,30 @@ export const HomePage: React.FC<HomePageProps> = ({
           
           <div className="space-y-4 max-w-4xl">
             {/* Tagline Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white font-mono text-[10px] uppercase tracking-[0.2em]">
+            <div className="hero-title-line inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-[#242622] font-mono text-[10px] uppercase tracking-[0.2em]">
               <span>INDEX CERTIFIED TWO-WHEELERS</span>
               <span>•</span>
               <span className="text-[#A4AD98]">120-PT VERIFIED</span>
             </div>
 
             {/* Oversized Architectural Headline */}
-            <h1 className="font-heading font-extrabold text-4xl sm:text-7xl lg:text-8xl text-white tracking-tight uppercase leading-[0.95]">
+            <h1 className="hero-title-line font-heading font-extrabold text-4xl sm:text-7xl lg:text-8xl text-white tracking-tight uppercase leading-[0.95]">
               PRECISION <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#E9E3D8] to-[#A4AD98]">
                 ENGINEERED.
               </span>
             </h1>
 
-            <p className="text-white/80 font-sans text-sm sm:text-lg max-w-xl font-light leading-relaxed">
+            <p className="hero-title-line text-white/80 font-sans text-sm sm:text-lg max-w-xl font-light leading-relaxed">
               India’s dedicated high-performance marketplace for verified motorcycles & scooters. Each machine inspected across 120 certified points and priced by machine learning telemetry.
             </p>
           </div>
 
           {/* Search HUD & Action Buttons */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center pt-2">
+          <div className="hero-search-hud grid grid-cols-1 lg:grid-cols-12 gap-4 items-center pt-2">
             
             {/* Search Input Bar */}
-            <div className="lg:col-span-8 bg-white/95 backdrop-blur-md border border-[#E9E3D8] p-2 flex flex-col sm:flex-row items-center gap-2 shadow-2xl">
+            <div className="lg:col-span-8 bg-white border border-[#E9E3D8] p-2 flex flex-col sm:flex-row items-center gap-2 shadow-2xl">
               <div className="flex-1 flex items-center gap-3 px-3 py-2 w-full">
                 <Search className="w-4 h-4 text-[#35483C] shrink-0" />
                 <input
@@ -172,7 +207,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               <button
                 onClick={handleHeroSearch}
-                className="w-full sm:w-auto px-6 py-3 bg-[#35483C] hover:bg-[#242622] text-white font-mono text-xs uppercase tracking-wider font-bold transition-all shrink-0"
+                className="w-full sm:w-auto px-6 py-3 bg-[#35483C] hover:bg-[#242622] text-white font-mono text-xs uppercase tracking-wider font-bold transition-all shrink-0 active:scale-[0.98]"
               >
                 Explore Fleet
               </button>
@@ -182,13 +217,13 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="lg:col-span-4 flex items-center gap-3">
               <Link
                 to="/price-estimator"
-                className="flex-1 px-4 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md text-xs font-mono uppercase tracking-wider text-center transition-all"
+                className="flex-1 px-4 py-3 bg-white/10 hover:bg-white/20 text-[#242622] border border-white/20 backdrop-blur-md text-xs font-mono uppercase tracking-wider text-center transition-all active:scale-[0.98]"
               >
                 ML Valuation
               </Link>
               <Link
                 to="/inspect/bike-001"
-                className="flex-1 px-4 py-3 bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] text-xs font-mono uppercase tracking-wider text-center transition-all flex items-center justify-center gap-1.5"
+                className="flex-1 px-4 py-3 bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] text-xs font-mono uppercase tracking-wider text-center transition-all flex items-center justify-center gap-1.5 active:scale-[0.98]"
               >
                 <Layers className="w-3.5 h-3.5" />
                 <span>3D Twin</span>
@@ -198,7 +233,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Machine Telemetry Card (Featured Highlight) */}
-          <div className="border-t border-white/15 pt-6 flex flex-wrap items-center justify-between gap-4 text-white text-xs font-mono">
+          <div className="hero-spec-strip border-t border-white/15 pt-6 flex flex-wrap items-center justify-between gap-4 text-white text-xs font-mono">
             <div>
               <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">FEATURED SPECIMEN</span>
               <span className="font-bold text-sm text-white">{currentHero.title}</span>
@@ -222,7 +257,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div>
               <Link
                 to={`/bike/${currentHero.id}`}
-                className="px-4 py-2 border border-white/40 hover:bg-white hover:text-[#242622] text-white text-[11px] uppercase tracking-wider transition-all inline-flex items-center gap-1.5"
+                className="px-4 py-2 border border-white/40 hover:bg-white hover:text-[#242622] text-[#242622] text-[11px] uppercase tracking-wider transition-all inline-flex items-center gap-1.5"
               >
                 <span>Full Telemetry</span>
                 <ArrowRight className="w-3 h-3" />
@@ -246,10 +281,10 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* =========================================================================
           SECTION 2: EDITORIAL CURATED FLEET (ASYMMETRICAL MOTORSPORT MATRIX)
          ========================================================================= */}
-      <section className="py-24 px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-12">
+      <section className="fleet-section py-24 px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-12">
         
         {/* Section Header with AC Motorsport Index Counter */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E9E3D8] pb-6">
+        <div className="section-heading-reveal flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E9E3D8] pb-6">
           <div className="space-y-2">
             <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#85857E]">
               [ 01 // DISCOVERY ]
@@ -277,16 +312,17 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
 
-        {/* Featured Machines Grid */}
+        {/* Featured Machines Grid with Stagger Class */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredInventory.map((bike) => (
-            <VehicleCard
-              key={bike.id}
-              vehicle={bike}
-              isSaved={savedIds.includes(bike.id)}
-              onToggleSave={onToggleSave}
-              onOpenAudio={onOpenAudio}
-            />
+            <div key={bike.id} className="stagger-fleet-card">
+              <VehicleCard
+                vehicle={bike}
+                isSaved={savedIds.includes(bike.id)}
+                onToggleSave={onToggleSave}
+                onOpenAudio={onOpenAudio}
+              />
+            </div>
           ))}
         </div>
 
@@ -306,10 +342,10 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* =========================================================================
           SECTION 3: THE 4 MOTORSPORT STANDARDS (TELEMETRY PROTOCOLS)
          ========================================================================= */}
-      <section className="py-24 bg-[#E9E3D8]/30 border-y border-[#E9E3D8]">
+      <section className="standards-section py-24 bg-[#E9E3D8]/30 border-y border-[#E9E3D8]">
         <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 space-y-16">
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="section-heading-reveal flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-2">
               <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#85857E]">
                 [ 02 // STANDARDS ]
@@ -326,7 +362,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           {/* 4 Pillars Grid with Hairline Borders */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            <div className="p-8 bg-white border border-[#E9E3D8] space-y-4 hover:border-[#35483C] transition-colors">
+            <div className="standard-pillar p-8 bg-white border border-[#E9E3D8] space-y-4 hover:border-[#35483C] transition-colors">
               <span className="font-mono text-xs text-[#A4AD98] font-bold">01 //</span>
               <h3 className="font-heading font-bold text-lg uppercase text-[#242622]">
                 Acoustic Diagnostics
@@ -342,7 +378,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
             </div>
 
-            <div className="p-8 bg-white border border-[#E9E3D8] space-y-4 hover:border-[#35483C] transition-colors">
+            <div className="standard-pillar p-8 bg-white border border-[#E9E3D8] space-y-4 hover:border-[#35483C] transition-colors">
               <span className="font-mono text-xs text-[#A4AD98] font-bold">02 //</span>
               <h3 className="font-heading font-bold text-lg uppercase text-[#242622]">
                 120-Point Hub Audit
@@ -358,7 +394,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
             </div>
 
-            <div className="p-8 bg-white border border-[#E9E3D8] space-y-4 hover:border-[#35483C] transition-colors">
+            <div className="standard-pillar p-8 bg-white border border-[#E9E3D8] space-y-4 hover:border-[#35483C] transition-colors">
               <span className="font-mono text-xs text-[#A4AD98] font-bold">03 //</span>
               <h3 className="font-heading font-bold text-lg uppercase text-[#242622]">
                 CatBoost ML Valuation
@@ -374,7 +410,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
             </div>
 
-            <div className="p-8 bg-white border border-[#E9E3D8] space-y-4 hover:border-[#35483C] transition-colors">
+            <div className="standard-pillar p-8 bg-white border border-[#E9E3D8] space-y-4 hover:border-[#35483C] transition-colors">
               <span className="font-mono text-xs text-[#A4AD98] font-bold">04 //</span>
               <h3 className="font-heading font-bold text-lg uppercase text-[#242622]">
                 RTO Parivahan Escrow
@@ -399,7 +435,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           SECTION 4: 3D DIGITAL TWIN EXPLORATION BANNER
          ========================================================================= */}
       <section className="py-24 px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto">
-        <div className="relative bg-[#242622] text-white border border-[#E9E3D8] p-8 sm:p-16 overflow-hidden">
+        <div className="twin-banner relative bg-[#242622] text-white border border-[#E9E3D8] p-8 sm:p-16 overflow-hidden">
           
           <div className="relative z-10 max-w-2xl space-y-6">
             <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#A4AD98]">
@@ -415,14 +451,14 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link
                 to="/inspect/bike-001"
-                className="px-6 py-3.5 bg-[#35483C] hover:bg-white hover:text-[#242622] text-white font-mono text-xs uppercase tracking-wider font-bold flex items-center gap-2 transition-all border border-[#35483C]"
+                className="px-6 py-3.5 bg-[#35483C] hover:bg-white hover:text-[#242622] text-[#242622] font-mono text-xs uppercase tracking-wider font-bold flex items-center gap-2 transition-all border border-[#35483C]"
               >
                 <Maximize2 className="w-3.5 h-3.5" />
                 <span>Launch 3D Explorer</span>
               </Link>
               <Link
                 to="/compare"
-                className="px-6 py-3.5 bg-transparent hover:bg-white/10 text-white font-mono text-xs uppercase tracking-wider border border-white/30 transition-all"
+                className="px-6 py-3.5 bg-transparent hover:bg-white/10 text-[#242622] font-mono text-xs uppercase tracking-wider border border-white/30 transition-all"
               >
                 Side-by-Side Compare
               </Link>

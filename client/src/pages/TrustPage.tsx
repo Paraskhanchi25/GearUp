@@ -9,7 +9,7 @@ export const TrustPage: React.FC = () => {
           <span className="text-xs font-bold text-[#242622] uppercase tracking-widest">
             AUTHENTICITY & VERIFICATION
           </span>
-          <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-white">
+          <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-[#242622]">
             120-Point Inspection & Trust Framework
           </h1>
           <p className="text-[#85857E] text-sm max-w-xl mx-auto">
@@ -22,7 +22,7 @@ export const TrustPage: React.FC = () => {
             <div className="w-10 h-10 rounded-none bg-[#E9E3D8]/40 text-[#35483C] flex items-center justify-center font-bold">
               <ShieldCheck className="w-5 h-5 text-[#242622]" />
             </div>
-            <h3 className="font-heading font-bold text-lg text-white">Mechanical & Frame Dignostics</h3>
+            <h3 className="font-heading font-bold text-lg text-[#242622]">Mechanical & Frame Dignostics</h3>
             <p className="text-xs text-[#85857E] leading-relaxed">
               Every certified bike is lifted on hydraulic ramps at certified partner hubs. We test engine compression, chassis straightness, fork oil leakage, disc brake rotor thickness, and tyre wear.
             </p>
@@ -32,7 +32,7 @@ export const TrustPage: React.FC = () => {
             <div className="w-10 h-10 rounded-none bg-[#E9E3D8]/40 text-[#35483C] flex items-center justify-center font-bold">
               <FileText className="w-5 h-5 text-[#242622]" />
             </div>
-            <h3 className="font-heading font-bold text-lg text-white">Parivahan RTO Document Check</h3>
+            <h3 className="font-heading font-bold text-lg text-[#242622]">Parivahan RTO Document Check</h3>
             <p className="text-xs text-[#85857E] leading-relaxed">
               We cross-verify chassis number and engine number stamping with national Parivahan Sewa database records to ensure zero pending hypothecation, blacklisting, or unpaid challans.
             </p>
@@ -41,12 +41,12 @@ export const TrustPage: React.FC = () => {
 
         {/* Verification Tiers Table */}
         <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-4">
-          <h3 className="font-heading font-bold text-base text-white">Our 4-Tier Verification Badges</h3>
+          <h3 className="font-heading font-bold text-base text-[#242622]">Our 4-Tier Verification Badges</h3>
 
           <div className="space-y-3 text-xs">
             <div className="p-3.5 rounded-none bg-white border border-[#E9E3D8] flex items-center justify-between">
               <div>
-                <p className="font-bold text-white">1. Seller Provided</p>
+                <p className="font-bold text-[#242622]">1. Seller Provided</p>
                 <p className="text-[#85857E] text-[11px]">Uninspected listing posted directly by an individual seller.</p>
               </div>
               <span className="px-2 py-0.5 rounded bg-slate-800 text-[#85857E] font-mono text-[10px]">Tier 1</span>
@@ -54,7 +54,7 @@ export const TrustPage: React.FC = () => {
 
             <div className="p-3.5 rounded-none bg-white border border-[#E9E3D8] flex items-center justify-between">
               <div>
-                <p className="font-bold text-white">2. AI Estimated</p>
+                <p className="font-bold text-[#242622]">2. AI Estimated</p>
                 <p className="text-[#85857E] text-[11px]">Images analyzed for visible cosmetic condition; price estimated by algorithm.</p>
               </div>
               <span className="px-2 py-0.5 rounded bg-blue-900 text-blue-200 font-mono text-[10px]">Tier 2</span>
@@ -62,7 +62,7 @@ export const TrustPage: React.FC = () => {
 
             <div className="p-3.5 rounded-none bg-white border border-[#E9E3D8] flex items-center justify-between">
               <div>
-                <p className="font-bold text-white">3. Document Verified</p>
+                <p className="font-bold text-[#242622]">3. Document Verified</p>
                 <p className="text-[#85857E] text-[11px]">RC, Insurance, and PUC validated via RTO APIs.</p>
               </div>
               <span className="px-2 py-0.5 rounded bg-emerald-900 text-[#35483C] font-mono text-[10px]">Tier 3</span>
@@ -70,7 +70,7 @@ export const TrustPage: React.FC = () => {
 
             <div className="p-3.5 rounded-none bg-white border border-[#E9E3D8] flex items-center justify-between">
               <div>
-                <p className="font-bold text-white">4. Physically Inspected (120-Point)</p>
+                <p className="font-bold text-[#242622]">4. Physically Inspected (120-Point)</p>
                 <p className="text-[#85857E] text-[11px]">Inspected by a certified technician; full diagnostic scorecard published.</p>
               </div>
               <span className="px-2 py-0.5 rounded bg-[#35483C]/30 text-white font-mono text-[10px]">Tier 4 (Gold)</span>

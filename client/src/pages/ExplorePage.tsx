@@ -201,7 +201,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                   }}
                   className={`px-3 py-1 text-[11px] font-mono uppercase transition-colors ${
                     customRadiusActive
-                      ? 'bg-[#242622] text-white font-bold'
+                      ? 'bg-[#242622] text-[#242622] font-bold'
                       : 'bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8]'
                   }`}
                 >

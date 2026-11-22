@@ -221,7 +221,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-heading font-extrabold text-xl text-white">SMART RC VERIFICATION</h2>
+                <h2 className="font-heading font-extrabold text-xl text-[#242622]">SMART RC VERIFICATION</h2>
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-[#242622] border border-emerald-500/40 uppercase tracking-wider">
                   AI Authenticity Engine
                 </span>
@@ -233,7 +233,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white border border-[#E9E3D8] flex items-center justify-center text-[#85857E] hover:text-white transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white border border-[#E9E3D8] flex items-center justify-center text-[#85857E] hover:text-[#242622] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -257,7 +257,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                   onClick={() => handleRunDemoScenario(sc)}
                   className="p-2.5 rounded-none bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] text-left transition-all hover:border-emerald-500/80 group cursor-pointer"
                 >
-                  <p className="font-bold text-[11px] text-white group-hover:text-[#242622]">{sc.title}</p>
+                  <p className="font-bold text-[11px] text-[#242622]">{sc.title}</p>
                   <p className="text-[10px] text-[#85857E] line-clamp-1 mt-0.5">{sc.description}</p>
                 </button>
               ))}
@@ -322,7 +322,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
         {isProcessing && (
           <div className="p-8 rounded-none bg-[#E9E3D8] border border-emerald-500/40 flex flex-col items-center justify-center space-y-3 animate-pulse">
             <RefreshCw className="w-8 h-8 text-[#242622] animate-spin" />
-            <p className="font-heading font-bold text-sm text-white">{processingStage}</p>
+            <p className="font-heading font-bold text-sm text-[#242622]">{processingStage}</p>
             <p className="text-[11px] text-[#85857E]">Executing OpenCV deskew, ML document classification, and structured OCR parsing.</p>
           </div>
         )}
@@ -355,7 +355,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
               <div className="w-14 h-14 rounded-none bg-emerald-950/80 border border-emerald-600/40 text-[#242622] flex items-center justify-center mx-auto mb-3 shadow-sm">
                 <Upload className="w-7 h-7" />
               </div>
-              <p className="font-heading font-extrabold text-base text-white">Click or Drag & Drop Registration Certificate</p>
+              <p className="font-heading font-extrabold text-base text-[#242622]">Click or Drag & Drop Registration Certificate</p>
               <p className="text-xs text-[#85857E] mt-1">Supports authentic Parivahan e-RC PDF, Scanned Smart Cards, JPG, JPEG, PNG, WEBP (Max 10MB)</p>
               <div className="inline-flex items-center gap-2 mt-4 px-3 py-1 rounded-full bg-[#E9E3D8]/60 text-[11px] text-[#85857E] border border-[#E9E3D8]">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#242622]" />
@@ -367,7 +367,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
             <div className="p-4 rounded-none bg-white/60 border border-[#E9E3D8] text-xs text-[#85857E] flex items-center justify-between">
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-500">Listing Being Cross-Checked</span>
-                <p className="font-bold text-white mt-0.5">
+                <p className="font-bold text-[#242622] mt-0.5">
                   {listingDetails.year} {listingDetails.brand} {listingDetails.model}
                 </p>
               </div>
@@ -388,7 +388,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                 <div className="p-3 rounded-none bg-white border border-[#E9E3D8]">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Document Classification</span>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="font-bold text-white text-sm">{processResult.documentType}</span>
+                    <span className="font-bold text-[#242622] text-sm">{processResult.documentType}</span>
                     <span className="px-1.5 py-0.5 rounded bg-emerald-950 text-[#242622] text-[10px] font-bold border border-emerald-600/40">
                       {Math.round((processResult.classificationConfidence || 0.95) * 100)}% Conf
                     </span>
@@ -398,7 +398,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                 <div className="p-3 rounded-none bg-white border border-[#E9E3D8]">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Image Blur & Quality</span>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="font-bold text-white text-sm">
+                    <span className="font-bold text-[#242622] text-sm">
                       {processResult.imageQuality?.quality_grade || 'PASS'}
                     </span>
                     <span className="text-[10px] text-[#85857E]">
@@ -426,7 +426,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
             {/* Editable Confirmation Form */}
             <div className="p-5 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-4">
               <div className="flex items-center justify-between border-b border-[#E9E3D8] pb-2">
-                <h3 className="font-heading font-bold text-sm text-white">Review & Confirm OCR Extracted Values</h3>
+                <h3 className="font-heading font-bold text-sm text-[#242622]">Review & Confirm OCR Extracted Values</h3>
                 <span className="text-[11px] text-[#85857E]">Correct any misrecognized characters before cross-checking</span>
               </div>
 
@@ -437,7 +437,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                     type="text"
                     value={confirmedFields.registrationNumber}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, registrationNumber: e.target.value.toUpperCase() })}
-                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white font-mono font-bold focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-[#242622] font-mono font-bold focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
 
@@ -447,7 +447,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                     type="text"
                     value={confirmedFields.manufacturer}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, manufacturer: e.target.value })}
-                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white font-bold focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-[#242622] font-bold focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
 
@@ -457,7 +457,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                     type="text"
                     value={confirmedFields.model}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, model: e.target.value })}
-                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white font-bold focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-[#242622] font-bold focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
 
@@ -467,7 +467,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                     type="text"
                     value={confirmedFields.registrationDate}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, registrationDate: e.target.value })}
-                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white font-mono focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-[#242622] font-mono focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
 
@@ -476,7 +476,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                   <select
                     value={confirmedFields.fuelType}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, fuelType: e.target.value })}
-                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-[#242622] focus:border-emerald-500 focus:outline-none"
                   >
                     <option value="PETROL">PETROL</option>
                     <option value="ELECTRIC">ELECTRIC</option>
@@ -490,7 +490,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                   <select
                     value={confirmedFields.vehicleClass}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, vehicleClass: e.target.value })}
-                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-[#242622] focus:border-emerald-500 focus:outline-none"
                   >
                     <option value="2W - Motorcycle">2W - Motorcycle</option>
                     <option value="2W - Scooter">2W - Scooter</option>
@@ -502,13 +502,13 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
               <div className="pt-2 border-t border-[#E9E3D8] grid grid-cols-2 gap-4 text-[11px] text-[#85857E]">
                 <div>
                   <span>Masked Chassis: </span>
-                  <span className="font-mono text-white font-bold">
+                  <span className="font-mono text-[#242622] font-bold">
                     {processResult?.extractedFields?.chassisNumberMasked || 'ME4JC*********4521'}
                   </span>
                 </div>
                 <div>
                   <span>Masked Engine: </span>
-                  <span className="font-mono text-white font-bold">
+                  <span className="font-mono text-[#242622] font-bold">
                     {processResult?.extractedFields?.engineNumberMasked || 'JC54E********9812'}
                   </span>
                 </div>
@@ -519,7 +519,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                 <button
                   type="button"
                   onClick={() => setActiveStep('upload')}
-                  className="px-4 py-2.5 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white text-xs font-semibold"
+                  className="px-4 py-2.5 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] text-xs font-semibold"
                 >
                   Back to Upload
                 </button>
@@ -562,7 +562,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                       {comparisonResult.comparisonResults?.summaryScore || '4/5 fields matched'}
                     </span>
                   </div>
-                  <h3 className="font-heading font-extrabold text-lg text-white mt-0.5">
+                  <h3 className="font-heading font-extrabold text-lg text-[#242622] mt-0.5">
                     {comparisonResult.finalWorkflowStatus.replace('_', ' ')}
                   </h3>
                   <p className="text-xs text-[#85857E] mt-0.5">{comparisonResult.statusReason}</p>
@@ -571,7 +571,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
 
               <div className="text-right hidden sm:block">
                 <span className="text-[10px] text-[#85857E]">Match Level</span>
-                <p className="font-bold text-white text-sm">{comparisonResult.comparisonResults?.overallComparison}</p>
+                <p className="font-bold text-[#242622] text-sm">{comparisonResult.comparisonResults?.overallComparison}</p>
               </div>
             </div>
 
@@ -582,7 +582,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                 {Object.entries(comparisonResult.comparisonResults?.fieldComparisons || {}).map(([key, data]: [string, any]) => (
                   <div key={key} className="py-2.5 flex items-start justify-between gap-4">
                     <div className="space-y-0.5">
-                      <p className="font-semibold text-white capitalize">{key.replace(/([A-Z])/g, ' $1')}</p>
+                      <p className="font-semibold text-[#242622] capitalize">{key.replace(/([A-Z])/g, ' $1')}</p>
                       <p className="text-[11px] text-[#85857E]">{data.explanation}</p>
                     </div>
                     <div className="text-right flex items-center gap-2 flex-shrink-0">
@@ -607,7 +607,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
             {/* External Government VAHAN Gateway Section */}
             <div className="p-4 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] flex items-center justify-between text-xs">
               <div className="space-y-0.5">
-                <div className="flex items-center gap-1.5 font-bold text-white">
+                <div className="flex items-center gap-1.5 font-bold text-[#242622]">
                   <ShieldAlert className="w-4 h-4 text-amber-400" />
                   <span>Authorized Ministry VAHAN Record Gateway</span>
                 </div>
@@ -632,7 +632,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
               <button
                 type="button"
                 onClick={() => setActiveStep('confirm')}
-                className="px-4 py-2 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white text-xs font-semibold"
+                className="px-4 py-2 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] text-xs font-semibold"
               >
                 Edit Extracted Fields
               </button>

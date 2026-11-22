@@ -61,7 +61,7 @@ export const BikeDoctorPage: React.FC = () => {
             <Stethoscope className="w-3.5 h-3.5 text-[#242622]" />
             <span>AI Bike Doctor • Multi-Modal Diagnostics</span>
           </div>
-          <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-white">
+          <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-[#242622]">
             Two-Wheeler Mechanical Symptom Doctor
           </h1>
           <p className="text-[#85857E] text-sm max-w-xl mx-auto">
@@ -72,7 +72,7 @@ export const BikeDoctorPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Input Form (5 cols) */}
           <div className="lg:col-span-5 p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-5 shadow-2xl">
-            <h3 className="font-heading font-bold text-base text-white flex items-center gap-2">
+            <h3 className="font-heading font-bold text-base text-[#242622] flex items-center gap-2">
               <Wrench className="w-4 h-4 text-[#242622]" />
               <span>Describe Problem</span>
             </h3>
@@ -85,7 +85,7 @@ export const BikeDoctorPage: React.FC = () => {
                   value={symptom}
                   onChange={(e) => setSymptom(e.target.value)}
                   placeholder="e.g. My bike vibrates when I cross 60 km/h, or engine makes ticking sound..."
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none p-3 text-white focus:outline-none focus:border-[#35483C]"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none p-3 text-[#242622] focus:outline-none focus:border-[#35483C]"
                 />
               </div>
 
@@ -97,7 +97,7 @@ export const BikeDoctorPage: React.FC = () => {
                     <button
                       key={idx}
                       onClick={() => setSymptom(item)}
-                      className="w-full text-left p-2 rounded-lg bg-white/60 hover:bg-[#E9E3D8] border border-[#E9E3D8]/80 text-[11px] text-[#85857E] hover:text-white transition-colors truncate"
+                      className="w-full text-left p-2 rounded-lg bg-white/60 hover:bg-[#E9E3D8] border border-[#E9E3D8]/80 text-[11px] text-[#85857E] hover:text-[#242622] transition-colors truncate"
                     >
                       • {item}
                     </button>
@@ -113,7 +113,7 @@ export const BikeDoctorPage: React.FC = () => {
                   className={`p-2.5 rounded-none border flex items-center justify-center gap-2 font-semibold text-xs transition-colors ${
                     attachedPhoto
                       ? 'bg-emerald-950/80 border-emerald-500 text-[#242622]'
-                      : 'bg-white border-[#E9E3D8] text-[#85857E] hover:text-white'
+                      : 'bg-white border-[#E9E3D8] text-[#85857E] hover:text-[#242622]'
                   }`}
                 >
                   <Camera className="w-3.5 h-3.5" />
@@ -126,7 +126,7 @@ export const BikeDoctorPage: React.FC = () => {
                   className={`p-2.5 rounded-none border flex items-center justify-center gap-2 font-semibold text-xs transition-colors ${
                     isRecordingAudio
                       ? 'bg-red-950/80 border-red-500 text-red-300 animate-pulse'
-                      : 'bg-white border-[#E9E3D8] text-[#85857E] hover:text-white'
+                      : 'bg-white border-[#E9E3D8] text-[#85857E] hover:text-[#242622]'
                   }`}
                 >
                   {isRecordingAudio ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
@@ -141,7 +141,7 @@ export const BikeDoctorPage: React.FC = () => {
                     type="text"
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
-                    className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-white"
+                    className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-[#242622]"
                   />
                 </div>
                 <div>
@@ -150,7 +150,7 @@ export const BikeDoctorPage: React.FC = () => {
                     type="text"
                     value={model}
                     onChange={(e) => setModel(e.target.value)}
-                    className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-white"
+                    className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-[#242622]"
                   />
                 </div>
               </div>
@@ -186,7 +186,7 @@ export const BikeDoctorPage: React.FC = () => {
 
                 {/* Possible Causes */}
                 <div className="space-y-3">
-                  <h4 className="font-heading font-bold text-sm text-white flex items-center gap-2">
+                  <h4 className="font-heading font-bold text-sm text-[#242622] flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-amber-400" />
                     <span>Possible Mechanical Causes</span>
                   </h4>
@@ -207,7 +207,7 @@ export const BikeDoctorPage: React.FC = () => {
 
                 {/* Safe DIY Checks */}
                 <div className="space-y-2.5">
-                  <h4 className="font-heading font-bold text-sm text-white flex items-center gap-2">
+                  <h4 className="font-heading font-bold text-sm text-[#242622] flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#242622]" />
                     <span>Safe DIY Checks You Can Perform</span>
                   </h4>
@@ -246,7 +246,7 @@ export const BikeDoctorPage: React.FC = () => {
                 <div className="w-16 h-16 rounded-none bg-[#E9E3D8]/60 border border-[#E9E3D8]/50 flex items-center justify-center mx-auto text-[#242622]">
                   <Stethoscope className="w-8 h-8" />
                 </div>
-                <h3 className="font-heading font-bold text-lg text-white">No Active Diagnosis Yet</h3>
+                <h3 className="font-heading font-bold text-lg text-[#242622]">No Active Diagnosis Yet</h3>
                 <p className="text-[#85857E] text-xs max-w-sm mx-auto">
                   Type your symptoms on the left or click one of the common mechanical scenarios to analyze causes and safe DIY checks.
                 </p>

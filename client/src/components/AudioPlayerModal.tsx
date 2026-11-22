@@ -14,11 +14,11 @@ export const AudioPlayerModal: React.FC<AudioPlayerModalProps> = ({ vehicle, onC
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#12221D] border border-[#E9E3D8] rounded-none border border-[#E9E3D8] max-w-lg w-full p-6 text-white shadow-2xl relative space-y-5">
+      <div className="bg-white border border-[#E9E3D8] rounded-none max-w-lg w-full p-6 text-[#242622] shadow-2xl relative space-y-5">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-white transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-full bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622] transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -32,7 +32,7 @@ export const AudioPlayerModal: React.FC<AudioPlayerModalProps> = ({ vehicle, onC
             <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
               Verified Rider Audio Story
             </span>
-            <h3 className="font-heading font-bold text-lg text-white line-clamp-1">
+            <h3 className="font-heading font-bold text-lg text-[#242622] line-clamp-1">
               {audioStory.title}
             </h3>
           </div>
@@ -42,13 +42,13 @@ export const AudioPlayerModal: React.FC<AudioPlayerModalProps> = ({ vehicle, onC
         <div className="flex items-center gap-3 p-3 rounded-none bg-white/70 border border-[#E9E3D8]">
           <img src={vehicle.primaryImage} alt={vehicle.title} className="w-12 h-12 rounded-lg object-cover" />
           <div className="text-xs">
-            <p className="font-bold text-white line-clamp-1">{vehicle.title}</p>
+            <p className="font-bold text-[#242622] line-clamp-1">{vehicle.title}</p>
             <p className="text-[#85857E]">{vehicle.area}, {vehicle.city} • By {audioStory.speakerName}</p>
           </div>
         </div>
 
         {/* Audio Player Element */}
-        <div className="bg-[#0B1512] p-4 rounded-none border border-[#E9E3D8]/80 space-y-3">
+        <div className="bg-[#F7F5EF] p-4 rounded-none border border-[#E9E3D8] space-y-3">
           <div className="flex items-center justify-between text-xs text-[#85857E]">
             <span>Audio Testimonial Duration</span>
             <span className="font-bold text-[#242622]">{audioStory.duration}s</span>

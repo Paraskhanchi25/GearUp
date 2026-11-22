@@ -246,7 +246,7 @@ export const ComparePage: React.FC = () => {
               <Sliders className="w-4 h-4 text-[#242622]" />
               <span>LIVE MARKETPLACE COMPARISON MATRIX</span>
             </span>
-            <h1 className="font-heading font-extrabold text-2xl sm:text-4xl text-white tracking-tight mt-1">
+            <h1 className="font-heading font-extrabold text-2xl sm:text-4xl text-[#242622] tracking-tight mt-1">
               Compare Two-Wheelers Side-by-Side
             </h1>
             <p className="text-xs sm:text-sm text-[#85857E] mt-1 max-w-2xl">
@@ -297,7 +297,7 @@ export const ComparePage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleOpenReplaceModal(idx)}
-                      className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] text-[11px] font-semibold text-[#85857E] hover:text-white transition-colors"
+                      className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] text-[11px] font-semibold text-[#85857E] hover:text-[#242622] transition-colors"
                       title="Replace this vehicle"
                     >
                       Replace
@@ -332,7 +332,7 @@ export const ComparePage: React.FC = () => {
 
                 {/* Title and Identification */}
                 <div className="space-y-1">
-                  <h3 className="font-heading font-extrabold text-base text-white line-clamp-1">
+                  <h3 className="font-heading font-extrabold text-base text-[#242622] line-clamp-1">
                     {bike.title}
                   </h3>
                   <p className="text-xs text-[#85857E] flex items-center gap-1">
@@ -347,7 +347,7 @@ export const ComparePage: React.FC = () => {
                     Seller Asking Price
                   </span>
                   <div className="flex items-baseline justify-between gap-2">
-                    <span className="font-heading font-black text-2xl text-white font-mono">
+                    <span className="font-heading font-black text-2xl text-[#242622] font-mono">
                       {formatINR(bike.price)}
                     </span>
                     {isLowestPrice && (
@@ -377,7 +377,7 @@ export const ComparePage: React.FC = () => {
                   </div>
                   <div className="p-2.5 rounded-none bg-white/60 border border-[#E9E3D8]">
                     <span className="text-[10px] text-slate-500 uppercase block">Inspection</span>
-                    <span className="font-bold text-white">
+                    <span className="font-bold text-[#242622]">
                       {bike.inspection_score} / 5.0
                     </span>
                     <span className="text-[9px] text-[#242622] block mt-0.5 capitalize font-semibold">
@@ -390,7 +390,7 @@ export const ComparePage: React.FC = () => {
                 <div className="pt-2 flex flex-col sm:flex-row gap-2">
                   <Link
                     to={`/bike/${bike.id}`}
-                    className="flex-1 py-2 px-3 rounded-none bg-[#E9E3D8]/40 hover:bg-[#35483C]/30 text-white font-bold text-xs flex items-center justify-center gap-1 transition-colors"
+                    className="flex-1 py-2 px-3 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs flex items-center justify-center gap-1 transition-colors"
                   >
                     <span>View Listing</span>
                     <ExternalLink className="w-3 h-3" />
@@ -414,11 +414,11 @@ export const ComparePage: React.FC = () => {
               onClick={handleOpenAddModal}
               className="p-8 rounded-none border border-[#E9E3D8] bg-white/40 border-2 border-dashed border-[#E9E3D8] hover:border-[#35483C] flex flex-col items-center justify-center gap-3 cursor-pointer transition-all group min-h-[360px]"
             >
-              <div className="w-12 h-12 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center group-hover:bg-[#35483C]/30 group-hover:text-white transition-all shadow-sm">
+              <div className="w-12 h-12 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center group-hover:bg-[#35483C]/30 group-hover:text-[#242622] transition-all shadow-sm">
                 <Plus className="w-6 h-6" />
               </div>
               <div className="text-center">
-                <p className="font-heading font-bold text-sm text-white">Add Another Vehicle</p>
+                <p className="font-heading font-bold text-sm text-[#242622]">Add Another Vehicle</p>
                 <p className="text-xs text-slate-500 mt-0.5">Compare up to 4 rides simultaneously</p>
               </div>
             </div>
@@ -429,7 +429,7 @@ export const ComparePage: React.FC = () => {
         <div className="rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-2xl overflow-hidden">
           <div className="p-6 bg-white border-b border-[#E9E3D8] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="font-heading font-extrabold text-lg text-white">
+              <h2 className="font-heading font-extrabold text-lg text-[#242622]">
                 Detailed Specifications & Condition Matrix
               </h2>
               <p className="text-xs text-[#85857E] mt-0.5">
@@ -457,7 +457,7 @@ export const ComparePage: React.FC = () => {
                 </span>
                 {comparedVehicles.map((b) => (
                   <div key={b.id} className={`${comparedVehicles.length === 2 ? 'col-span-4' : comparedVehicles.length === 3 ? 'col-span-3' : 'col-span-2'} font-bold`}>
-                    <span className="font-mono text-sm text-white font-extrabold">{formatINR(b.price)}</span>
+                    <span className="font-mono text-sm text-[#242622] font-extrabold">{formatINR(b.price)}</span>
                     {b.id === lowestPriceId && (
                       <span className="ml-2 px-1.5 py-0.5 rounded bg-emerald-950 text-[#242622] text-[10px] font-bold border border-emerald-700">
                         Lower
@@ -510,7 +510,7 @@ export const ComparePage: React.FC = () => {
                 </span>
                 {comparedVehicles.map((b) => (
                   <div key={b.id} className={`${comparedVehicles.length === 2 ? 'col-span-4' : comparedVehicles.length === 3 ? 'col-span-3' : 'col-span-2'} font-bold`}>
-                    <span className="font-mono text-white">{b.km.toLocaleString('en-IN')} km</span>
+                    <span className="font-mono text-[#242622]">{b.km.toLocaleString('en-IN')} km</span>
                     {b.id === lowestKmId && (
                       <span className="ml-2 px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 text-[10px] font-bold border border-blue-700">
                         Lowest KM
@@ -526,7 +526,7 @@ export const ComparePage: React.FC = () => {
                   Manufacturing Year <span className="text-[10px] text-slate-500 block">RTO registration year</span>
                 </span>
                 {comparedVehicles.map((b) => (
-                  <span key={b.id} className={`${comparedVehicles.length === 2 ? 'col-span-4' : comparedVehicles.length === 3 ? 'col-span-3' : 'col-span-2'} font-bold text-white`}>
+                  <span key={b.id} className={`${comparedVehicles.length === 2 ? 'col-span-4' : comparedVehicles.length === 3 ? 'col-span-3' : 'col-span-2'} font-bold text-[#242622]`}>
                     {b.year} ({b.reg_state || 'India'})
                   </span>
                 ))}
@@ -554,7 +554,7 @@ export const ComparePage: React.FC = () => {
               <div className="grid grid-cols-12 p-4 items-center hover:bg-white/30">
                 <span className="col-span-3 text-[#85857E] font-semibold">Engine / Motor Spec</span>
                 {comparedVehicles.map((b) => (
-                  <span key={b.id} className={`${comparedVehicles.length === 2 ? 'col-span-4' : comparedVehicles.length === 3 ? 'col-span-3' : 'col-span-2'} font-bold text-white`}>
+                  <span key={b.id} className={`${comparedVehicles.length === 2 ? 'col-span-4' : comparedVehicles.length === 3 ? 'col-span-3' : 'col-span-2'} font-bold text-[#242622]`}>
                     {b.specs?.engine_cc > 0 ? `${b.specs.engine_cc} cc Engine` : 'Electric PMSM Motor'}
                   </span>
                 ))}
@@ -655,7 +655,7 @@ export const ComparePage: React.FC = () => {
           <div className="p-6 sm:p-8 rounded-none border border-[#E9E3D8] bg-gradient-to-r from-[#142B23] to-[#0D1C17] border border-[#35483C]/50 shadow-2xl space-y-3">
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-[#242622]" />
-              <h3 className="font-heading font-extrabold text-base text-white">
+              <h3 className="font-heading font-extrabold text-base text-[#242622]">
                 Multi-Perspective Comparative Analysis
               </h3>
             </div>
@@ -679,7 +679,7 @@ export const ComparePage: React.FC = () => {
             {/* Modal Header */}
             <div className="p-5 bg-white border-b border-[#E9E3D8] flex items-center justify-between">
               <div>
-                <h3 className="font-heading font-extrabold text-base text-white">
+                <h3 className="font-heading font-extrabold text-base text-[#242622]">
                   {replacingSlotIdx !== null ? `Replace Slot ${replacingSlotIdx + 1}` : 'Add Vehicle to Comparison'}
                 </h3>
                 <p className="text-xs text-[#85857E]">
@@ -689,7 +689,7 @@ export const ComparePage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsSelectorOpen(false)}
-                className="p-1.5 rounded-lg bg-[#E9E3D8] text-[#85857E] hover:text-white"
+                className="p-1.5 rounded-lg bg-[#E9E3D8] text-[#85857E] hover:text-[#242622]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -704,7 +704,7 @@ export const ComparePage: React.FC = () => {
                   value={selectorSearch}
                   onChange={(e) => setSelectorSearch(e.target.value)}
                   placeholder="Search by brand, model, city..."
-                  className="w-full pl-9 pr-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#35483C]"
+                  className="w-full pl-9 pr-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-xs text-[#242622] placeholder-slate-500 focus:outline-none focus:border-[#35483C]"
                 />
               </div>
 
@@ -718,7 +718,7 @@ export const ComparePage: React.FC = () => {
                     className={`px-3 py-1.5 rounded-none text-[11px] font-bold capitalize transition-colors ${
                       selectorCategory === cat
                         ? 'bg-[#35483C] text-white'
-                        : 'bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]'
+                        : 'bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8]'
                     }`}
                   >
                     {cat}
@@ -753,7 +753,7 @@ export const ComparePage: React.FC = () => {
                           className="w-16 h-12 rounded-none object-cover shrink-0" 
                         />
                         <div className="min-w-0">
-                          <p className="font-bold text-white text-xs truncate">{bike.title}</p>
+                          <p className="font-bold text-[#242622] text-xs truncate">{bike.title}</p>
                           <p className="text-[11px] text-[#85857E]">
                             {bike.km.toLocaleString('en-IN')} km • {bike.locality}, {bike.city}
                           </p>
@@ -767,7 +767,7 @@ export const ComparePage: React.FC = () => {
 
                       <div className="flex items-center gap-4 shrink-0">
                         <div className="text-right">
-                          <p className="font-heading font-black text-sm text-white font-mono">
+                          <p className="font-heading font-black text-sm text-[#242622] font-mono">
                             {formatINR(bike.price)}
                           </p>
                           <span className="text-[10px] text-slate-500 block">Seller Asking</span>
@@ -805,12 +805,12 @@ export const ComparePage: React.FC = () => {
             <div className="flex items-center justify-between pb-3 border-b border-[#E9E3D8]">
               <div className="flex items-center gap-2">
                 <PhoneCall className="w-4 h-4 text-[#242622]" />
-                <h3 className="font-heading font-bold text-base text-white">Contact Seller</h3>
+                <h3 className="font-heading font-bold text-base text-[#242622]">Contact Seller</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setContactVehicle(null)}
-                className="p-1 rounded-lg bg-white text-[#85857E] hover:text-white"
+                className="p-1 rounded-lg bg-white text-[#85857E] hover:text-[#242622]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -823,7 +823,7 @@ export const ComparePage: React.FC = () => {
                 className="w-14 h-11 rounded-none object-cover shrink-0" 
               />
               <div className="min-w-0">
-                <h4 className="font-bold text-xs text-white truncate">{contactVehicle.title}</h4>
+                <h4 className="font-bold text-xs text-[#242622] truncate">{contactVehicle.title}</h4>
                 <p className="font-heading font-extrabold text-sm text-[#242622] font-mono mt-0.5">
                   {formatINR(contactVehicle.price)}
                 </p>
@@ -833,15 +833,15 @@ export const ComparePage: React.FC = () => {
             <div className="space-y-2.5 text-xs">
               <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] flex justify-between">
                 <span className="text-[#85857E]">Seller Name:</span>
-                <span className="font-bold text-white">{contactVehicle.seller_name || 'Gurpreet Singh'}</span>
+                <span className="font-bold text-[#242622]">{contactVehicle.seller_name || 'Gurpreet Singh'}</span>
               </div>
               <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] flex justify-between">
                 <span className="text-[#85857E]">Direct Phone:</span>
-                <span className="font-mono font-bold text-white">{contactVehicle.seller_phone || '+91 98765 43210'}</span>
+                <span className="font-mono font-bold text-[#242622]">{contactVehicle.seller_phone || '+91 98765 43210'}</span>
               </div>
               <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] flex justify-between">
                 <span className="text-[#85857E]">Location Hub:</span>
-                <span className="font-bold text-white">{contactVehicle.locality}, {contactVehicle.city}</span>
+                <span className="font-bold text-[#242622]">{contactVehicle.locality}, {contactVehicle.city}</span>
               </div>
             </div>
 

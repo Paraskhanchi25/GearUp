@@ -234,7 +234,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
         <span className="text-[10px] font-bold text-[#242622] uppercase tracking-widest">
           STEP: VEHICLE PICKUP & INSPECTION LOCATION
         </span>
-        <h3 className="font-heading font-extrabold text-xl text-white mt-0.5">
+        <h3 className="font-heading font-extrabold text-xl text-[#242622] mt-0.5">
           Where will buyers & inspectors view the vehicle?
         </h3>
         <p className="text-xs text-[#85857E] mt-1">
@@ -251,7 +251,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
             placeholder="Search sector, locality or landmark (e.g. Sector 35 Chandigarh, Saket Delhi)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
+            className="w-full bg-transparent text-xs text-[#242622] placeholder-slate-400 focus:outline-none"
           />
           <button
             type="submit"
@@ -297,7 +297,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
             type="text"
             value={locality}
             onChange={(e) => setLocality(e.target.value)}
-            className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-white font-medium"
+            className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-[#242622] font-medium"
           />
         </div>
 
@@ -307,7 +307,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
             type="text"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-white font-medium"
+            className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-[#242622] font-medium"
           />
         </div>
 
@@ -317,7 +317,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-white"
+            className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-[#242622]"
           />
         </div>
 
@@ -328,7 +328,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
             placeholder="e.g. Near Community Centre gate, Opposite City Park"
             value={landmark}
             onChange={(e) => setLandmark(e.target.value)}
-            className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-white"
+            className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-[#242622]"
           />
         </div>
       </div>
@@ -343,7 +343,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
 
       {/* Location Privacy Preferences (Core Phase 4 Requirement) */}
       <div className="p-4 rounded-none bg-[#0C1713] border border-[#E9E3D8] space-y-3">
-        <h4 className="font-bold text-xs text-white flex items-center gap-1.5">
+        <h4 className="font-bold text-xs text-[#242622] flex items-center gap-1.5">
           <ShieldCheck className="w-4 h-4 text-[#242622]" />
           <span>Seller Location Privacy Preference</span>
         </h4>
@@ -359,7 +359,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
           >
             <div className="flex items-center gap-2">
               <Eye className="w-4 h-4 text-[#242622]" />
-              <p className="font-bold text-white">Approximate Locality (Recommended)</p>
+              <p className="font-bold text-[#242622]">Approximate Locality (Recommended)</p>
             </div>
             <p className="text-[11px] text-[#85857E] mt-1">
               Public listings show only your neighborhood (e.g. &ldquo;{locality}, {city}&rdquo;). Exact door/building is hidden.
@@ -370,13 +370,13 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
             onClick={() => setVisibility('exact_verified_only')}
             className={`p-3 rounded-none border cursor-pointer transition-all ${
               visibility === 'exact_verified_only'
-                ? 'bg-[#E9E3D8] border-forest-400 text-white shadow-sm'
+                ? 'bg-[#E9E3D8] border-[#35483C] text-[#242622] shadow-sm'
                 : 'bg-white/50 border-[#E9E3D8] text-[#85857E]'
             }`}
           >
             <div className="flex items-center gap-2">
               <EyeOff className="w-4 h-4 text-gold-light" />
-              <p className="font-bold text-white">Exact Location Verified Only</p>
+              <p className="font-bold text-[#242622]">Exact Location Verified Only</p>
             </div>
             <p className="text-[11px] text-[#85857E] mt-1">
               Exact coordinates & address provided strictly to verified buyers after they schedule an authenticated test ride.
@@ -391,7 +391,7 @@ export const SellerPickupLocationPicker: React.FC<SellerPickupLocationPickerProp
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 rounded-none bg-white text-[#85857E] hover:text-white border border-[#E9E3D8] text-xs font-semibold"
+            className="px-4 py-2.5 rounded-none bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8] text-xs font-semibold"
           >
             Cancel
           </button>

@@ -508,7 +508,7 @@ export const SellBikePage: React.FC = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#242622]">
                 Step {currentStep} of 5
               </span>
-              <h2 className="font-heading font-bold text-sm sm:text-base text-white">
+              <h2 className="font-heading font-bold text-sm sm:text-base text-[#242622]">
                 {currentStep === 1 && '1. Vehicle Information'}
                 {currentStep === 2 && '2. Vehicle Photographs (8 Angles Required)'}
                 {currentStep === 3 && '3. Mandatory Vehicle Documents (4 Certificates)'}
@@ -566,7 +566,7 @@ export const SellBikePage: React.FC = () => {
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                 Step 1 of 5
               </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Vehicle Information</h2>
+              <h2 className="font-heading font-extrabold text-2xl text-[#242622]">Vehicle Information</h2>
               <p className="text-xs text-[#85857E] mt-1">
                 Enter core vehicle specifications, ownership, and pricing to initialize verification.
               </p>
@@ -585,11 +585,11 @@ export const SellBikePage: React.FC = () => {
                   onClick={() => setCategory(c.id as any)}
                   className={`p-4 rounded-none border text-left transition-all ${
                     category === c.id
-                      ? 'bg-[#E9E3D8] border-[#35483C] text-white shadow-sm'
+                      ? 'bg-[#35483C] border-[#35483C] text-white shadow-sm'
                       : 'bg-white/60 border-[#E9E3D8] text-[#85857E] hover:border-[#E9E3D8]'
                   }`}
                 >
-                  <div className="text-xs font-bold text-white">{c.label}</div>
+                  <div className="text-xs font-bold text-[#242622]">{c.label}</div>
                   <div className="text-[10px] text-[#85857E] mt-0.5">{c.sub}</div>
                 </button>
               ))}
@@ -603,7 +603,7 @@ export const SellBikePage: React.FC = () => {
                   type="text"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none focus:border-[#35483C] font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none focus:border-[#35483C] font-medium"
                 />
               </div>
 
@@ -613,7 +613,7 @@ export const SellBikePage: React.FC = () => {
                   type="text"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none focus:border-[#35483C] font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none focus:border-[#35483C] font-medium"
                 />
               </div>
 
@@ -623,7 +623,7 @@ export const SellBikePage: React.FC = () => {
                   type="text"
                   value={variant}
                   onChange={(e) => setVariant(e.target.value)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none focus:border-[#35483C] font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none focus:border-[#35483C] font-medium"
                 />
               </div>
 
@@ -632,7 +632,7 @@ export const SellBikePage: React.FC = () => {
                 <select
                   value={year}
                   onChange={(e) => setYear(Number(e.target.value))}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none"
                 >
                   {[2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
                     <option key={y} value={y}>{y}</option>
@@ -646,7 +646,7 @@ export const SellBikePage: React.FC = () => {
                   type="number"
                   value={km}
                   onChange={(e) => setKm(Number(e.target.value))}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none"
                 />
               </div>
 
@@ -655,7 +655,7 @@ export const SellBikePage: React.FC = () => {
                 <select
                   value={owners}
                   onChange={(e) => setOwners(Number(e.target.value))}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none"
                 >
                   <option value={1}>1st Owner (Single Handed)</option>
                   <option value={2}>2nd Owner</option>
@@ -673,7 +673,7 @@ export const SellBikePage: React.FC = () => {
                   placeholder="e.g. CH01AB8821"
                   value={registrationNumber}
                   onChange={(e) => setRegistrationNumber(e.target.value.toUpperCase())}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none focus:border-[#35483C] uppercase font-mono font-bold"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none focus:border-[#35483C] uppercase font-mono font-bold"
                 />
                 <span className="text-[10px] text-[#85857E] mt-1 block">Masked publicly (e.g. CH01****21)</span>
               </div>
@@ -684,7 +684,7 @@ export const SellBikePage: React.FC = () => {
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none"
                 />
               </div>
 
@@ -693,7 +693,7 @@ export const SellBikePage: React.FC = () => {
                 <select
                   value={overallCondition}
                   onChange={(e) => setOverallCondition(e.target.value as any)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none"
                 >
                   <option value="excellent">Excellent (Showroom Like)</option>
                   <option value="good">Good (Normal Wear & Tear)</option>
@@ -708,7 +708,7 @@ export const SellBikePage: React.FC = () => {
                   type="number"
                   value={askingPrice}
                   onChange={(e) => setAskingPrice(Number(e.target.value))}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white font-bold text-[#242622] focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] font-bold text-[#242622] focus:outline-none"
                 />
               </div>
             </div>
@@ -743,7 +743,7 @@ export const SellBikePage: React.FC = () => {
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                   Step 2 of 5 • Mandatory Photos
                 </div>
-                <h2 className="font-heading font-extrabold text-2xl text-white">8 Real Vehicle Photographs</h2>
+                <h2 className="font-heading font-extrabold text-2xl text-[#242622]">8 Real Vehicle Photographs</h2>
                 <p className="text-xs text-[#85857E] mt-1">
                   Upload genuine photographs from all 8 required angles. Stock or sample photos are strictly prohibited.
                 </p>
@@ -799,7 +799,7 @@ export const SellBikePage: React.FC = () => {
                   >
                     {/* Angle Title & Status Tag */}
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-white truncate">{s.label}</span>
+                      <span className="text-xs font-bold text-[#242622] truncate">{s.label}</span>
                       {existing ? (
                         <span className="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-bold text-[10px]">
                           ✓
@@ -918,7 +918,7 @@ export const SellBikePage: React.FC = () => {
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                   Step 3 of 5 • Mandatory Gate
                 </div>
-                <h2 className="font-heading font-extrabold text-2xl text-white">4 Mandatory Vehicle Certificates</h2>
+                <h2 className="font-heading font-extrabold text-2xl text-[#242622]">4 Mandatory Vehicle Certificates</h2>
                 <p className="text-xs text-[#85857E] mt-1">
                   Upload all four required certificates for AI cross-validation and listing submission clearance.
                 </p>
@@ -946,7 +946,7 @@ export const SellBikePage: React.FC = () => {
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-sm text-white flex items-center gap-2">
+                  <h3 className="font-heading font-extrabold text-sm text-[#242622] flex items-center gap-2">
                     <span>SMART RC VERIFICATION & AUTHENTICITY ENGINE</span>
                     <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-950 text-[#242622] border border-emerald-500/30 uppercase">
                       AI OCR + ML
@@ -984,7 +984,7 @@ export const SellBikePage: React.FC = () => {
                       RC
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white">Registration Certificate (RC)</h4>
+                      <h4 className="font-bold text-sm text-[#242622]">Registration Certificate (RC)</h4>
                       <p className="text-[10px] text-[#85857E]">Smart Card or Parivahan Digital Copy</p>
                     </div>
                   </div>
@@ -1004,11 +1004,11 @@ export const SellBikePage: React.FC = () => {
                     <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] text-xs space-y-1">
                       <div className="flex justify-between">
                         <span className="text-[#85857E]">Reg No:</span>
-                        <span className="font-mono font-bold text-white">{rcResult.extracted_preview?.registration_number || registrationNumber}</span>
+                        <span className="font-mono font-bold text-[#242622]">{rcResult.extracted_preview?.registration_number || registrationNumber}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-[#85857E]">Owner:</span>
-                        <span className="font-semibold text-white">{rcResult.extracted_preview?.owner_name || sellerFullName}</span>
+                        <span className="font-semibold text-[#242622]">{rcResult.extracted_preview?.owner_name || sellerFullName}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-[#85857E]">Model:</span>
@@ -1019,7 +1019,7 @@ export const SellBikePage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenAnalysisReport('rc')}
-                        className="text-xs text-[#242622] hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
+                        className="text-xs text-[#242622] hover:text-[#242622] font-semibold flex items-center gap-1 underline underline-offset-2"
                       >
                         <FileSearch className="w-3.5 h-3.5" />
                         <span>View Analysis Report</span>
@@ -1044,7 +1044,7 @@ export const SellBikePage: React.FC = () => {
                     ) : (
                       <>
                         <Upload className="w-6 h-6 text-[#242622] mb-2" />
-                        <span className="text-xs font-bold text-white">Upload RC Scan or PDF</span>
+                        <span className="text-xs font-bold text-[#242622]">Upload RC Scan or PDF</span>
                         <span className="text-[10px] text-[#85857E] mt-0.5">PDF, JPG, PNG up to 10MB</span>
                       </>
                     )}
@@ -1075,7 +1075,7 @@ export const SellBikePage: React.FC = () => {
                       INS
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white">Insurance Certificate</h4>
+                      <h4 className="font-bold text-sm text-[#242622]">Insurance Certificate</h4>
                       <p className="text-[10px] text-[#85857E]">Comprehensive or Third-Party Policy</p>
                     </div>
                   </div>
@@ -1095,11 +1095,11 @@ export const SellBikePage: React.FC = () => {
                     <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] text-xs space-y-1">
                       <div className="flex justify-between">
                         <span className="text-[#85857E]">Policy No:</span>
-                        <span className="font-mono font-bold text-white">{insuranceResult.extracted_preview?.policy_number || 'POL-99214'}</span>
+                        <span className="font-mono font-bold text-[#242622]">{insuranceResult.extracted_preview?.policy_number || 'POL-99214'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-[#85857E]">Provider:</span>
-                        <span className="font-semibold text-white">{insuranceResult.extracted_preview?.provider || 'HDFC ERGO General Insurance'}</span>
+                        <span className="font-semibold text-[#242622]">{insuranceResult.extracted_preview?.provider || 'HDFC ERGO General Insurance'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-[#85857E]">Expiry Date:</span>
@@ -1112,7 +1112,7 @@ export const SellBikePage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenAnalysisReport('insurance')}
-                        className="text-xs text-[#242622] hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
+                        className="text-xs text-[#242622] hover:text-[#242622] font-semibold flex items-center gap-1 underline underline-offset-2"
                       >
                         <FileSearch className="w-3.5 h-3.5" />
                         <span>View Analysis Report</span>
@@ -1137,7 +1137,7 @@ export const SellBikePage: React.FC = () => {
                     ) : (
                       <>
                         <Upload className="w-6 h-6 text-[#242622] mb-2" />
-                        <span className="text-xs font-bold text-white">Upload Insurance Policy</span>
+                        <span className="text-xs font-bold text-[#242622]">Upload Insurance Policy</span>
                         <span className="text-[10px] text-[#85857E] mt-0.5">Active unexpired policy required</span>
                       </>
                     )}
@@ -1168,7 +1168,7 @@ export const SellBikePage: React.FC = () => {
                       PUC
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white">Pollution Under Control (PUC)</h4>
+                      <h4 className="font-bold text-sm text-[#242622]">Pollution Under Control (PUC)</h4>
                       <p className="text-[10px] text-[#85857E]">BS6 Emission Compliance Slip</p>
                     </div>
                   </div>
@@ -1188,7 +1188,7 @@ export const SellBikePage: React.FC = () => {
                     <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] text-xs space-y-1">
                       <div className="flex justify-between">
                         <span className="text-[#85857E]">Certificate No:</span>
-                        <span className="font-mono font-bold text-white">{pucResult.extracted_preview?.certificate_number || 'PUC-CH-2026-991'}</span>
+                        <span className="font-mono font-bold text-[#242622]">{pucResult.extracted_preview?.certificate_number || 'PUC-CH-2026-991'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-[#85857E]">Emission Norms:</span>
@@ -1205,7 +1205,7 @@ export const SellBikePage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenAnalysisReport('puc')}
-                        className="text-xs text-[#242622] hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
+                        className="text-xs text-[#242622] hover:text-[#242622] font-semibold flex items-center gap-1 underline underline-offset-2"
                       >
                         <FileSearch className="w-3.5 h-3.5" />
                         <span>View Analysis Report</span>
@@ -1230,7 +1230,7 @@ export const SellBikePage: React.FC = () => {
                     ) : (
                       <>
                         <Upload className="w-6 h-6 text-[#242622] mb-2" />
-                        <span className="text-xs font-bold text-white">Upload PUC Certificate</span>
+                        <span className="text-xs font-bold text-[#242622]">Upload PUC Certificate</span>
                         <span className="text-[10px] text-[#85857E] mt-0.5">Government RTO emission receipt</span>
                       </>
                     )}
@@ -1259,7 +1259,7 @@ export const SellBikePage: React.FC = () => {
                       OWN
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white">Ownership & Transfer Proof</h4>
+                      <h4 className="font-bold text-sm text-[#242622]">Ownership & Transfer Proof</h4>
                       <p className="text-[10px] text-[#85857E]">Registered Owner Endorsement or Form 29/30</p>
                     </div>
                   </div>
@@ -1283,7 +1283,7 @@ export const SellBikePage: React.FC = () => {
                       }}
                       className={`p-2.5 rounded-none border text-left font-bold transition-all ${
                         ownershipMode === 'reuse_rc'
-                          ? 'bg-[#E9E3D8] border-[#35483C] text-white'
+                          ? 'bg-[#35483C] border-[#35483C] text-white'
                           : 'bg-white border-[#E9E3D8] text-[#85857E]'
                       }`}
                     >
@@ -1297,7 +1297,7 @@ export const SellBikePage: React.FC = () => {
                       onClick={() => setOwnershipMode('upload_custom')}
                       className={`p-2.5 rounded-none border text-left font-bold transition-all ${
                         ownershipMode === 'upload_custom'
-                          ? 'bg-[#E9E3D8] border-[#35483C] text-white'
+                          ? 'bg-[#35483C] border-[#35483C] text-white'
                           : 'bg-white border-[#E9E3D8] text-[#85857E]'
                       }`}
                     >
@@ -1327,7 +1327,7 @@ export const SellBikePage: React.FC = () => {
                       ) : (
                         <>
                           <Upload className="w-5 h-5 text-[#242622] mb-1" />
-                          <span className="text-xs font-bold text-white">Upload Authorisation Letter / Form 29/30</span>
+                          <span className="text-xs font-bold text-[#242622]">Upload Authorisation Letter / Form 29/30</span>
                           <span className="text-[10px] text-[#85857E]">PDF, JPG up to 10MB</span>
                         </>
                       )}
@@ -1382,7 +1382,7 @@ export const SellBikePage: React.FC = () => {
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                 Step 4 of 5 • Monetized Pickup Hub
               </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Pickup & Test Ride Location</h2>
+              <h2 className="font-heading font-extrabold text-2xl text-[#242622]">Pickup & Test Ride Location</h2>
               <p className="text-xs text-[#85857E] mt-1">
                 Designate where prospective buyers can inspect or test ride your vehicle. Your exact coordinates remain completely private until a buyer unlocks location access.
               </p>
@@ -1412,7 +1412,7 @@ export const SellBikePage: React.FC = () => {
                 <select
                   value={meetupSpotType}
                   onChange={(e) => setMeetupSpotType(e.target.value)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none font-medium"
                 >
                   <option value="Safe Public Commercial Hub">Safe Public Commercial Hub (Recommended)</option>
                   <option value="Authorized Two-Wheeler Workshop">Authorized Two-Wheeler Workshop</option>
@@ -1426,7 +1426,7 @@ export const SellBikePage: React.FC = () => {
                 <select
                   value={testRideAvailable ? 'yes' : 'no'}
                   onChange={(e) => setTestRideAvailable(e.target.value === 'yes')}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-[#242622] focus:outline-none font-medium"
                 >
                   <option value="yes">Test Rides Permitted (Valid DL & Helmet Required)</option>
                   <option value="no">Inspection Only (Test Rides Not Permitted)</option>
@@ -1442,7 +1442,7 @@ export const SellBikePage: React.FC = () => {
                   value={pickupInstructions}
                   onChange={(e) => setPickupInstructions(e.target.value)}
                   placeholder="e.g. Available on weekends between 10am-4pm. Please call 30 mins before arriving."
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none p-3 text-white focus:outline-none text-xs"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none p-3 text-[#242622] focus:outline-none text-xs"
                 />
               </div>
             </div>
@@ -1482,7 +1482,7 @@ export const SellBikePage: React.FC = () => {
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                 Step 5 of 5 • Final Inspection
               </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Review & Publish Listing</h2>
+              <h2 className="font-heading font-extrabold text-2xl text-[#242622]">Review & Publish Listing</h2>
               <p className="text-xs text-[#85857E] mt-1">
                 Inspect your 8 verified photographs, mandatory certificates, and meetup parameters before publishing live.
               </p>
@@ -1525,11 +1525,11 @@ export const SellBikePage: React.FC = () => {
             {/* Section A: Vehicle Core Specifications */}
             <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#E9E3D8] border border-[#E9E3D8] space-y-3">
               <div className="flex items-center justify-between">
-                <h4 className="font-bold text-sm text-white">Vehicle Specifications</h4>
+                <h4 className="font-bold text-sm text-[#242622]">Vehicle Specifications</h4>
                 <button
                   type="button"
                   onClick={() => setCurrentStep(1)}
-                  className="text-xs text-[#242622] hover:text-white underline underline-offset-2"
+                  className="text-xs text-[#242622] hover:text-[#242622] underline underline-offset-2"
                 >
                   Edit Details
                 </button>
@@ -1537,15 +1537,15 @@ export const SellBikePage: React.FC = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                 <div>
                   <span className="text-[#85857E] block text-[10px]">Vehicle</span>
-                  <span className="font-bold text-white">{year} {brand} {model}</span>
+                  <span className="font-bold text-[#242622]">{year} {brand} {model}</span>
                 </div>
                 <div>
                   <span className="text-[#85857E] block text-[10px]">Variant</span>
-                  <span className="font-semibold text-white truncate block">{variant}</span>
+                  <span className="font-semibold text-[#242622] truncate block">{variant}</span>
                 </div>
                 <div>
                   <span className="text-[#85857E] block text-[10px]">Odometer & Owners</span>
-                  <span className="font-semibold text-white">{km.toLocaleString('en-IN')} km • {owners} Owner</span>
+                  <span className="font-semibold text-[#242622]">{km.toLocaleString('en-IN')} km • {owners} Owner</span>
                 </div>
                 <div>
                   <span className="text-[#85857E] block text-[10px]">Asking Price</span>
@@ -1558,7 +1558,7 @@ export const SellBikePage: React.FC = () => {
             <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#E9E3D8] border border-[#E9E3D8] space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <h4 className="font-bold text-sm text-white">Vehicle Photographs</h4>
+                  <h4 className="font-bold text-sm text-[#242622]">Vehicle Photographs</h4>
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                     isPhotosComplete ? 'bg-emerald-950 text-[#242622]' : 'bg-amber-950 text-amber-300'
                   }`}>
@@ -1568,7 +1568,7 @@ export const SellBikePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(2)}
-                  className="text-xs text-[#242622] hover:text-white underline underline-offset-2"
+                  className="text-xs text-[#242622] hover:text-[#242622] underline underline-offset-2"
                 >
                   Manage Photos
                 </button>
@@ -1581,7 +1581,7 @@ export const SellBikePage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setCurrentStep(2)}
-                    className="px-4 py-1.5 rounded-none bg-[#E9E3D8]/40 text-white font-bold text-xs"
+                    className="px-4 py-1.5 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs"
                   >
                     Upload 8 Angles
                   </button>
@@ -1616,7 +1616,7 @@ export const SellBikePage: React.FC = () => {
             <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#E9E3D8] border border-[#E9E3D8] space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <h4 className="font-bold text-sm text-white">4 Mandatory Certificates</h4>
+                  <h4 className="font-bold text-sm text-[#242622]">4 Mandatory Certificates</h4>
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                     isDocumentsComplete ? 'bg-emerald-950 text-[#242622]' : 'bg-amber-950 text-amber-300'
                   }`}>
@@ -1626,7 +1626,7 @@ export const SellBikePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(3)}
-                  className="text-xs text-[#242622] hover:text-white underline underline-offset-2"
+                  className="text-xs text-[#242622] hover:text-[#242622] underline underline-offset-2"
                 >
                   Manage Documents
                 </button>
@@ -1646,7 +1646,7 @@ export const SellBikePage: React.FC = () => {
                       <XCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                     )}
                     <div>
-                      <p className="font-bold text-white text-xs">{doc.name}</p>
+                      <p className="font-bold text-[#242622] text-xs">{doc.name}</p>
                       <p className="text-[10px] text-[#85857E] mt-0.5">{doc.reason}</p>
                     </div>
                   </div>
@@ -1657,11 +1657,11 @@ export const SellBikePage: React.FC = () => {
             {/* Section D: Pickup & Test Ride Parameters */}
             <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#E9E3D8] border border-[#E9E3D8] space-y-2 text-xs">
               <div className="flex items-center justify-between">
-                <h4 className="font-bold text-sm text-white">Pickup & Test Ride Setup</h4>
+                <h4 className="font-bold text-sm text-[#242622]">Pickup & Test Ride Setup</h4>
                 <button
                   type="button"
                   onClick={() => setCurrentStep(4)}
-                  className="text-xs text-[#242622] hover:text-white underline underline-offset-2"
+                  className="text-xs text-[#242622] hover:text-[#242622] underline underline-offset-2"
                 >
                   Change Location
                 </button>
@@ -1669,7 +1669,7 @@ export const SellBikePage: React.FC = () => {
               <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                 <div>
                   <span className="text-[#85857E] block text-[10px]">Public Viewing Area</span>
-                  <span className="font-bold text-white">{pickupLocation.locality}, {pickupLocation.city}</span>
+                  <span className="font-bold text-[#242622]">{pickupLocation.locality}, {pickupLocation.city}</span>
                 </div>
                 <div>
                   <span className="text-[#85857E] block text-[10px]">Meetup Spot Type</span>
@@ -1677,7 +1677,7 @@ export const SellBikePage: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-[#85857E] block text-[10px]">Test Rides</span>
-                  <span className="font-semibold text-white">{testRideAvailable ? 'Permitted with DL' : 'Inspection Only'}</span>
+                  <span className="font-semibold text-[#242622]">{testRideAvailable ? 'Permitted with DL' : 'Inspection Only'}</span>
                 </div>
               </div>
             </div>
@@ -1724,19 +1724,19 @@ export const SellBikePage: React.FC = () => {
       {/* In-Depth Document Analysis Report Modal */}
       {analysisModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-2xl rounded-none border border-[#E9E3D8] bg-[#0D1814] border border-[#E9E3D8] p-6 sm:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[90vh]">
+          <div className="relative w-full max-w-2xl rounded-none border border-[#E9E3D8] bg-white p-6 sm:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[90vh]">
             <div className="flex items-center justify-between border-b border-[#E9E3D8] pb-4">
               <div>
                 <span className="text-[10px] font-bold text-[#242622] uppercase tracking-wider">
                   Automated Document Extraction & AI Inspection
                 </span>
-                <h3 className="font-heading font-extrabold text-xl text-white">
+                <h3 className="font-heading font-extrabold text-xl text-[#242622]">
                   {activeAnalysisDoc?.toUpperCase()} Verification Breakdown
                 </h3>
               </div>
               <button
                 onClick={() => setAnalysisModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-white border border-[#E9E3D8] flex items-center justify-center text-[#85857E] hover:text-white"
+                className="w-8 h-8 rounded-full bg-white border border-[#E9E3D8] flex items-center justify-center text-[#85857E] hover:text-[#242622]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1752,7 +1752,7 @@ export const SellBikePage: React.FC = () => {
                 <div className="grid grid-cols-2 gap-3 p-4 rounded-none bg-[#E9E3D8] border border-[#E9E3D8]">
                   <div>
                     <span className="text-[10px] text-[#85857E]">Document Type</span>
-                    <p className="font-bold text-white capitalize">{analysisReport.document_type}</p>
+                    <p className="font-bold text-[#242622] capitalize">{analysisReport.document_type}</p>
                   </div>
                   <div>
                     <span className="text-[10px] text-[#85857E]">OCR Confidence</span>
@@ -1766,7 +1766,7 @@ export const SellBikePage: React.FC = () => {
                     {Object.entries(analysisReport.extracted_fields || {}).map(([k, v]) => (
                       <div key={k} className="flex items-center justify-between py-1 border-b border-[#E9E3D8]/50">
                         <span className="text-[#85857E] capitalize">{k.replace(/_/g, ' ')}:</span>
-                        <span className="font-semibold text-white font-mono">{String(v || 'N/A')}</span>
+                        <span className="font-semibold text-[#242622] font-mono">{String(v || 'N/A')}</span>
                       </div>
                     ))}
                   </div>
@@ -1779,7 +1779,7 @@ export const SellBikePage: React.FC = () => {
                   </div>
                   <button
                     onClick={() => setAnalysisModalOpen(false)}
-                    className="px-4 py-2 rounded-none bg-[#E9E3D8]/40 hover:bg-[#35483C]/30 text-white font-bold text-xs"
+                    className="px-4 py-2 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs"
                   >
                     Done
                   </button>

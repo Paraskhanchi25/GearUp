@@ -491,7 +491,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
             <Compass className="w-8 h-8 text-[#242622] animate-spin" />
           </div>
           <div className="text-center space-y-1.5 max-w-sm px-4">
-            <h3 className="font-heading font-bold text-base text-white tracking-wide">
+            <h3 className="font-heading font-bold text-base text-[#242622] tracking-wide">
               Loading 3D Digital Twin Showroom
             </h3>
             <p className="text-xs text-[#85857E]">
@@ -515,7 +515,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
             <AlertTriangle className="w-6 h-6" />
           </div>
           <div className="space-y-1 max-w-md">
-            <h4 className="font-heading font-bold text-sm text-white">Interactive 3D Notice</h4>
+            <h4 className="font-heading font-bold text-sm text-[#242622]">Interactive 3D Notice</h4>
             <p className="text-xs text-[#85857E]">{loadError}</p>
           </div>
           {vehicle?.primaryImage && (
@@ -553,7 +553,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
                   <span className="w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white shadow-glow" />
                 </div>
                 {/* Hotspot Label Pill */}
-                <span className="px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E9E3D8] text-[10px] font-bold text-white shadow-xl whitespace-nowrap opacity-75 group-hover:opacity-100 group-hover:border-emerald-400 transition-opacity">
+                <span className="px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E9E3D8] text-[10px] font-bold text-[#242622] shadow-xl whitespace-nowrap opacity-75 group-hover:opacity-100 group-hover:border-emerald-400 transition-opacity">
                   {h.name}
                 </span>
               </button>
@@ -567,7 +567,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         <div className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] shadow-2xl text-xs">
           <Sparkles className="w-4 h-4 text-[#242622] flex-shrink-0" />
           <div className="leading-tight">
-            <span className="font-bold text-white block text-[11px]">
+            <span className="font-bold text-[#242622] block text-[11px]">
               {vehicle?.brand || 'Royal Enfield'} {vehicle?.model || 'Classic 350'} 3D Digital Twin
             </span>
             <span className="text-[10px] text-[#242622]">
@@ -583,7 +583,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
             className={`p-2 rounded-none backdrop-blur-md border text-xs transition-colors shadow-lg ${
               showHotspots
                 ? 'bg-emerald-950/80 border-emerald-600/70 text-[#242622]'
-                : 'bg-white/95 border-[#E9E3D8] text-[#85857E] hover:text-white'
+                : 'bg-white/95 border-[#E9E3D8] text-[#85857E] hover:text-[#242622]'
             }`}
             title={showHotspots ? 'Hide Component Hotspot Pins' : 'Show Component Hotspot Pins'}
           >
@@ -596,7 +596,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
               className={`p-2 rounded-none backdrop-blur-md border text-xs transition-colors shadow-lg flex items-center gap-1 ${
                 exploded
                   ? 'bg-amber-950/80 border-amber-600/70 text-amber-300'
-                  : 'bg-white/95 border-[#E9E3D8] text-[#85857E] hover:text-white'
+                  : 'bg-white/95 border-[#E9E3D8] text-[#85857E] hover:text-[#242622]'
               }`}
               title="Exploded Assembly View"
             >
@@ -608,7 +608,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           {onToggleFullscreen && (
             <button
               onClick={onToggleFullscreen}
-              className="p-2 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] text-[#85857E] hover:text-white text-xs transition-colors shadow-lg"
+              className="p-2 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] text-xs transition-colors shadow-lg"
               title={fullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen Showroom'}
             >
               {fullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -624,7 +624,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all flex items-center gap-1 whitespace-nowrap ${
             activePreset === 'perspective' && !selectedComponentId
               ? 'bg-emerald-600 text-white shadow-glow'
-              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
+              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
           }`}
           title="3/4 Perspective Hero View"
         >
@@ -637,7 +637,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'front'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
+              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
           }`}
         >
           Front
@@ -648,7 +648,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'side_left'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
+              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
           }`}
         >
           Left Profile
@@ -659,7 +659,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'side_right'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
+              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
           }`}
         >
           Right Profile
@@ -670,7 +670,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'rear'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
+              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
           }`}
         >
           Rear
@@ -681,7 +681,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'top'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
+              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
           }`}
         >
           Top Down
@@ -692,14 +692,14 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         {/* Zoom Controls */}
         <button
           onClick={() => handleZoom('in')}
-          className="p-1.5 rounded-lg text-[#85857E] hover:text-white hover:bg-[#E9E3D8] transition-colors"
+          className="p-1.5 rounded-lg text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8] transition-colors"
           title="Zoom In (+)"
         >
           <ZoomIn className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={() => handleZoom('out')}
-          className="p-1.5 rounded-lg text-[#85857E] hover:text-white hover:bg-[#E9E3D8] transition-colors"
+          className="p-1.5 rounded-lg text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8] transition-colors"
           title="Zoom Out (-)"
         >
           <ZoomOut className="w-3.5 h-3.5" />

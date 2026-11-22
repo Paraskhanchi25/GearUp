@@ -109,7 +109,7 @@ export const ResaleStudioPage: React.FC = () => {
             <span>AI RESALE UPGRADE STUDIO</span>
           </div>
 
-          <h1 className="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+          <h1 className="font-heading font-extrabold text-3xl sm:text-5xl text-[#242622] tracking-tight">
             Unlock Your Bike&apos;s Resale Value
           </h1>
           <p className="text-[#85857E] text-sm sm:text-base max-w-2xl leading-relaxed">
@@ -126,7 +126,7 @@ export const ResaleStudioPage: React.FC = () => {
               <span className="text-xs font-bold text-[#242622] uppercase tracking-widest">
                 AI PREVIEW ENGINE
               </span>
-              <h2 className="font-heading font-bold text-2xl text-white">
+              <h2 className="font-heading font-bold text-2xl text-[#242622]">
                 Interactive Before vs After Preview
               </h2>
               <p className="text-xs text-[#85857E] mt-0.5">
@@ -143,7 +143,7 @@ export const ResaleStudioPage: React.FC = () => {
                   className={`px-3 py-1.5 rounded-none text-xs font-bold transition-all ${
                     selectedTheme.id === theme.id
                       ? 'bg-[#35483C] text-white shadow-elevated'
-                      : 'bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]'
+                      : 'bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8]'
                   }`}
                 >
                   {theme.name}
@@ -160,7 +160,7 @@ export const ResaleStudioPage: React.FC = () => {
               alt="After AI detailing"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full bg-[#E9E3D8]/40/90 text-white text-xs font-bold border border-[#35483C] backdrop-blur-md">
+            <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full bg-[#35483C]/90 text-white text-xs font-bold border border-[#A4AD98] backdrop-blur-md">
               AI Upgraded Preview ✨
             </div>
 
@@ -213,7 +213,7 @@ export const ResaleStudioPage: React.FC = () => {
           {/* Goals Selection */}
           <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-4">
             <div>
-              <h3 className="font-heading font-bold text-lg text-white">What would you like to improve?</h3>
+              <h3 className="font-heading font-bold text-lg text-[#242622]">What would you like to improve?</h3>
               <p className="text-xs text-[#85857E]">Select one or more seller priorities</p>
             </div>
 
@@ -226,8 +226,8 @@ export const ResaleStudioPage: React.FC = () => {
                     onClick={() => toggleGoal(goal)}
                     className={`p-3 rounded-none border text-xs font-semibold text-left transition-all ${
                       isSelected
-                        ? 'bg-[#E9E3D8]/40 border-forest-400 text-white'
-                        : 'bg-white/60 border-[#E9E3D8] text-[#85857E] hover:text-white'
+                        ? 'bg-[#35483C] border-[#35483C] text-white'
+                        : 'bg-white/60 border-[#E9E3D8] text-[#85857E] hover:text-[#242622]'
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -243,7 +243,7 @@ export const ResaleStudioPage: React.FC = () => {
           {/* Budget Selection */}
           <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-4">
             <div>
-              <h3 className="font-heading font-bold text-lg text-white">Target Upgrade Budget</h3>
+              <h3 className="font-heading font-bold text-lg text-[#242622]">Target Upgrade Budget</h3>
               <p className="text-xs text-[#85857E]">How much are you comfortable investing in pre-sale prep?</p>
             </div>
 
@@ -255,7 +255,7 @@ export const ResaleStudioPage: React.FC = () => {
                   className={`w-full p-3 rounded-none border text-xs font-semibold flex items-center justify-between transition-all ${
                     selectedBudget === tier.value
                       ? 'bg-[#E9E3D8]/40 border-gold text-gold-light'
-                      : 'bg-white/60 border-[#E9E3D8] text-[#85857E] hover:text-white'
+                      : 'bg-white/60 border-[#E9E3D8] text-[#85857E] hover:text-[#242622]'
                   }`}
                 >
                   <span>{tier.label}</span>
@@ -273,7 +273,7 @@ export const ResaleStudioPage: React.FC = () => {
               <span className="text-xs font-bold text-gold uppercase tracking-widest">
                 FINANCIAL PREDICTION
               </span>
-              <h2 className="font-heading font-extrabold text-2xl text-white">
+              <h2 className="font-heading font-extrabold text-2xl text-[#242622]">
                 Live AI Resale ROI Calculator
               </h2>
             </div>
@@ -314,7 +314,7 @@ export const ResaleStudioPage: React.FC = () => {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-heading font-extrabold text-xl text-white">Recommended Upgrades Checklist</h3>
+              <h3 className="font-heading font-extrabold text-xl text-[#242622]">Recommended Upgrades Checklist</h3>
               <p className="text-xs text-[#85857E]">Check or uncheck items to recalculate ROI instantly</p>
             </div>
             <button
@@ -334,7 +334,7 @@ export const ResaleStudioPage: React.FC = () => {
                   onClick={() => toggleUpgrade(item.id)}
                   className={`p-4 rounded-none border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
                     isChecked
-                      ? 'bg-[#12231E] border-[#35483C] shadow-md'
+                      ? 'bg-[#E9E3D8] border-[#35483C] shadow-md'
                       : 'bg-white border-[#E9E3D8] opacity-60 hover:opacity-100'
                   }`}
                 >
@@ -349,7 +349,7 @@ export const ResaleStudioPage: React.FC = () => {
 
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-white">{item.title}</span>
+                        <span className="font-bold text-sm text-[#242622]">{item.title}</span>
                         <span className="text-[10px] px-2 py-0.2 rounded font-bold uppercase bg-white text-[#242622] border border-[#E9E3D8]">
                           {item.difficulty}
                         </span>
@@ -361,7 +361,7 @@ export const ResaleStudioPage: React.FC = () => {
                   <div className="flex items-center justify-between sm:justify-end gap-6 text-xs flex-shrink-0">
                     <div className="text-right">
                       <p className="text-[#85857E] text-[10px]">Cost</p>
-                      <p className="font-bold text-white">{formatINR(item.cost)}</p>
+                      <p className="font-bold text-[#242622]">{formatINR(item.cost)}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-[#242622] text-[10px]">Est. Resale Boost</p>
@@ -378,7 +378,7 @@ export const ResaleStudioPage: React.FC = () => {
         <section className="p-8 rounded-none border border-[#E9E3D8] bg-[#0F1E19] border border-[#E9E3D8] space-y-4 text-center sm:text-left">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 className="font-heading font-bold text-xl text-white">Execute Planned Upgrades with Certified Partners</h3>
+              <h3 className="font-heading font-bold text-xl text-[#242622]">Execute Planned Upgrades with Certified Partners</h3>
               <p className="text-xs text-[#85857E] mt-1 max-w-xl">
                 Book a partner workshop in Chandigarh, Mohali, Panchkula, Delhi, or Bangalore to complete detailing with zero upfront payment. We invoice only after inspection passes.
               </p>

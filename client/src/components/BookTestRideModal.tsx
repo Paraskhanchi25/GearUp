@@ -25,10 +25,10 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#12221D] border border-[#E9E3D8] rounded-none border border-[#E9E3D8] max-w-lg w-full p-6 text-white shadow-2xl relative space-y-5">
+      <div className="bg-white border border-[#E9E3D8] rounded-none max-w-lg w-full p-6 text-[#242622] shadow-2xl relative space-y-5">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-white transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-full bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622] transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -39,7 +39,7 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
               <span className="text-[10px] font-bold text-[#242622] uppercase tracking-widest">
                 GEAR UP Verified Booking
               </span>
-              <h3 className="font-heading font-bold text-xl text-white">
+              <h3 className="font-heading font-bold text-xl text-[#242622]">
                 Schedule a Test Ride
               </h3>
             </div>
@@ -48,7 +48,7 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
             <div className="flex items-center gap-3 p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8]">
               <img src={vehicle.primaryImage} alt={vehicle.title} className="w-14 h-14 rounded-lg object-cover" />
               <div>
-                <p className="font-bold text-xs text-white line-clamp-1">{vehicle.title}</p>
+                <p className="font-bold text-xs text-[#242622] line-clamp-1">{vehicle.title}</p>
                 <p className="text-xs text-[#242622] font-bold">{formatINR(vehicle.price)}</p>
                 <p className="text-[11px] text-[#85857E]">{vehicle.area}, {vehicle.city}</p>
               </div>
@@ -63,11 +63,11 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
                   onClick={() => setRideType('hub')}
                   className={`p-2.5 rounded-none border text-xs font-semibold text-left transition-colors ${
                     rideType === 'hub'
-                      ? 'bg-[#E9E3D8]/40 border-forest-400 text-white'
-                      : 'bg-white/50 border-[#E9E3D8] text-[#85857E]'
+                      ? 'bg-[#E9E3D8] border-[#35483C] text-[#242622]'
+                      : 'bg-white border-[#E9E3D8] text-[#85857E]'
                   }`}
                 >
-                  <p className="font-bold text-white">Inspection Hub</p>
+                  <p className="font-bold text-[#242622]">Inspection Hub</p>
                   <p className="text-[10px] text-[#35483C]">GEAR UP Certified Hub (Free)</p>
                 </button>
                 <button
@@ -75,11 +75,11 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
                   onClick={() => setRideType('doorstep')}
                   className={`p-2.5 rounded-none border text-xs font-semibold text-left transition-colors ${
                     rideType === 'doorstep'
-                      ? 'bg-[#E9E3D8]/40 border-forest-400 text-white'
-                      : 'bg-white/50 border-[#E9E3D8] text-[#85857E]'
+                      ? 'bg-[#E9E3D8] border-[#35483C] text-[#242622]'
+                      : 'bg-white border-[#E9E3D8] text-[#85857E]'
                   }`}
                 >
-                  <p className="font-bold text-white">Doorstep Delivery</p>
+                  <p className="font-bold text-[#242622]">Doorstep Delivery</p>
                   <p className="text-[10px] text-[#35483C]">Brought to your address (₹199)</p>
                 </button>
               </div>
@@ -93,7 +93,7 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-white focus:outline-none focus:border-[#35483C]"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-[#242622] focus:outline-none focus:border-[#35483C]"
                 />
               </div>
               <div>
@@ -101,7 +101,7 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
                 <select
                   value={selectedSlot}
                   onChange={(e) => setSelectedSlot(e.target.value)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-white focus:outline-none focus:border-[#35483C]"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-[#242622] focus:outline-none focus:border-[#35483C]"
                 >
                   <option>10:00 AM - 11:00 AM</option>
                   <option>11:00 AM - 12:00 PM</option>
@@ -121,7 +121,7 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
                   placeholder="e.g. Jasmeet Singh"
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-white focus:outline-none focus:border-[#35483C]"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-[#242622] focus:outline-none focus:border-[#35483C]"
                 />
               </div>
               <div>
@@ -132,7 +132,7 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
                   placeholder="+91 98765 43210"
                   value={userPhone}
                   onChange={(e) => setUserPhone(e.target.value)}
-                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-white focus:outline-none focus:border-[#35483C]"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-[#242622] focus:outline-none focus:border-[#35483C]"
                 />
               </div>
             </div>
@@ -155,13 +155,13 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
               <CheckCircle className="w-8 h-8" />
             </div>
             <div>
-              <h3 className="font-heading font-bold text-xl text-white">Test Ride Reserved!</h3>
+              <h3 className="font-heading font-bold text-xl text-[#242622]">Test Ride Reserved!</h3>
               <p className="text-xs text-[#85857E] mt-1 max-w-xs mx-auto">
                 We have notified the seller and scheduled your appointment for <span className="font-bold text-[#35483C]">{selectedDate} ({selectedSlot})</span>.
               </p>
             </div>
             <div className="p-3 bg-white rounded-none border border-[#E9E3D8] text-xs text-[#85857E]">
-              Booking Ref: <span className="font-mono text-white font-bold">GU-{Math.floor(100000 + Math.random() * 900000)}</span>
+              Booking Ref: <span className="font-mono text-[#242622] font-bold">GU-{Math.floor(100000 + Math.random() * 900000)}</span>
             </div>
             <button
               onClick={onClose}
