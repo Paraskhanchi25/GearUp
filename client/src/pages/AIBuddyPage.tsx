@@ -296,18 +296,18 @@ export const AIBuddyPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F7F5EF] text-[#242622] flex flex-col">
-      {/* Top Header & Vehicle Profile Switcher */}
-      <div className="border-b border-[#1A332B] bg-white px-4 sm:px-6 py-3.5 sticky top-20 z-20">
+      {/* Top Header & Vehicle Profile Switcher (Apple Liquid Glass Header) */}
+      <div className="border-b border-[#242622]/[0.08] bg-white/85 backdrop-blur-[24px] saturate-[180%] px-4 sm:px-6 py-3.5 sticky top-16 sm:top-20 z-20 shadow-sm">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-none bg-[#35483C]/30 text-white flex items-center justify-center border border-[#35483C]/50 shadow-sm flex-shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-[#35483C] text-white flex items-center justify-center border border-[#35483C]/50 shadow-sm shrink-0">
               <Bot className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-heading font-extrabold text-base text-[#242622]">AI Bike Buddy</h1>
-                <span className="px-2 py-0.5 rounded-full bg-[#E9E3D8] border border-[#E9E3D8] text-[10px] text-[#242622] font-bold uppercase tracking-wider">
-                  Multimodal Assistant
+                <span className="px-2.5 py-0.5 rounded-full bg-[#FAF9F5] border border-[#242622]/10 text-[10px] text-[#35483C] font-mono font-bold uppercase tracking-wider">
+                  Multimodal Telemetry
                 </span>
               </div>
               <p className="text-xs text-[#85857E]">Vision OCR, Voice Transcription, Document Analysis & Servicing Guide</p>
@@ -316,15 +316,15 @@ export const AIBuddyPage: React.FC = () => {
 
           {/* Vehicle Profile Selector */}
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-none border border-[#E9E3D8] text-xs">
-              <span className="text-[#85857E] text-[11px]">Active Profile:</span>
+            <div className="flex items-center gap-2 bg-white px-3.5 py-2 rounded-full border border-[#242622]/10 text-xs shadow-sm">
+              <span className="text-[#85857E] text-[11px] font-mono">Profile:</span>
               <select
                 value={selectedProfile.model}
                 onChange={(e) => {
                   const p = POPULAR_PROFILES.find((prof) => prof.model === e.target.value);
                   if (p) setSelectedProfile(p);
                 }}
-                className="bg-transparent font-bold text-[#35483C] focus:outline-none cursor-pointer"
+                className="bg-transparent font-bold text-[#35483C] focus:outline-none cursor-pointer text-xs"
               >
                 {POPULAR_PROFILES.map((p) => (
                   <option key={p.model} value={p.model} className="bg-white text-[#242622]">
@@ -345,7 +345,7 @@ export const AIBuddyPage: React.FC = () => {
                   },
                 ]);
               }}
-              className="p-2 text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]/50 rounded transition-colors"
+              className="w-9 h-9 flex items-center justify-center text-[#85857E] hover:text-[#242622] hover:bg-white rounded-full border border-transparent hover:border-[#242622]/10 transition-all tactile-btn"
               title="Clear conversation"
             >
               <Trash2 className="w-4 h-4" />
@@ -361,22 +361,22 @@ export const AIBuddyPage: React.FC = () => {
             key={m.id}
             className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'} space-y-1.5`}
           >
-            <div className="flex items-center gap-2 text-[11px] text-[#85857E] px-1">
+            <div className="flex items-center gap-2 text-[11px] text-[#85857E] px-1 font-mono">
               <span>{m.sender === 'user' ? 'You' : 'GEAR UP AI'}</span>
               <span>•</span>
               <span>{m.timestamp}</span>
             </div>
 
             <div
-              className={`max-w-2xl rounded-none p-4 ${
+              className={`max-w-2xl p-4 sm:p-5 ${
                 m.sender === 'user'
-                  ? 'bg-[#35483C] text-white shadow-sm'
-                  : 'bg-white border border-[#E9E3D8] text-[#242622] shadow-sm'
+                  ? 'bg-[#35483C] text-white rounded-2xl rounded-tr-xs shadow-sm'
+                  : 'bg-white border border-[#242622]/[0.08] text-[#242622] rounded-2xl rounded-tl-xs shadow-sm'
               }`}
             >
               {/* Image Preview if user uploaded */}
               {m.imageAttachment && (
-                <div className="mb-3 rounded-none overflow-hidden border border-black/20 max-w-xs">
+                <div className="mb-3 rounded-2xl overflow-hidden border border-black/10 max-w-xs shadow-sm">
                   <img src={m.imageAttachment} alt="Uploaded attachment" className="w-full h-auto object-cover max-h-60" />
                 </div>
               )}
@@ -384,22 +384,22 @@ export const AIBuddyPage: React.FC = () => {
               {/* Message text with whitespace formatting */}
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{m.text}</p>
 
-              {/* Structured Diagnostic Card - ONLY if response is an actual vehicle diagnostic */}
+              {/* Structured Diagnostic Card */}
               {m.diagnosis && (
-                <div className="mt-4 p-4 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] space-y-3 text-xs">
-                  <div className="flex items-center justify-between pb-2 border-b border-[#E9E3D8]">
+                <div className="mt-4 p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.08] space-y-3 text-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#242622]/10">
                     <span className="font-heading font-extrabold text-sm text-[#35483C]">
                       {m.diagnosis.title}
                     </span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-white text-[#242622] border border-[#E9E3D8]">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-white text-[#242622] border border-[#242622]/10">
                       {m.diagnosis.category}
                     </span>
                   </div>
 
                   {/* Critical Safety Alert */}
                   {m.diagnosis.isSafetyCritical && m.diagnosis.safetyWarning && (
-                    <div className="p-3 rounded-none bg-red-100 border border-red-300 text-red-900 flex items-start gap-2">
-                      <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                    <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-900 flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
                       <div>
                         <p className="font-bold text-[11px] text-red-800">Safety Critical Notice</p>
                         <p className="text-[11px] text-red-700 mt-0.5">{m.diagnosis.safetyWarning}</p>
@@ -409,7 +409,7 @@ export const AIBuddyPage: React.FC = () => {
 
                   {/* Possible Causes */}
                   <div>
-                    <h5 className="font-bold text-[#242622] mb-1.5 flex items-center gap-1.5">
+                    <h5 className="font-bold text-[#242622] mb-1.5 flex items-center gap-1.5 font-mono">
                       <Wrench className="w-3.5 h-3.5 text-[#35483C]" />
                       Possible Root Causes:
                     </h5>
@@ -422,7 +422,7 @@ export const AIBuddyPage: React.FC = () => {
 
                   {/* Safe DIY Checks */}
                   <div>
-                    <h5 className="font-bold text-[#242622] mb-1.5 flex items-center gap-1.5">
+                    <h5 className="font-bold text-[#242622] mb-1.5 flex items-center gap-1.5 font-mono">
                       <CheckCircle2 className="w-3.5 h-3.5 text-[#35483C]" />
                       Safe Checks to Perform Yourself:
                     </h5>
@@ -434,7 +434,7 @@ export const AIBuddyPage: React.FC = () => {
                   </div>
 
                   {/* Professional Recommendation */}
-                  <div className="p-2.5 rounded-none bg-white border border-[#E9E3D8] text-[11px] text-[#4A4D46]">
+                  <div className="p-3 rounded-xl bg-white border border-[#242622]/[0.08] text-[11px] text-[#4A4D46]">
                     <strong className="text-[#242622]">When to visit a mechanic: </strong>
                     {m.diagnosis.professionalAction}
                   </div>
@@ -452,13 +452,13 @@ export const AIBuddyPage: React.FC = () => {
                     <Link
                       key={item.id}
                       to={`/bike/${item.id}`}
-                      className="p-3 rounded-none bg-white hover:bg-[#E9E3D8]/40 border border-[#E9E3D8] transition-all flex items-center gap-3 group shadow-sm"
+                      className="p-3 rounded-2xl bg-white hover:bg-[#FAF9F5] border border-[#242622]/[0.08] transition-all flex items-center gap-3 group shadow-sm hover:shadow-md tactile-btn"
                     >
-                      <img src={item.primaryImage} alt={item.title} className="w-14 h-14 rounded-none object-cover" />
+                      <img src={item.primaryImage} alt={item.title} className="w-14 h-14 rounded-xl object-cover border border-[#242622]/10" />
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-xs text-[#242622] group-hover:text-[#35483C] truncate">{item.title}</p>
                         <p className="font-heading font-extrabold text-sm text-[#35483C] mt-0.5">{formatINR(item.price)}</p>
-                        <p className="text-[10px] text-[#85857E] flex items-center gap-1">
+                        <p className="text-[10px] text-[#85857E] flex items-center gap-1 font-mono">
                           <MapPin className="w-3 h-3 text-[#35483C]" />
                           {item.area}, {item.city}
                         </p>
@@ -474,13 +474,13 @@ export const AIBuddyPage: React.FC = () => {
 
         {/* Typing indicator */}
         {isTyping && (
-          <div className="flex items-center gap-2 p-3 rounded-none bg-white border border-[#E9E3D8] text-xs text-[#85857E] w-48 shadow-sm">
+          <div className="flex items-center gap-2 p-3 rounded-2xl bg-white border border-[#242622]/[0.08] text-xs text-[#85857E] w-48 shadow-sm">
             <div className="flex gap-1">
               <span className="w-2 h-2 rounded-full bg-[#35483C] animate-bounce" />
               <span className="w-2 h-2 rounded-full bg-[#35483C] animate-bounce [animation-delay:0.2s]" />
               <span className="w-2 h-2 rounded-full bg-[#35483C] animate-bounce [animation-delay:0.4s]" />
             </div>
-            <span>Analyzing response...</span>
+            <span className="font-mono text-[11px]">Analyzing response...</span>
           </div>
         )}
 
@@ -488,30 +488,30 @@ export const AIBuddyPage: React.FC = () => {
       </div>
 
       {/* Suggested Starters */}
-      <div className="px-4 sm:px-6 py-2 bg-white border-t border-[#E9E3D8]">
-        <div className="max-w-5xl mx-auto flex items-center gap-2 overflow-x-auto text-[11px]">
-          <span className="text-[#85857E] font-semibold whitespace-nowrap">Try asking:</span>
+      <div className="px-4 sm:px-6 py-2.5 bg-white/70 border-t border-[#242622]/[0.06]">
+        <div className="max-w-5xl mx-auto flex items-center gap-2 overflow-x-auto text-[11px] no-scrollbar">
+          <span className="text-[#85857E] font-mono text-[10px] uppercase tracking-wider whitespace-nowrap">Suggested:</span>
           <button
             onClick={() => handleSend('What documents should I verify when buying a used bike in Punjab?')}
-            className="px-3 py-1 rounded-full bg-[#F7F5EF] border border-[#E9E3D8] text-[#242622] hover:bg-[#E9E3D8] whitespace-nowrap"
+            className="px-3.5 py-1.5 rounded-full bg-white border border-[#242622]/10 text-[#242622] hover:bg-[#35483C] hover:text-white whitespace-nowrap transition-all duration-200 tactile-btn shadow-sm"
           >
             RC & transfer documents
           </button>
           <button
             onClick={() => handleSend('My bike makes a clicking sound when pressing the starter button')}
-            className="px-3 py-1 rounded-full bg-[#F7F5EF] border border-[#E9E3D8] text-[#242622] hover:bg-[#E9E3D8] whitespace-nowrap"
+            className="px-3.5 py-1.5 rounded-full bg-white border border-[#242622]/10 text-[#242622] hover:bg-[#35483C] hover:text-white whitespace-nowrap transition-all duration-200 tactile-btn shadow-sm"
           >
             Starter clicking sound
           </button>
           <button
             onClick={() => handleSend('How to optimize electric scooter battery range in Indian summers?')}
-            className="px-3 py-1 rounded-full bg-[#F7F5EF] border border-[#E9E3D8] text-[#242622] hover:bg-[#E9E3D8] whitespace-nowrap"
+            className="px-3.5 py-1.5 rounded-full bg-white border border-[#242622]/10 text-[#242622] hover:bg-[#35483C] hover:text-white whitespace-nowrap transition-all duration-200 tactile-btn shadow-sm"
           >
             EV battery tips
           </button>
           <button
             onClick={() => handleSend('Mileage suddenly dropped from 50 kmpl to 32 kmpl')}
-            className="px-3 py-1 rounded-full bg-[#F7F5EF] border border-[#E9E3D8] text-[#242622] hover:bg-[#E9E3D8] whitespace-nowrap"
+            className="px-3.5 py-1.5 rounded-full bg-white border border-[#242622]/10 text-[#242622] hover:bg-[#35483C] hover:text-white whitespace-nowrap transition-all duration-200 tactile-btn shadow-sm"
           >
             Sudden mileage drop
           </button>
@@ -520,28 +520,28 @@ export const AIBuddyPage: React.FC = () => {
 
       {/* Image / Audio Attachment Staging Area */}
       {(attachedImage || isListening || isTranscribingAudio) && (
-        <div className="px-4 sm:px-6 py-2 bg-[#FAF8F5] border-t border-[#E9E3D8]">
+        <div className="px-4 sm:px-6 py-2.5 bg-[#FAF9F5] border-t border-[#242622]/[0.08]">
           <div className="max-w-5xl mx-auto flex items-center gap-3">
             {attachedImage && (
-              <div className="relative w-16 h-16 rounded-none overflow-hidden border border-[#35483C] shadow-sm">
+              <div className="relative w-16 h-16 rounded-2xl overflow-hidden border border-[#35483C] shadow-sm">
                 <img src={attachedImage} alt="Preview" className="w-full h-full object-cover" />
                 <button
                   onClick={() => setAttachedImage(null)}
-                  className="absolute top-0 right-0 p-0.5 bg-black/80 text-white rounded-bl"
+                  className="absolute top-1 right-1 p-1 bg-black/70 hover:bg-black text-white rounded-full transition-colors"
                   title="Remove image"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-3 h-3" />
                 </button>
               </div>
             )}
             {isListening && (
-              <div className="flex items-center gap-2 text-xs text-red-600 animate-pulse font-bold">
-                <span className="w-3 h-3 rounded-full bg-red-600" />
-                <span>Recording voice / audio... ({audioRecordingSeconds}s) - Click mic to finish</span>
+              <div className="flex items-center gap-2 text-xs text-red-600 animate-pulse font-mono font-bold">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-600" />
+                <span>Recording audio... ({audioRecordingSeconds}s) - Tap mic to finish</span>
               </div>
             )}
             {isTranscribingAudio && (
-              <div className="flex items-center gap-2 text-xs text-[#35483C] font-semibold">
+              <div className="flex items-center gap-2 text-xs text-[#35483C] font-mono font-semibold">
                 <Loader2 className="w-4 h-4 animate-spin text-[#35483C]" />
                 <span>Transcribing audio with Gemini AI...</span>
               </div>
@@ -550,9 +550,9 @@ export const AIBuddyPage: React.FC = () => {
         </div>
       )}
 
-      {/* Input Control Bar (Sticky & touch-friendly) */}
-      <div className="sticky bottom-0 border-t border-[#E9E3D8] bg-white/95 backdrop-blur-md px-3 sm:px-6 py-3 sm:py-4 z-20">
-        <div className="max-w-5xl mx-auto flex items-center gap-1.5 sm:gap-2">
+      {/* Input Control Bar (Apple Liquid Glass Sticky Footer) */}
+      <div className="sticky bottom-0 border-t border-[#242622]/[0.08] bg-white/90 backdrop-blur-[24px] saturate-[180%] px-3 sm:px-6 py-3 sm:py-4 z-20">
+        <div className="max-w-5xl mx-auto flex items-center gap-2">
           {/* Hidden Image File Input */}
           <input
             type="file"
@@ -565,7 +565,7 @@ export const AIBuddyPage: React.FC = () => {
           {/* Photo Upload Button (44x44px min touch target) */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="w-11 h-11 flex items-center justify-center bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] hover:bg-[#F7F5EF] transition-colors shrink-0 active:scale-95"
+            className="w-11 h-11 rounded-full flex items-center justify-center bg-white border border-[#242622]/10 text-[#85857E] hover:text-[#242622] hover:bg-[#FAF9F5] transition-all shrink-0 tactile-btn shadow-sm"
             title="Attach photo, handwritten notes, RC document, or component"
             aria-label="Attach photo or document"
           >
@@ -575,10 +575,10 @@ export const AIBuddyPage: React.FC = () => {
           {/* Microphone Audio Button (44x44px min touch target) */}
           <button
             onClick={toggleSpeechRecording}
-            className={`w-11 h-11 flex items-center justify-center border transition-colors shrink-0 active:scale-95 ${
+            className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all shrink-0 tactile-btn shadow-sm ${
               isListening
                 ? 'bg-red-600 text-white border-red-500 animate-pulse'
-                : 'bg-white text-[#85857E] border-[#E9E3D8] hover:text-[#242622] hover:bg-[#F7F5EF]'
+                : 'bg-white text-[#85857E] border-[#242622]/10 hover:text-[#242622] hover:bg-[#FAF9F5]'
             }`}
             title={isListening ? 'Stop recording and transcribe' : 'Record voice or audio'}
             aria-label="Voice input recording"
@@ -586,22 +586,24 @@ export const AIBuddyPage: React.FC = () => {
             {isListening ? <MicOff className="w-5 h-5 text-white" /> : <Mic className="w-5 h-5 text-[#242622]" />}
           </button>
 
-          {/* Main Text Input */}
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && !isTyping && handleSend()}
-            disabled={isTyping}
-            placeholder={attachedImage ? 'Ask about image...' : 'Ask about 2-wheelers, prices, RC...'}
-            className="flex-1 bg-white border border-[#E9E3D8] px-3.5 py-2.5 min-h-[44px] text-xs sm:text-sm text-[#242622] focus:outline-none focus:border-[#35483C] disabled:opacity-50 min-w-0"
-          />
+          {/* Main Text Input inside Rounded Pill */}
+          <div className="flex-1 flex items-center bg-[#FAF9F5] rounded-full border border-[#242622]/10 px-4 py-1.5 focus-within:border-[#35483C] focus-within:ring-2 focus-within:ring-[#35483C]/10 transition-all min-h-[44px]">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && !isTyping && handleSend()}
+              disabled={isTyping}
+              placeholder={attachedImage ? 'Ask about image...' : 'Ask about 2-wheelers, prices, RC...'}
+              className="w-full bg-transparent text-xs sm:text-sm text-[#242622] placeholder:text-[#85857E] focus:outline-none disabled:opacity-50"
+            />
+          </div>
 
           {/* Submit Action Button */}
           <button
             onClick={() => handleSend()}
             disabled={isTyping || (!input.trim() && !attachedImage && !attachedAudio)}
-            className="px-4 sm:px-6 py-2.5 min-h-[44px] bg-[#35483C] hover:bg-[#242622] disabled:opacity-40 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-sm shrink-0 active:scale-95 border border-[#35483C]"
+            className="px-5 sm:px-6 min-h-[44px] rounded-full bg-[#35483C] hover:bg-[#242622] disabled:opacity-40 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-sm shrink-0 tactile-btn border border-[#35483C]"
             aria-label="Send message"
           >
             <span className="hidden xs:inline">{isTyping ? 'Thinking...' : 'Ask'}</span>

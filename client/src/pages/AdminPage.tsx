@@ -246,13 +246,13 @@ export const AdminPage: React.FC = () => {
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Top Header Banner */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-2xl">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl border border-[#242622]/[0.08] bg-white shadow-md">
           <div>
-            <span className="text-xs font-bold text-red-400 uppercase tracking-widest flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-red-400" />
+            <span className="text-xs font-mono font-bold text-red-600 uppercase tracking-widest flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-red-600" />
               <span>SUPERADMIN MODERATION ENGINE</span>
             </span>
-            <h1 className="font-heading font-extrabold text-2xl text-[#242622] mt-1">
+            <h1 className="font-heading font-extrabold text-2xl text-[#242622] mt-1 tracking-tight">
               GEAR UP Trust & Verification Desk
             </h1>
             <p className="text-xs text-[#85857E] mt-0.5">
@@ -261,50 +261,50 @@ export const AdminPage: React.FC = () => {
           </div>
 
           {/* Navigation Tab Switcher */}
-          <div className="flex items-center gap-1 p-1.5 rounded-none bg-white border border-[#E9E3D8] self-stretch md:self-auto overflow-x-auto">
+          <div className="flex items-center gap-1.5 p-1.5 rounded-full bg-[#FAF9F5] border border-[#242622]/10 self-stretch md:self-auto overflow-x-auto font-mono text-xs">
             <button
               onClick={() => setActiveTab('verification_desk')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-full font-bold transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap tactile-btn ${
                 activeTab === 'verification_desk'
                   ? 'bg-[#35483C] text-white shadow-sm'
                   : 'text-[#85857E] hover:text-[#242622]'
               }`}
             >
               <FileSearch className="w-4 h-4" />
-              <span>Document Verification Desk</span>
+              <span>Document Verification</span>
             </button>
             <button
               onClick={() => setActiveTab('smart_rc_desk')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-full font-bold transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap tactile-btn ${
                 activeTab === 'smart_rc_desk'
                   ? 'bg-[#35483C] text-white shadow-sm'
                   : 'text-[#85857E] hover:text-[#242622]'
               }`}
             >
-              <Cpu className="w-4 h-4 text-[#242622]" />
+              <Cpu className="w-4 h-4" />
               <span>Smart RC Reviews</span>
             </button>
             <button
               onClick={() => setActiveTab('marketplace_moderation')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-full font-bold transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap tactile-btn ${
                 activeTab === 'marketplace_moderation'
                   ? 'bg-[#35483C] text-white shadow-sm'
                   : 'text-[#85857E] hover:text-[#242622]'
               }`}
             >
               <Users className="w-4 h-4" />
-              <span>Marketplace Listings</span>
+              <span>Listings</span>
             </button>
             <button
               onClick={() => setActiveTab('location_revenue')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-full font-bold transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap tactile-btn ${
                 activeTab === 'location_revenue'
                   ? 'bg-[#35483C] text-white shadow-sm'
                   : 'text-[#85857E] hover:text-[#242622]'
               }`}
             >
-              <DollarSign className="w-4 h-4 text-[#242622]" />
-              <span>Location Monetization</span>
+              <DollarSign className="w-4 h-4" />
+              <span>Monetization</span>
             </button>
           </div>
         </div>
@@ -313,31 +313,31 @@ export const AdminPage: React.FC = () => {
           <div className="space-y-6 animate-fade-in">
             {/* Stat Counters */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-4 rounded-none bg-white border border-[#E9E3D8]">
-                <span className="text-[10px] uppercase font-bold text-[#85857E]">Total in Queue</span>
+              <div className="p-5 rounded-2xl bg-white border border-[#242622]/[0.08] shadow-sm">
+                <span className="text-[10px] uppercase font-mono font-bold text-[#85857E]">Total in Queue</span>
                 <p className="font-heading font-extrabold text-2xl text-[#242622] mt-1">{queue.length || 2}</p>
-                <p className="text-[10px] text-slate-500">Listings awaiting moderation</p>
+                <p className="text-[10px] text-[#85857E] font-mono">Listings awaiting moderation</p>
               </div>
-              <div className="p-4 rounded-none bg-white border border-amber-800/40">
-                <span className="text-[10px] uppercase font-bold text-amber-400">Needs Review</span>
-                <p className="font-heading font-extrabold text-2xl text-amber-300 mt-1">
+              <div className="p-5 rounded-2xl bg-white border border-amber-200 shadow-sm">
+                <span className="text-[10px] uppercase font-mono font-bold text-amber-700">Needs Review</span>
+                <p className="font-heading font-extrabold text-2xl text-amber-800 mt-1">
                   {queue.filter(q => q.overall_status === 'pending_review' || q.overall_status === 'partially_verified').length || 1}
                 </p>
-                <p className="text-[10px] text-amber-200/60">OCR confidence &lt; 90% or missing</p>
+                <p className="text-[10px] text-amber-700/80 font-mono">OCR confidence &lt; 90% or missing</p>
               </div>
-              <div className="p-4 rounded-none bg-white border border-red-800/40">
-                <span className="text-[10px] uppercase font-bold text-red-400">Discrepancy Alerts</span>
-                <p className="font-heading font-extrabold text-2xl text-red-300 mt-1">
+              <div className="p-5 rounded-2xl bg-white border border-red-200 shadow-sm">
+                <span className="text-[10px] uppercase font-mono font-bold text-red-600">Discrepancy Alerts</span>
+                <p className="font-heading font-extrabold text-2xl text-red-700 mt-1">
                   {queue.filter(q => q.mismatches_count > 0).length || 0}
                 </p>
-                <p className="text-[10px] text-red-200/60">Fuel or chassis mismatches</p>
+                <p className="text-[10px] text-red-600/80 font-mono">Fuel or chassis mismatches</p>
               </div>
-              <div className="p-4 rounded-none bg-white border border-emerald-800/40">
-                <span className="text-[10px] uppercase font-bold text-[#242622]">Verified & Cleared</span>
-                <p className="font-heading font-extrabold text-2xl text-[#242622] mt-1">
+              <div className="p-5 rounded-2xl bg-white border border-emerald-200 shadow-sm">
+                <span className="text-[10px] uppercase font-mono font-bold text-emerald-700">Verified & Cleared</span>
+                <p className="font-heading font-extrabold text-2xl text-emerald-800 mt-1">
                   {queue.filter(q => q.overall_status === 'verified_documents').length || 1}
                 </p>
-                <p className="text-[10px] text-[#35483C]/60">Published with Trust Badge</p>
+                <p className="text-[10px] text-emerald-700/80 font-mono">Published with Trust Badge</p>
               </div>
             </div>
 
