@@ -30,24 +30,27 @@ export const Navbar: React.FC<NavbarProps> = ({
   const location = useLocation();
 
   const navLinks = [
-    { num: '01', label: 'Explore Fleet', path: '/explore' },
-    { num: '02', label: 'ML Valuation', path: '/price-estimator' },
-    { num: '03', label: '3D Digital Twin', path: '/inspect/bike-001' },
+    { num: '01', label: 'Explore', path: '/explore' },
+    { num: '02', label: 'Valuation', path: '/price-estimator' },
+    { num: '03', label: '3D Twin', path: '/inspect/bike-001' },
     { num: '04', label: 'Resale Studio', path: '/resale-studio' },
     { num: '05', label: 'Bike Doctor', path: '/bike-doctor' },
-    { num: '06', label: 'Compare Matrix', path: '/compare' },
-    { num: '07', label: '120-Pt Standards', path: '/trust' },
+    { num: '06', label: 'Compare', path: '/compare' },
+    { num: '07', label: 'Standards', path: '/trust' },
   ];
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E9E3D8] shadow-[0_4px_25px_-5px_rgba(36,38,34,0.08)] transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-4 h-16 sm:h-20 w-full">
           
-          {/* Left: Brand Emblem & Location Selector */}
-          <div className="flex items-center gap-2.5 sm:gap-6 min-w-0">
-            <Link to="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#35483C] flex items-center justify-center text-white shadow-sm group-hover:bg-[#242622] transition-colors border border-[#35483C]">
+          {/* =========================================================================
+              LEFT: Brand Emblem & Regional Location Selector (Fixed / Never Shrinks)
+             ========================================================================= */}
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+            {/* Brand Logo & Name */}
+            <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#35483C] flex items-center justify-center text-white shadow-sm group-hover:bg-[#242622] transition-colors border border-[#35483C] shrink-0">
                 <span className="font-heading font-extrabold text-xs sm:text-sm tracking-wider">GU</span>
               </div>
               <div className="flex flex-col">
@@ -60,21 +63,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             </Link>
 
-            {/* Hub Selector Dropdown (Responsive: visible on both desktop and compact mobile pill) */}
-            <div className="relative">
+            {/* Hub Location Selector Pill */}
+            <div className="relative shrink-0 pl-1 sm:pl-2 border-l border-[#E9E3D8]">
               <button
                 type="button"
                 onClick={() => setLocationDropdownOpen(!locationDropdownOpen)}
-                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 min-h-[38px] sm:min-h-[42px] text-[10px] sm:text-xs font-mono uppercase tracking-wider text-[#242622] bg-white hover:bg-[#F7F5EF] border border-[#E9E3D8] transition-colors active:scale-95"
-                title="Select City / Hub"
+                className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 min-h-[38px] sm:min-h-[40px] text-[10px] sm:text-xs font-mono uppercase tracking-wider text-[#242622] bg-white hover:bg-[#F7F5EF] border border-[#E9E3D8] transition-colors active:scale-95 shrink-0"
+                title="Select Regional Hub"
               >
-                <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#35483C] shrink-0" />
-                <span className="max-w-[70px] xs:max-w-[100px] sm:max-w-[140px] truncate font-semibold">
+                <MapPin className="w-3.5 h-3.5 text-[#35483C] shrink-0" />
+                <span className="max-w-[80px] xs:max-w-[100px] sm:max-w-[120px] truncate font-bold text-[#242622]">
                   {currentLocation.city}
                 </span>
                 <ChevronDown className="w-3 h-3 text-[#85857E] shrink-0" />
               </button>
 
+              {/* Hub Dropdown Menu */}
               {locationDropdownOpen && (
                 <div className="absolute left-0 mt-2 w-72 sm:w-80 bg-white border border-[#E9E3D8] p-3 shadow-2xl z-50 animate-fade-in text-xs max-w-[calc(100vw-1.5rem)]">
                   <div className="px-2 py-1.5 text-[10px] font-mono font-bold text-[#85857E] uppercase tracking-[0.2em] border-b border-[#E9E3D8]">
@@ -102,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         }}
                         className={`w-full flex items-center justify-between px-2.5 py-2 text-left transition-colors font-mono text-[11px] min-h-[44px] ${
                           currentLocation.name === hub.name
-                            ? 'bg-[#35483C] text-white'
+                            ? 'bg-[#35483C] text-white font-bold'
                             : 'text-[#242622] hover:bg-[#E9E3D8]/40'
                         }`}
                       >
@@ -121,21 +125,23 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Center Navigation Links (Desktop) */}
-          <nav className="hidden xl:flex items-center gap-6">
+          {/* =========================================================================
+              CENTER: Navigation Links (Never Wraps, Spaced Evenly)
+             ========================================================================= */}
+          <nav className="hidden lg:flex items-center justify-center gap-3.5 xl:gap-5 2xl:gap-6 flex-1 min-w-0 px-2">
             {navLinks.map((item) => {
               const isActive = location.pathname === item.path || (item.path.startsWith('/inspect') && location.pathname.startsWith('/inspect'));
               return (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`group relative text-[11px] font-mono uppercase tracking-[0.18em] transition-all py-1 ${
+                  className={`group relative text-[11px] 2xl:text-xs font-mono uppercase tracking-[0.12em] 2xl:tracking-[0.16em] transition-all py-1.5 whitespace-nowrap shrink-0 ${
                     isActive
                       ? 'text-[#242622] font-bold'
                       : 'text-[#85857E] hover:text-[#242622]'
                   }`}
                 >
-                  <span className="text-[9px] text-[#A4AD98] mr-1">{item.num} /</span>
+                  <span className="text-[9px] text-[#A4AD98] mr-1 hidden 2xl:inline">{item.num} /</span>
                   <span>{item.label}</span>
                   {isActive && (
                     <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#35483C]" />
@@ -145,23 +151,26 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </nav>
 
-          {/* Right Action Buttons */}
-          <div className="flex items-center gap-1.5 sm:gap-3">
-            {/* Sell Action Button */}
+          {/* =========================================================================
+              RIGHT: Primary Action Buttons (Fixed / Never Shrinks)
+             ========================================================================= */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* List Machine Button */}
             <Link
               to="/sell"
-              className="px-3 sm:px-5 py-2 sm:py-2.5 text-xs font-mono uppercase tracking-[0.12em] font-bold bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] shadow-sm flex items-center gap-1.5 sm:gap-2 transition-all min-h-[40px] sm:min-h-[44px] active:scale-95 group"
+              className="px-3.5 sm:px-5 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[42px] text-xs font-mono uppercase tracking-[0.12em] font-bold bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] shadow-sm flex items-center gap-1.5 sm:gap-2 transition-all active:scale-95 shrink-0 group"
             >
               <Plus className="w-3.5 h-3.5 group-hover:rotate-90 transition-transform duration-300 shrink-0" />
               <span className="hidden sm:inline">List Machine</span>
               <span className="sm:hidden">Sell</span>
             </Link>
 
-            {/* Dashboard / Profile Button */}
+            {/* Dashboard / Account Button */}
             <Link
               to="/dashboard"
-              className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-[#242622] hover:bg-[#F7F5EF] bg-white border border-[#E9E3D8] transition-colors active:scale-95 shrink-0"
+              className="w-10 h-10 sm:w-10 sm:h-10 flex items-center justify-center text-[#242622] hover:bg-[#F7F5EF] bg-white border border-[#E9E3D8] transition-colors active:scale-95 shrink-0 shadow-sm"
               title="Dashboard"
+              aria-label="User Dashboard"
             >
               <User className="w-4 h-4" />
             </Link>
@@ -169,17 +178,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Mobile / Tablet Menu Trigger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-[#242622] border border-[#E9E3D8] hover:bg-[#F7F5EF] bg-white transition-colors active:scale-95 shrink-0"
+              className="lg:hidden w-10 h-10 flex items-center justify-center text-[#242622] border border-[#E9E3D8] hover:bg-[#F7F5EF] bg-white transition-colors active:scale-95 shrink-0 shadow-sm"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
+
         </div>
 
         {/* Mobile Navigation Drawer with Glassmorphism */}
         {mobileMenuOpen && (
-          <div className="xl:hidden border-t border-[#E9E3D8] py-4 space-y-1.5 bg-white/95 backdrop-blur-xl animate-fade-in shadow-xl -mx-3 px-4 sm:-mx-6 sm:px-6">
+          <div className="lg:hidden border-t border-[#E9E3D8] py-4 space-y-1.5 bg-white/95 backdrop-blur-xl animate-fade-in shadow-xl -mx-4 px-4 sm:-mx-6 sm:px-6">
             <div className="px-1 pb-2 border-b border-[#E9E3D8] flex items-center justify-between">
               <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#85857E]">
                 GEAR UP Destinations
