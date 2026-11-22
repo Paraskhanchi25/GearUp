@@ -13,11 +13,11 @@ export const initHeroEntrance = (heroContainer: HTMLElement | null) => {
   if (!heroContainer) return;
 
   const ctx = gsap.context(() => {
-    // 1. Hero background zoom-out entrance
+    // 1. Hero background entrance
     gsap.fromTo(
-      '.hero-bg-img, .hero-bg-canvas',
-      { scale: 1.08, filter: 'brightness(0.7)' },
-      { scale: 1.0, filter: 'brightness(1.0)', duration: 1.8, ease: 'power2.out' }
+      '.hero-bg-img',
+      { scale: 1.15, filter: 'brightness(0.5)' },
+      { scale: 1.0, filter: 'brightness(0.7)', duration: 1.8, ease: 'power2.out' }
     );
 
     // 2. Telemetry top ticker reveal
@@ -57,7 +57,7 @@ export const initHeroEntrance = (heroContainer: HTMLElement | null) => {
     );
 
     // 6. Subtle scroll-based parallax on hero backdrop
-    gsap.to('.hero-bg-img, .hero-bg-canvas', {
+    gsap.to('.hero-bg-img', {
       yPercent: 12,
       ease: 'none',
       scrollTrigger: {

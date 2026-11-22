@@ -21,7 +21,7 @@ import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
 import { VehicleCard } from '../components/VehicleCard';
 import { ExplodedMotorcycleHero } from '../components/ExplodedMotorcycleHero';
-import { initHeroEntrance, initScrollSections } from '../utils/motion';
+import { initScrollSections } from '../utils/motion';
 import { gsap } from 'gsap';
 
 interface HomePageProps {
@@ -40,28 +40,13 @@ export const HomePage: React.FC<HomePageProps> = ({
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
-  const [heroIndex, setHeroIndex] = useState<number>(0);
-
-  const heroRef = useRef<HTMLElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
 
-  const featuredSpecimen = {
-    title: 'Apex V4 SuperSport (Exploded Mechanical Twin)',
-    subtitle: '998 CC // 214 BHP // CONTINUOUS 3D DISASSEMBLY',
-    price: '₹21,80,000',
-    displacement: '998 CC INLINE-4',
-    power: '214 BHP @ 13,500 RPM',
-    score: '99.4% (PLATINUM)',
-    id: 'bike-001'
-  };
-
-  // GSAP Entrance & ScrollTrigger initialization
+  // GSAP ScrollTrigger initialization for fleet, valuation and content sections
   useEffect(() => {
-    const cleanupHero = initHeroEntrance(heroRef.current);
     const cleanupScroll = initScrollSections(pageRef.current);
 
     return () => {
-      cleanupHero?.();
       cleanupScroll?.();
     };
   }, []);
@@ -79,145 +64,67 @@ export const HomePage: React.FC<HomePageProps> = ({
     <div ref={pageRef} className="bg-[#F7F5EF] text-[#242622] selection:bg-[#35483C] selection:text-white overflow-hidden">
       
       {/* =========================================================================
-          SECTION 1: CINEMATIC FULL-WIDTH HERO (AC MOTORSPORT MOTION)
+          SECTION 1: FULL-SCREEN SCROLL-CONTROLLED 3D EXPLODED MOTORCYCLE (100VW x 100VH)
          ========================================================================= */}
-      <section ref={heroRef} className="relative min-h-[90vh] lg:min-h-[94vh] flex flex-col justify-between border-b border-[#E9E3D8] overflow-hidden bg-[#1E201E]">
-        
-        {/* Full-bleed continuous 3D exploded motorcycle canvas animation */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <ExplodedMotorcycleHero className="hero-bg-canvas w-full h-full" />
-        </div>
+      <ExplodedMotorcycleHero />
 
-        {/* Top Telemetry Header Ticker */}
-        <div className="hero-ticker relative z-10 max-w-7xl mx-auto w-full px-6 sm:px-12 pt-8 flex items-center justify-between text-white/70 text-[10px] font-mono tracking-[0.25em] uppercase border-b border-white/10 pb-4">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-            <span className="text-white font-bold">RTO PARIVAHAN ESCROW ACTIVE</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-6">
-            <span>CHANDIGARH TRICITY</span>
-            <span>•</span>
-            <span>DELHI NCR</span>
-            <span>•</span>
-            <span>BENGALURU</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 bg-white/10 border border-white/20 text-[9px] font-mono text-[#A4AD98]">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            <span>3D EXPLODED TELEMETRY ACTIVE</span>
-          </div>
-        </div>
-
-        {/* Hero Core Content */}
-        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 sm:px-12 py-12 flex flex-col justify-end space-y-8">
+      {/* =========================================================================
+          SECTION 1.5: FLEET EXPLORATION HUD & VALUATION TELEMETRY
+         ========================================================================= */}
+      <section className="bg-[#242622] border-b border-[#E9E3D8] py-12 px-6 sm:px-12 lg:px-20 text-white">
+        <div className="max-w-7xl mx-auto space-y-8">
           
-          <div className="space-y-4 max-w-4xl">
-            {/* Tagline Pill */}
-            <div className="hero-title-line inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white font-mono text-[10px] uppercase tracking-[0.2em]">
-              <span>INDEX CERTIFIED TWO-WHEELERS</span>
-              <span>•</span>
-              <span className="text-[#A4AD98]">120-PT VERIFIED</span>
-            </div>
-
-            {/* Oversized Architectural Headline */}
-            <h1 className="hero-title-line font-heading font-extrabold text-4xl sm:text-7xl lg:text-8xl text-white tracking-tight uppercase leading-[0.95]">
-              PRECISION <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#E9E3D8] to-[#A4AD98]">
-                ENGINEERED.
+          {/* Telemetry Strip & Quick Action Bar */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-white/10">
+            <div>
+              <span className="font-mono text-xs text-[#A4AD98] tracking-[0.2em] uppercase block">
+                [ VERIFIED HIGH-PERFORMANCE FLEET ]
               </span>
-            </h1>
-
-            <p className="hero-title-line text-white/80 font-sans text-sm sm:text-lg max-w-xl font-light leading-relaxed">
-              India’s dedicated high-performance marketplace for verified motorcycles & scooters. Each machine inspected across 120 certified points and priced by machine learning telemetry.
-            </p>
-          </div>
-
-          {/* Search HUD & Action Buttons */}
-          <div className="hero-search-hud grid grid-cols-1 lg:grid-cols-12 gap-4 items-center pt-2">
-            
-            {/* Search Input Bar */}
-            <div className="lg:col-span-8 bg-white border border-[#E9E3D8] p-2 flex flex-col sm:flex-row items-center gap-2 shadow-2xl">
-              <div className="flex-1 flex items-center gap-3 px-3 py-2 w-full">
-                <Search className="w-4 h-4 text-[#35483C] shrink-0" />
-                <input
-                  type="text"
-                  value={searchKeyword}
-                  onChange={(e) => setSearchKeyword(e.target.value)}
-                  placeholder="Model, manufacturer, or engine displacement (e.g. Classic 350, R15, Ather 450X)..."
-                  className="w-full bg-transparent text-xs font-mono text-[#242622] placeholder-[#85857E] focus:outline-none"
-                />
-              </div>
-
-              <button
-                onClick={handleHeroSearch}
-                className="w-full sm:w-auto px-6 py-3 bg-[#35483C] hover:bg-[#242622] text-white font-mono text-xs uppercase tracking-wider font-bold transition-all shrink-0 active:scale-[0.98]"
-              >
-                Explore Fleet
-              </button>
+              <h2 className="font-heading font-extrabold text-2xl sm:text-4xl text-white uppercase tracking-tight mt-1">
+                ENGINEERED FOR THE ROAD.
+              </h2>
             </div>
 
-            {/* Direct Action Links */}
-            <div className="lg:col-span-4 flex items-center gap-3">
+            {/* Quick Action Links */}
+            <div className="flex items-center gap-3">
               <Link
                 to="/price-estimator"
-                className="flex-1 px-4 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md text-xs font-mono uppercase tracking-wider text-center transition-all active:scale-[0.98]"
+                className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md text-xs font-mono uppercase tracking-wider text-center transition-all"
               >
                 ML Valuation
               </Link>
               <Link
                 to="/inspect/bike-001"
-                className="flex-1 px-4 py-3 bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] text-xs font-mono uppercase tracking-wider text-center transition-all flex items-center justify-center gap-1.5 active:scale-[0.98]"
+                className="px-5 py-3 bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] text-xs font-mono uppercase tracking-wider text-center transition-all flex items-center justify-center gap-1.5"
               >
                 <Layers className="w-3.5 h-3.5" />
                 <span>3D Twin</span>
               </Link>
             </div>
-
           </div>
 
-          {/* Machine Telemetry Card (Featured Highlight) */}
-          <div className="hero-spec-strip border-t border-white/15 pt-6 flex flex-wrap items-center justify-between gap-4 text-white text-xs font-mono">
-            <div>
-              <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">FEATURED SPECIMEN</span>
-              <span className="font-bold text-sm text-white">{featuredSpecimen.title}</span>
+          {/* Search HUD */}
+          <div className="bg-white border border-[#E9E3D8] p-2 flex flex-col sm:flex-row items-center gap-2 shadow-2xl">
+            <div className="flex-1 flex items-center gap-3 px-3 py-2 w-full">
+              <Search className="w-4 h-4 text-[#35483C] shrink-0" />
+              <input
+                type="text"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                placeholder="Model, manufacturer, or engine displacement (e.g. Classic 350, R15, Ather 450X)..."
+                className="w-full bg-transparent text-xs font-mono text-[#242622] placeholder-[#85857E] focus:outline-none"
+              />
             </div>
-            <div>
-              <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">DISPLACEMENT</span>
-              <span className="font-bold text-sm text-white">{featuredSpecimen.displacement}</span>
-            </div>
-            <div>
-              <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">POWER</span>
-              <span className="font-bold text-sm text-white">{featuredSpecimen.power}</span>
-            </div>
-            <div>
-              <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">VALUATION</span>
-              <span className="font-bold text-sm text-[#E9E3D8]">{featuredSpecimen.price}</span>
-            </div>
-            <div>
-              <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">INSPECTION SCORE</span>
-              <span className="font-bold text-sm text-[#A4AD98]">{featuredSpecimen.score}</span>
-            </div>
-            <div>
-              <Link
-                to={`/inspect/${featuredSpecimen.id}`}
-                className="px-4 py-2 border border-white/40 hover:bg-white hover:text-[#242622] text-white text-[11px] uppercase tracking-wider transition-all inline-flex items-center gap-1.5"
-              >
-                <span>3D Digital Twin</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
+
+            <button
+              onClick={handleHeroSearch}
+              className="w-full sm:w-auto px-6 py-3 bg-[#35483C] hover:bg-[#242622] text-white font-mono text-xs uppercase tracking-wider font-bold transition-all shrink-0 active:scale-[0.98]"
+            >
+              Explore Fleet
+            </button>
           </div>
 
         </div>
-
-        {/* Refined Minimalist Scroll Indicator */}
-        <div className="relative z-10 w-full px-6 sm:px-12 pb-6 flex items-center justify-between text-white/50 text-[9px] font-mono tracking-[0.25em] uppercase">
-          <span>GEAR UP MOBILITY LTD.</span>
-          <div className="flex items-center gap-2">
-            <span>SCROLL TO EXPLORE</span>
-            <span className="w-4 h-[1px] bg-white/40 animate-pulse" />
-          </div>
-        </div>
-
       </section>
 
       {/* =========================================================================
