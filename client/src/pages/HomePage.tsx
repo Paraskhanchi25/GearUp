@@ -20,6 +20,7 @@ import { VehicleListing, SearchCenter } from '../types';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
 import { VehicleCard } from '../components/VehicleCard';
+import { ExplodedMotorcycleHero } from '../components/ExplodedMotorcycleHero';
 import { initHeroEntrance, initScrollSections } from '../utils/motion';
 import { gsap } from 'gsap';
 
@@ -44,40 +45,15 @@ export const HomePage: React.FC<HomePageProps> = ({
   const heroRef = useRef<HTMLElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
 
-  const heroMachines = [
-    {
-      title: 'Royal Enfield Classic 350',
-      subtitle: '2023 // 14,000 KM // DARK STEALTH BLACK',
-      price: '₹1,82,000',
-      displacement: '349 CC',
-      power: '20.2 BHP',
-      score: '4.85 / 5.0',
-      image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=2200&q=85',
-      id: 'bike-001'
-    },
-    {
-      title: 'Yamaha YZF R15 V4',
-      subtitle: '2023 // 12,500 KM // RACING BLUE DUAL ABS',
-      price: '₹1,58,000',
-      displacement: '155 CC',
-      power: '18.4 BHP',
-      score: '4.90 / 5.0',
-      image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=2200&q=85',
-      id: 'bike-004'
-    },
-    {
-      title: 'Ather 450X Gen 3',
-      subtitle: '2023 // 9,800 KM // SPACE GREY 3.7 kWh',
-      price: '₹1,18,000',
-      displacement: 'EV 6.4 kW',
-      power: '26 Nm',
-      score: '4.78 / 5.0',
-      image: 'https://images.unsplash.com/photo-1595188849767-4d0588647249?auto=format&fit=crop&w=2200&q=85',
-      id: 'bike-007'
-    }
-  ];
-
-  const currentHero = heroMachines[heroIndex];
+  const featuredSpecimen = {
+    title: 'Apex V4 SuperSport (Exploded Mechanical Twin)',
+    subtitle: '998 CC // 214 BHP // CONTINUOUS 3D DISASSEMBLY',
+    price: '₹21,80,000',
+    displacement: '998 CC INLINE-4',
+    power: '214 BHP @ 13,500 RPM',
+    score: '99.4% (PLATINUM)',
+    id: 'bike-001'
+  };
 
   // GSAP Entrance & ScrollTrigger initialization
   useEffect(() => {
@@ -89,25 +65,6 @@ export const HomePage: React.FC<HomePageProps> = ({
       cleanupScroll?.();
     };
   }, []);
-
-  // Rotate hero machines smoothly with motion
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroIndex((prev) => {
-        const nextIdx = (prev + 1) % heroMachines.length;
-        gsap.fromTo('.hero-bg-img', { opacity: 0.65, scale: 1.05 }, { opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out' });
-        gsap.fromTo('.hero-spec-strip', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' });
-        return nextIdx;
-      });
-    }, 8000);
-    return () => clearInterval(timer);
-  }, [heroMachines.length]);
-
-  const handleManualSwitchHero = (idx: number) => {
-    setHeroIndex(idx);
-    gsap.fromTo('.hero-bg-img', { opacity: 0.65, scale: 1.05 }, { opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out' });
-    gsap.fromTo('.hero-spec-strip', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' });
-  };
 
   const filteredInventory = SEED_LISTINGS.filter(
     (b) => selectedCategory === 'all' || b.category.toLowerCase() === selectedCategory.toLowerCase()
@@ -124,24 +81,17 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* =========================================================================
           SECTION 1: CINEMATIC FULL-WIDTH HERO (AC MOTORSPORT MOTION)
          ========================================================================= */}
-      <section ref={heroRef} className="relative min-h-[90vh] lg:min-h-[94vh] flex flex-col justify-between border-b border-[#E9E3D8] overflow-hidden bg-[#242622]">
+      <section ref={heroRef} className="relative min-h-[90vh] lg:min-h-[94vh] flex flex-col justify-between border-b border-[#E9E3D8] overflow-hidden bg-[#1E201E]">
         
-        {/* Full-bleed background image with subtle parallax & scale */}
+        {/* Full-bleed continuous 3D exploded motorcycle canvas animation */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <img
-            key={currentHero.image}
-            src={currentHero.image}
-            alt={currentHero.title}
-            className="hero-bg-img w-full h-full object-cover object-center brightness-[0.70] contrast-[1.1] will-change-transform"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#242622] via-[#242622]/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#242622]/80 via-transparent to-transparent" />
+          <ExplodedMotorcycleHero className="hero-bg-canvas w-full h-full" />
         </div>
 
         {/* Top Telemetry Header Ticker */}
         <div className="hero-ticker relative z-10 max-w-7xl mx-auto w-full px-6 sm:px-12 pt-8 flex items-center justify-between text-white/70 text-[10px] font-mono tracking-[0.25em] uppercase border-b border-white/10 pb-4">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#A4AD98] animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
             <span className="text-white font-bold">RTO PARIVAHAN ESCROW ACTIVE</span>
           </div>
           <div className="hidden sm:flex items-center gap-6">
@@ -151,17 +101,9 @@ export const HomePage: React.FC<HomePageProps> = ({
             <span>•</span>
             <span>BENGALURU</span>
           </div>
-          <div className="flex items-center gap-2">
-            {heroMachines.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => handleManualSwitchHero(i)}
-                className={`w-6 h-1 transition-all ${
-                  heroIndex === i ? 'bg-[#A4AD98] w-8' : 'bg-white/30 hover:bg-white/60'
-                }`}
-                title={`Select machine 0${i + 1}`}
-              />
-            ))}
+          <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 bg-white/10 border border-white/20 text-[9px] font-mono text-[#A4AD98]">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            <span>3D EXPLODED TELEMETRY ACTIVE</span>
           </div>
         </div>
 
@@ -170,7 +112,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           
           <div className="space-y-4 max-w-4xl">
             {/* Tagline Pill */}
-            <div className="hero-title-line inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-[#242622] font-mono text-[10px] uppercase tracking-[0.2em]">
+            <div className="hero-title-line inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white font-mono text-[10px] uppercase tracking-[0.2em]">
               <span>INDEX CERTIFIED TWO-WHEELERS</span>
               <span>•</span>
               <span className="text-[#A4AD98]">120-PT VERIFIED</span>
@@ -217,7 +159,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="lg:col-span-4 flex items-center gap-3">
               <Link
                 to="/price-estimator"
-                className="flex-1 px-4 py-3 bg-white/10 hover:bg-white/20 text-[#242622] border border-white/20 backdrop-blur-md text-xs font-mono uppercase tracking-wider text-center transition-all active:scale-[0.98]"
+                className="flex-1 px-4 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md text-xs font-mono uppercase tracking-wider text-center transition-all active:scale-[0.98]"
               >
                 ML Valuation
               </Link>
@@ -236,30 +178,30 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="hero-spec-strip border-t border-white/15 pt-6 flex flex-wrap items-center justify-between gap-4 text-white text-xs font-mono">
             <div>
               <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">FEATURED SPECIMEN</span>
-              <span className="font-bold text-sm text-white">{currentHero.title}</span>
+              <span className="font-bold text-sm text-white">{featuredSpecimen.title}</span>
             </div>
             <div>
               <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">DISPLACEMENT</span>
-              <span className="font-bold text-sm text-white">{currentHero.displacement}</span>
+              <span className="font-bold text-sm text-white">{featuredSpecimen.displacement}</span>
             </div>
             <div>
               <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">POWER</span>
-              <span className="font-bold text-sm text-white">{currentHero.power}</span>
+              <span className="font-bold text-sm text-white">{featuredSpecimen.power}</span>
             </div>
             <div>
               <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">VALUATION</span>
-              <span className="font-bold text-sm text-[#E9E3D8]">{currentHero.price}</span>
+              <span className="font-bold text-sm text-[#E9E3D8]">{featuredSpecimen.price}</span>
             </div>
             <div>
               <span className="block text-[9px] uppercase tracking-widest text-[#A4AD98]">INSPECTION SCORE</span>
-              <span className="font-bold text-sm text-[#A4AD98]">{currentHero.score}</span>
+              <span className="font-bold text-sm text-[#A4AD98]">{featuredSpecimen.score}</span>
             </div>
             <div>
               <Link
-                to={`/bike/${currentHero.id}`}
-                className="px-4 py-2 border border-white/40 hover:bg-white hover:text-[#242622] text-[#242622] text-[11px] uppercase tracking-wider transition-all inline-flex items-center gap-1.5"
+                to={`/inspect/${featuredSpecimen.id}`}
+                className="px-4 py-2 border border-white/40 hover:bg-white hover:text-[#242622] text-white text-[11px] uppercase tracking-wider transition-all inline-flex items-center gap-1.5"
               >
-                <span>Full Telemetry</span>
+                <span>3D Digital Twin</span>
                 <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
