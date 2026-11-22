@@ -38,11 +38,13 @@ import {
   FileSearch,
   Navigation,
   Crosshair,
-  Compass
+  Compass,
+  Cpu
 } from 'lucide-react';
 import { formatINR } from '../utils/geo';
 import { PickupLocation } from '../types';
 import { SellerPickupLocationPicker } from '../components/SellerPickupLocationPicker';
+import { SmartRCVerificationModal } from '../components/SmartRCVerificationModal';
 import { 
   getVehicleCatalog,
   uploadVerificationDocument, 
@@ -117,6 +119,7 @@ export const SellBikePage: React.FC = () => {
   const [isOwnershipUploading, setIsOwnershipUploading] = useState(false);
   const [ownershipMode, setOwnershipMode] = useState<'reuse_rc' | 'upload_custom'>('reuse_rc');
   const [sellerFullName, setSellerFullName] = useState('Vikramjit Singh');
+  const [smartRCModalOpen, setSmartRCModalOpen] = useState(false);
 
   // Step 4: Pickup & Test Ride Location
   const [pickupLocation, setPickupLocation] = useState<PickupLocation>({
@@ -934,6 +937,34 @@ export const SellBikePage: React.FC = () => {
                 )}
                 <span>{passedDocsCount} / 4 Documents Verified</span>
               </div>
+            </div>
+
+            {/* Dedicated Smart RC AI Verification & Hackathon Showcase Banner */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-[#10221B] to-forest-950 border border-emerald-500/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-glow">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/40">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-extrabold text-sm text-white flex items-center gap-2">
+                    <span>SMART RC VERIFICATION & AUTHENTICITY ENGINE</span>
+                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/30 uppercase">
+                      AI OCR + ML
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-slate-300 mt-0.5">
+                    Launch the interactive RC intelligence studio with field confirmation, OpenCV quality checks, and Hackathon demo presets.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSmartRCModalOpen(true)}
+                className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-glow transition-all cursor-pointer flex-shrink-0"
+              >
+                <Cpu className="w-4 h-4" />
+                <span>Launch RC Studio</span>
+              </button>
             </div>
 
             {/* 4 Compulsory Document Cards Grid */}
@@ -1762,6 +1793,32 @@ export const SellBikePage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Smart RC AI Verification Modal */}
+      <SmartRCVerificationModal
+        isOpen={smartRCModalOpen}
+        onClose={() => setSmartRCModalOpen(false)}
+        listingDetails={{
+          brand: brand,
+          model: model,
+          year: year,
+          registration_number: registrationNumber,
+          fuel_type: fuelType
+        }}
+        onVerificationComplete={(compRes) => {
+          if (compRes.finalWorkflowStatus === 'DOCUMENT_MATCHED' || compRes.finalWorkflowStatus === 'GOVERNMENT_VERIFIED') {
+            setRcResult({
+              passed: true,
+              status: compRes.finalWorkflowStatus,
+              registration_number: registrationNumber,
+              owner_name: 'Verified Owner',
+              manufacturer: brand,
+              model: model
+            });
+            refreshStatus();
+          }
+        }}
+      />
     </div>
   );
 };

@@ -402,7 +402,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.030546",
-    "updated_at": "2026-11-22T05:57:20.381002",
+    "updated_at": "2026-11-22T06:19:32.533832",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -413,12 +413,12 @@
     },
     "level1_basic": {
       "rc": {
-        "doc_id": "DOC-9DCB2EEC",
+        "doc_id": "DOC-37EB63E3",
         "filename": "rc.pdf",
         "file_size": 198,
         "mime_type": "application/pdf",
         "sha256_hash": "65046241bd91b3eb92dcb1a63fb0e553aaef93cc5a0562b06142c26283daec30",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "rc",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -554,7 +554,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.036195",
-    "updated_at": "2026-11-22T05:57:20.394961",
+    "updated_at": "2026-11-22T06:19:32.546804",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -565,12 +565,12 @@
     },
     "level1_basic": {
       "rc": {
-        "doc_id": "DOC-1D60F341",
+        "doc_id": "DOC-9E9305C2",
         "filename": "rc.pdf",
         "file_size": 90,
         "mime_type": "application/pdf",
         "sha256_hash": "53f348d532fc26e1fe984bbb8f0e5a38136795de0361fba02f108777a60118a1",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "rc",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -592,12 +592,12 @@
         "status_reason": "RC verified: Registration, manufacturer, and fuel type match listing."
       },
       "insurance": {
-        "doc_id": "DOC-62BA619D",
+        "doc_id": "DOC-603EC25D",
         "filename": "insurance.pdf",
         "file_size": 78,
         "mime_type": "application/pdf",
         "sha256_hash": "a9773a92319327df6fd6cf5944b988217734583a5cb7deae03f62ab1920756d1",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "insurance",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -726,7 +726,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.042383",
-    "updated_at": "2026-11-22T05:57:20.397525",
+    "updated_at": "2026-11-22T06:19:32.550008",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -741,12 +741,12 @@
         "status_reason": "Registration Certificate (RC) has not been uploaded."
       },
       "insurance": {
-        "doc_id": "DOC-03815582",
+        "doc_id": "DOC-BA63002B",
         "filename": "ins_exp.pdf",
         "file_size": 77,
         "mime_type": "application/pdf",
         "sha256_hash": "46dee02a7645591ce15fa97c7ea194f65284058b673b7172e80c520d748c60c4",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "insurance",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -872,7 +872,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.045330",
-    "updated_at": "2026-11-22T05:57:20.401761",
+    "updated_at": "2026-11-22T06:19:32.554451",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -892,12 +892,12 @@
         "status_reason": "Insurance policy document has not been uploaded."
       },
       "puc": {
-        "doc_id": "DOC-FBB9AA5D",
+        "doc_id": "DOC-7909AFE2",
         "filename": "puc_exp.pdf",
         "file_size": 72,
         "mime_type": "application/pdf",
         "sha256_hash": "ca020783f6edb00e978c25a670c3b5bb6dc220dd2ac822fbbe966187fc2902f0",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "puc",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -1018,7 +1018,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.048356",
-    "updated_at": "2026-11-22T05:57:20.405810",
+    "updated_at": "2026-11-22T06:19:32.558536",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -1029,12 +1029,12 @@
     },
     "level1_basic": {
       "rc": {
-        "doc_id": "DOC-C248FB8A",
+        "doc_id": "DOC-59469B21",
         "filename": "rc_diff.pdf",
         "file_size": 73,
         "mime_type": "application/pdf",
         "sha256_hash": "efd70843a936f25e995b324d26a859d6d0c9e50616394d0c4e55cc49696bc260",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "rc",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -1166,7 +1166,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.052057",
-    "updated_at": "2026-11-22T05:57:20.413880",
+    "updated_at": "2026-11-22T06:19:32.567325",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -1177,12 +1177,12 @@
     },
     "level1_basic": {
       "rc": {
-        "doc_id": "DOC-355CE2B8",
+        "doc_id": "DOC-7645FCC5",
         "filename": "rc.pdf",
         "file_size": 84,
         "mime_type": "application/pdf",
         "sha256_hash": "d0ce921f4c16089d314f80b06f1ae73fc11a40321be8880198c6b1400da1da24",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "rc",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -1204,12 +1204,12 @@
         "status_reason": "RC verified: Registration, manufacturer, and fuel type match listing."
       },
       "insurance": {
-        "doc_id": "DOC-6F0377E2",
+        "doc_id": "DOC-0991B501",
         "filename": "ins.pdf",
         "file_size": 77,
         "mime_type": "application/pdf",
         "sha256_hash": "d3f5870313658dc6da42ed5401ab43ac1f2163d198e447eec15938b50027daf2",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "insurance",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -1339,7 +1339,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.057733",
-    "updated_at": "2026-11-22T05:57:20.418194",
+    "updated_at": "2026-11-22T06:19:32.571350",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -1354,12 +1354,12 @@
         "status_reason": "Registration Certificate (RC) has not been uploaded."
       },
       "insurance": {
-        "doc_id": "DOC-6C65DEBF",
+        "doc_id": "DOC-292907EF",
         "filename": "doc.pdf",
         "file_size": 68,
         "mime_type": "application/pdf",
         "sha256_hash": "5c4053a5c2df068a1e7ac8e3c18b8107065bdcd6813599241e95b775518ad8c7",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "insurance",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -1484,7 +1484,7 @@
     "seller_id": "seller-default",
     "is_published": true,
     "created_at": "2026-11-22T05:09:01.062017",
-    "updated_at": "2026-11-22T05:57:20.438752",
+    "updated_at": "2026-11-22T06:19:32.593628",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -1495,12 +1495,12 @@
     },
     "level1_basic": {
       "rc": {
-        "doc_id": "DOC-99B86AA0",
+        "doc_id": "DOC-410F9E0E",
         "filename": "rc.pdf",
         "file_size": 122,
         "mime_type": "application/pdf",
         "sha256_hash": "5ff43135f741a5d28f341aca22ef57bec2bff89f88ca89e1688a985c4c300be2",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "rc",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -1522,12 +1522,12 @@
         "status_reason": "RC verified: Registration, manufacturer, and fuel type match listing."
       },
       "insurance": {
-        "doc_id": "DOC-5629B527",
+        "doc_id": "DOC-BAD59838",
         "filename": "ins.pdf",
         "file_size": 92,
         "mime_type": "application/pdf",
         "sha256_hash": "a9801e844a0df92e39032fc69b82092ff3648c7b5ccbc43d4306c799de496797",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "insurance",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -1548,12 +1548,12 @@
         "status_reason": "Insurance verified: Valid policy through 15/03/2027 matching vehicle registration."
       },
       "puc": {
-        "doc_id": "DOC-86C84A5A",
+        "doc_id": "DOC-2B8F9ACA",
         "filename": "puc.pdf",
         "file_size": 90,
         "mime_type": "application/pdf",
         "sha256_hash": "1305cf94bc7771b247fcdd46df52a01a520e112aaefe705eff255196d89d9fef",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "puc",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -1660,10 +1660,10 @@
       "photos_complete": true,
       "missing_photo_slots": []
     },
-    "published_at": "2026-11-22T05:57:20.440188",
+    "published_at": "2026-11-22T06:19:32.595068",
     "publication_event": {
-      "event_id": "PUB-422645ED",
-      "timestamp": "2026-11-22T05:57:20.440196",
+      "event_id": "PUB-8F73CE43",
+      "timestamp": "2026-11-22T06:19:32.595080",
       "verified_by_gate": true,
       "passed_documents": 4,
       "uploaded_photos": 8
@@ -1716,7 +1716,7 @@
     "seller_id": "seller-malicious",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.074337",
-    "updated_at": "2026-11-22T05:57:20.442419",
+    "updated_at": "2026-11-22T06:19:32.597352",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -1841,7 +1841,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.077494",
-    "updated_at": "2026-11-22T05:57:20.455086",
+    "updated_at": "2026-11-22T06:19:32.610018",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -1861,12 +1861,12 @@
         "status_reason": "Insurance policy document has not been uploaded."
       },
       "puc": {
-        "doc_id": "DOC-5573426B",
+        "doc_id": "DOC-BCA44007",
         "filename": "puc_new.pdf",
         "file_size": 54,
         "mime_type": "application/pdf",
         "sha256_hash": "b59494f06c3395e374ebd6f0dc57e350859f45b7923b6752a11538d17b0511ad",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "puc",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -1986,7 +1986,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.083092",
-    "updated_at": "2026-11-22T05:57:20.461207",
+    "updated_at": "2026-11-22T06:19:32.616367",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -2116,7 +2116,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.090018",
-    "updated_at": "2026-11-22T05:57:20.465396",
+    "updated_at": "2026-11-22T06:19:32.620318",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -2127,12 +2127,12 @@
     },
     "level1_basic": {
       "rc": {
-        "doc_id": "DOC-4B7176AE",
+        "doc_id": "DOC-6694D952",
         "filename": "rc.pdf",
         "file_size": 108,
         "mime_type": "application/pdf",
         "sha256_hash": "6356b30630d91d634ebfa189afdb39de57af72e62061b761c0850bfe9a7eb45b",
-        "upload_timestamp": "22 Nov 2026, 05:57 AM",
+        "upload_timestamp": "22 Nov 2026, 06:19 AM",
         "document_type": "rc",
         "reviewer_status": "pending",
         "extracted_fields": {
@@ -2268,7 +2268,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:09:01.094552",
-    "updated_at": "2026-11-22T05:57:20.471540",
+    "updated_at": "2026-11-22T06:19:32.633757",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -2391,6 +2391,33 @@
       {
         "action_id": "ACT-9DEE1C",
         "timestamp": "2026-11-22T05:57:20.471527",
+        "reviewer_id": "MOD-101",
+        "reviewer_name": "Specialist Reviewer",
+        "document_type": "rc",
+        "action": "approve",
+        "reason": "Chassis verified manually against RTO Parivahan gateway."
+      },
+      {
+        "action_id": "ACT-1FA7EB",
+        "timestamp": "2026-11-22T06:00:51.865998",
+        "reviewer_id": "MOD-101",
+        "reviewer_name": "Specialist Reviewer",
+        "document_type": "rc",
+        "action": "approve",
+        "reason": "Chassis verified manually against RTO Parivahan gateway."
+      },
+      {
+        "action_id": "ACT-3D8509",
+        "timestamp": "2026-11-22T06:11:14.869795",
+        "reviewer_id": "MOD-101",
+        "reviewer_name": "Specialist Reviewer",
+        "document_type": "rc",
+        "action": "approve",
+        "reason": "Chassis verified manually against RTO Parivahan gateway."
+      },
+      {
+        "action_id": "ACT-CF713A",
+        "timestamp": "2026-11-22T06:19:32.633706",
         "reviewer_id": "MOD-101",
         "reviewer_name": "Specialist Reviewer",
         "document_type": "rc",
@@ -3428,7 +3455,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:54:38.243264",
-    "updated_at": "2026-11-22T05:57:20.475444",
+    "updated_at": "2026-11-22T06:19:32.647829",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -3581,7 +3608,7 @@
     "seller_id": "seller-default",
     "is_published": false,
     "created_at": "2026-11-22T05:55:29.758310",
-    "updated_at": "2026-11-22T05:57:20.477831",
+    "updated_at": "2026-11-22T06:19:32.653295",
     "vehicle_details": {
       "brand": "Royal Enfield",
       "model": "Classic 350",
@@ -3704,9 +3731,9 @@
         "slot": "front",
         "filename": "front.jpg",
         "saved_path": "/Users/amaypuri/Desktop/2HAND/backend/services/../storage/vehicle_photos/test-photo-upload/front.jpg",
-        "url": "/api/verification/photo-file/test-photo-upload/front?t=1795307240",
+        "url": "/api/verification/photo-file/test-photo-upload/front?t=1795308572",
         "size_bytes": 110,
-        "upload_timestamp": "2026-11-22T05:57:20.477819"
+        "upload_timestamp": "2026-11-22T06:19:32.653279"
       }
     }
   }

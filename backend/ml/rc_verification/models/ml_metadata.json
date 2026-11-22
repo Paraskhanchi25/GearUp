@@ -1,0 +1,97 @@
+{
+  "model_name": "GEAR_UP_Document_Type_Classifier",
+  "model_architecture": "LogisticRegression",
+  "model_version": "v1.2.0-rc-verified",
+  "training_date": "2026-11-22T06:04:13.864337",
+  "classes": [
+    "INSURANCE",
+    "OTHER",
+    "PUC",
+    "RC",
+    "UNREADABLE"
+  ],
+  "dataset_info": {
+    "source": "De-identified Synthetic Indian Transport Documents (Parivahan, Form 23, Insurance, PUCC)",
+    "total_samples": 620,
+    "train_samples": 434,
+    "val_samples": 93,
+    "test_samples": 93,
+    "split_strategy": "Stratified 70/15/15 by document class without identity leakage"
+  },
+  "evaluation_metrics": {
+    "test_accuracy": 1.0,
+    "test_macro_precision": 1.0,
+    "test_macro_recall": 1.0,
+    "test_macro_f1": 1.0,
+    "confusion_matrix": [
+      [
+        21,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        12,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        21,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        33,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        6
+      ]
+    ],
+    "per_class": {
+      "INSURANCE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 21
+      },
+      "OTHER": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 12
+      },
+      "PUC": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 21
+      },
+      "RC": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 33
+      },
+      "UNREADABLE": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 6
+      }
+    }
+  },
+  "deployment_status": "READY_FOR_LOCAL_INFERENCE"
+}
