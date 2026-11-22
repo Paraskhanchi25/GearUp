@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 
-const TOTAL_FRAMES = 120;
+const TOTAL_FRAMES = 118;
 
 interface StageInfo {
   stage: string;
@@ -30,9 +30,9 @@ const STAGES: StageInfo[] = [
   },
   {
     stage: '04',
-    title: '120-POINT EXPLODED TWIN',
+    title: '118-POINT EXPLODED TWIN',
     subtitle: 'COMPLETE MECHANICAL DISASSEMBLY',
-    detail: 'All 120 certified components suspended in complete 3D engineering isolation for diagnostic verification.'
+    detail: 'All certified components suspended in complete 3D engineering isolation for diagnostic verification.'
   }
 ];
 
@@ -40,12 +40,13 @@ export const ExplodedMotorcycleHero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Cached HTMLImageElements (all 120 1080p CGI frames)
+  // Cached HTMLImageElements (118 1080p CGI frames from animation.zip)
   const imagesRef = useRef<(HTMLImageElement | null)[]>(new Array(TOTAL_FRAMES).fill(null));
 
-  // Current frame and stage tracking (refs avoid React re-rendering on high-speed scroll)
+  // Current frame and stage tracking
   const currentFrameRef = useRef<number>(0);
   const currentStageIndexRef = useRef<number>(0);
+  const rafIdRef = useRef<number | null>(null);
 
   // Direct DOM refs for instant zero-lag updates
   const progressLineRef = useRef<HTMLDivElement | null>(null);
@@ -117,21 +118,27 @@ export const ExplodedMotorcycleHero: React.FC = () => {
     ctx.drawImage(imgToDraw, drawX, drawY, drawW, drawH);
   }, []);
 
-  // Preload all 120 frames in chronological order
+  // Preload all 118 frames in chronological order with off-thread decode
   useEffect(() => {
     let isCancelled = false;
 
-    // Priority 1: Load frame 0 immediately and render it
+    // Priority 1: Load frame 0 immediately, decode, and render
     const frame0 = new Image();
     frame0.src = `/frames/motorcycle-exploded/ezgif-frame-001.jpg`;
     frame0.onload = () => {
       if (!isCancelled) {
         imagesRef.current[0] = frame0;
-        renderFrame(0);
+        if (typeof frame0.decode === 'function') {
+          frame0.decode().catch(() => {}).finally(() => {
+            if (!isCancelled) renderFrame(0);
+          });
+        } else {
+          renderFrame(0);
+        }
       }
     };
 
-    // Priority 2: Preload remaining frames
+    // Priority 2: Preload remaining frames progressively
     for (let i = 1; i < TOTAL_FRAMES; i++) {
       const img = new Image();
       const num = String(i + 1).padStart(3, '0');
@@ -139,6 +146,9 @@ export const ExplodedMotorcycleHero: React.FC = () => {
       img.onload = () => {
         if (!isCancelled) {
           imagesRef.current[i] = img;
+          if (typeof img.decode === 'function') {
+            img.decode().catch(() => {});
+          }
           if (currentFrameRef.current === i) {
             renderFrame(i);
           }
@@ -152,10 +162,11 @@ export const ExplodedMotorcycleHero: React.FC = () => {
   }, [renderFrame]);
 
   // Scroll listener: Maps normalized scroll progress directly to frame index
-  // progress = clamp((scrollY - sectionStart) / (sectionEnd - sectionStart), 0, 1)
-  // frameIndex = Math.round(progress * (totalFrames - 1))
+  // Scheduled efficiently via requestAnimationFrame (never advancing independently)
   useEffect(() => {
-    const handleScroll = () => {
+    let isTicking = false;
+
+    const updateScroll = () => {
       const container = containerRef.current;
       if (!container) return;
 
@@ -224,13 +235,26 @@ export const ExplodedMotorcycleHero: React.FC = () => {
       }
     };
 
+    const handleScroll = () => {
+      if (!isTicking) {
+        isTicking = true;
+        rafIdRef.current = window.requestAnimationFrame(() => {
+          updateScroll();
+          isTicking = false;
+        });
+      }
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll, { passive: true });
 
-    // Initial positioning
-    handleScroll();
+    // Initial render
+    updateScroll();
 
     return () => {
+      if (rafIdRef.current) {
+        window.cancelAnimationFrame(rafIdRef.current);
+      }
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
@@ -257,10 +281,10 @@ export const ExplodedMotorcycleHero: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-[#1E201E]/60 via-transparent to-[#1E201E]/60 pointer-events-none" />
 
         {/* Top Telemetry Header Ticker (Below fixed navbar) */}
-        <div className="absolute top-24 inset-x-0 z-10 max-w-7xl mx-auto px-6 sm:px-12 flex items-center justify-between text-white/70 text-[10px] font-mono tracking-[0.25em] uppercase pointer-events-none">
+        <div className="absolute top-20 sm:top-24 inset-x-0 z-10 max-w-7xl mx-auto px-4 sm:px-12 flex items-center justify-between text-white/70 text-[9px] sm:text-[10px] font-mono tracking-[0.2em] sm:tracking-[0.25em] uppercase pointer-events-none">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-white font-bold">SCROLL-CONTROLLED 3D EXPLODED VIEW</span>
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0" />
+            <span className="text-white font-bold truncate">SCROLL-CONTROLLED 3D EXPLODED VIEW</span>
           </div>
           <div className="hidden sm:flex items-center gap-6 text-[#A4AD98]">
             <span ref={tickerFrameRef}>FRAME 001 / {TOTAL_FRAMES}</span>
@@ -269,19 +293,19 @@ export const ExplodedMotorcycleHero: React.FC = () => {
           </div>
         </div>
 
-        {/* Dynamic Storytelling Editorial Text Overlays (Synced with Scroll Position) */}
-        <div className="absolute inset-x-0 bottom-24 sm:bottom-28 z-10 max-w-7xl mx-auto px-6 sm:px-12 pointer-events-none">
-          <div className="max-w-2xl space-y-3">
+        {/* Dynamic Architectural Stage Overlay (Editorial Typography) */}
+        <div className="absolute bottom-16 sm:bottom-20 left-4 sm:left-12 lg:left-20 z-10 max-w-xl pointer-events-none">
+          <div className="space-y-2 sm:space-y-3">
             
             {/* Stage Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-[#A4AD98] font-mono text-[10px] uppercase tracking-[0.25em]">
+            <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-[#A4AD98] font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.25em]">
               <span ref={stageBadgeRef}>PHASE 01 • ASSEMBLED MONOCOQUE CHASSIS</span>
             </div>
 
             {/* Oversized Architectural Headline */}
             <h1
               ref={stageTitleRef}
-              className="font-heading font-extrabold text-3xl sm:text-6xl lg:text-7xl text-white tracking-tight uppercase leading-[0.95]"
+              className="font-heading font-extrabold text-2xl sm:text-5xl lg:text-6xl text-white tracking-tight uppercase leading-[0.95]"
             >
               PRECISION ENGINEERED
             </h1>
@@ -289,7 +313,7 @@ export const ExplodedMotorcycleHero: React.FC = () => {
             {/* Stage Description */}
             <p
               ref={stageDetailRef}
-              className="text-white/80 font-sans text-xs sm:text-base max-w-xl font-light leading-relaxed"
+              className="text-white/80 font-sans text-xs sm:text-sm lg:text-base max-w-xl font-light leading-relaxed hidden xs:block"
             >
               Fully unified aerodynamic carbon fairing, 998cc inline-4 powertrain, and dual front Brembo disc brakes.
             </p>
@@ -297,9 +321,9 @@ export const ExplodedMotorcycleHero: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom Scroll Prompt & Progress Bar */}
-        <div className="absolute bottom-6 inset-x-0 z-10 max-w-7xl mx-auto px-6 sm:px-12 flex items-center justify-between text-white/60 text-[9px] font-mono tracking-[0.25em] uppercase pointer-events-none">
-          <span>APEX V4 HYPERSPORT DIGITAL TWIN</span>
+        {/* Minimal Bottom Telemetry & Scroll Guide */}
+        <div className="absolute bottom-6 inset-x-0 z-10 max-w-7xl mx-auto px-4 sm:px-12 flex items-center justify-between text-white/50 text-[9px] sm:text-[10px] font-mono tracking-[0.2em] uppercase pointer-events-none">
+          <span className="hidden sm:inline">APEX V4 HYPERSPORT DIGITAL TWIN</span>
           
           <div className="flex items-center gap-3">
             <span ref={promptTextRef} className="text-white/60">

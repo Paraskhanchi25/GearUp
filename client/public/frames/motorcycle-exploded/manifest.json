@@ -1,0 +1,62 @@
+{
+  "totalFrames": 118,
+  "source": "animation.zip",
+  "resolution": "1920x1080",
+  "aspectRatio": "16:9",
+  "initialState": "ezgif-frame-001.jpg",
+  "finalState": "ezgif-frame-118.jpg",
+  "duplicateFrames": [
+    "ezgif-frame-013.jpg",
+    "ezgif-frame-018.jpg",
+    "ezgif-frame-023.jpg",
+    "ezgif-frame-028.jpg",
+    "ezgif-frame-033.jpg",
+    "ezgif-frame-038.jpg",
+    "ezgif-frame-043.jpg",
+    "ezgif-frame-048.jpg",
+    "ezgif-frame-053.jpg",
+    "ezgif-frame-058.jpg",
+    "ezgif-frame-063.jpg",
+    "ezgif-frame-068.jpg",
+    "ezgif-frame-073.jpg",
+    "ezgif-frame-078.jpg",
+    "ezgif-frame-083.jpg",
+    "ezgif-frame-088.jpg",
+    "ezgif-frame-093.jpg",
+    "ezgif-frame-098.jpg",
+    "ezgif-frame-103.jpg",
+    "ezgif-frame-108.jpg",
+    "ezgif-frame-113.jpg",
+    "ezgif-frame-118.jpg"
+  ],
+  "stages": [
+    {
+      "stage": "01",
+      "progressRange": [0.0, 0.25],
+      "title": "PRECISION ENGINEERED",
+      "subtitle": "ASSEMBLED MONOCOQUE CHASSIS",
+      "detail": "Fully unified aerodynamic carbon fairing, 998cc inline-4 powertrain, and dual front Brembo disc brakes."
+    },
+    {
+      "stage": "02",
+      "progressRange": [0.25, 0.55],
+      "title": "COMPONENT SEPARATION",
+      "subtitle": "FAIRING & TANK EXPANSION",
+      "detail": "Subframe detachment, fuel cell elevation, and twin aerodynamic cowl expanding outward into individual elements."
+    },
+    {
+      "stage": "03",
+      "progressRange": [0.55, 0.82],
+      "title": "INTERNAL POWERTRAIN",
+      "subtitle": "VALVETRAIN & SUSPENSION EXPOSURE",
+      "detail": "Inverted front fork assembly, rear monoshock release, and exhaust header branching from engine block."
+    },
+    {
+      "stage": "04",
+      "progressRange": [0.82, 1.0],
+      "title": "120-POINT EXPLODED TWIN",
+      "subtitle": "COMPLETE MECHANICAL DISASSEMBLY",
+      "detail": "All certified components suspended in complete 3D engineering isolation for diagnostic verification."
+    }
+  ]
+}
