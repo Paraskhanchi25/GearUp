@@ -25,6 +25,7 @@ Validates:
 
 import sys
 import os
+import uuid
 import unittest
 from fastapi.testclient import TestClient
 
@@ -257,6 +258,14 @@ class TestMandatory4DocumentGate(unittest.TestCase):
         self.assertEqual(gate["passed_count"], 4)
         self.assertEqual(len(gate["blocking_reasons"]), 0)
 
+        # Attach 8 mandatory vehicle photos from required angles
+        rec = get_or_create_verification_record(listing_id)
+        from services.verification_service import REQUIRED_PHOTO_SLOTS
+        rec["photos"] = {
+            s["slot"]: {"slot": s["slot"], "url": f"/api/verification/photo-file/{listing_id}/{s['slot']}", "filename": f"{s['slot']}.jpg"}
+            for s in REQUIRED_PHOTO_SLOTS
+        }
+
         # Publish Listing
         pub_res = self.client.post(
             "/api/verification/publish-listing",
@@ -361,6 +370,109 @@ class TestMandatory4DocumentGate(unittest.TestCase):
         gate = mod_res.json()["updated_gate"]
         rc_chk = next(c for c in gate["checklist"] if c["doc_type"] == "rc")
         self.assertEqual(rc_chk["status"], "passed")
+
+    def test_16_vehicle_photos_less_than_8_blocks_publication(self):
+        """Listing with all 4 verified documents but fewer than 8 photos is rejected with 400."""
+        listing_id = "test-photo-gate-incomplete"
+        rec = get_or_create_verification_record(listing_id)
+        # Pass all 4 documents
+        rec["level1_basic"]["rc"] = {"status": "passed", "is_readable": True}
+        rec["level1_basic"]["insurance"] = {"status": "passed", "is_readable": True, "extracted_fields": {"expiry_date": "20/12/2027"}}
+        rec["level1_basic"]["puc"] = {"status": "passed", "is_readable": True, "extracted_fields": {"expiry_date": "15/11/2027"}}
+        rec["level1_basic"]["ownership_proof"] = {"status": "passed", "is_readable": True}
+        # Only 5 photos uploaded
+        from services.verification_service import REQUIRED_PHOTO_SLOTS
+        rec["photos"] = {
+            s["slot"]: {"slot": s["slot"], "url": f"/photos/{s['slot']}.jpg"}
+            for s in REQUIRED_PHOTO_SLOTS[:5]
+        }
+        res = self.client.post(
+            "/api/verification/publish-listing",
+            json={"listing_id": listing_id, "seller_id": "seller-001"}
+        )
+        self.assertEqual(res.status_code, 400)
+        detail = res.json()["detail"]
+        self.assertIn("Exactly 8 vehicle photographs", detail["message"])
+        self.assertEqual(detail["photos_count"], 5)
+
+    def test_17_photo_upload_validates_magic_bytes_and_slots(self):
+        """Uploading valid JPEG to recognized slot succeeds; bad slot fails."""
+        listing_id = "test-photo-upload"
+        valid_jpeg = b"\xff\xd8\xff\xe0\x00\x10JFIF" + b"A" * 100
+        res = self.client.post(
+            "/api/verification/upload-photo",
+            data={"listing_id": listing_id, "slot": "front"},
+            files={"file": ("front.jpg", valid_jpeg, "image/jpeg")}
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["slot"], "front")
+
+        # Invalid slot
+        res_bad = self.client.post(
+            "/api/verification/upload-photo",
+            data={"listing_id": listing_id, "slot": "invalid_angle_foo"},
+            files={"file": ("front.jpg", valid_jpeg, "image/jpeg")}
+        )
+        self.assertEqual(res_bad.status_code, 400)
+
+    def test_18_paid_location_access_privacy_masking(self):
+        """Unauthenticated/unpaid query returns approximate locality; zero exact coordinates or address."""
+        listing_id = "GEAR-UP-101"
+        res = self.client.get(f"/api/location/access/{listing_id}")
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertFalse(data["is_unlocked"])
+        self.assertEqual(data["access_tier"], "approximate_public")
+        self.assertNotIn("exact_lat", data)
+        self.assertNotIn("exact_address", data)
+        self.assertEqual(data["access_fee_inr"], 49)
+
+    def test_19_paid_location_payment_verification_and_unlock(self):
+        """Verified payment unlocks exact address, GPS pin, and directions for buyer."""
+        listing_id = "GEAR-UP-101"
+        buyer_id = f"buyer-test-verify-19-{uuid.uuid4().hex[:6]}"
+        # 1. Create Order
+        ord_res = self.client.post(
+            "/api/location/create-order",
+            json={"listing_id": listing_id, "buyer_id": buyer_id}
+        )
+        self.assertEqual(ord_res.status_code, 200)
+        order_id = ord_res.json()["order_id"]
+
+        # 2. Verify Payment
+        pay_res = self.client.post(
+            "/api/location/verify-payment",
+            json={
+                "listing_id": listing_id,
+                "buyer_id": buyer_id,
+                "order_id": order_id,
+                "payment_id": "pay_test_12345",
+                "signature": "mock_sandbox_sig",
+                "buyer_name": "Test Buyer"
+            }
+        )
+        self.assertEqual(pay_res.status_code, 200)
+        pay_data = pay_res.json()
+        self.assertEqual(pay_data["status"], "success")
+        self.assertIn("exact_address", pay_data["unlocked_location"])
+        self.assertIn("exact_lat", pay_data["unlocked_location"])
+
+        # 3. Subsequent query by same buyer returns unlocked exact details
+        check_res = self.client.get(f"/api/location/access/{listing_id}?buyer_id={buyer_id}")
+        self.assertEqual(check_res.status_code, 200)
+        self.assertTrue(check_res.json()["is_unlocked"])
+        self.assertIn("SCO 88-89", check_res.json()["exact_address"])
+
+    def test_20_duplicate_location_payment_prevention(self):
+        """Active unlock prevents duplicate charges."""
+        listing_id = "GEAR-UP-101"
+        buyer_id = "buyer-test-verify-19" # already unlocked in test 19
+        ord_res = self.client.post(
+            "/api/location/create-order",
+            json={"listing_id": listing_id, "buyer_id": buyer_id}
+        )
+        self.assertEqual(ord_res.status_code, 200)
+        self.assertEqual(ord_res.json()["status"], "already_unlocked")
 
 if __name__ == "__main__":
     unittest.main()

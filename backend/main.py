@@ -26,6 +26,8 @@ from routers.upgrade_studio import router as upgrade_studio_router
 from routers.bike_comparison import router as bike_comparison_router
 from routers.voice import router as voice_router
 from routers.verification import router as verification_router
+from routers.location_monetization import router as location_monetization_router
+from routers.rc_verification import router as rc_verification_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -75,6 +77,8 @@ app.include_router(upgrade_studio_router, prefix=settings.API_PREFIX)
 app.include_router(bike_comparison_router, prefix=settings.API_PREFIX)
 app.include_router(voice_router, prefix=settings.API_PREFIX)
 app.include_router(verification_router, prefix=settings.API_PREFIX)
+app.include_router(location_monetization_router, prefix=settings.API_PREFIX)
+app.include_router(rc_verification_router, prefix=settings.API_PREFIX)
 
 @app.get("/")
 async def root():

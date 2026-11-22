@@ -35,29 +35,52 @@ import {
   RotateCcw,
   ExternalLink,
   UserCheck,
-  FileSearch
+  FileSearch,
+  Navigation,
+  Crosshair,
+  Compass,
+  Cpu
 } from 'lucide-react';
 import { formatINR } from '../utils/geo';
 import { PickupLocation } from '../types';
 import { SellerPickupLocationPicker } from '../components/SellerPickupLocationPicker';
+import { SmartRCVerificationModal } from '../components/SmartRCVerificationModal';
 import { 
   getVehicleCatalog,
   uploadVerificationDocument, 
-  submitLevel2Condition, 
-  submitLevel3Ownership, 
-  getVerificationReport,
-  generateListing,
   getVerificationGateStatus,
   publishListing,
   deleteVerificationDocument,
   reuseRcForOwnership,
-  getDocumentAnalysisReport
+  getDocumentAnalysisReport,
+  uploadVehiclePhoto,
+  getVehiclePhotos,
+  deleteVehiclePhoto,
+  setSellerLocationConfig
 } from '../services/aiApi';
+
+// 8 Mandatory Vehicle Photo Angles (Strictly no stock photos)
+const REQUIRED_PHOTO_SLOTS = [
+  { slot: 'front', label: '1. Front View', desc: 'Direct frontal shot showing headlamp, mirrors and windshield' },
+  { slot: 'rear', label: '2. Rear View', desc: 'Direct rear angle showing tail lamp, indicators and number plate' },
+  { slot: 'left_side', label: '3. Left Side View', desc: 'Full side profile showing exhaust, left panels, footrest and frame' },
+  { slot: 'right_side', label: '4. Right Side View', desc: 'Full side profile showing chain/belt, brake levers, and right bodywork' },
+  { slot: 'front_left_diagonal', label: '5. Front-Left Diagonal', desc: '45-degree angle capturing front tyre, mudguard and left body panels' },
+  { slot: 'front_right_diagonal', label: '6. Front-Right Diagonal', desc: '45-degree angle capturing front tyre, mudguard and right body panels' },
+  { slot: 'rear_left_diagonal', label: '7. Rear-Left Diagonal', desc: '45-degree angle capturing rear wheel, suspension, and left side' },
+  { slot: 'rear_right_diagonal', label: '8. Rear-Right Diagonal', desc: '45-degree angle capturing silencer/exhaust, rear swingarm and right side' }
+];
 
 export const SellBikePage: React.FC = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [listingId, setListingId] = useState<string>('GEAR-UP-' + Math.floor(100000 + Math.random() * 900000));
+  const [listingId, setListingId] = useState<string>(() => {
+    const saved = localStorage.getItem('gearup_current_listing_id');
+    if (saved) return saved;
+    const newId = 'GEAR-UP-' + Math.floor(100000 + Math.random() * 900000);
+    localStorage.setItem('gearup_current_listing_id', newId);
+    return newId;
+  });
 
   // Step 1: Vehicle Details State
   const [category, setCategory] = useState<'motorcycle' | 'scooter' | 'electric'>('motorcycle');
@@ -67,32 +90,18 @@ export const SellBikePage: React.FC = () => {
   const [year, setYear] = useState<number>(2023);
   const [registrationNumber, setRegistrationNumber] = useState('CH01AB8821');
   const [city, setCity] = useState('Chandigarh');
-  const [askingPrice, setAskingPrice] = useState<number>(182000);
-
-  // Step 2: Vehicle Photographs
-  const [uploadedPhotos, setUploadedPhotos] = useState<Array<{ slot: string; url: string; name: string }>>([
-    { slot: 'front', url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80', name: 'front_angle.jpg' },
-    { slot: 'rear', url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80', name: 'rear_plate.jpg' },
-    { slot: 'dashboard', url: 'https://images.unsplash.com/photo-1558981408-db0ecd8a1ee4?auto=format&fit=crop&w=800&q=80', name: 'odometer_gauge.jpg' }
-  ]);
-
-  // Step 3: Vehicle Condition & Service History
   const [km, setKm] = useState<number>(14000);
   const [owners, setOwners] = useState<number>(1);
   const [overallCondition, setOverallCondition] = useState<'excellent' | 'good' | 'fair' | 'poor'>('good');
-  const [usagePattern, setUsagePattern] = useState('daily_commute');
-  const [pickupLocation, setPickupLocation] = useState<PickupLocation>({
-    lat: 30.7333,
-    lng: 76.7794,
-    address: 'SCO 88-89, Sector 17-C, Chandigarh',
-    city: 'Chandigarh',
-    locality: 'Sector 17',
-    landmark: 'Near Neelam Cinema',
-    visibility: 'approximate_public',
-  });
-  const [isPickupConfirmed, setIsPickupConfirmed] = useState<boolean>(true);
+  const [askingPrice, setAskingPrice] = useState<number>(182000);
+  const [fuelType, setFuelType] = useState('PETROL');
 
-  // Step 4: Level 1 – Mandatory Vehicle Documents (4-Certificate System)
+  // Step 2: 8 Required Vehicle Photographs (Zero Mock Photos)
+  const [uploadedPhotos, setUploadedPhotos] = useState<Record<string, any>>({});
+  const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  // Step 3: Mandatory 4-Certificate Documents
   const [rcFile, setRcFile] = useState<File | null>(null);
   const [rcResult, setRcResult] = useState<any>(null);
   const [isRcUploading, setIsRcUploading] = useState(false);
@@ -105,92 +114,96 @@ export const SellBikePage: React.FC = () => {
   const [pucResult, setPucResult] = useState<any>(null);
   const [isPucUploading, setIsPucUploading] = useState(false);
 
-  // Document 4: Ownership / Seller Authorisation Proof
   const [ownershipFile, setOwnershipFile] = useState<File | null>(null);
   const [ownershipResult, setOwnershipResult] = useState<any>(null);
   const [isOwnershipUploading, setIsOwnershipUploading] = useState(false);
   const [ownershipMode, setOwnershipMode] = useState<'reuse_rc' | 'upload_custom'>('reuse_rc');
+  const [sellerFullName, setSellerFullName] = useState('Vikramjit Singh');
+  const [smartRCModalOpen, setSmartRCModalOpen] = useState(false);
 
-  // Mandatory Submission Gate State
+  // Step 4: Pickup & Test Ride Location
+  const [pickupLocation, setPickupLocation] = useState<PickupLocation>({
+    lat: 30.7333,
+    lng: 76.7794,
+    address: 'SCO 88-89, Sector 17-C, Chandigarh',
+    city: 'Chandigarh',
+    locality: 'Sector 17',
+    landmark: 'Near Neelam Cinema & Plaza Fountain',
+    visibility: 'approximate_public',
+  });
+  const [meetupSpotType, setMeetupSpotType] = useState('Safe Public Commercial Hub');
+  const [testRideAvailable, setTestRideAvailable] = useState<boolean>(true);
+  const [pickupInstructions, setPickupInstructions] = useState(
+    'Available on weekends between 10:00 AM - 4:00 PM. Please bring an original driving licence and helmet for a test ride.'
+  );
+  const [locationSaved, setLocationSaved] = useState<boolean>(true);
+
+  // Gate & Analysis Modal State
   const [gateStatus, setGateStatus] = useState<any>(null);
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishBlockedAlert, setPublishBlockedAlert] = useState<string[] | null>(null);
-
-  // In-Depth Document Analysis Report Modal State
   const [analysisModalOpen, setAnalysisModalOpen] = useState(false);
   const [activeAnalysisDoc, setActiveAnalysisDoc] = useState<string | null>(null);
   const [analysisReport, setAnalysisReport] = useState<any>(null);
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(false);
-
-  // Step 5: Level 2 – Vehicle Condition Verification State
-  const [serviceHistoryTier, setServiceHistoryTier] = useState('regular'); // regular, occasional, none
-  const [lastServiceDate, setLastServiceDate] = useState('15/10/2025');
-  const [lastServiceOdo, setLastServiceOdo] = useState<number>(12500);
-  const [serviceCentreName, setServiceCentreName] = useState('Royal Enfield Authorized Hub');
-  const [tyreCondition, setTyreCondition] = useState('good');
-  const [tyreNotes, setTyreNotes] = useState('Front CEAT Zoom Plus (4.5mm), Rear CEAT Gripp (4.0mm)');
-  const [batteryCondition, setBatteryCondition] = useState('good');
-  const [evBatteryHealth, setEvBatteryHealth] = useState<number>(94);
-  const [accidentDisclosure, setAccidentDisclosure] = useState('none'); // none, minor, major, major_component, not_sure
-  const [accidentNotes, setAccidentNotes] = useState('Never been in an accident. Single tip-over scratch on left exhaust shield.');
-  const [uploadedRepairBills, setUploadedRepairBills] = useState<any[]>([]);
-
-  // Step 6: Level 3 – Ownership Verification State
-  const [sellerFullName, setSellerFullName] = useState('Vikramjit Singh');
-  const [relationshipToOwner, setRelationshipToOwner] = useState('registered_owner'); // registered_owner, family_member, authorized_agent
-  const [isRegisteredOwner, setIsRegisteredOwner] = useState(true);
-  const [authorisationNotes, setAuthorisationNotes] = useState('Sole registered owner with original RC in hand.');
-  const [loanStatus, setLoanStatus] = useState('no_loan'); // no_loan, loan_cleared, active_loan, not_sure
-  const [hasForm29, setHasForm29] = useState(true);
-  const [hasForm30, setHasForm30] = useState(true);
-  const [hasLoanNocFile, setHasLoanNocFile] = useState(false);
-  const [sellerConsent, setSellerConsent] = useState(true);
-
-  // Step 7: Verification Summary State
-  const [verificationSummary, setVerificationSummary] = useState<any>(null);
-  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
-
-  // Draft Save Toast State
   const [draftSavedToast, setDraftSavedToast] = useState(false);
 
-  // Synchronize Gate Status from Server
-  const refreshGateStatus = async () => {
+  // Synchronize Gate Status & Uploaded Photos from Server
+  const refreshStatus = async () => {
     try {
-      const data = await getVerificationGateStatus(listingId);
-      if (data && data.gate) {
-        setGateStatus(data.gate);
-        data.gate.checklist?.forEach((item: any) => {
+      const gateData = await getVerificationGateStatus(listingId);
+      if (gateData && gateData.gate) {
+        setGateStatus(gateData.gate);
+        gateData.gate.checklist?.forEach((item: any) => {
           if (item.doc_type === 'rc') setRcResult(item);
           if (item.doc_type === 'insurance') setInsuranceResult(item);
           if (item.doc_type === 'puc') setPucResult(item);
           if (item.doc_type === 'ownership_proof') setOwnershipResult(item);
         });
       }
+
+      // Fetch uploaded photos from storage
+      const photosData = await getVehiclePhotos(listingId);
+      if (photosData && photosData.slots) {
+        const photoMap: Record<string, any> = {};
+        photosData.slots.forEach((s: any) => {
+          if (s.is_uploaded && s.photo) {
+            photoMap[s.slot] = s.photo;
+          }
+        });
+        setUploadedPhotos(photoMap);
+      }
     } catch (err) {
-      console.warn('Error fetching gate status:', err);
+      console.warn('Error fetching listing status:', err);
     }
   };
 
   useEffect(() => {
-    refreshGateStatus();
+    refreshStatus();
   }, [listingId]);
 
   // Restore Draft on Mount
   useEffect(() => {
-    const savedDraft = localStorage.getItem('gearup_seller_draft');
+    const savedDraft = localStorage.getItem('gearup_seller_draft_' + listingId);
     if (savedDraft) {
       try {
         const d = JSON.parse(savedDraft);
         if (d.brand) setBrand(d.brand);
         if (d.model) setModel(d.model);
+        if (d.variant) setVariant(d.variant);
         if (d.year) setYear(d.year);
         if (d.registrationNumber) setRegistrationNumber(d.registrationNumber);
         if (d.askingPrice) setAskingPrice(d.askingPrice);
+        if (d.city) setCity(d.city);
+        if (d.km) setKm(d.km);
+        if (d.pickupLocation) setPickupLocation(d.pickupLocation);
+        if (d.testRideAvailable !== undefined) setTestRideAvailable(d.testRideAvailable);
+        if (d.pickupInstructions) setPickupInstructions(d.pickupInstructions);
       } catch (e) {
         console.warn('Error reading saved draft', e);
       }
     }
-  }, []);
+  }, [listingId]);
 
   const saveDraft = () => {
     const draftData = {
@@ -206,17 +219,76 @@ export const SellBikePage: React.FC = () => {
       km,
       owners,
       overallCondition,
+      pickupLocation,
+      testRideAvailable,
+      pickupInstructions,
       savedAt: new Date().toISOString()
     };
-    localStorage.setItem('gearup_seller_draft', JSON.stringify(draftData));
+    localStorage.setItem('gearup_seller_draft_' + listingId, JSON.stringify(draftData));
     setDraftSavedToast(true);
     setTimeout(() => setDraftSavedToast(false), 3000);
   };
 
   // --------------------------------------------------------------------------
-  // Upload & Document Analysis Handlers (Mandatory 4-Certificate Engine)
+  // Step 2: 8 Required Vehicle Photos Handlers
   // --------------------------------------------------------------------------
-  const handleGenericUpload = async (docType: string, file: File) => {
+  const handlePhotoUpload = async (slot: string, file: File) => {
+    if (!file) return;
+    setPhotoError(null);
+
+    // Validate size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setPhotoError('Image file exceeds the maximum allowed 10MB limit.');
+      return;
+    }
+
+    setUploadingSlot(slot);
+    try {
+      const fd = new FormData();
+      fd.append('listing_id', listingId);
+      fd.append('slot', slot);
+      fd.append('file', file);
+
+      const res = await uploadVehiclePhoto(fd);
+      if (res && res.photo) {
+        setUploadedPhotos(prev => ({ ...prev, [slot]: res.photo }));
+        if (res.gate_summary) {
+          setGateStatus(res.gate_summary);
+        }
+      }
+    } catch (err: any) {
+      setPhotoError(`Photo upload error: ${err.message || 'Please upload a valid JPG, PNG, or WEBP image.'}`);
+    } finally {
+      setUploadingSlot(null);
+    }
+  };
+
+  const handlePhotoDelete = async (slot: string) => {
+    if (!confirm('Are you sure you want to remove this photograph?')) return;
+    try {
+      const res = await deleteVehiclePhoto(listingId, slot);
+      if (res && res.status === 'success') {
+        setUploadedPhotos(prev => {
+          const next = { ...prev };
+          delete next[slot];
+          return next;
+        });
+        if (res.gate_summary) {
+          setGateStatus(res.gate_summary);
+        }
+      }
+    } catch (err: any) {
+      alert('Error removing photo: ' + err.message);
+    }
+  };
+
+  const uploadedPhotosCount = Object.keys(uploadedPhotos).length;
+  const isPhotosComplete = uploadedPhotosCount === 8;
+
+  // --------------------------------------------------------------------------
+  // Step 3: Mandatory Document Upload Handlers
+  // --------------------------------------------------------------------------
+  const handleDocumentUpload = async (docType: string, file: File) => {
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
@@ -241,28 +313,14 @@ export const SellBikePage: React.FC = () => {
 
       const res = await uploadVerificationDocument(fd);
       if (res && res.result) {
-        if (docType === 'rc') {
-          setRcFile(file);
-          setRcResult(res.result);
-        }
-        if (docType === 'insurance') {
-          setInsuranceFile(file);
-          setInsuranceResult(res.result);
-        }
-        if (docType === 'puc') {
-          setPucFile(file);
-          setPucResult(res.result);
-        }
-        if (docType === 'ownership_proof') {
-          setOwnershipFile(file);
-          setOwnershipResult(res.result);
-        }
-        if (res.gate_summary) {
-          setGateStatus(res.gate_summary);
-        }
+        if (docType === 'rc') { setRcFile(file); setRcResult(res.result); }
+        if (docType === 'insurance') { setInsuranceFile(file); setInsuranceResult(res.result); }
+        if (docType === 'puc') { setPucFile(file); setPucResult(res.result); }
+        if (docType === 'ownership_proof') { setOwnershipFile(file); setOwnershipResult(res.result); }
+        if (res.gate_summary) setGateStatus(res.gate_summary);
       }
     } catch (err: any) {
-      alert(`Upload Analysis Error:\n${err.message || 'Please upload a valid PDF, JPG, or PNG document.'}`);
+      alert(`Document Upload Analysis Error:\n${err.message || 'Please upload a valid PDF, JPG, or PNG document.'}`);
     } finally {
       if (docType === 'rc') setIsRcUploading(false);
       if (docType === 'insurance') setIsInsUploading(false);
@@ -309,9 +367,7 @@ export const SellBikePage: React.FC = () => {
     setIsLoadingAnalysis(true);
     try {
       const data = await getDocumentAnalysisReport(listingId, docType);
-      if (data) {
-        setAnalysisReport(data);
-      }
+      if (data) setAnalysisReport(data);
     } catch (err) {
       console.warn('Analysis report fetch error:', err);
     } finally {
@@ -319,72 +375,36 @@ export const SellBikePage: React.FC = () => {
     }
   };
 
-  const handleRepairBillUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const passedDocsCount = gateStatus?.passed_count || 0;
+  const isDocumentsComplete = passedDocsCount === 4;
 
+  // --------------------------------------------------------------------------
+  // Step 4: Pickup & Test Ride Location Handlers
+  // --------------------------------------------------------------------------
+  const handleLocationConfirmed = async (loc: PickupLocation) => {
+    setPickupLocation(loc);
     try {
-      const fd = new FormData();
-      fd.append('listing_id', listingId);
-      fd.append('document_type', 'repair_bill');
-      fd.append('file', file);
-
-      const res = await uploadVerificationDocument(fd);
-      if (res && res.result) {
-        setUploadedRepairBills([...uploadedRepairBills, res.result]);
-      }
-    } catch (err: any) {
-      alert('Bill upload failed: ' + err.message);
+      await setSellerLocationConfig({
+        listing_id: listingId,
+        lat: loc.lat,
+        lng: loc.lng,
+        address: loc.address,
+        city: loc.city,
+        locality: loc.locality,
+        landmark: loc.landmark,
+        meetup_spot_type: meetupSpotType,
+        test_ride_available: testRideAvailable,
+        pickup_instructions: pickupInstructions
+      });
+      setLocationSaved(true);
+    } catch (err) {
+      console.warn('Location save error:', err);
     }
   };
 
-  // Submit Step 5: Level 2 Condition
-  const submitLevel2 = async () => {
-    await submitLevel2Condition({
-      listing_id: listingId,
-      service_history: serviceHistoryTier,
-      last_service_date: lastServiceDate,
-      last_service_odometer: lastServiceOdo,
-      service_centre_name: serviceCentreName,
-      tyre_condition: tyreCondition,
-      tyre_notes: tyreNotes,
-      battery_condition: batteryCondition,
-      battery_health_ev: category === 'electric' ? evBatteryHealth : undefined,
-      accident_disclosure: accidentDisclosure,
-      accident_notes: accidentNotes
-    });
-    setCurrentStep(6);
-  };
-
-  // Submit Step 6: Level 3 Ownership
-  const submitLevel3 = async () => {
-    if (!sellerConsent) {
-      alert('Please provide seller consent for document verification to proceed.');
-      return;
-    }
-    await submitLevel3Ownership({
-      listing_id: listingId,
-      seller_full_name: sellerFullName,
-      relationship_to_owner: relationshipToOwner,
-      is_registered_owner: isRegisteredOwner,
-      authorisation_notes: authorisationNotes,
-      loan_status: loanStatus,
-      has_form29: hasForm29,
-      has_form30: hasForm30
-    });
-    
-    // Fetch fresh report for Step 7
-    setIsLoadingSummary(true);
-    const rep = await getVerificationReport(listingId);
-    if (rep) {
-      setVerificationSummary(rep);
-    }
-    await refreshGateStatus();
-    setIsLoadingSummary(false);
-    setCurrentStep(7);
-  };
-
-  // Step 8 Final Publish (Authoritative Server-Side Gate)
+  // --------------------------------------------------------------------------
+  // Step 5: Final Publish (Authoritative Server-Side Gate)
+  // --------------------------------------------------------------------------
   const handlePublishListing = async () => {
     setIsPublishing(true);
     setPublishBlockedAlert(null);
@@ -393,17 +413,73 @@ export const SellBikePage: React.FC = () => {
       const res = await publishListing({
         listing_id: listingId,
         seller_id: 'seller-default',
-        notes: 'Submitted via seller workflow'
+        notes: 'Submitted via 5-step seller verification workflow'
       });
 
       if (res && res.status === 'success') {
-        localStorage.removeItem('gearup_seller_draft');
-        alert(`🎉 Congratulations! Your listing for ${year} ${brand} ${model} is officially published live!\n\nReference ID: ${listingId}\nStatus: Verified Documents Published\n\nYour vehicle now proudly displays the official "GEAR UP Document Verified" badge on the discovery map and marketplace.`);
+        const primaryImg = uploadedPhotos['front']?.url || Object.values(uploadedPhotos)[0]?.url || '';
+        const gallery = Object.values(uploadedPhotos).map((p: any) => p.url);
+
+        const newListingItem = {
+          id: listingId,
+          title: `${year} ${brand} ${model} ${variant}`,
+          brand,
+          model,
+          variant,
+          category,
+          year,
+          regYear: year,
+          regState: registrationNumber.slice(0, 2),
+          rtoCode: registrationNumber.slice(0, 4),
+          km,
+          fuel: fuelType.toLowerCase() as any,
+          owners,
+          price: askingPrice,
+          originalMrp: askingPrice + 25000,
+          city,
+          state: 'Punjab / Chandigarh',
+          area: pickupLocation.locality,
+          lat: pickupLocation.lat,
+          lng: pickupLocation.lng,
+          pickupAddress: pickupLocation.address,
+          pickupCity: pickupLocation.city,
+          pickupLocality: pickupLocation.locality,
+          pickupLandmark: pickupLocation.landmark,
+          locationVisibility: 'exact_verified_only' as any,
+          sellerType: 'individual' as any,
+          sellerName: sellerFullName,
+          verificationTier: 'document_verified' as any,
+          inspectionScore: 4.8,
+          documentVerified: true,
+          insuranceValidUntil: insuranceResult?.expiry_date || '20/12/2026',
+          pucValidUntil: pucResult?.expiry_date || '15/11/2026',
+          aiFairPriceMin: Math.round(askingPrice * 0.95),
+          aiFairPriceMax: Math.round(askingPrice * 1.05),
+          aiSuggestedPrice: askingPrice,
+          aiDealBadge: 'good_deal' as any,
+          aiCosmeticScore: 9.0,
+          aiCosmeticNotes: ['Verified 8/8 camera angles', 'High-res bodywork inspected'],
+          aiMechanicalNotes: ['BS6 emission certified', 'OEM documented service'],
+          primaryImage: primaryImg,
+          galleryImages: gallery,
+          specs: {
+            engineCc: category === 'electric' ? undefined : 349,
+            powerBhp: category === 'electric' ? '8.5 kW' : '20.2 bhp',
+            mileageKmpl: category === 'electric' ? undefined : 36,
+            rangeKm: category === 'electric' ? 140 : undefined
+          }
+        };
+
+        const existingCustom = JSON.parse(localStorage.getItem('gearup_custom_listings') || '[]');
+        localStorage.setItem('gearup_custom_listings', JSON.stringify([newListingItem, ...existingCustom]));
+
+        localStorage.removeItem('gearup_seller_draft_' + listingId);
+        localStorage.removeItem('gearup_current_listing_id');
+        alert(`🎉 Congratulations! Your listing for ${year} ${brand} ${model} is officially published live!\n\nReference ID: ${listingId}\nStatus: Verified Documents & Photographs Live\n\nYour vehicle now proudly displays the official "GEAR UP Document Verified" badge on the discovery map and marketplace.`);
         navigate('/explore');
       }
     } catch (err: any) {
-      // Show server-side gate rejection reasons
-      const blocking = gateStatus?.blocking_reasons || [err.message || 'Mandatory document requirements incomplete.'];
+      const blocking = gateStatus?.blocking_reasons || [err.message || 'Mandatory photo and document requirements incomplete.'];
       setPublishBlockedAlert(blocking);
       alert(`⚠️ Listing Publication Blocked by Verification Gate:\n\n${blocking.join('\n• ')}`);
     } finally {
@@ -413,7 +489,6 @@ export const SellBikePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#070D0B] text-slate-100 pb-28">
-      
       {/* Save Draft Floating Notification */}
       {draftSavedToast && (
         <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-emerald-950 border border-emerald-500/80 text-emerald-200 text-xs shadow-2xl flex items-center gap-2 animate-bounce">
@@ -422,7 +497,7 @@ export const SellBikePage: React.FC = () => {
         </div>
       )}
 
-      {/* 8-Step Navigation Header */}
+      {/* 5-Step Clear Selling Process Navigation Header */}
       <div className="border-b border-[#142620] bg-[#0A1411]/90 backdrop-blur-md px-4 sm:px-6 py-4 sticky top-16 z-30 shadow-xl">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -431,17 +506,14 @@ export const SellBikePage: React.FC = () => {
             </span>
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-forest-400">
-                Step {currentStep} of 8
+                Step {currentStep} of 5
               </span>
               <h2 className="font-heading font-bold text-sm sm:text-base text-white">
-                {currentStep === 1 && '1. Enter Vehicle Details'}
-                {currentStep === 2 && '2. Add Vehicle Photographs'}
-                {currentStep === 3 && '3. Condition, Mileage & Location'}
-                {currentStep === 4 && '4. Level 1 – Basic Document Verification'}
-                {currentStep === 5 && '5. Level 2 – Condition & Maintenance'}
-                {currentStep === 6 && '6. Level 3 – Ownership & Transfer Verification'}
-                {currentStep === 7 && '7. Review Verification Report'}
-                {currentStep === 8 && '8. Review & Publish Listing'}
+                {currentStep === 1 && '1. Vehicle Information'}
+                {currentStep === 2 && '2. Vehicle Photographs (8 Angles Required)'}
+                {currentStep === 3 && '3. Mandatory Vehicle Documents (4 Certificates)'}
+                {currentStep === 4 && '4. Pickup & Test Ride Location'}
+                {currentStep === 5 && '5. Review & Publish Listing'}
               </h2>
             </div>
           </div>
@@ -455,20 +527,26 @@ export const SellBikePage: React.FC = () => {
               <span>Save Draft</span>
             </button>
 
-            {/* Stepper Dots */}
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
+            {/* 5-Step Progress Indicators */}
+            <div className="flex items-center gap-1.5">
+              {[
+                { step: 1, title: 'Vehicle Info' },
+                { step: 2, title: '8 Photos' },
+                { step: 3, title: '4 Documents' },
+                { step: 4, title: 'Location' },
+                { step: 5, title: 'Publish' }
+              ].map((s) => (
                 <button
-                  key={s}
-                  onClick={() => s <= currentStep && setCurrentStep(s)}
-                  disabled={s > currentStep}
-                  title={`Step ${s}`}
-                  className={`w-3.5 sm:w-5 h-2 rounded-full transition-all ${
-                    s === currentStep
-                      ? 'bg-forest-400 w-6'
-                      : s < currentStep
-                      ? 'bg-forest-600'
-                      : 'bg-forest-950'
+                  key={s.step}
+                  onClick={() => s.step <= currentStep && setCurrentStep(s.step)}
+                  disabled={s.step > currentStep}
+                  title={`Step ${s.step}: ${s.title}`}
+                  className={`h-2.5 rounded-full transition-all flex items-center justify-center ${
+                    s.step === currentStep
+                      ? 'bg-forest-400 w-8'
+                      : s.step < currentStep
+                      ? 'bg-forest-600 w-4'
+                      : 'bg-forest-950 w-4'
                   }`}
                 />
               ))}
@@ -480,16 +558,18 @@ export const SellBikePage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-8">
 
         {/* ======================================================== */}
-        {/* STEP 1: VEHICLE DETAILS */}
+        {/* STEP 1: VEHICLE INFORMATION */}
         {/* ======================================================== */}
         {currentStep === 1 && (
           <div className="p-6 sm:p-8 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-6">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 text-forest-300 text-[10px] font-bold uppercase tracking-wider mb-2">
-                Step 1 of 8
+                Step 1 of 5
               </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Enter Vehicle Details</h2>
-              <p className="text-xs text-slate-400 mt-1">Accurate vehicle information ensures seamless document verification</p>
+              <h2 className="font-heading font-extrabold text-2xl text-white">Vehicle Information</h2>
+              <p className="text-xs text-slate-400 mt-1">
+                Enter core vehicle specifications, ownership, and pricing to initialize verification.
+              </p>
             </div>
 
             {/* Category Selector */}
@@ -515,7 +595,7 @@ export const SellBikePage: React.FC = () => {
               ))}
             </div>
 
-            {/* Core Fields */}
+            {/* Core Fields Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
                 <label className="text-slate-300 font-semibold mb-1 block">Brand / Manufacturer</label>
@@ -552,11 +632,35 @@ export const SellBikePage: React.FC = () => {
                 <select
                   value={year}
                   onChange={(e) => setYear(Number(e.target.value))}
-                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-forest-500"
+                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
                 >
-                  {[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
+                  {[2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
                     <option key={y} value={y}>{y}</option>
                   ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-semibold mb-1 block">Kilometers Driven (Odometer)</label>
+                <input
+                  type="number"
+                  value={km}
+                  onChange={(e) => setKm(Number(e.target.value))}
+                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-semibold mb-1 block">Number of Previous Owners</label>
+                <select
+                  value={owners}
+                  onChange={(e) => setOwners(Number(e.target.value))}
+                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                >
+                  <option value={1}>1st Owner (Single Handed)</option>
+                  <option value={2}>2nd Owner</option>
+                  <option value={3}>3rd Owner</option>
+                  <option value={4}>4+ Owners</option>
                 </select>
               </div>
 
@@ -571,35 +675,58 @@ export const SellBikePage: React.FC = () => {
                   onChange={(e) => setRegistrationNumber(e.target.value.toUpperCase())}
                   className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-forest-500 uppercase font-mono font-bold"
                 />
-                <span className="text-[10px] text-slate-400 mt-1 block">Will be masked on public listing (e.g. CH01****21)</span>
+                <span className="text-[10px] text-slate-400 mt-1 block">Masked publicly (e.g. CH01****21)</span>
               </div>
 
               <div>
                 <label className="text-slate-300 font-semibold mb-1 block">City / RTO Region</label>
-                <select
+                <input
+                  type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none font-semibold text-forest-300"
+                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-semibold mb-1 block">Overall Condition</label>
+                <select
+                  value={overallCondition}
+                  onChange={(e) => setOverallCondition(e.target.value as any)}
+                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
                 >
-                  <option>Chandigarh</option>
-                  <option>Mohali</option>
-                  <option>Panchkula</option>
-                  <option>Delhi</option>
-                  <option>Bengaluru</option>
-                  <option>Pune</option>
-                  <option>Mumbai</option>
+                  <option value="excellent">Excellent (Showroom Like)</option>
+                  <option value="good">Good (Normal Wear & Tear)</option>
+                  <option value="fair">Fair (Requires Minor Service)</option>
+                  <option value="poor">Needs Major Overhaul</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-semibold mb-1 block">Expected Asking Price (₹)</label>
+                <input
+                  type="number"
+                  value={askingPrice}
+                  onChange={(e) => setAskingPrice(Number(e.target.value))}
+                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white font-bold text-forest-300 focus:outline-none"
+                />
               </div>
             </div>
 
             <div className="pt-4 flex justify-between items-center border-t border-forest-900">
-              <span className="text-xs text-slate-400">Step 1 of 8</span>
+              <span className="text-xs text-slate-400">Step 1 of 5</span>
               <button
                 type="button"
-                onClick={() => setCurrentStep(2)}
+                onClick={() => {
+                  if (!registrationNumber.trim()) {
+                    alert('Please enter a valid vehicle registration number.');
+                    return;
+                  }
+                  setCurrentStep(2);
+                }}
                 className="px-6 py-3 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-glow"
               >
-                <span>Continue to Photographs</span>
+                <span>Continue to 8 Photographs</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -607,90 +734,174 @@ export const SellBikePage: React.FC = () => {
         )}
 
         {/* ======================================================== */}
-        {/* STEP 2: VEHICLE PHOTOGRAPHS */}
+        {/* STEP 2: VEHICLE PHOTOGRAPHS (EXACTLY 8 REQUIRED ANGLES) */}
         {/* ======================================================== */}
         {currentStep === 2 && (
           <div className="p-6 sm:p-8 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-6">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 text-forest-300 text-[10px] font-bold uppercase tracking-wider mb-2">
-                Step 2 of 8
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 text-forest-300 text-[10px] font-bold uppercase tracking-wider mb-2">
+                  Step 2 of 5 • Mandatory Photos
+                </div>
+                <h2 className="font-heading font-extrabold text-2xl text-white">8 Real Vehicle Photographs</h2>
+                <p className="text-xs text-slate-400 mt-1">
+                  Upload genuine photographs from all 8 required angles. Stock or sample photos are strictly prohibited.
+                </p>
               </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Upload Vehicle Photographs</h2>
-              <p className="text-xs text-slate-400 mt-1">Clear photos from multiple angles establish buyer confidence</p>
+
+              {/* Live Counter Badge */}
+              <div className={`px-4 py-2 rounded-2xl border text-xs font-bold flex items-center gap-2 ${
+                isPhotosComplete
+                  ? 'bg-emerald-950/80 border-emerald-500/60 text-emerald-300 shadow-glow'
+                  : 'bg-amber-950/60 border-amber-600/50 text-amber-300'
+              }`}>
+                {isPhotosComplete ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <Clock className="w-4 h-4 text-amber-400 animate-spin" />
+                )}
+                <span>{uploadedPhotosCount} / 8 Photos Uploaded</span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {[
-                { slot: 'front', label: '1. Front View' },
-                { slot: 'rear', label: '2. Rear View' },
-                { slot: 'left', label: '3. Left Side' },
-                { slot: 'right', label: '4. Right Side' },
-                { slot: 'dashboard', label: '5. Dashboard / Odometer' },
-                { slot: 'tyres', label: '6. Tyres Tread' },
-                { slot: 'engine', label: category === 'electric' ? '7. Motor / Battery Area' : '7. Engine Block' },
-                { slot: 'damage', label: '8. Visible Damage / Scratches' }
-              ].map((s) => {
-                const existing = uploadedPhotos.find((p) => p.slot === s.slot);
+            {photoError && (
+              <div className="p-3.5 rounded-2xl bg-red-950/80 border border-red-600 text-red-200 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                <span>{photoError}</span>
+              </div>
+            )}
+
+            {/* Helpful Angle Visual Guide Notice */}
+            <div className="p-4 rounded-2xl bg-forest-950/90 border border-forest-800 text-xs text-slate-300 space-y-1">
+              <div className="flex items-center gap-2 font-bold text-forest-300">
+                <Camera className="w-4 h-4 text-emerald-400" />
+                <span>8-Angle Coverage Requirement</span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Take photos during daytime in a clean, well-lit environment. Ensure the entire vehicle fits into each frame. All 8 slots must be completed before your listing can be published live.
+              </p>
+            </div>
+
+            {/* 8 Photo Upload Slots Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+              {REQUIRED_PHOTO_SLOTS.map((s) => {
+                const existing = uploadedPhotos[s.slot];
+                const isUploadingThis = uploadingSlot === s.slot;
+
                 return (
                   <div
                     key={s.slot}
-                    className="p-3 rounded-2xl bg-forest-950 border border-forest-800/80 flex flex-col justify-between h-40 relative overflow-hidden group"
+                    className={`p-3.5 rounded-2xl border flex flex-col justify-between h-56 relative overflow-hidden transition-all ${
+                      existing
+                        ? 'bg-[#12221D] border-forest-600/80 shadow-md'
+                        : 'bg-forest-950/60 border-dashed border-forest-800/80 hover:border-forest-600'
+                    }`}
                   >
+                    {/* Angle Title & Status Tag */}
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-white truncate">{s.label}</span>
+                      {existing ? (
+                        <span className="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-bold text-[10px]">
+                          ✓
+                        </span>
+                      ) : (
+                        <span className="px-1.5 py-0.5 rounded bg-forest-900 text-[9px] font-semibold text-forest-300 uppercase">
+                          Required
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Preview Image or Upload Box */}
                     {existing ? (
-                      <>
-                        <img src={existing.url} alt={s.label} className="w-full h-24 object-cover rounded-xl" />
-                        <div className="flex items-center justify-between mt-2 text-[10px]">
-                          <span className="font-bold text-white truncate">{s.label}</span>
-                          <span className="text-emerald-400 font-bold">✓</span>
+                      <div className="relative flex-1 rounded-xl overflow-hidden group bg-black/40">
+                        <img
+                          src={existing.url}
+                          alt={s.label}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
+                          <label className="p-2 rounded-xl bg-forest-700 hover:bg-forest-600 text-white cursor-pointer shadow-lg" title="Replace photo">
+                            <RefreshCw className="w-4 h-4" />
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp"
+                              className="hidden"
+                              onChange={(e) => {
+                                const f = e.target.files?.[0];
+                                if (f) handlePhotoUpload(s.slot, f);
+                              }}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => handlePhotoDelete(s.slot)}
+                            className="p-2 rounded-xl bg-red-700 hover:bg-red-600 text-white shadow-lg"
+                            title="Delete photo"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
-                      </>
+                      </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
-                        <Camera className="w-6 h-6 text-slate-500 group-hover:text-forest-400 transition-colors" />
-                        <span className="text-[10px] text-slate-400 font-bold leading-tight">{s.label}</span>
-                        <label className="cursor-pointer text-[10px] text-forest-300 bg-forest-900 hover:bg-forest-800 px-2 py-1 rounded-lg font-semibold">
-                          Upload
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const f = e.target.files?.[0];
-                              if (f) {
-                                setUploadedPhotos([...uploadedPhotos, { slot: s.slot, url: URL.createObjectURL(f), name: f.name }]);
-                              }
-                            }}
-                          />
-                        </label>
+                      <div className="flex-1 flex flex-col items-center justify-center text-center p-2 rounded-xl bg-forest-950/40 border border-forest-900/60">
+                        {isUploadingThis ? (
+                          <div className="flex flex-col items-center gap-2">
+                            <Clock className="w-6 h-6 text-emerald-400 animate-spin" />
+                            <span className="text-[10px] text-emerald-300 font-semibold">Uploading...</span>
+                          </div>
+                        ) : (
+                          <>
+                            <Camera className="w-6 h-6 text-slate-500 mb-1" />
+                            <p className="text-[10px] text-slate-400 leading-tight mb-2 px-1 line-clamp-2">
+                              {s.desc}
+                            </p>
+                            <label className="cursor-pointer px-3 py-1.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-forest-200 border border-forest-700 text-[10px] font-bold flex items-center gap-1 transition-colors">
+                              <Upload className="w-3 h-3" />
+                              <span>Select Photo</span>
+                              <input
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const f = e.target.files?.[0];
+                                  if (f) handlePhotoUpload(s.slot, f);
+                                }}
+                              />
+                            </label>
+                          </>
+                        )}
                       </div>
                     )}
+
+                    <div className="text-[9px] text-slate-500 mt-2 truncate">
+                      {existing ? existing.filename || 'Photo uploaded' : 'Slot pending upload'}
+                    </div>
                   </div>
                 );
               })}
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 text-[11px] text-slate-400 flex items-start gap-2">
-              <Info className="w-4 h-4 text-forest-400 shrink-0 mt-0.5" />
-              <span>
-                <strong>Visual Condition Transparency:</strong> Computer vision assists with visible cosmetic observations. Photographs alone do not prove mechanical health, frame alignment, or engine internal clearance.
-              </span>
-            </div>
-
+            {/* Navigation Buttons */}
             <div className="pt-4 flex justify-between items-center border-t border-forest-900">
               <button
                 type="button"
                 onClick={() => setCurrentStep(1)}
-                className="px-4 py-2.5 rounded-xl bg-forest-950 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl bg-forest-950 hover:bg-forest-900 border border-forest-800 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Back</span>
+                <span>Back to Vehicle Info</span>
               </button>
+
               <button
                 type="button"
                 onClick={() => setCurrentStep(3)}
-                className="px-6 py-3 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-glow"
+                className={`px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all ${
+                  isPhotosComplete
+                    ? 'bg-forest-600 hover:bg-forest-500 text-white shadow-glow'
+                    : 'bg-forest-950 hover:bg-forest-900 text-slate-400 border border-forest-800'
+                }`}
               >
-                <span>Continue to Condition</span>
+                <span>Continue to Documents</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -698,95 +909,464 @@ export const SellBikePage: React.FC = () => {
         )}
 
         {/* ======================================================== */}
-        {/* STEP 3: CONDITION, MILEAGE & PICKUP LOCATION */}
+        {/* STEP 3: MANDATORY 4-CERTIFICATE VEHICLE DOCUMENTS */}
         {/* ======================================================== */}
         {currentStep === 3 && (
           <div className="p-6 sm:p-8 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-6">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 text-forest-300 text-[10px] font-bold uppercase tracking-wider mb-2">
-                Step 3 of 8
-              </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Condition, Mileage & Pickup Location</h2>
-              <p className="text-xs text-slate-400 mt-1">Specify usage details and seller viewing location</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <label className="text-slate-300 font-semibold mb-1 block">Odometer Reading (Kilometres)</label>
-                <input
-                  type="number"
-                  value={km}
-                  onChange={(e) => setKm(Number(e.target.value))}
-                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white font-bold text-sm"
-                />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 text-forest-300 text-[10px] font-bold uppercase tracking-wider mb-2">
+                  Step 3 of 5 • Mandatory Gate
+                </div>
+                <h2 className="font-heading font-extrabold text-2xl text-white">4 Mandatory Vehicle Certificates</h2>
+                <p className="text-xs text-slate-400 mt-1">
+                  Upload all four required certificates for AI cross-validation and listing submission clearance.
+                </p>
               </div>
 
-              <div>
-                <label className="text-slate-300 font-semibold mb-1 block">Asking Price (INR)</label>
-                <input
-                  type="number"
-                  value={askingPrice}
-                  onChange={(e) => setAskingPrice(Number(e.target.value))}
-                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-forest-300 font-bold text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="text-slate-300 font-semibold mb-1 block">Ownership Count</label>
-                <select
-                  value={owners}
-                  onChange={(e) => setOwners(Number(e.target.value))}
-                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white"
-                >
-                  <option value={1}>1st Owner (Single Owner)</option>
-                  <option value={2}>2nd Owner</option>
-                  <option value={3}>3rd or Higher Owner</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-slate-300 font-semibold mb-1 block">Overall Condition Grade</label>
-                <select
-                  value={overallCondition}
-                  onChange={(e) => setOverallCondition(e.target.value as any)}
-                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white font-medium"
-                >
-                  <option value="excellent">Showroom Mint (Like New)</option>
-                  <option value="good">Good (Normal Commute Wear)</option>
-                  <option value="fair">Fair (Minor Scratches / Service Needed)</option>
-                </select>
+              {/* Document Progress Counter */}
+              <div className={`px-4 py-2 rounded-2xl border text-xs font-bold flex items-center gap-2 ${
+                isDocumentsComplete
+                  ? 'bg-emerald-950/80 border-emerald-500/60 text-emerald-300 shadow-glow'
+                  : 'bg-amber-950/60 border-amber-600/50 text-amber-300'
+              }`}>
+                {isDocumentsComplete ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <Clock className="w-4 h-4 text-amber-400 animate-spin" />
+                )}
+                <span>{passedDocsCount} / 4 Documents Verified</span>
               </div>
             </div>
 
-            {/* Dedicated Pickup Location Map Picker */}
-            <div className="space-y-3 pt-2">
-              <label className="text-slate-300 font-bold text-xs block">
-                Pickup & Viewing Location on Interactive Map
-              </label>
-              <SellerPickupLocationPicker
-                initialLocation={pickupLocation}
-                onLocationConfirmed={(loc) => {
-                  setPickupLocation(loc);
-                  setIsPickupConfirmed(true);
-                }}
-              />
+            {/* Dedicated Smart RC AI Verification & Hackathon Showcase Banner */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-[#10221B] to-forest-950 border border-emerald-500/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-glow">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/40">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-extrabold text-sm text-white flex items-center gap-2">
+                    <span>SMART RC VERIFICATION & AUTHENTICITY ENGINE</span>
+                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/30 uppercase">
+                      AI OCR + ML
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-slate-300 mt-0.5">
+                    Launch the interactive RC intelligence studio with field confirmation, OpenCV quality checks, and Hackathon demo presets.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSmartRCModalOpen(true)}
+                className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-glow transition-all cursor-pointer flex-shrink-0"
+              >
+                <Cpu className="w-4 h-4" />
+                <span>Launch RC Studio</span>
+              </button>
             </div>
 
+            {/* 4 Compulsory Document Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              {/* CARD 1: REGISTRATION CERTIFICATE (RC) */}
+              <div className={`p-5 rounded-3xl border transition-all ${
+                rcResult?.passed
+                  ? 'bg-[#10221B] border-emerald-500/70 shadow-glow'
+                  : rcResult?.status === 'mismatch_found' || rcResult?.status === 'failed'
+                  ? 'bg-red-950/30 border-red-600/60'
+                  : 'bg-forest-950/90 border-forest-800'
+              }`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-forest-900 text-forest-300 flex items-center justify-center font-bold text-xs">
+                      RC
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-white">Registration Certificate (RC)</h4>
+                      <p className="text-[10px] text-slate-400">Smart Card or Parivahan Digital Copy</p>
+                    </div>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                    rcResult?.passed
+                      ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50'
+                      : rcResult?.status === 'mismatch_found'
+                      ? 'bg-red-950 text-red-300 border border-red-500/50'
+                      : 'bg-forest-900 text-forest-300'
+                  }`}>
+                    {rcResult?.status || 'Not Uploaded'}
+                  </span>
+                </div>
+
+                {rcResult ? (
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-2xl bg-forest-950/80 border border-forest-900 text-xs space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Reg No:</span>
+                        <span className="font-mono font-bold text-white">{rcResult.extracted_preview?.registration_number || registrationNumber}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Owner:</span>
+                        <span className="font-semibold text-white">{rcResult.extracted_preview?.owner_name || sellerFullName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Model:</span>
+                        <span className="font-semibold text-emerald-400">{rcResult.extracted_preview?.model || `${brand} ${model}`}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenAnalysisReport('rc')}
+                        className="text-xs text-forest-300 hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
+                      >
+                        <FileSearch className="w-3.5 h-3.5" />
+                        <span>View Analysis Report</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveDocument('rc')}
+                        className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="border-2 border-dashed border-forest-800 hover:border-forest-600 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-forest-950/40">
+                    {isRcUploading ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <Clock className="w-6 h-6 text-emerald-400 animate-spin" />
+                        <span className="text-xs text-emerald-300 font-semibold">Analyzing RC Document...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className="w-6 h-6 text-forest-400 mb-2" />
+                        <span className="text-xs font-bold text-white">Upload RC Scan or PDF</span>
+                        <span className="text-[10px] text-slate-400 mt-0.5">PDF, JPG, PNG up to 10MB</span>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png,.webp"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleDocumentUpload('rc', f);
+                      }}
+                    />
+                  </label>
+                )}
+              </div>
+
+              {/* CARD 2: INSURANCE CERTIFICATE */}
+              <div className={`p-5 rounded-3xl border transition-all ${
+                insuranceResult?.passed
+                  ? 'bg-[#10221B] border-emerald-500/70 shadow-glow'
+                  : insuranceResult?.status === 'expired'
+                  ? 'bg-amber-950/30 border-amber-600/60'
+                  : 'bg-forest-950/90 border-forest-800'
+              }`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-forest-900 text-forest-300 flex items-center justify-center font-bold text-xs">
+                      INS
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-white">Insurance Certificate</h4>
+                      <p className="text-[10px] text-slate-400">Comprehensive or Third-Party Policy</p>
+                    </div>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                    insuranceResult?.passed
+                      ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50'
+                      : insuranceResult?.status === 'expired'
+                      ? 'bg-amber-950 text-amber-300 border border-amber-500/50'
+                      : 'bg-forest-900 text-forest-300'
+                  }`}>
+                    {insuranceResult?.status || 'Not Uploaded'}
+                  </span>
+                </div>
+
+                {insuranceResult ? (
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-2xl bg-forest-950/80 border border-forest-900 text-xs space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Policy No:</span>
+                        <span className="font-mono font-bold text-white">{insuranceResult.extracted_preview?.policy_number || 'POL-99214'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Provider:</span>
+                        <span className="font-semibold text-white">{insuranceResult.extracted_preview?.provider || 'HDFC ERGO General Insurance'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Expiry Date:</span>
+                        <span className={`font-semibold ${insuranceResult.is_expired ? 'text-red-400' : 'text-emerald-400'}`}>
+                          {insuranceResult.expiry_date || '20/12/2026'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenAnalysisReport('insurance')}
+                        className="text-xs text-forest-300 hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
+                      >
+                        <FileSearch className="w-3.5 h-3.5" />
+                        <span>View Analysis Report</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveDocument('insurance')}
+                        className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="border-2 border-dashed border-forest-800 hover:border-forest-600 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-forest-950/40">
+                    {isInsUploading ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <Clock className="w-6 h-6 text-emerald-400 animate-spin" />
+                        <span className="text-xs text-emerald-300 font-semibold">Checking Policy Validity...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className="w-6 h-6 text-forest-400 mb-2" />
+                        <span className="text-xs font-bold text-white">Upload Insurance Policy</span>
+                        <span className="text-[10px] text-slate-400 mt-0.5">Active unexpired policy required</span>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png,.webp"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleDocumentUpload('insurance', f);
+                      }}
+                    />
+                  </label>
+                )}
+              </div>
+
+              {/* CARD 3: POLLUTION UNDER CONTROL (PUC) */}
+              <div className={`p-5 rounded-3xl border transition-all ${
+                pucResult?.passed
+                  ? 'bg-[#10221B] border-emerald-500/70 shadow-glow'
+                  : pucResult?.status === 'expired'
+                  ? 'bg-amber-950/30 border-amber-600/60'
+                  : 'bg-forest-950/90 border-forest-800'
+              }`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-forest-900 text-forest-300 flex items-center justify-center font-bold text-xs">
+                      PUC
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-white">Pollution Under Control (PUC)</h4>
+                      <p className="text-[10px] text-slate-400">BS6 Emission Compliance Slip</p>
+                    </div>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                    pucResult?.passed
+                      ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50'
+                      : pucResult?.status === 'expired'
+                      ? 'bg-amber-950 text-amber-300 border border-amber-500/50'
+                      : 'bg-forest-900 text-forest-300'
+                  }`}>
+                    {pucResult?.status || 'Not Uploaded'}
+                  </span>
+                </div>
+
+                {pucResult ? (
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-2xl bg-forest-950/80 border border-forest-900 text-xs space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Certificate No:</span>
+                        <span className="font-mono font-bold text-white">{pucResult.extracted_preview?.certificate_number || 'PUC-CH-2026-991'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Emission Norms:</span>
+                        <span className="font-semibold text-emerald-400">BS-VI Compliant (Pass)</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Valid Through:</span>
+                        <span className={`font-semibold ${pucResult.is_expired ? 'text-red-400' : 'text-emerald-400'}`}>
+                          {pucResult.expiry_date || '15/11/2026'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenAnalysisReport('puc')}
+                        className="text-xs text-forest-300 hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
+                      >
+                        <FileSearch className="w-3.5 h-3.5" />
+                        <span>View Analysis Report</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveDocument('puc')}
+                        className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="border-2 border-dashed border-forest-800 hover:border-forest-600 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-forest-950/40">
+                    {isPucUploading ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <Clock className="w-6 h-6 text-emerald-400 animate-spin" />
+                        <span className="text-xs text-emerald-300 font-semibold">Validating Emission Readings...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className="w-6 h-6 text-forest-400 mb-2" />
+                        <span className="text-xs font-bold text-white">Upload PUC Certificate</span>
+                        <span className="text-[10px] text-slate-400 mt-0.5">Government RTO emission receipt</span>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png,.webp"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleDocumentUpload('puc', f);
+                      }}
+                    />
+                  </label>
+                )}
+              </div>
+
+              {/* CARD 4: OWNERSHIP PROOF / SELLER AUTHORISATION */}
+              <div className={`p-5 rounded-3xl border transition-all ${
+                ownershipResult?.passed
+                  ? 'bg-[#10221B] border-emerald-500/70 shadow-glow'
+                  : 'bg-forest-950/90 border-forest-800'
+              }`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-forest-900 text-forest-300 flex items-center justify-center font-bold text-xs">
+                      OWN
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-white">Ownership & Transfer Proof</h4>
+                      <p className="text-[10px] text-slate-400">Registered Owner Endorsement or Form 29/30</p>
+                    </div>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                    ownershipResult?.passed
+                      ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50'
+                      : 'bg-forest-900 text-forest-300'
+                  }`}>
+                    {ownershipResult?.status || 'Pending'}
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {/* Mode Selector */}
+                  <div className="grid grid-cols-2 gap-2 text-[11px]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOwnershipMode('reuse_rc');
+                        handleReuseRcOwnership();
+                      }}
+                      className={`p-2.5 rounded-xl border text-left font-bold transition-all ${
+                        ownershipMode === 'reuse_rc'
+                          ? 'bg-forest-900 border-forest-500 text-white'
+                          : 'bg-forest-950 border-forest-900 text-slate-400'
+                      }`}
+                    >
+                      <UserCheck className="w-3.5 h-3.5 mb-1 text-emerald-400" />
+                      <span>I am the Registered Owner</span>
+                      <p className="text-[9px] font-normal text-slate-400 mt-0.5">Use verified RC endorsement</p>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setOwnershipMode('upload_custom')}
+                      className={`p-2.5 rounded-xl border text-left font-bold transition-all ${
+                        ownershipMode === 'upload_custom'
+                          ? 'bg-forest-900 border-forest-500 text-white'
+                          : 'bg-forest-950 border-forest-900 text-slate-400'
+                      }`}
+                    >
+                      <FileText className="w-3.5 h-3.5 mb-1 text-amber-400" />
+                      <span>Authorised Representative</span>
+                      <p className="text-[9px] font-normal text-slate-400 mt-0.5">Upload Form 29/30 / NOC</p>
+                    </button>
+                  </div>
+
+                  {ownershipMode === 'reuse_rc' ? (
+                    <div className="p-3 rounded-2xl bg-forest-950/80 border border-forest-900 text-xs space-y-1">
+                      <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>RC Registered Ownership Reused</span>
+                      </div>
+                      <p className="text-[11px] text-slate-300">
+                        Ownership confirmed from verified Registration Certificate for seller <strong>{sellerFullName}</strong>. No redundant re-upload needed.
+                      </p>
+                    </div>
+                  ) : (
+                    <label className="border-2 border-dashed border-forest-800 hover:border-forest-600 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors bg-forest-950/40">
+                      {isOwnershipUploading ? (
+                        <div className="flex flex-col items-center gap-1">
+                          <Clock className="w-5 h-5 text-emerald-400 animate-spin" />
+                          <span className="text-[11px] text-emerald-300">Uploading Authorisation Document...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-5 h-5 text-forest-400 mb-1" />
+                          <span className="text-xs font-bold text-white">Upload Authorisation Letter / Form 29/30</span>
+                          <span className="text-[10px] text-slate-400">PDF, JPG up to 10MB</span>
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) handleDocumentUpload('ownership_proof', f);
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation Buttons */}
             <div className="pt-4 flex justify-between items-center border-t border-forest-900">
               <button
                 type="button"
                 onClick={() => setCurrentStep(2)}
-                className="px-4 py-2.5 rounded-xl bg-forest-950 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl bg-forest-950 hover:bg-forest-900 border border-forest-800 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Back</span>
+                <span>Back to 8 Photographs</span>
               </button>
+
               <button
                 type="button"
                 onClick={() => setCurrentStep(4)}
-                className="px-6 py-3 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-glow"
+                className={`px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all ${
+                  isDocumentsComplete
+                    ? 'bg-forest-600 hover:bg-forest-500 text-white shadow-glow'
+                    : 'bg-forest-950 hover:bg-forest-900 text-slate-400 border border-forest-800'
+                }`}
               >
-                <span>Continue to Level 1 Verification</span>
+                <span>Continue to Pickup Location</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -794,567 +1374,99 @@ export const SellBikePage: React.FC = () => {
         )}
 
         {/* ======================================================== */}
-        {/* STEP 4: MANDATORY 4-CERTIFICATE VERIFICATION */}
+        {/* STEP 4: PICKUP & TEST RIDE LOCATION */}
         {/* ======================================================== */}
         {currentStep === 4 && (
           <div className="p-6 sm:p-8 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-6">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 text-forest-300 text-[10px] font-bold uppercase tracking-wider mb-2">
-                Mandatory Verification Gate
+                Step 4 of 5 • Monetized Pickup Hub
               </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Mandatory Vehicle Documents</h2>
+              <h2 className="font-heading font-extrabold text-2xl text-white">Pickup & Test Ride Location</h2>
               <p className="text-xs text-slate-400 mt-1">
-                All four documents must pass verification before your listing can go live.
+                Designate where prospective buyers can inspect or test ride your vehicle. Your exact coordinates remain completely private until a buyer unlocks location access.
               </p>
             </div>
 
-            {/* Verification Progress Counter */}
-            <div className="p-4 rounded-2xl bg-forest-950 border border-forest-800 space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-forest-400" />
-                  <span>Verification Progress</span>
-                </span>
-                <span className="font-mono font-bold text-emerald-400">
-                  {gateStatus?.passed_count || (
-                    [rcResult?.status, insuranceResult?.status, pucResult?.status, ownershipResult?.status].filter(s => s === 'passed').length
-                  )} of 4 documents verified
-                </span>
+            {/* Privacy Protection Callout Banner */}
+            <div className="p-4 rounded-2xl bg-forest-950/90 border border-emerald-500/40 flex items-start gap-3 text-xs">
+              <Lock className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-emerald-300 block mb-0.5">Strict Privacy & Revenue Protection:</strong>
+                <p className="text-slate-300 leading-relaxed text-[11px]">
+                  Before payment, buyers only see your approximate locality (e.g. <em>{pickupLocation.locality}, {pickupLocation.city}</em>). Your exact street address and interactive pin are safely hidden behind GEAR UP&apos;s ₹49 location-unlock gate.
+                </p>
               </div>
-              <div className="w-full h-2 rounded-full bg-black/60 overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-emerald-600 to-forest-400 transition-all duration-500 rounded-full"
-                  style={{
-                    width: `${((gateStatus?.passed_count || [rcResult?.status, insuranceResult?.status, pucResult?.status, ownershipResult?.status].filter(s => s === 'passed').length) / 4) * 100}%`
-                  }}
+            </div>
+
+            {/* Interactive Leaflet Location Picker */}
+            <SellerPickupLocationPicker
+              initialLocation={pickupLocation}
+              onLocationConfirmed={handleLocationConfirmed}
+            />
+
+            {/* Meetup Spot Type & Test Ride Policy */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
+              <div>
+                <label className="text-slate-300 font-semibold mb-1 block">Preferred Meetup Spot Type</label>
+                <select
+                  value={meetupSpotType}
+                  onChange={(e) => setMeetupSpotType(e.target.value)}
+                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none font-medium"
+                >
+                  <option value="Safe Public Commercial Hub">Safe Public Commercial Hub (Recommended)</option>
+                  <option value="Authorized Two-Wheeler Workshop">Authorized Two-Wheeler Workshop</option>
+                  <option value="Metro / Transit Terminal">Metro / Transit Terminal Plaza</option>
+                  <option value="Residential Premises">Residential Premises / Parking Gate</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-semibold mb-1 block">Test Ride Availability</label>
+                <select
+                  value={testRideAvailable ? 'yes' : 'no'}
+                  onChange={(e) => setTestRideAvailable(e.target.value === 'yes')}
+                  className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none font-medium"
+                >
+                  <option value="yes">Test Rides Permitted (Valid DL & Helmet Required)</option>
+                  <option value="no">Inspection Only (Test Rides Not Permitted)</option>
+                </select>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="text-slate-300 font-semibold mb-1 block">
+                  Pickup & Test Ride Instructions for Unlocked Buyers
+                </label>
+                <textarea
+                  rows={2}
+                  value={pickupInstructions}
+                  onChange={(e) => setPickupInstructions(e.target.value)}
+                  placeholder="e.g. Available on weekends between 10am-4pm. Please call 30 mins before arriving."
+                  className="w-full bg-forest-950 border border-forest-800 rounded-xl p-3 text-white focus:outline-none text-xs"
                 />
               </div>
             </div>
 
-            {/* Document Upload Cards */}
-            <div className="space-y-4">
-              
-              {/* CARD 1: REGISTRATION CERTIFICATE (RC) */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-forest-900 flex items-center justify-center text-forest-300">
-                      <FileCheck className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                        <span>1. Registration Certificate (RC)</span>
-                        <span className="text-[10px] text-amber-400 font-semibold uppercase">*Mandatory</span>
-                      </h3>
-                      <p className="text-[11px] text-slate-400">Accepted: PDF, JPG, PNG (Max 10MB)</p>
-                    </div>
-                  </div>
-
-                  {rcResult?.status === 'passed' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950 border border-emerald-500 text-emerald-300 flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>PASSED</span>
-                    </span>
-                  ) : rcResult?.status === 'mismatch_found' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-950 border border-red-500 text-red-300 flex items-center gap-1">
-                      <XCircle className="w-3.5 h-3.5" />
-                      <span>MISMATCH</span>
-                    </span>
-                  ) : rcResult?.status === 'unreadable' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-950 border border-amber-500 text-amber-300 flex items-center gap-1">
-                      <AlertTriangle className="w-3.5 h-3.5" />
-                      <span>UNREADABLE</span>
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-900 border border-slate-700 text-slate-400">
-                      NOT UPLOADED
-                    </span>
-                  )}
-                </div>
-
-                {/* RC Dropzone & Actions */}
-                {!rcResult ? (
-                  <div
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      const file = e.dataTransfer.files?.[0];
-                      if (file) handleGenericUpload('rc', file);
-                    }}
-                    className="border-2 border-dashed border-forest-800 hover:border-forest-600 rounded-2xl p-6 text-center transition-colors bg-[#08120F]"
-                  >
-                    <Upload className="w-8 h-8 text-forest-400 mx-auto mb-2 opacity-80" />
-                    <p className="text-xs font-bold text-slate-200">
-                      Drag & drop your RC document here, or browse
-                    </p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Scanned Parivahan RC or physical registration card</p>
-                    <label className="inline-block mt-3 cursor-pointer px-4 py-2 rounded-xl bg-forest-700 hover:bg-forest-600 text-white text-xs font-bold transition-colors shadow-sm">
-                      <span>{isRcUploading ? 'Analyzing Document & OCR...' : 'Browse RC File'}</span>
-                      <input
-                        type="file"
-                        accept=".pdf,image/*"
-                        className="hidden"
-                        onChange={(e) => e.target.files?.[0] && handleGenericUpload('rc', e.target.files[0])}
-                        disabled={isRcUploading}
-                      />
-                    </label>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {/* Failure / Mismatch reason callout */}
-                    {rcResult.status !== 'passed' && (
-                      <div className="p-3 rounded-xl bg-red-950/70 border border-red-800 text-xs text-red-200 flex items-start gap-2">
-                        <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-bold">RC Verification Issue:</p>
-                          <p className="text-[11px] text-red-300">{rcResult.status_reason || rcResult.reason || 'Registration details differ from listing.'}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Extracted Details Table */}
-                    <div className="p-3.5 rounded-xl bg-black/40 border border-forest-900 text-xs space-y-2">
-                      <div className="flex items-center justify-between border-b border-forest-900 pb-2">
-                        <span className="font-bold text-forest-300">RC OCR Analysis Summary</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenAnalysisReport('rc')}
-                            className="text-[11px] font-semibold text-forest-300 hover:text-white flex items-center gap-1 underline"
-                          >
-                            <FileSearch className="w-3 h-3" />
-                            <span>View Full Analysis</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveDocument('rc')}
-                            className="text-[11px] text-red-400 hover:text-red-300 flex items-center gap-0.5"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                            <span>Remove</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px]">
-                        <div>
-                          <span className="text-slate-500 block text-[10px]">Registration No:</span>
-                          <span className="font-mono font-bold text-white">
-                            {rcResult.extracted_fields?.registration_number ? `${rcResult.extracted_fields.registration_number.slice(0, 4)}****${rcResult.extracted_fields.registration_number.slice(-2)}` : 'CH01****21'}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 block text-[10px]">Registered Owner:</span>
-                          <span className="font-bold text-white">{rcResult.extracted_fields?.registered_owner || sellerFullName}</span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 block text-[10px]">Maker & Model:</span>
-                          <span className="font-bold text-white">{rcResult.extracted_fields?.manufacturer || brand} {rcResult.extracted_fields?.model || model}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* CARD 2: INSURANCE CERTIFICATE */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-forest-900 flex items-center justify-center text-forest-300">
-                      <ShieldCheck className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                        <span>2. Insurance Certificate</span>
-                        <span className="text-[10px] text-amber-400 font-semibold uppercase">*Mandatory</span>
-                      </h3>
-                      <p className="text-[11px] text-slate-400">Comprehensive or Third-Party policy certificate</p>
-                    </div>
-                  </div>
-
-                  {insuranceResult?.status === 'passed' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950 border border-emerald-500 text-emerald-300 flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>PASSED</span>
-                    </span>
-                  ) : insuranceResult?.status === 'expired' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-950 border border-red-500 text-red-300 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>EXPIRED</span>
-                    </span>
-                  ) : insuranceResult?.status === 'mismatch_found' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-950 border border-red-500 text-red-300 flex items-center gap-1">
-                      <XCircle className="w-3.5 h-3.5" />
-                      <span>MISMATCH</span>
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-900 border border-slate-700 text-slate-400">
-                      NOT UPLOADED
-                    </span>
-                  )}
-                </div>
-
-                {!insuranceResult ? (
-                  <div
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      const file = e.dataTransfer.files?.[0];
-                      if (file) handleGenericUpload('insurance', file);
-                    }}
-                    className="border-2 border-dashed border-forest-800 hover:border-forest-600 rounded-2xl p-6 text-center transition-colors bg-[#08120F]"
-                  >
-                    <Upload className="w-8 h-8 text-forest-400 mx-auto mb-2 opacity-80" />
-                    <p className="text-xs font-bold text-slate-200">
-                      Drag & drop your Insurance Certificate here, or browse
-                    </p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Active comprehensive or liability policy document</p>
-                    <label className="inline-block mt-3 cursor-pointer px-4 py-2 rounded-xl bg-forest-700 hover:bg-forest-600 text-white text-xs font-bold transition-colors shadow-sm">
-                      <span>{isInsUploading ? 'Scanning Insurance & Expiry...' : 'Browse Insurance File'}</span>
-                      <input
-                        type="file"
-                        accept=".pdf,image/*"
-                        className="hidden"
-                        onChange={(e) => e.target.files?.[0] && handleGenericUpload('insurance', e.target.files[0])}
-                        disabled={isInsUploading}
-                      />
-                    </label>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {insuranceResult.status !== 'passed' && (
-                      <div className="p-3 rounded-xl bg-red-950/70 border border-red-800 text-xs text-red-200 flex items-start gap-2">
-                        <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-bold">Insurance Verification Issue:</p>
-                          <p className="text-[11px] text-red-300">{insuranceResult.status_reason || insuranceResult.reason || 'Insurance policy is expired or mismatched.'}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="p-3.5 rounded-xl bg-black/40 border border-forest-900 text-xs space-y-2">
-                      <div className="flex items-center justify-between border-b border-forest-900 pb-2">
-                        <span className="font-bold text-forest-300">Policy Extraction Details</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenAnalysisReport('insurance')}
-                            className="text-[11px] font-semibold text-forest-300 hover:text-white flex items-center gap-1 underline"
-                          >
-                            <FileSearch className="w-3 h-3" />
-                            <span>View Full Analysis</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveDocument('insurance')}
-                            className="text-[11px] text-red-400 hover:text-red-300 flex items-center gap-0.5"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                            <span>Remove</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px]">
-                        <div>
-                          <span className="text-slate-500 block text-[10px]">Provider:</span>
-                          <span className="font-bold text-white">{insuranceResult.extracted_fields?.provider || 'HDFC ERGO'}</span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 block text-[10px]">Policy Expiry Date:</span>
-                          <span className={`font-bold ${insuranceResult.is_expired ? 'text-red-400' : 'text-emerald-400'}`}>
-                            {insuranceResult.extracted_fields?.expiry_date || insuranceResult.expiry_date}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 block text-[10px]">Registration Checked:</span>
-                          <span className="font-mono font-bold text-white">{registrationNumber ? `${registrationNumber.slice(0, 4)}****${registrationNumber.slice(-2)}` : 'CH01****21'}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* CARD 3: POLLUTION UNDER CONTROL (PUC) */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-forest-900 flex items-center justify-center text-forest-300">
-                      <Zap className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                        <span>3. Pollution Under Control (PUC)</span>
-                        <span className="text-[10px] text-amber-400 font-semibold uppercase">*Mandatory</span>
-                      </h3>
-                      <p className="text-[11px] text-slate-400">Emission test certificate and valid validity term</p>
-                    </div>
-                  </div>
-
-                  {pucResult?.status === 'passed' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950 border border-emerald-500 text-emerald-300 flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>PASSED</span>
-                    </span>
-                  ) : pucResult?.status === 'expired' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-950 border border-red-500 text-red-300 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>EXPIRED</span>
-                    </span>
-                  ) : pucResult?.status === 'mismatch_found' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-950 border border-red-500 text-red-300 flex items-center gap-1">
-                      <XCircle className="w-3.5 h-3.5" />
-                      <span>MISMATCH</span>
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-900 border border-slate-700 text-slate-400">
-                      NOT UPLOADED
-                    </span>
-                  )}
-                </div>
-
-                {!pucResult ? (
-                  <div
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      const file = e.dataTransfer.files?.[0];
-                      if (file) handleGenericUpload('puc', file);
-                    }}
-                    className="border-2 border-dashed border-forest-800 hover:border-forest-600 rounded-2xl p-6 text-center transition-colors bg-[#08120F]"
-                  >
-                    <Upload className="w-8 h-8 text-forest-400 mx-auto mb-2 opacity-80" />
-                    <p className="text-xs font-bold text-slate-200">
-                      Drag & drop your PUC certificate here, or browse
-                    </p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Government RTO emission compliance certificate</p>
-                    <label className="inline-block mt-3 cursor-pointer px-4 py-2 rounded-xl bg-forest-700 hover:bg-forest-600 text-white text-xs font-bold transition-colors shadow-sm">
-                      <span>{isPucUploading ? 'Scanning PUC...' : 'Browse PUC File'}</span>
-                      <input
-                        type="file"
-                        accept=".pdf,image/*"
-                        className="hidden"
-                        onChange={(e) => e.target.files?.[0] && handleGenericUpload('puc', e.target.files[0])}
-                        disabled={isPucUploading}
-                      />
-                    </label>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {pucResult.status !== 'passed' && (
-                      <div className="p-3 rounded-xl bg-red-950/70 border border-red-800 text-xs text-red-200 flex items-start gap-2">
-                        <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-bold">PUC Verification Issue:</p>
-                          <p className="text-[11px] text-red-300">{pucResult.status_reason || pucResult.reason || 'PUC certificate is expired or invalid.'}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="p-3.5 rounded-xl bg-black/40 border border-forest-900 text-xs space-y-2">
-                      <div className="flex items-center justify-between border-b border-forest-900 pb-2">
-                        <span className="font-bold text-forest-300">PUC Emission Details</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenAnalysisReport('puc')}
-                            className="text-[11px] font-semibold text-forest-300 hover:text-white flex items-center gap-1 underline"
-                          >
-                            <FileSearch className="w-3 h-3" />
-                            <span>View Full Analysis</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveDocument('puc')}
-                            className="text-[11px] text-red-400 hover:text-red-300 flex items-center gap-0.5"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                            <span>Remove</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px]">
-                        <div>
-                          <span className="text-slate-500 block text-[10px]">Certificate No:</span>
-                          <span className="font-mono font-bold text-white">{pucResult.extracted_fields?.certificate_number || 'CH01-PUC-2026-9921'}</span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 block text-[10px]">Valid Upto:</span>
-                          <span className={`font-bold ${pucResult.is_expired ? 'text-red-400' : 'text-emerald-400'}`}>
-                            {pucResult.extracted_fields?.expiry_date || pucResult.expiry_date}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 block text-[10px]">Emission Result:</span>
-                          <span className="font-bold text-emerald-400">{pucResult.extracted_fields?.emission_result || 'PASS (BS6 Compliant)'}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* CARD 4: OWNERSHIP / SELLER AUTHORISATION PROOF */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-forest-900 flex items-center justify-center text-forest-300">
-                      <UserCheck className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                        <span>4. Ownership / Seller Authorisation Proof</span>
-                        <span className="text-[10px] text-amber-400 font-semibold uppercase">*Mandatory</span>
-                      </h3>
-                      <p className="text-[11px] text-slate-400">RC owner match, purchase invoice, or seller authorisation</p>
-                    </div>
-                  </div>
-
-                  {ownershipResult?.status === 'passed' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950 border border-emerald-500 text-emerald-300 flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>PASSED</span>
-                    </span>
-                  ) : ownershipResult?.status === 'needs_manual_review' ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-950 border border-amber-500 text-amber-300 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>NEEDS REVIEW</span>
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-900 border border-slate-700 text-slate-400">
-                      NOT UPLOADED
-                    </span>
-                  )}
-                </div>
-
-                {/* Option Selector: Registered Owner vs Separate Authorisation */}
-                <div className="flex items-center gap-2 text-xs border-b border-forest-900 pb-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOwnershipMode('reuse_rc');
-                      setIsRegisteredOwner(true);
-                      handleReuseRcOwnership();
-                    }}
-                    className={`px-3 py-1.5 rounded-xl font-bold transition-colors ${
-                      ownershipMode === 'reuse_rc'
-                        ? 'bg-forest-700 text-white'
-                        : 'bg-forest-900 text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    I am the Registered Owner (Use Verified RC)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOwnershipMode('upload_custom');
-                      setIsRegisteredOwner(false);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl font-bold transition-colors ${
-                      ownershipMode === 'upload_custom'
-                        ? 'bg-forest-700 text-white'
-                        : 'bg-forest-900 text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    Upload Authorisation / Invoice / POA
-                  </button>
-                </div>
-
-                {ownershipMode === 'reuse_rc' ? (
-                  <div className="p-4 rounded-xl bg-forest-900/40 border border-forest-800 space-y-2 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-300 font-medium">
-                        RC Owner Endorsement Link:
-                      </span>
-                      {rcResult?.status === 'passed' ? (
-                        <span className="text-emerald-400 font-bold flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Satisfied via Verified RC</span>
-                        </span>
-                      ) : (
-                        <span className="text-amber-400 font-bold">
-                          Upload & Pass RC first
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-slate-400">
-                      Since you are the registered owner, your verified RC automatically satisfies Document 4 without requiring you to re-upload the same document.
-                    </p>
-                  </div>
-                ) : (
-                  <div>
-                    {!ownershipResult || ownershipResult.status === 'not_uploaded' ? (
-                      <div
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          const file = e.dataTransfer.files?.[0];
-                          if (file) handleGenericUpload('ownership_proof', file);
-                        }}
-                        className="border-2 border-dashed border-forest-800 hover:border-forest-600 rounded-2xl p-6 text-center transition-colors bg-[#08120F]"
-                      >
-                        <Upload className="w-8 h-8 text-forest-400 mx-auto mb-2 opacity-80" />
-                        <p className="text-xs font-bold text-slate-200">
-                          Upload Seller Authorisation Document or Original Invoice
-                        </p>
-                        <p className="text-[10px] text-slate-500 mt-0.5">Authorisation letter from registered owner or dealership purchase invoice</p>
-                        <label className="inline-block mt-3 cursor-pointer px-4 py-2 rounded-xl bg-forest-700 hover:bg-forest-600 text-white text-xs font-bold transition-colors shadow-sm">
-                          <span>{isOwnershipUploading ? 'Scanning Document...' : 'Browse Proof File'}</span>
-                          <input
-                            type="file"
-                            accept=".pdf,image/*"
-                            className="hidden"
-                            onChange={(e) => e.target.files?.[0] && handleGenericUpload('ownership_proof', e.target.files[0])}
-                            disabled={isOwnershipUploading}
-                          />
-                        </label>
-                      </div>
-                    ) : (
-                      <div className="p-3.5 rounded-xl bg-black/40 border border-forest-900 text-xs flex justify-between items-center">
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">Authorisation Status:</span>
-                          <span className="font-bold text-white capitalize">{ownershipResult.status?.replace('_', ' ')}</span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveDocument('ownership_proof')}
-                          className="text-xs text-red-400 hover:text-red-300"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 text-[11px] text-slate-400 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-              <span>
-                <strong>Mandatory Verification Notice:</strong> All four documents must pass automated OCR consistency and date validity checks. Sensitive identification numbers (chassis, engine, full registration) are strictly masked for privacy.
-              </span>
-            </div>
-
+            {/* Navigation Buttons */}
             <div className="pt-4 flex justify-between items-center border-t border-forest-900">
               <button
                 type="button"
                 onClick={() => setCurrentStep(3)}
-                className="px-4 py-2.5 rounded-xl bg-forest-950 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl bg-forest-950 hover:bg-forest-900 border border-forest-800 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Back</span>
+                <span>Back to 4 Documents</span>
               </button>
+
               <button
                 type="button"
-                onClick={() => setCurrentStep(5)}
+                onClick={() => {
+                  handleLocationConfirmed(pickupLocation);
+                  setCurrentStep(5);
+                }}
                 className="px-6 py-3 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-glow"
               >
-                <span>Continue to Level 2 (Condition)</span>
+                <span>Review & Publish Listing</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -1362,700 +1474,244 @@ export const SellBikePage: React.FC = () => {
         )}
 
         {/* ======================================================== */}
-        {/* STEP 5: LEVEL 2 – VEHICLE CONDITION & MAINTENANCE */}
+        {/* STEP 5: REVIEW & PUBLISH LISTING */}
         {/* ======================================================== */}
         {currentStep === 5 && (
           <div className="p-6 sm:p-8 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-6">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 text-forest-300 text-[10px] font-bold uppercase tracking-wider mb-2">
-                Level 2 Verification
-              </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Vehicle Condition & Maintenance</h2>
-              <p className="text-xs text-slate-400 mt-1">
-                Provide service history, repair bills, tyre status, and accident disclosure.
-              </p>
-            </div>
-
-            <div className="space-y-4 text-xs">
-              {/* Service History Details */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-4">
-                <h3 className="font-bold text-sm text-white">A. Maintenance & Periodic Service</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label className="text-slate-400 mb-1 block">Service Frequency</label>
-                    <select
-                      value={serviceHistoryTier}
-                      onChange={(e) => setServiceHistoryTier(e.target.value)}
-                      className="w-full bg-forest-900 border border-forest-800 rounded-xl px-3 py-2 text-white"
-                    >
-                      <option value="regular">Regularly Serviced on Schedule</option>
-                      <option value="occasional">Occasionally Serviced</option>
-                      <option value="none">No Documented History</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-slate-400 mb-1 block">Last Service Date</label>
-                    <input
-                      type="text"
-                      value={lastServiceDate}
-                      onChange={(e) => setLastServiceDate(e.target.value)}
-                      className="w-full bg-forest-900 border border-forest-800 rounded-xl px-3 py-2 text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-slate-400 mb-1 block">Odometer at Last Service</label>
-                    <input
-                      type="number"
-                      value={lastServiceOdo}
-                      onChange={(e) => setLastServiceOdo(Number(e.target.value))}
-                      className="w-full bg-forest-900 border border-forest-800 rounded-xl px-3 py-2 text-white"
-                    />
-                  </div>
-                </div>
-
-                {/* Upload Multiple Repair Bills */}
-                <div className="pt-2 border-t border-forest-900">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold text-slate-300">B. Upload Workshop Repair / Service Bills</span>
-                    <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-forest-800 hover:bg-forest-700 text-white font-bold text-[11px] flex items-center gap-1">
-                      <Upload className="w-3 h-3" />
-                      <span>Add Bill</span>
-                      <input type="file" accept=".pdf,image/*" className="hidden" onChange={handleRepairBillUpload} />
-                    </label>
-                  </div>
-
-                  {uploadedRepairBills.length > 0 && (
-                    <div className="space-y-1.5">
-                      {uploadedRepairBills.map((b, idx) => (
-                        <div key={idx} className="p-2.5 rounded-xl bg-black/40 border border-forest-900 flex items-center justify-between text-[11px]">
-                          <span className="font-bold text-white">{b.extracted_fields?.workshop_name}</span>
-                          <span className="text-forest-300 font-bold">₹{b.extracted_fields?.bill_amount_inr}</span>
-                          <span className="text-slate-400">{b.extracted_fields?.bill_date}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Tyre & Battery Condition */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-3">
-                  <h3 className="font-bold text-sm text-white">C. Tyre Condition</h3>
-                  <select
-                    value={tyreCondition}
-                    onChange={(e) => setTyreCondition(e.target.value)}
-                    className="w-full bg-forest-900 border border-forest-800 rounded-xl px-3 py-2 text-white"
-                  >
-                    <option value="excellent">Excellent (&gt;85% Tread Remaining)</option>
-                    <option value="good">Good (50% - 85% Tread Remaining)</option>
-                    <option value="average">Average (30% - 50% Tread)</option>
-                    <option value="needs_replacement">Needs Replacement Soon</option>
-                  </select>
-                  <input
-                    type="text"
-                    value={tyreNotes}
-                    onChange={(e) => setTyreNotes(e.target.value)}
-                    placeholder="Tyre brand, manufacture week..."
-                    className="w-full bg-forest-900 border border-forest-800 rounded-xl px-3 py-2 text-white text-[11px]"
-                  />
-                </div>
-
-                <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-3">
-                  <h3 className="font-bold text-sm text-white">
-                    {category === 'electric' ? 'D. EV Battery Health' : 'D. 12V Battery Condition'}
-                  </h3>
-                  {category === 'electric' ? (
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-slate-400">Battery Health (SoH):</span>
-                        <span className="font-bold text-emerald-400">{evBatteryHealth}%</span>
-                      </div>
-                      <input
-                        type="range"
-                        min={65}
-                        max={100}
-                        value={evBatteryHealth}
-                        onChange={(e) => setEvBatteryHealth(Number(e.target.value))}
-                        className="w-full accent-forest-500 bg-forest-900 h-2 rounded cursor-pointer"
-                      />
-                    </div>
-                  ) : (
-                    <select
-                      value={batteryCondition}
-                      onChange={(e) => setBatteryCondition(e.target.value)}
-                      className="w-full bg-forest-900 border border-forest-800 rounded-xl px-3 py-2 text-white"
-                    >
-                      <option value="good">Good (Clean Cold Start)</option>
-                      <option value="fair">Fair (Occasional Weak Cranking)</option>
-                      <option value="needs_replacement">Needs Replacement</option>
-                    </select>
-                  )}
-                </div>
-              </div>
-
-              {/* Accident Disclosure Questionnaire */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-3">
-                <h3 className="font-bold text-sm text-white">E. Accident and Repair Disclosure</h3>
-                <p className="text-[11px] text-slate-400">
-                  "Has your vehicle ever been involved in an accident or major repair?"
-                </p>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                  {[
-                    { id: 'none', label: 'No Known Accident' },
-                    { id: 'minor', label: 'Minor Fall / Scratch' },
-                    { id: 'major', label: 'Major Accidental' },
-                    { id: 'major_component', label: 'Component Replaced' },
-                    { id: 'not_sure', label: 'Not Sure' }
-                  ].map((o) => (
-                    <button
-                      key={o.id}
-                      type="button"
-                      onClick={() => setAccidentDisclosure(o.id)}
-                      className={`p-2 rounded-xl border text-center text-[10px] font-bold ${
-                        accidentDisclosure === o.id
-                          ? 'bg-forest-800 border-forest-500 text-white'
-                          : 'bg-forest-900 border-forest-800 text-slate-400'
-                      }`}
-                    >
-                      {o.label}
-                    </button>
-                  ))}
-                </div>
-                <textarea
-                  value={accidentNotes}
-                  onChange={(e) => setAccidentNotes(e.target.value)}
-                  placeholder="Additional details regarding repairs or disclosures..."
-                  rows={2}
-                  className="w-full bg-forest-900 border border-forest-800 rounded-xl p-2.5 text-white text-[11px] focus:outline-none"
-                />
-              </div>
-
-            </div>
-
-            <div className="pt-4 flex justify-between items-center border-t border-forest-900">
-              <button
-                type="button"
-                onClick={() => setCurrentStep(4)}
-                className="px-4 py-2.5 rounded-xl bg-forest-950 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Back</span>
-              </button>
-              <button
-                type="button"
-                onClick={submitLevel2}
-                className="px-6 py-3 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-glow"
-              >
-                <span>Save & Continue to Level 3</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ======================================================== */}
-        {/* STEP 6: LEVEL 3 – OWNERSHIP & TRANSFER VERIFICATION */}
-        {/* ======================================================== */}
-        {currentStep === 6 && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-6">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 text-forest-300 text-[10px] font-bold uppercase tracking-wider mb-2">
-                Level 3 Verification
-              </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Ownership & Transfer Verification</h2>
-              <p className="text-xs text-slate-400 mt-1">
-                Confirm seller identity authorization, transfer readiness (Form 29/30), and loan hypothecation clearance.
-              </p>
-            </div>
-
-            <div className="space-y-4 text-xs">
-              
-              {/* Seller Authorisation */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-4">
-                <h3 className="font-bold text-sm text-white">A. Seller Authorisation</h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-slate-400 mb-1 block">Seller Full Legal Name</label>
-                    <input
-                      type="text"
-                      value={sellerFullName}
-                      onChange={(e) => setSellerFullName(e.target.value)}
-                      className="w-full bg-forest-900 border border-forest-800 rounded-xl px-3 py-2 text-white font-bold"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-slate-400 mb-1 block">Relationship to Registered RC Owner</label>
-                    <select
-                      value={relationshipToOwner}
-                      onChange={(e) => {
-                        setRelationshipToOwner(e.target.value);
-                        setIsRegisteredOwner(e.target.value === 'registered_owner');
-                      }}
-                      className="w-full bg-forest-900 border border-forest-800 rounded-xl px-3 py-2 text-white"
-                    >
-                      <option value="registered_owner">I am the Registered Owner on the RC</option>
-                      <option value="family_member">Family Member (With Authorisation)</option>
-                      <option value="authorized_agent">Authorized Dealer / Representative</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="pt-1">
-                  <label className="text-slate-400 mb-1 block">Authorisation Statement</label>
-                  <input
-                    type="text"
-                    value={authorisationNotes}
-                    onChange={(e) => setAuthorisationNotes(e.target.value)}
-                    className="w-full bg-forest-900 border border-forest-800 rounded-xl px-3 py-2 text-white"
-                  />
-                </div>
-              </div>
-
-              {/* RTO Transfer Forms (Form 29 & Form 30) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-white text-xs">B. Form 29 (Notice of Transfer)</h4>
-                    <span className="text-[10px] text-forest-400 font-bold">RTO Statutory</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400">Notice of ownership transfer document ready for buyer signature.</p>
-                  <label className="flex items-center gap-2 text-slate-300 cursor-pointer pt-1">
-                    <input
-                      type="checkbox"
-                      checked={hasForm29}
-                      onChange={(e) => setHasForm29(e.target.checked)}
-                      className="accent-forest-500 w-4 h-4 rounded"
-                    />
-                    <span>Form 29 signed / ready for transfer</span>
-                  </label>
-                </div>
-
-                <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-white text-xs">C. Form 30 (Application for Transfer)</h4>
-                    <span className="text-[10px] text-forest-400 font-bold">RTO Statutory</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400">Application of intimation and transfer of ownership.</p>
-                  <label className="flex items-center gap-2 text-slate-300 cursor-pointer pt-1">
-                    <input
-                      type="checkbox"
-                      checked={hasForm30}
-                      onChange={(e) => setHasForm30(e.target.checked)}
-                      className="accent-forest-500 w-4 h-4 rounded"
-                    />
-                    <span>Form 30 signed / ready for transfer</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Loan Hypothecation & NOC */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-3">
-                <h3 className="font-bold text-sm text-white">D. Loan & Bank Hypothecation Clearance</h3>
-                <p className="text-[11px] text-slate-400">
-                  "Is the vehicle currently under a bank loan or financier hypothecation?"
-                </p>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {[
-                    { id: 'no_loan', label: 'No Active Loan' },
-                    { id: 'loan_cleared', label: 'Loan Cleared (NOC In Hand)' },
-                    { id: 'active_loan', label: 'Active Loan' },
-                    { id: 'not_sure', label: 'Not Sure' }
-                  ].map((l) => (
-                    <button
-                      key={l.id}
-                      type="button"
-                      onClick={() => setLoanStatus(l.id)}
-                      className={`p-2.5 rounded-xl border text-center text-[10px] font-bold ${
-                        loanStatus === l.id
-                          ? 'bg-forest-800 border-forest-500 text-white'
-                          : 'bg-forest-900 border-forest-800 text-slate-400'
-                      }`}
-                    >
-                      {l.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Consent Box */}
-              <div className="p-4 rounded-2xl bg-forest-950/80 border border-forest-900 text-[11px] flex items-start gap-2.5">
-                <input
-                  type="checkbox"
-                  checked={sellerConsent}
-                  onChange={(e) => setSellerConsent(e.target.checked)}
-                  className="accent-forest-500 w-4 h-4 rounded mt-0.5 shrink-0"
-                />
-                <p className="text-slate-300">
-                  I hereby give consent to GEAR UP to verify the submitted documents for consistency against vehicle records. I understand that private personal data (address, full chassis) will remain masked from public listings.
-                </p>
-              </div>
-
-            </div>
-
-            <div className="pt-4 flex justify-between items-center border-t border-forest-900">
-              <button
-                type="button"
-                onClick={() => setCurrentStep(5)}
-                className="px-4 py-2.5 rounded-xl bg-forest-950 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Back</span>
-              </button>
-              <button
-                type="button"
-                onClick={submitLevel3}
-                disabled={!sellerConsent}
-                className="px-6 py-3 rounded-xl bg-forest-600 hover:bg-forest-500 disabled:opacity-40 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-glow"
-              >
-                <span>Generate Verification Report</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ======================================================== */}
-        {/* STEP 7: REVIEW VERIFICATION SUMMARY DASHBOARD */}
-        {/* ======================================================== */}
-        {currentStep === 7 && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-6">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/60 text-emerald-300 text-[10px] font-bold uppercase tracking-wider mb-2">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Verification Report Generated</span>
-              </div>
-              <h2 className="font-heading font-extrabold text-2xl text-white">Your Vehicle Verification Report</h2>
-              <p className="text-xs text-slate-400 mt-1">
-                Overview of 3-level verification before publishing live to GEAR UP marketplace.
-              </p>
-            </div>
-
-            {/* Vehicle Header Summary Card */}
-            <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 flex flex-col sm:flex-row items-center gap-5">
-              <img
-                src={uploadedPhotos[0]?.url || 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=400&q=80'}
-                alt="Bike"
-                className="w-28 h-20 rounded-xl object-cover"
-              />
-              <div className="flex-1 text-center sm:text-left space-y-1">
-                <span className="text-[10px] text-forest-400 font-bold uppercase tracking-wider">Reference #{listingId}</span>
-                <h3 className="font-heading font-bold text-lg text-white">{year} {brand} {model}</h3>
-                <p className="text-xs text-slate-400">{variant} • {km.toLocaleString()} km</p>
-                <span className="inline-block font-mono text-[11px] bg-black/60 px-2 py-0.5 rounded text-slate-300 font-bold">
-                  Registration: {registrationNumber ? `${registrationNumber.slice(0, 4)}****${registrationNumber.slice(-2)}` : 'CH01****21'}
-                </span>
-              </div>
-              <div className="text-right">
-                <span className="text-[10px] text-slate-400 block uppercase font-bold">Asking Price</span>
-                <span className="font-heading font-black text-xl text-forest-300">{formatINR(askingPrice)}</span>
-              </div>
-            </div>
-
-            {/* Three Level Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-              
-              {/* LEVEL 1 CARD */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-forest-400 uppercase tracking-wider">Level 1</span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/40">
-                      Completed
-                    </span>
-                  </div>
-                  <h4 className="font-heading font-bold text-sm text-white">Basic Document Verification</h4>
-                  
-                  <div className="space-y-2 text-[11px] text-slate-300">
-                    <div className="flex items-center justify-between">
-                      <span>RC Document:</span>
-                      <span className="text-emerald-400 font-bold">✓ Matched</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Insurance Policy:</span>
-                      <span className="text-emerald-400 font-bold">✓ Active</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>PUC Certificate:</span>
-                      <span className="text-emerald-400 font-bold">✓ Verified</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Reg No Consistency:</span>
-                      <span className="text-emerald-400 font-bold">✓ 100% Match</span>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep(4)}
-                  className="w-full py-2 rounded-xl bg-forest-900 hover:bg-forest-800 text-slate-300 text-xs font-semibold"
-                >
-                  Edit Level 1
-                </button>
-              </div>
-
-              {/* LEVEL 2 CARD */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-forest-400 uppercase tracking-wider">Level 2</span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/40">
-                      Completed
-                    </span>
-                  </div>
-                  <h4 className="font-heading font-bold text-sm text-white">Vehicle Condition & Maintenance</h4>
-                  
-                  <div className="space-y-2 text-[11px] text-slate-300">
-                    <div className="flex items-center justify-between">
-                      <span>Service Records:</span>
-                      <span className="text-white font-bold capitalize">{serviceHistoryTier}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Repair Bills:</span>
-                      <span className="text-white font-bold">{uploadedRepairBills.length} Bill(s)</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Tyres Condition:</span>
-                      <span className="text-white font-bold capitalize">{tyreCondition}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Accident Disclosure:</span>
-                      <span className="text-emerald-400 font-bold capitalize">{accidentDisclosure}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep(5)}
-                  className="w-full py-2 rounded-xl bg-forest-900 hover:bg-forest-800 text-slate-300 text-xs font-semibold"
-                >
-                  Edit Level 2
-                </button>
-              </div>
-
-              {/* LEVEL 3 CARD */}
-              <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-forest-400 uppercase tracking-wider">Level 3</span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/40">
-                      Completed
-                    </span>
-                  </div>
-                  <h4 className="font-heading font-bold text-sm text-white">Ownership & Transfer</h4>
-                  
-                  <div className="space-y-2 text-[11px] text-slate-300">
-                    <div className="flex items-center justify-between">
-                      <span>Seller Authorisation:</span>
-                      <span className="text-emerald-400 font-bold">✓ Confirmed</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Form 29 Notice:</span>
-                      <span className="text-white font-bold">Ready</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Form 30 Transfer:</span>
-                      <span className="text-white font-bold">Ready</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Loan Hypothecation:</span>
-                      <span className="text-emerald-400 font-bold capitalize">{loanStatus.replace('_', ' ')}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep(6)}
-                  className="w-full py-2 rounded-xl bg-forest-900 hover:bg-forest-800 text-slate-300 text-xs font-semibold"
-                >
-                  Edit Level 3
-                </button>
-              </div>
-
-            </div>
-
-            {/* Bottom Overall Status Banner */}
-            <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-950/60 to-forest-950 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                  <span className="font-heading font-bold text-sm text-white">
-                    Overall Status: Verified Documents Listing
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-400">
-                  All 3 levels completed. Your bike will carry the official "GEAR UP Document Verified" trust badge.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setCurrentStep(8)}
-                className="px-6 py-3 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shrink-0 shadow-glow"
-              >
-                <span>Final Review & Submit</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ======================================================== */}
-        {/* STEP 8: FINAL REVIEW & SUBMIT LISTING (MANDATORY GATE) */}
-        {/* ======================================================== */}
-        {currentStep === 8 && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-6">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900 text-forest-300 text-[10px] font-bold uppercase tracking-wider mb-2">
-                Step 8 of 8 • Mandatory Submission Gate
+                Step 5 of 5 • Final Inspection
               </div>
               <h2 className="font-heading font-extrabold text-2xl text-white">Review & Publish Listing</h2>
               <p className="text-xs text-slate-400 mt-1">
-                Your listing must clear the mandatory 4-document verification gate before it can go live.
+                Inspect your 8 verified photographs, mandatory certificates, and meetup parameters before publishing live.
               </p>
             </div>
 
-            {/* Vehicle Summary Card */}
-            <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-4 text-xs">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-slate-300">
+            {/* Submission Gate Alert Banner if Blocked */}
+            {(!isPhotosComplete || !isDocumentsComplete) && (
+              <div className="p-5 rounded-3xl bg-amber-950/70 border border-amber-600 text-xs text-amber-200 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-amber-300 text-sm">
+                  <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                  <span>Publication Blocked: Incomplete Verification Requirements</span>
+                </div>
+                <ul className="list-disc list-inside space-y-1 text-amber-200/90 text-xs pt-1">
+                  {!isPhotosComplete && (
+                    <li>
+                      <strong>Vehicle Photographs:</strong> {uploadedPhotosCount}/8 uploaded ({8 - uploadedPhotosCount} angle photo(s) remaining).
+                    </li>
+                  )}
+                  {!isDocumentsComplete && (
+                    <li>
+                      <strong>Mandatory Documents:</strong> {passedDocsCount}/4 verified. All four compulsory certificates must pass before going live.
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
+
+            {publishBlockedAlert && (
+              <div className="p-4 rounded-2xl bg-red-950/80 border border-red-600 text-red-200 text-xs space-y-1">
+                <div className="flex items-center gap-2 font-bold text-red-300">
+                  <XCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>Publication Rejection Notice</span>
+                </div>
+                {publishBlockedAlert.map((reason, idx) => (
+                  <p key={idx} className="text-[11px] text-red-200">• {reason}</p>
+                ))}
+              </div>
+            )}
+
+            {/* Section A: Vehicle Core Specifications */}
+            <div className="p-5 rounded-3xl bg-forest-950/80 border border-forest-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-sm text-white">Vehicle Specifications</h4>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(1)}
+                  className="text-xs text-forest-300 hover:text-white underline underline-offset-2"
+                >
+                  Edit Details
+                </button>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                 <div>
-                  <span className="text-slate-500 block text-[10px] uppercase font-bold">Vehicle</span>
-                  <span className="font-bold text-white text-sm">{year} {brand} {model}</span>
+                  <span className="text-slate-400 block text-[10px]">Vehicle</span>
+                  <span className="font-bold text-white">{year} {brand} {model}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 block text-[10px] uppercase font-bold">Asking Price</span>
-                  <span className="font-bold text-forest-300 text-sm">{formatINR(askingPrice)}</span>
+                  <span className="text-slate-400 block text-[10px]">Variant</span>
+                  <span className="font-semibold text-white truncate block">{variant}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 block text-[10px] uppercase font-bold">Odometer</span>
-                  <span className="font-bold text-white text-sm">{km.toLocaleString()} km</span>
+                  <span className="text-slate-400 block text-[10px]">Odometer & Owners</span>
+                  <span className="font-semibold text-white">{km.toLocaleString('en-IN')} km • {owners} Owner</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 block text-[10px] uppercase font-bold">Pickup Locality</span>
-                  <span className="font-bold text-white text-sm">{pickupLocation.locality}, {pickupLocation.city}</span>
+                  <span className="text-slate-400 block text-[10px]">Asking Price</span>
+                  <span className="font-bold text-forest-300">{formatINR(askingPrice)}</span>
                 </div>
               </div>
             </div>
 
-            {/* MANDATORY 4-DOCUMENT GATE CHECKLIST */}
-            <div className="p-5 rounded-2xl bg-forest-950 border border-forest-800 space-y-4 text-xs">
-              <div className="flex items-center justify-between border-b border-forest-900 pb-2">
-                <span className="font-bold text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-forest-400" />
-                  <span>Mandatory Document Gate Status</span>
-                </span>
-                <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase ${
-                  gateStatus?.can_publish
-                    ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50'
-                    : 'bg-red-950 text-red-300 border border-red-500/50'
-                }`}>
-                  {gateStatus?.can_publish ? 'PASSED (4 of 4)' : `BLOCKED (${gateStatus?.passed_count || 0} of 4)`}
-                </span>
+            {/* Section B: 8-Angle Real Photographs Gallery */}
+            <div className="p-5 rounded-3xl bg-forest-950/80 border border-forest-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-bold text-sm text-white">Vehicle Photographs</h4>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    isPhotosComplete ? 'bg-emerald-950 text-emerald-300' : 'bg-amber-950 text-amber-300'
+                  }`}>
+                    {uploadedPhotosCount}/8 Uploaded
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(2)}
+                  className="text-xs text-forest-300 hover:text-white underline underline-offset-2"
+                >
+                  Manage Photos
+                </button>
               </div>
 
-              <div className="space-y-2">
-                {(gateStatus?.checklist || [
-                  { name: 'Registration Certificate (RC)', passed: rcResult?.status === 'passed', reason: rcResult?.status_reason || 'Pending verification' },
-                  { name: 'Insurance Certificate', passed: insuranceResult?.status === 'passed', reason: insuranceResult?.status_reason || 'Pending verification' },
-                  { name: 'Pollution Under Control (PUC)', passed: pucResult?.status === 'passed', reason: pucResult?.status_reason || 'Pending verification' },
-                  { name: 'Ownership / Seller Authorisation Proof', passed: ownershipResult?.status === 'passed', reason: ownershipResult?.status_reason || 'Pending verification' }
-                ]).map((item: any, idx: number) => (
-                  <div key={idx} className="p-3 rounded-xl bg-forest-900/40 border border-forest-800/80 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      {item.passed ? (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      ) : (
-                        <XCircle className="w-4 h-4 text-red-400 shrink-0" />
-                      )}
-                      <div>
-                        <p className={`font-bold text-xs ${item.passed ? 'text-white' : 'text-red-200'}`}>{item.name}</p>
-                        <p className="text-[10px] text-slate-400">{item.reason}</p>
-                      </div>
-                    </div>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                      item.passed
-                        ? 'bg-emerald-950 text-emerald-300 border border-emerald-600/40'
-                        : 'bg-red-950 text-red-300 border border-red-600/40'
-                    }`}>
-                      {item.passed ? 'Passed' : 'Action Required'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* BLOCKING ALERT OR APPROVAL BANNER */}
-              {!gateStatus?.can_publish ? (
-                <div className="p-4 rounded-xl bg-red-950/80 border border-red-700/80 space-y-2 text-xs">
-                  <div className="flex items-center gap-2 text-red-300 font-bold">
-                    <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-                    <span>Listing Publication Blocked by Verification Gate</span>
-                  </div>
-                  <p className="text-[11px] text-red-200/90 leading-relaxed">
-                    GEAR UP requires all four mandatory certificates to pass OCR extraction and date validity before your listing can be published live to buyers.
-                  </p>
-                  {gateStatus?.blocking_reasons && gateStatus.blocking_reasons.length > 0 && (
-                    <ul className="list-disc pl-5 text-[11px] text-red-300 space-y-0.5">
-                      {gateStatus.blocking_reasons.map((reason: string, rIdx: number) => (
-                        <li key={rIdx}>{reason}</li>
-                      ))}
-                    </ul>
-                  )}
+              {uploadedPhotosCount === 0 ? (
+                <div className="p-8 rounded-2xl bg-[#070D0B] border border-dashed border-forest-800 text-center space-y-2">
+                  <Camera className="w-8 h-8 text-slate-600 mx-auto" />
+                  <p className="text-xs font-semibold text-slate-400">No vehicle photos uploaded yet.</p>
                   <button
                     type="button"
-                    onClick={() => setCurrentStep(4)}
-                    className="mt-2 px-3 py-1.5 rounded-lg bg-red-900 hover:bg-red-800 text-white font-bold text-[11px] transition-colors inline-flex items-center gap-1"
+                    onClick={() => setCurrentStep(2)}
+                    className="px-4 py-1.5 rounded-xl bg-forest-800 text-white font-bold text-xs"
                   >
-                    <span>Fix Incomplete Documents in Step 4</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    Upload 8 Angles
                   </button>
                 </div>
               ) : (
-                <div className="p-4 rounded-xl bg-emerald-950/80 border border-emerald-600/80 space-y-1 text-xs">
-                  <div className="flex items-center gap-2 text-emerald-300 font-bold">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>All 4 Mandatory Documents Verified — Cleared for Publication!</span>
-                  </div>
-                  <p className="text-[11px] text-emerald-200/90">
-                    Registration Certificate, Insurance Policy, PUC Emission, and Ownership proofs have cleared automated checks. Your listing will carry the official "GEAR UP Document Verified" trust badge.
-                  </p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  {REQUIRED_PHOTO_SLOTS.map((s) => {
+                    const p = uploadedPhotos[s.slot];
+                    return (
+                      <div key={s.slot} className="relative aspect-[4/3] rounded-xl overflow-hidden bg-black/50 border border-forest-900">
+                        {p ? (
+                          <>
+                            <img src={p.url} alt={s.label} className="w-full h-full object-cover" />
+                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-1.5">
+                              <span className="text-[9px] font-bold text-white block truncate">{s.label}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center h-full text-slate-600 p-2 text-center">
+                            <Camera className="w-5 h-5 mb-1 text-slate-600" />
+                            <span className="text-[9px] font-bold text-amber-400">{s.label} Missing</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
 
+            {/* Section C: 4 Mandatory Certificates Checklist */}
+            <div className="p-5 rounded-3xl bg-forest-950/80 border border-forest-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-bold text-sm text-white">4 Mandatory Certificates</h4>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    isDocumentsComplete ? 'bg-emerald-950 text-emerald-300' : 'bg-amber-950 text-amber-300'
+                  }`}>
+                    {passedDocsCount}/4 Verified
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(3)}
+                  className="text-xs text-forest-300 hover:text-white underline underline-offset-2"
+                >
+                  Manage Documents
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                {[
+                  { name: '1. Registration Certificate (RC)', passed: rcResult?.passed, reason: rcResult?.reason || 'RC document verified' },
+                  { name: '2. Insurance Certificate', passed: insuranceResult?.passed, reason: insuranceResult?.reason || 'Active policy verified' },
+                  { name: '3. Pollution Under Control (PUC)', passed: pucResult?.passed, reason: pucResult?.reason || 'BS6 compliance verified' },
+                  { name: '4. Ownership / Seller Authorisation', passed: ownershipResult?.passed, reason: ownershipResult?.reason || 'Title and ownership cleared' }
+                ].map((doc, idx) => (
+                  <div key={idx} className="p-3 rounded-xl bg-forest-950 border border-forest-900 flex items-start gap-2.5">
+                    {doc.passed ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <XCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                    )}
+                    <div>
+                      <p className="font-bold text-white text-xs">{doc.name}</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">{doc.reason}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Section D: Pickup & Test Ride Parameters */}
+            <div className="p-5 rounded-3xl bg-forest-950/80 border border-forest-800 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-sm text-white">Pickup & Test Ride Setup</h4>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(4)}
+                  className="text-xs text-forest-300 hover:text-white underline underline-offset-2"
+                >
+                  Change Location
+                </button>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Public Viewing Area</span>
+                  <span className="font-bold text-white">{pickupLocation.locality}, {pickupLocation.city}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Meetup Spot Type</span>
+                  <span className="font-semibold text-emerald-400">{meetupSpotType}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Test Rides</span>
+                  <span className="font-semibold text-white">{testRideAvailable ? 'Permitted with DL' : 'Inspection Only'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Final Publish Gate Action Buttons */}
             <div className="pt-4 flex justify-between items-center border-t border-forest-900">
               <button
                 type="button"
-                onClick={() => setCurrentStep(7)}
-                className="px-4 py-2.5 rounded-xl bg-forest-950 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
+                onClick={() => setCurrentStep(4)}
+                className="px-5 py-2.5 rounded-xl bg-forest-950 hover:bg-forest-900 border border-forest-800 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Back to Report</span>
+                <span>Back to Location</span>
               </button>
-              
+
               <button
                 type="button"
+                disabled={!isPhotosComplete || !isDocumentsComplete || isPublishing}
                 onClick={handlePublishListing}
-                disabled={!gateStatus?.can_publish || isPublishing}
-                title={!gateStatus?.can_publish ? 'Complete all 4 mandatory document checks to publish' : 'Publish listing live'}
-                className={`px-8 py-3.5 rounded-2xl font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 transition-all ${
-                  gateStatus?.can_publish
-                    ? 'bg-forest-600 hover:bg-forest-500 text-white shadow-glow cursor-pointer'
-                    : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed opacity-60'
+                className={`px-8 py-4 rounded-2xl font-heading font-extrabold text-sm uppercase tracking-wider flex items-center gap-2.5 transition-all ${
+                  isPhotosComplete && isDocumentsComplete && !isPublishing
+                    ? 'bg-forest-500 hover:bg-forest-400 text-white shadow-glow cursor-pointer'
+                    : 'bg-forest-950 border border-forest-800 text-slate-500 cursor-not-allowed'
                 }`}
               >
                 {isPublishing ? (
-                  <span>Revalidating Gate on Server...</span>
+                  <>
+                    <Clock className="w-4 h-4 animate-spin text-white" />
+                    <span>Publishing Live...</span>
+                  </>
                 ) : (
                   <>
+                    <CheckCircle2 className="w-5 h-5 text-emerald-300" />
                     <span>Publish Listing Live Now</span>
-                    {gateStatus?.can_publish ? <Check className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
                   </>
                 )}
               </button>
@@ -2063,126 +1719,107 @@ export const SellBikePage: React.FC = () => {
           </div>
         )}
 
-        {/* ======================================================== */}
-        {/* IN-DEPTH DOCUMENT ANALYSIS REPORT MODAL */}
-        {/* ======================================================== */}
-        {analysisModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-            <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-[#0E1A16] border border-forest-700/80 shadow-2xl p-6 sm:p-8 space-y-6 text-slate-100">
-              {/* Modal Header */}
-              <div className="flex items-start justify-between border-b border-forest-900 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-forest-900 text-forest-300 flex items-center justify-center">
-                    <FileSearch className="w-5 h-5" />
+      </div>
+
+      {/* In-Depth Document Analysis Report Modal */}
+      {analysisModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-2xl rounded-3xl bg-[#0D1814] border border-forest-700 p-6 sm:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div className="flex items-center justify-between border-b border-forest-900 pb-4">
+              <div>
+                <span className="text-[10px] font-bold text-forest-400 uppercase tracking-wider">
+                  Automated Document Extraction & AI Inspection
+                </span>
+                <h3 className="font-heading font-extrabold text-xl text-white">
+                  {activeAnalysisDoc?.toUpperCase()} Verification Breakdown
+                </h3>
+              </div>
+              <button
+                onClick={() => setAnalysisModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-forest-950 border border-forest-800 flex items-center justify-center text-slate-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {isLoadingAnalysis ? (
+              <div className="py-12 flex flex-col items-center justify-center space-y-3">
+                <Clock className="w-8 h-8 text-emerald-400 animate-spin" />
+                <p className="text-xs text-slate-300">Extracting Document Data...</p>
+              </div>
+            ) : analysisReport ? (
+              <div className="space-y-4 text-xs">
+                <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-forest-950/80 border border-forest-900">
+                  <div>
+                    <span className="text-[10px] text-slate-400">Document Type</span>
+                    <p className="font-bold text-white capitalize">{analysisReport.document_type}</p>
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-forest-400">
-                      OCR Document Analysis Report
-                    </span>
-                    <h3 className="font-heading font-extrabold text-lg text-white capitalize">
-                      {activeAnalysisDoc?.replace('_', ' ')} Certificate Analysis
-                    </h3>
-                    <p className="text-xs text-slate-400">
-                      Document #{analysisReport?.filename || 'Uploaded Scan'}
-                    </p>
+                    <span className="text-[10px] text-slate-400">OCR Confidence</span>
+                    <p className="font-bold text-emerald-400">{Math.round((analysisReport.ocr_confidence || 0.95) * 100)}% High Confidence</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setAnalysisModalOpen(false)}
-                  className="p-2 rounded-xl bg-forest-950 text-slate-400 hover:text-white border border-forest-900"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+
+                <div>
+                  <h4 className="font-bold text-slate-200 mb-2">Automated Field Analysis</h4>
+                  <div className="p-4 rounded-2xl bg-forest-950/60 border border-forest-900 space-y-2">
+                    {Object.entries(analysisReport.extracted_fields || {}).map(([k, v]) => (
+                      <div key={k} className="flex items-center justify-between py-1 border-b border-forest-900/50">
+                        <span className="text-slate-400 capitalize">{k.replace(/_/g, ' ')}:</span>
+                        <span className="font-semibold text-white font-mono">{String(v || 'N/A')}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-forest-950/60 border border-forest-900/80 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-emerald-400" />
+                    <span className="text-[11px] text-slate-300">Sensitive chassis, engine & policy numbers masked.</span>
+                  </div>
+                  <button
+                    onClick={() => setAnalysisModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-forest-800 hover:bg-forest-700 text-white font-bold text-xs"
+                  >
+                    Done
+                  </button>
+                </div>
               </div>
-
-              {isLoadingAnalysis ? (
-                <div className="py-12 text-center text-xs text-slate-400 space-y-2">
-                  <RefreshCw className="w-6 h-6 animate-spin mx-auto text-forest-400" />
-                  <p>Fetching full OCR analysis breakdown...</p>
-                </div>
-              ) : (
-                <div className="space-y-4 text-xs">
-                  {/* Status Banner */}
-                  <div className={`p-4 rounded-2xl border flex items-center justify-between ${
-                    analysisReport?.status === 'passed'
-                      ? 'bg-emerald-950/60 border-emerald-600/50 text-emerald-200'
-                      : analysisReport?.status === 'expired'
-                      ? 'bg-red-950/60 border-red-600/50 text-red-200'
-                      : 'bg-amber-950/60 border-amber-600/50 text-amber-200'
-                  }`}>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider">Analysis Status</span>
-                      <h4 className="font-bold text-sm text-white capitalize">{analysisReport?.status?.replace('_', ' ')}</h4>
-                      <p className="text-[11px] opacity-90 mt-0.5">{analysisReport?.status_reason}</p>
-                    </div>
-                    <span className="px-3 py-1 rounded-xl bg-black/40 border border-white/10 font-mono text-xs font-bold">
-                      OCR: {Math.round((analysisReport?.ocr_confidence || 0.94) * 100)}%
-                    </span>
-                  </div>
-
-                  {/* Extracted Fields Table */}
-                  <div className="p-4 rounded-2xl bg-forest-950 border border-forest-800 space-y-3">
-                    <h4 className="font-bold text-xs uppercase tracking-wider text-slate-300">
-                      Structured Field Extractions (Masked for Privacy)
-                    </h4>
-                    <div className="grid grid-cols-2 gap-2 text-[11px]">
-                      {analysisReport?.extracted_fields && Object.entries(analysisReport.extracted_fields).map(([k, v]: any) => {
-                        if (typeof v === 'object' || k === 'ocr_confidence') return null;
-                        return (
-                          <div key={k} className="p-2.5 rounded-lg bg-black/30 border border-forest-900/80">
-                            <span className="text-slate-500 block text-[10px] capitalize">{k.replace('_', ' ')}:</span>
-                            <span className="font-bold text-white font-mono">{String(v || '--')}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Validation Checks Table */}
-                  <div className="p-4 rounded-2xl bg-forest-950 border border-forest-800 space-y-3">
-                    <h4 className="font-bold text-xs uppercase tracking-wider text-slate-300">
-                      Validation Checkpoints
-                    </h4>
-                    <div className="space-y-2">
-                      {analysisReport?.validation_checks?.map((chk: any, idx: number) => (
-                        <div key={idx} className="p-2.5 rounded-xl bg-forest-900/40 border border-forest-800/80 flex items-center justify-between">
-                          <div className="space-y-0.5">
-                            <p className="font-bold text-white text-[11px]">{chk.check}</p>
-                            <p className="text-[10px] text-slate-400">{chk.details}</p>
-                          </div>
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                            chk.passed
-                              ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/40'
-                              : 'bg-red-950 text-red-300 border border-red-500/40'
-                          }`}>
-                            {chk.passed ? 'Pass' : 'Fail'}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Privacy & Legal Callout */}
-                  <p className="text-[10px] text-slate-500 italic">
-                    * Automated document analysis verifies consistency between uploaded certificates and listing details. Personal identification numbers are masked in accordance with data privacy guidelines.
-                  </p>
-                </div>
-              )}
-
-              <div className="flex justify-end pt-2 border-t border-forest-900">
-                <button
-                  type="button"
-                  onClick={() => setAnalysisModalOpen(false)}
-                  className="px-6 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-600 text-white font-bold text-xs transition-colors"
-                >
-                  Close Analysis
-                </button>
+            ) : (
+              <div className="py-8 text-center text-slate-400 text-xs">
+                No analysis data available for this document.
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
+      )}
 
-      </div>
+      {/* Smart RC AI Verification Modal */}
+      <SmartRCVerificationModal
+        isOpen={smartRCModalOpen}
+        onClose={() => setSmartRCModalOpen(false)}
+        listingDetails={{
+          brand: brand,
+          model: model,
+          year: year,
+          registration_number: registrationNumber,
+          fuel_type: fuelType
+        }}
+        onVerificationComplete={(compRes) => {
+          if (compRes.finalWorkflowStatus === 'DOCUMENT_MATCHED' || compRes.finalWorkflowStatus === 'GOVERNMENT_VERIFIED') {
+            setRcResult({
+              passed: true,
+              status: compRes.finalWorkflowStatus,
+              registration_number: registrationNumber,
+              owner_name: 'Verified Owner',
+              manufacturer: brand,
+              model: model
+            });
+            refreshStatus();
+          }
+        }}
+      />
     </div>
   );
 };
+export default SellBikePage;

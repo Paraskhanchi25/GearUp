@@ -605,3 +605,266 @@ export async function getDocumentAnalysisReport(listingId: string, docType: stri
   return null;
 }
 
+// ==============================================================================
+// 8 Required Vehicle Photos API
+// ==============================================================================
+
+export async function uploadVehiclePhoto(formData: FormData) {
+  const res = await fetch(`${API_BASE}/verification/upload-photo`, {
+    method: 'POST',
+    body: formData,
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Photo upload failed.');
+  }
+  return data;
+}
+
+export async function getVehiclePhotos(listingId: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/photos/${listingId}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Get vehicle photos error:', err);
+  }
+  return null;
+}
+
+export async function deleteVehiclePhoto(listingId: string, slot: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/photo/${listingId}/${slot}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Delete vehicle photo error:', err);
+  }
+  return null;
+}
+
+// ==============================================================================
+// Paid Pickup Location & Ride Access Monetization API
+// ==============================================================================
+
+export async function setSellerLocationConfig(payload: any) {
+  try {
+    const res = await fetch(`${API_BASE}/location/seller-config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Set seller location error:', err);
+  }
+  return null;
+}
+
+export async function getLocationAccess(listingId: string, buyerId?: string) {
+  try {
+    const url = buyerId
+      ? `${API_BASE}/location/access/${listingId}?buyer_id=${encodeURIComponent(buyerId)}`
+      : `${API_BASE}/location/access/${listingId}`;
+    const res = await fetch(url);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Get location access error:', err);
+  }
+  return null;
+}
+
+export async function createLocationOrder(payload: { listing_id: string; buyer_id: string; buyer_name?: string; buyer_email?: string; buyer_phone?: string }) {
+  const res = await fetch(`${API_BASE}/location/create-order`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Could not create location order.');
+  }
+  return data;
+}
+
+export async function verifyLocationPayment(payload: { listing_id: string; buyer_id: string; order_id: string; payment_id: string; signature: string; buyer_name?: string }) {
+  const res = await fetch(`${API_BASE}/location/verify-payment`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Payment verification failed.');
+  }
+  return data;
+}
+
+export async function getBuyerPurchases(buyerId: string) {
+  try {
+    const res = await fetch(`${API_BASE}/location/buyer-purchases/${encodeURIComponent(buyerId)}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Get buyer purchases error:', err);
+  }
+  return null;
+}
+
+export async function getAdminRevenueStats() {
+  try {
+    const res = await fetch(`${API_BASE}/location/admin-revenue`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Get admin revenue error:', err);
+  }
+  return null;
+}
+
+// =============================================================================
+// 11. Smart RC Verification & Authenticity Engine APIs
+// =============================================================================
+
+export async function uploadRCDocument(file: File, listingId?: string, sellerId: string = 'seller-default') {
+  const formData = new FormData();
+  formData.append('file', file);
+  if (listingId) formData.append('listing_id', listingId);
+  formData.append('seller_id', sellerId);
+
+  const res = await fetch(`${API_BASE}/rc/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'RC upload failed.');
+  }
+  return data;
+}
+
+export async function processRCDocument(verificationId: string, listingId?: string) {
+  const res = await fetch(`${API_BASE}/rc/process`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ verification_id: verificationId, listing_id: listingId }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'RC processing failed.');
+  }
+  return data;
+}
+
+export async function getRCVerification(verificationId: string) {
+  const res = await fetch(`${API_BASE}/rc/${encodeURIComponent(verificationId)}`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch RC verification (${res.status})`);
+  }
+  return await res.json();
+}
+
+export async function confirmRCFields(verificationId: string, fields: any) {
+  const res = await fetch(`${API_BASE}/rc/${encodeURIComponent(verificationId)}/confirm-fields`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(fields),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Field confirmation failed.');
+  }
+  return data;
+}
+
+export async function compareRCWithListing(verificationId: string, listingDetails: any) {
+  const res = await fetch(`${API_BASE}/rc/${encodeURIComponent(verificationId)}/compare`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ listing_details: listingDetails }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'RC comparison failed.');
+  }
+  return data;
+}
+
+export async function runExternalVAHANVerify(verificationId: string) {
+  const res = await fetch(`${API_BASE}/rc/${encodeURIComponent(verificationId)}/external-verify`, {
+    method: 'POST',
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'External verification failed.');
+  }
+  return data;
+}
+
+export async function getRCReport(verificationId: string) {
+  const res = await fetch(`${API_BASE}/rc/${encodeURIComponent(verificationId)}/report`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch RC report (${res.status})`);
+  }
+  return await res.json();
+}
+
+export async function getAdminRCReviews(status?: string) {
+  const url = status && status !== 'ALL'
+    ? `${API_BASE}/admin/rc/reviews?status=${encodeURIComponent(status)}`
+    : `${API_BASE}/admin/rc/reviews`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch admin reviews (${res.status})`);
+  }
+  return await res.json();
+}
+
+export async function getAdminRCDetail(verificationId: string) {
+  const res = await fetch(`${API_BASE}/admin/rc/${encodeURIComponent(verificationId)}`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch RC detail (${res.status})`);
+  }
+  return await res.json();
+}
+
+export async function submitAdminRCReview(verificationId: string, payload: {
+  reviewer_id?: string;
+  action: 'approve' | 'request_clearer_upload' | 'correct_field' | 'reject';
+  corrected_fields?: any;
+  notes?: string;
+}) {
+  const res = await fetch(`${API_BASE}/admin/rc/${encodeURIComponent(verificationId)}/review`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      reviewer_id: payload.reviewer_id || 'reviewer-admin-01',
+      ...payload
+    }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Failed to submit review action.');
+  }
+  return data;
+}
+
+export async function getHackathonDemoScenarios() {
+  const res = await fetch(`${API_BASE}/rc/demo/scenarios`);
+  if (!res.ok) {
+    throw new Error(`Failed to load demo scenarios (${res.status})`);
+  }
+  return await res.json();
+}
+
+

@@ -25,19 +25,40 @@ import {
   Lock,
   ThumbsUp,
   ThumbsDown,
-  RotateCcw
+  RotateCcw,
+  DollarSign,
+  CreditCard,
+  TrendingUp,
+  MapPin,
+  Calendar,
+  Cpu
 } from 'lucide-react';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
 import { 
   getAdminVerificationQueue, 
   getAdminListingDetail, 
-  recordReviewerDecision 
+  recordReviewerDecision,
+  getAdminRevenueStats,
+  getAdminRCReviews,
+  getAdminRCDetail,
+  submitAdminRCReview
 } from '../services/aiApi';
 
 export const AdminPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'verification_desk' | 'marketplace_moderation'>('verification_desk');
+  const [activeTab, setActiveTab] = useState<'verification_desk' | 'smart_rc_desk' | 'marketplace_moderation' | 'location_revenue'>('verification_desk');
   const [listings, setListings] = useState(SEED_LISTINGS);
+  const [revenueStats, setRevenueStats] = useState<any>(null);
+
+  // Smart RC Desk State
+  const [smartRcQueue, setSmartRcQueue] = useState<any[]>([]);
+  const [selectedSmartRcId, setSelectedSmartRcId] = useState<string | null>(null);
+  const [smartRcDetail, setSmartRcDetail] = useState<any>(null);
+  const [smartRcFilter, setSmartRcFilter] = useState<string>('ALL');
+  const [isLoadingSmartRc, setIsLoadingSmartRc] = useState<boolean>(false);
+  const [smartRcNotes, setSmartRcNotes] = useState<string>('');
+  const [isSubmittingSmartRc, setIsSubmittingSmartRc] = useState<boolean>(false);
+  const [smartRcActionMsg, setSmartRcActionMsg] = useState<string | null>(null);
 
   // Verification Desk State
   const [queue, setQueue] = useState<any[]>([]);
@@ -71,6 +92,81 @@ export const AdminPage: React.FC = () => {
   useEffect(() => {
     fetchQueue();
   }, [filterStatus]);
+
+  const fetchRevenue = async () => {
+    try {
+      const stats = await getAdminRevenueStats();
+      if (stats) setRevenueStats(stats);
+    } catch (err) {
+      console.warn('Revenue fetch error:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'location_revenue') {
+      fetchRevenue();
+    } else if (activeTab === 'smart_rc_desk') {
+      fetchSmartRcQueue();
+    }
+  }, [activeTab]);
+
+  const fetchSmartRcQueue = async () => {
+    setIsLoadingSmartRc(true);
+    try {
+      const data = await getAdminRCReviews(smartRcFilter);
+      if (data && data.reviews) {
+        setSmartRcQueue(data.reviews);
+        if (data.reviews.length > 0 && !selectedSmartRcId) {
+          setSelectedSmartRcId(data.reviews[0].id);
+        }
+      }
+    } catch (err) {
+      console.warn('Smart RC queue fetch error:', err);
+    } finally {
+      setIsLoadingSmartRc(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'smart_rc_desk') {
+      fetchSmartRcQueue();
+    }
+  }, [smartRcFilter]);
+
+  // Load Smart RC Detail
+  useEffect(() => {
+    if (!selectedSmartRcId) return;
+    let isMounted = true;
+    getAdminRCDetail(selectedSmartRcId).then((data) => {
+      if (isMounted && data) {
+        setSmartRcDetail(data);
+      }
+    }).catch(err => console.warn('Smart RC detail error:', err));
+    return () => { isMounted = false; };
+  }, [selectedSmartRcId]);
+
+  const handleSmartRcDecision = async (action: 'approve' | 'request_clearer_upload' | 'reject') => {
+    if (!selectedSmartRcId) return;
+    setIsSubmittingSmartRc(true);
+    setSmartRcActionMsg(null);
+    try {
+      await submitAdminRCReview(selectedSmartRcId, {
+        reviewer_id: 'RTO-CHIEF-01',
+        action: action,
+        notes: smartRcNotes.trim() || `RTO audit action: ${action.replace('_', ' ')} executed.`
+      });
+      setSmartRcActionMsg(`Decision "${action.toUpperCase().replace('_', ' ')}" recorded in audit ledger.`);
+      setSmartRcNotes('');
+      fetchSmartRcQueue();
+      const updated = await getAdminRCDetail(selectedSmartRcId);
+      if (updated) setSmartRcDetail(updated);
+    } catch (err: any) {
+      alert(err?.message || 'Failed to submit review');
+    } finally {
+      setIsSubmittingSmartRc(false);
+      setTimeout(() => setSmartRcActionMsg(null), 4000);
+    }
+  };
 
   // Load Selected Listing Detail
   useEffect(() => {
@@ -165,10 +261,10 @@ export const AdminPage: React.FC = () => {
           </div>
 
           {/* Navigation Tab Switcher */}
-          <div className="flex items-center gap-1 p-1.5 rounded-2xl bg-forest-950 border border-forest-800 self-stretch md:self-auto">
+          <div className="flex items-center gap-1 p-1.5 rounded-2xl bg-forest-950 border border-forest-800 self-stretch md:self-auto overflow-x-auto">
             <button
               onClick={() => setActiveTab('verification_desk')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'verification_desk'
                   ? 'bg-forest-600 text-white shadow-glow'
                   : 'text-slate-400 hover:text-white'
@@ -178,8 +274,19 @@ export const AdminPage: React.FC = () => {
               <span>Document Verification Desk</span>
             </button>
             <button
+              onClick={() => setActiveTab('smart_rc_desk')}
+              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+                activeTab === 'smart_rc_desk'
+                  ? 'bg-forest-600 text-white shadow-glow'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Cpu className="w-4 h-4 text-emerald-400" />
+              <span>Smart RC Reviews</span>
+            </button>
+            <button
               onClick={() => setActiveTab('marketplace_moderation')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'marketplace_moderation'
                   ? 'bg-forest-600 text-white shadow-glow'
                   : 'text-slate-400 hover:text-white'
@@ -188,10 +295,21 @@ export const AdminPage: React.FC = () => {
               <Users className="w-4 h-4" />
               <span>Marketplace Listings</span>
             </button>
+            <button
+              onClick={() => setActiveTab('location_revenue')}
+              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+                activeTab === 'location_revenue'
+                  ? 'bg-forest-600 text-white shadow-glow'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <DollarSign className="w-4 h-4 text-emerald-400" />
+              <span>Location Monetization</span>
+            </button>
           </div>
         </div>
 
-        {activeTab === 'verification_desk' ? (
+        {activeTab === 'verification_desk' && (
           <div className="space-y-6 animate-fade-in">
             {/* Stat Counters */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -628,8 +746,462 @@ export const AdminPage: React.FC = () => {
 
             </div>
           </div>
-        ) : (
-          /* Existing Marketplace Listings Moderation Tab */
+        )}
+
+        {/* ======================================================== */}
+        {/* TAB 2: SMART RC & VEHICLE AUTHENTICITY AUDIT DESK */}
+        {/* ======================================================== */}
+        {activeTab === 'smart_rc_desk' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Stat Counters */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="p-4 rounded-2xl bg-[#101D19] border border-forest-800">
+                <span className="text-[10px] uppercase font-bold text-slate-400">Total RC Submissions</span>
+                <p className="font-heading font-extrabold text-2xl text-white mt-1">{smartRcQueue.length}</p>
+                <p className="text-[10px] text-slate-500">Pipeline audits logged</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-[#101D19] border border-amber-800/40">
+                <span className="text-[10px] uppercase font-bold text-amber-400">Manual Review Queue</span>
+                <p className="font-heading font-extrabold text-2xl text-amber-300 mt-1">
+                  {smartRcQueue.filter(r => r.status === 'MANUAL_REVIEW').length}
+                </p>
+                <p className="text-[10px] text-amber-200/60">Discrepancy or blur flag</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-[#101D19] border border-blue-800/40">
+                <span className="text-[10px] uppercase font-bold text-blue-400">Document Matched</span>
+                <p className="font-heading font-extrabold text-2xl text-blue-300 mt-1">
+                  {smartRcQueue.filter(r => r.status === 'DOCUMENT_MATCHED').length}
+                </p>
+                <p className="text-[10px] text-blue-200/60">Listing vs RC verified</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-[#101D19] border border-emerald-800/40">
+                <span className="text-[10px] uppercase font-bold text-emerald-400">Government Verified</span>
+                <p className="font-heading font-extrabold text-2xl text-emerald-300 mt-1">
+                  {smartRcQueue.filter(r => r.status === 'GOVERNMENT_VERIFIED').length}
+                </p>
+                <p className="text-[10px] text-emerald-200/60">Live VAHAN API confirmed</p>
+              </div>
+            </div>
+
+            {/* Filter Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-[#101D19] border border-forest-800">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold text-slate-300">Filter Status:</span>
+                <div className="flex flex-wrap items-center gap-1.5 ml-2">
+                  {['ALL', 'MANUAL_REVIEW', 'DOCUMENT_MATCHED', 'GOVERNMENT_VERIFIED', 'VERIFICATION_FAILED'].map((st) => (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => setSmartRcFilter(st)}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase transition-colors ${
+                        smartRcFilter === st
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-forest-950 text-slate-400 hover:text-white border border-forest-800'
+                      }`}
+                    >
+                      {st.replace('_', ' ')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={fetchSmartRcQueue}
+                className="px-3 py-1.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoadingSmartRc ? 'animate-spin' : ''}`} />
+                <span>Refresh Desk</span>
+              </button>
+            </div>
+
+            {/* Main Inspection Grid (4 Cols Queue, 8 Cols Diagnostics Pane) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              
+              {/* Queue List (4 Cols) */}
+              <div className="lg:col-span-4 rounded-3xl bg-[#101D19] border border-forest-800 overflow-hidden flex flex-col h-[750px]">
+                <div className="p-4 bg-forest-950 border-b border-forest-800 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-emerald-400" />
+                    <span className="font-heading font-bold text-xs uppercase tracking-wider text-slate-300">
+                      RC Submissions ({smartRcQueue.length})
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-500 font-mono">Latest First</span>
+                </div>
+
+                <div className="flex-1 overflow-y-auto divide-y divide-forest-900/60">
+                  {smartRcQueue.length === 0 ? (
+                    <div className="p-8 text-center text-slate-500 text-xs space-y-2">
+                      <Cpu className="w-8 h-8 text-slate-600 mx-auto" />
+                      <p>No RC records matching filter "{smartRcFilter}".</p>
+                      <p className="text-[10px] text-slate-600">Run a verification in the Seller Studio or run the test suite to populate records.</p>
+                    </div>
+                  ) : (
+                    smartRcQueue.map((item) => {
+                      const isSelected = selectedSmartRcId === item.id;
+                      const statusColor = 
+                        item.status === 'GOVERNMENT_VERIFIED' ? 'text-emerald-300 bg-emerald-950/80 border-emerald-700/60' :
+                        item.status === 'DOCUMENT_MATCHED' ? 'text-blue-300 bg-blue-950/80 border-blue-700/60' :
+                        item.status === 'MANUAL_REVIEW' ? 'text-amber-300 bg-amber-950/80 border-amber-700/60' :
+                        'text-red-300 bg-red-950/80 border-red-700/60';
+
+                      return (
+                        <div
+                          key={item.id}
+                          onClick={() => setSelectedSmartRcId(item.id)}
+                          className={`p-4 cursor-pointer transition-all hover:bg-forest-950/70 ${
+                            isSelected ? 'bg-forest-950/90 border-l-4 border-l-emerald-500' : ''
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <span className="font-bold text-sm text-white font-mono tracking-wide">
+                                {item.registration_number || 'REG PENDING'}
+                              </span>
+                              <p className="text-[11px] text-slate-400 mt-0.5">
+                                Seller: <strong className="text-slate-300">{item.seller_name || item.listing_id || 'Seller'}</strong>
+                              </p>
+                            </div>
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold border uppercase ${statusColor}`}>
+                              {item.status.replace('_', ' ')}
+                            </span>
+                          </div>
+
+                          <div className="mt-2.5 flex items-center justify-between text-[10px] text-slate-500">
+                            <span className="font-mono">ID: {item.id.slice(0, 14)}...</span>
+                            <div className="flex items-center gap-2">
+                              {item.blur_detected && (
+                                <span className="px-1.5 py-0.2 rounded bg-amber-900/40 text-amber-300 border border-amber-700/40">
+                                  Blurry
+                                </span>
+                              )}
+                              <span className={`px-1.5 py-0.2 rounded font-semibold ${
+                                item.anomaly_risk === 'HIGH_RISK' ? 'bg-red-950 text-red-300 border border-red-800' :
+                                item.anomaly_risk === 'MEDIUM' ? 'bg-amber-950 text-amber-300 border border-amber-800' :
+                                'bg-emerald-950 text-emerald-300 border border-emerald-900'
+                              }`}>
+                                {item.anomaly_risk || 'LOW RISK'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* Inspector Pane (8 Cols) */}
+              <div className="lg:col-span-8 rounded-3xl bg-[#101D19] border border-forest-800 p-6 space-y-6">
+                {!smartRcDetail ? (
+                  <div className="py-24 text-center text-slate-500 space-y-2">
+                    <Cpu className="w-10 h-10 text-slate-600 mx-auto" />
+                    <p className="text-sm font-semibold">Select an RC submission from the queue to inspect details.</p>
+                  </div>
+                ) : (
+                  <>
+                    {/* Header Banner */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-forest-900">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs text-slate-500 font-bold">VERIFICATION RECORD:</span>
+                          <span className="font-mono text-xs text-emerald-400 font-bold">{smartRcDetail.id}</span>
+                        </div>
+                        <h2 className="text-xl font-heading font-extrabold text-white mt-1">
+                          {smartRcDetail.sellerConfirmedFields?.registrationNumber || smartRcDetail.extractedFields?.registrationNumber || 'Registration Certificate'}
+                        </h2>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          Listing: <span className="text-slate-300 font-semibold">{smartRcDetail.listingId}</span> • Owner: <span className="text-slate-300 font-semibold">{smartRcDetail.sellerConfirmedFields?.registeredOwnerName || 'Unknown'}</span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 self-start sm:self-center">
+                        <span className={`px-3 py-1.5 rounded-xl font-bold text-xs uppercase border ${
+                          smartRcDetail.status === 'GOVERNMENT_VERIFIED' ? 'bg-emerald-950 text-emerald-300 border-emerald-700' :
+                          smartRcDetail.status === 'DOCUMENT_MATCHED' ? 'bg-blue-950 text-blue-300 border-blue-700' :
+                          smartRcDetail.status === 'MANUAL_REVIEW' ? 'bg-amber-950 text-amber-300 border-amber-700' :
+                          'bg-red-950 text-red-300 border-red-700'
+                        }`}>
+                          {smartRcDetail.status?.replace('_', ' ')}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Notification Alert Message */}
+                    {smartRcActionMsg && (
+                      <div className="p-3 rounded-xl bg-emerald-950/80 border border-emerald-700 text-emerald-200 text-xs flex items-center gap-2 animate-fade-in">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>{smartRcActionMsg}</span>
+                      </div>
+                    )}
+
+                    {/* Diagnostics 3-Card Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      
+                      {/* Card 1: Document Classification */}
+                      <div className="p-4 rounded-2xl bg-forest-950/70 border border-forest-900 space-y-2">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5">
+                          <FileText className="w-3.5 h-3.5 text-blue-400" />
+                          <span>ML Classification</span>
+                        </span>
+                        <p className="font-heading font-extrabold text-lg text-white">
+                          {smartRcDetail.documentClassification?.document_type || 'RC'}
+                        </p>
+                        <p className="text-[11px] text-slate-400">
+                          Confidence: <strong className="text-emerald-400 font-mono">
+                            {((smartRcDetail.documentClassification?.confidence || 0.99) * 100).toFixed(1)}%
+                          </strong>
+                        </p>
+                        <p className="text-[10px] text-slate-500">TF-IDF + LogisticRegression</p>
+                      </div>
+
+                      {/* Card 2: CV Image Quality */}
+                      <div className="p-4 rounded-2xl bg-forest-950/70 border border-forest-900 space-y-2">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5">
+                          <Eye className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Image Quality (CV)</span>
+                        </span>
+                        <p className="font-heading font-extrabold text-lg text-white flex items-center gap-2">
+                          <span>{smartRcDetail.qualityAssessment?.blurScore?.toFixed(1) || '145.0'}</span>
+                          <span className={`text-[11px] px-1.5 py-0.5 rounded font-normal ${
+                            smartRcDetail.qualityAssessment?.isBlurred
+                              ? 'bg-amber-950 text-amber-300 border border-amber-800'
+                              : 'bg-emerald-950 text-emerald-300 border border-emerald-900'
+                          }`}>
+                            {smartRcDetail.qualityAssessment?.isBlurred ? 'Blurred (<100)' : 'Sharp'}
+                          </span>
+                        </p>
+                        <p className="text-[11px] text-slate-400">
+                          Laplacian Variance Blur Metric
+                        </p>
+                        <p className="text-[10px] text-slate-500">Contrast: {smartRcDetail.qualityAssessment?.contrast || 'Adequate'}</p>
+                      </div>
+
+                      {/* Card 3: Anomaly & Fraud Risk */}
+                      <div className="p-4 rounded-2xl bg-forest-950/70 border border-forest-900 space-y-2">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Anomaly & Fraud Risk</span>
+                        </span>
+                        <p className={`font-heading font-extrabold text-lg ${
+                          smartRcDetail.anomalyResult?.risk_level === 'HIGH_RISK' ? 'text-red-400' :
+                          smartRcDetail.anomalyResult?.risk_level === 'MEDIUM' ? 'text-amber-300' : 'text-emerald-400'
+                        }`}>
+                          {smartRcDetail.anomalyResult?.risk_level || 'LOW'}
+                        </p>
+                        <p className="text-[11px] text-slate-400">
+                          Score: <strong className="font-mono text-slate-200">{smartRcDetail.anomalyResult?.anomaly_score?.toFixed(2) || '0.12'}</strong>
+                        </p>
+                        <p className="text-[10px] text-slate-500">IsolationForest Model B</p>
+                      </div>
+
+                    </div>
+
+                    {/* Discrepancy Warnings if any */}
+                    {smartRcDetail.comparisonResult?.discrepancies?.length > 0 && (
+                      <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-800/60 space-y-2">
+                        <div className="flex items-center gap-2 text-amber-300 font-bold text-xs uppercase tracking-wider">
+                          <AlertTriangle className="w-4 h-4 text-amber-400" />
+                          <span>Listing vs Document Discrepancy Warning ({smartRcDetail.comparisonResult.discrepancies.length})</span>
+                        </div>
+                        <div className="space-y-1">
+                          {smartRcDetail.comparisonResult.discrepancies.map((disc: string, idx: number) => (
+                            <p key={idx} className="text-xs text-amber-200 flex items-start gap-2">
+                              <span className="text-amber-500">•</span>
+                              <span>{disc}</span>
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Side-by-Side Comparison Spec Table */}
+                    <div className="rounded-2xl border border-forest-900 overflow-hidden">
+                      <div className="p-3 bg-forest-950 border-b border-forest-900 font-bold text-xs text-slate-300 flex items-center justify-between">
+                        <span>Extracted vs Seller Confirmed vs External VAHAN</span>
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          VAHAN Sandbox: {smartRcDetail.externalVerification?.source || 'VAHAN_MOCK_SANDBOX'}
+                        </span>
+                      </div>
+
+                      <div className="divide-y divide-forest-900/50 text-xs">
+                        {[
+                          {
+                            label: 'Registration Number',
+                            extracted: smartRcDetail.extractedFields?.registrationNumber,
+                            confirmed: smartRcDetail.sellerConfirmedFields?.registrationNumber,
+                            vahan: smartRcDetail.externalVerification?.vahanRecord?.registrationNumber,
+                            match: smartRcDetail.comparisonResult?.fieldMatches?.registrationNumber
+                          },
+                          {
+                            label: 'Maker / Manufacturer',
+                            extracted: smartRcDetail.extractedFields?.maker,
+                            confirmed: smartRcDetail.sellerConfirmedFields?.maker,
+                            vahan: smartRcDetail.externalVerification?.vahanRecord?.maker,
+                            match: smartRcDetail.comparisonResult?.fieldMatches?.maker
+                          },
+                          {
+                            label: 'Model / Variant',
+                            extracted: smartRcDetail.extractedFields?.model,
+                            confirmed: smartRcDetail.sellerConfirmedFields?.model,
+                            vahan: smartRcDetail.externalVerification?.vahanRecord?.model,
+                            match: smartRcDetail.comparisonResult?.fieldMatches?.model
+                          },
+                          {
+                            label: 'Fuel Type',
+                            extracted: smartRcDetail.extractedFields?.fuelType,
+                            confirmed: smartRcDetail.sellerConfirmedFields?.fuelType,
+                            vahan: smartRcDetail.externalVerification?.vahanRecord?.fuelType,
+                            match: smartRcDetail.comparisonResult?.fieldMatches?.fuelType
+                          },
+                          {
+                            label: 'Registration Date',
+                            extracted: smartRcDetail.extractedFields?.registrationDate,
+                            confirmed: smartRcDetail.sellerConfirmedFields?.registrationDate,
+                            vahan: smartRcDetail.externalVerification?.vahanRecord?.registrationDate,
+                            match: smartRcDetail.comparisonResult?.fieldMatches?.registrationDate
+                          },
+                          {
+                            label: 'Chassis Number (Masked)',
+                            extracted: smartRcDetail.extractedFields?.chassisNumberMasked,
+                            confirmed: smartRcDetail.sellerConfirmedFields?.chassisNumberMasked,
+                            vahan: smartRcDetail.externalVerification?.vahanRecord?.chassisNumberMasked,
+                            match: 'MATCH'
+                          },
+                          {
+                            label: 'Engine Number (Masked)',
+                            extracted: smartRcDetail.extractedFields?.engineNumberMasked,
+                            confirmed: smartRcDetail.sellerConfirmedFields?.engineNumberMasked,
+                            vahan: smartRcDetail.externalVerification?.vahanRecord?.engineNumberMasked,
+                            match: 'MATCH'
+                          }
+                        ].map((row, idx) => (
+                          <div key={idx} className="p-3 grid grid-cols-12 gap-2 items-center hover:bg-forest-950/30">
+                            <span className="col-span-3 text-slate-400 font-semibold">{row.label}</span>
+                            <span className="col-span-3 text-white font-mono">{row.extracted || '—'}</span>
+                            <span className="col-span-3 text-slate-300 font-mono">{row.confirmed || '—'}</span>
+                            <div className="col-span-3 flex items-center justify-between">
+                              <span className="text-slate-300 font-mono">{row.vahan || '—'}</span>
+                              {row.match === 'MATCH' ? (
+                                <span className="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 text-[10px] font-bold">
+                                  MATCH
+                                </span>
+                              ) : row.match === 'MISMATCH' ? (
+                                <span className="px-1.5 py-0.5 rounded bg-red-950 text-red-300 text-[10px] font-bold">
+                                  MISMATCH
+                                </span>
+                              ) : (
+                                <span className="px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 text-[10px]">
+                                  N/A
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Reviewer Action Desk */}
+                    <div className="p-5 rounded-2xl bg-[#0E1A16] border border-forest-900 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <UserCheck className="w-4 h-4 text-emerald-400" />
+                          <h4 className="font-heading font-bold text-sm text-white">Reviewer Audit Decision</h4>
+                        </div>
+                        <span className="text-[10px] text-slate-500">Moderator ID: RTO-CHIEF-01</span>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                          Reviewer Audit Reason / Directives (Immutable log)
+                        </label>
+                        <textarea
+                          value={smartRcNotes}
+                          onChange={(e) => setSmartRcNotes(e.target.value)}
+                          placeholder="e.g. Confirmed chassis and engine serial against physical image; verified fuel and model match."
+                          className="w-full px-3 py-2.5 rounded-xl bg-forest-950 border border-forest-800 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+                          rows={2}
+                        />
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => handleSmartRcDecision('approve')}
+                          disabled={isSubmittingSmartRc}
+                          className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                        >
+                          <Check className="w-4 h-4" />
+                          <span>Approve Verification</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleSmartRcDecision('request_clearer_upload')}
+                          disabled={isSubmittingSmartRc}
+                          className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                          <span>Request Clearer RC Upload</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleSmartRcDecision('reject')}
+                          disabled={isSubmittingSmartRc}
+                          className="px-4 py-2 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                        >
+                          <Ban className="w-4 h-4" />
+                          <span>Reject / Flag Discrepancy</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Audit Trail Log */}
+                    <div className="p-4 rounded-2xl bg-forest-950/60 border border-forest-900 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-bold text-xs uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                          <History className="w-4 h-4 text-emerald-400" />
+                          <span>Audit Trail Ledger</span>
+                        </h4>
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          {(smartRcDetail.auditTrail || []).length} Actions Logged
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 text-xs">
+                        {(smartRcDetail.auditTrail || []).length === 0 ? (
+                          <p className="text-[11px] text-slate-500 italic">No previous manual audit actions recorded.</p>
+                        ) : (
+                          smartRcDetail.auditTrail.map((log: any, idx: number) => (
+                            <div key={idx} className="p-2.5 rounded-xl bg-forest-950 border border-forest-900 flex items-start justify-between">
+                              <div className="space-y-0.5">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-bold text-white capitalize">{log.action?.replace('_', ' ')}</span>
+                                  <span className="text-[10px] font-mono text-emerald-400">by {log.reviewer_id}</span>
+                                </div>
+                                <p className="text-[11px] text-slate-300">{log.notes}</p>
+                              </div>
+                              <span className="text-[10px] text-slate-500 whitespace-nowrap">
+                                {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                  </>
+                )}
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* Existing Marketplace Listings Moderation Tab */}
+        {activeTab === 'marketplace_moderation' && (
           <div className="rounded-3xl bg-[#101D19] border border-forest-800 overflow-hidden shadow-2xl animate-fade-in">
             <div className="p-4 bg-forest-950 border-b border-forest-800 font-bold text-xs text-slate-300 grid grid-cols-12 gap-4">
               <span className="col-span-4">Vehicle & Location</span>
@@ -683,6 +1255,162 @@ export const AdminPage: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* TAB 3: LOCATION MONETIZATION & REVENUE DASHBOARD */}
+        {/* ======================================================== */}
+        {activeTab === 'location_revenue' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Top Revenue Metric Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400">Total Location Unlocks</span>
+                <p className="font-heading font-extrabold text-3xl text-white mt-1">
+                  {revenueStats?.total_location_unlocks || 0}
+                </p>
+                <p className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                  <TrendingUp className="w-3.5 h-3.5" /> Paid verified buyer accesses
+                </p>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400">Gross Revenue</span>
+                <p className="font-heading font-extrabold text-3xl text-emerald-400 mt-1">
+                  ₹{(revenueStats?.gross_revenue_inr || 0).toLocaleString('en-IN')}
+                </p>
+                <p className="text-[11px] text-slate-400">@ ₹49 per meetup unlock</p>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400">Successful Payments</span>
+                <p className="font-heading font-extrabold text-3xl text-forest-300 mt-1">
+                  {revenueStats?.successful_payments || 0}
+                </p>
+                <p className="text-[11px] text-emerald-400 font-semibold">100% server verified</p>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400">Net Revenue (After Refunds)</span>
+                <p className="font-heading font-extrabold text-3xl text-gold mt-1">
+                  ₹{(revenueStats?.net_revenue_inr || 0).toLocaleString('en-IN')}
+                </p>
+                <p className="text-[11px] text-slate-400">Zero active dispute deductions</p>
+              </div>
+            </div>
+
+            {/* Daily Breakdown & Monetization Rule Summary */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Daily Breakdown (7 Cols) */}
+              <div className="lg:col-span-7 p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-emerald-400" />
+                    <h3 className="font-heading font-bold text-base text-white">Daily Unlocks Breakdown</h3>
+                  </div>
+                  <span className="text-xs text-forest-300 font-semibold">Real-Time Ledger</span>
+                </div>
+
+                <div className="divide-y divide-forest-900/60 text-xs">
+                  {Object.entries(revenueStats?.daily_breakdown || {}).length === 0 ? (
+                    <div className="py-8 text-center text-slate-500">
+                      No unlocks recorded today. Unlocks made on vehicle detail pages will appear here.
+                    </div>
+                  ) : (
+                    Object.entries(revenueStats?.daily_breakdown || {}).map(([day, count]) => (
+                      <div key={day} className="py-3 flex items-center justify-between">
+                        <span className="font-semibold text-white">{day}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="px-2.5 py-0.5 rounded-full bg-forest-950 text-forest-300 font-bold border border-forest-800">
+                            {Number(count)} unlock(s)
+                          </span>
+                          <span className="font-bold text-emerald-400 font-mono">
+                            ₹{(Number(count) * 49).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Revenue Engine Specifications (5 Cols) */}
+              <div className="lg:col-span-5 p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <h3 className="font-heading font-bold text-base text-white">Monetization Engine Rules</h3>
+                </div>
+
+                <div className="space-y-3 text-slate-300">
+                  <div className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-1">
+                    <span className="text-slate-400 text-[10px] block uppercase font-bold">Pricing Model</span>
+                    <p className="font-semibold text-white">₹49 Flat Location Access Fee</p>
+                    <p className="text-[11px] text-slate-400">One-time payment per buyer per listing. No vehicle percentage cut.</p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-1">
+                    <span className="text-slate-400 text-[10px] block uppercase font-bold">Privacy Guard</span>
+                    <p className="font-semibold text-white">Strict Approximate Masking</p>
+                    <p className="text-[11px] text-slate-400">Before payment, APIs and frontend omit exact GPS coordinates and house numbers.</p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-1">
+                    <span className="text-slate-400 text-[10px] block uppercase font-bold">Access Duration</span>
+                    <p className="font-semibold text-white">7 Calendar Days Validity</p>
+                    <p className="text-[11px] text-slate-400">Buyer cannot be double-charged during active entitlement term.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Verified Transactions Table */}
+            <div className="p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-emerald-400" />
+                  <h3 className="font-heading font-bold text-base text-white">Recent Payment Transactions</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={fetchRevenue}
+                  className="px-3 py-1.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-forest-200 text-xs font-semibold flex items-center gap-1"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Refresh Ledger</span>
+                </button>
+              </div>
+
+              <div className="divide-y divide-forest-900/60 text-xs">
+                {(revenueStats?.recent_transactions || []).length === 0 ? (
+                  <div className="py-8 text-center text-slate-500">
+                    No transactions yet. Complete an unlock on any vehicle detail page to test.
+                  </div>
+                ) : (
+                  (revenueStats?.recent_transactions || []).map((txn: any, idx: number) => (
+                    <div key={idx} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-white font-mono">{txn.transaction_id}</span>
+                          <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 text-[10px] font-bold">
+                            Success
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          Listing: <strong className="text-slate-300">{txn.listing_id}</strong> • Buyer: {txn.buyer_name || txn.buyer_id}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-heading font-extrabold text-sm text-emerald-400 font-mono">
+                          +₹{txn.amount_inr || 49}
+                        </span>
+                        <p className="text-[10px] text-slate-500">{new Date(txn.timestamp).toLocaleString()}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         )}

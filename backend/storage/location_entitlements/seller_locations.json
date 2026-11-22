@@ -1,0 +1,30 @@
+{
+  "GEAR-UP-101": {
+    "listing_id": "GEAR-UP-101",
+    "exact_lat": 30.7333,
+    "exact_lng": 76.7794,
+    "address": "SCO 88-89, Sector 17-C, Near Neelam Cinema, Chandigarh",
+    "city": "Chandigarh",
+    "locality": "Sector 17",
+    "landmark": "Near Neelam Cinema & Plaza Fountain",
+    "meetup_spot_type": "Safe Public Commercial Hub",
+    "test_ride_available": true,
+    "pickup_instructions": "Available on weekends between 10:00 AM - 4:00 PM. Please bring an original driving licence and helmet for test ride.",
+    "is_active": true,
+    "updated_at": "2026-02-18T10:00:00"
+  },
+  "bike-001": {
+    "listing_id": "bike-001",
+    "exact_lat": 30.7333,
+    "exact_lng": 76.7794,
+    "address": "SCO 88-89, Sector 17-C, Near Neelam Cinema, Chandigarh",
+    "city": "Chandigarh",
+    "locality": "Sector 17",
+    "landmark": "Near Neelam Cinema",
+    "meetup_spot_type": "Safe Public Commercial Hub",
+    "test_ride_available": true,
+    "pickup_instructions": "Available for viewing any weekday after 5 PM. Valid licence required for test ride.",
+    "is_active": true,
+    "updated_at": "2026-02-18T10:00:00"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "total_unlocks": 6,
+  "successful_payments": 6,
+  "failed_payments": 0,
+  "refunds": 0,
+  "gross_revenue_inr": 294,
+  "net_revenue_inr": 294,
+  "daily_unlocks": {
+    "2026-11-22": 6
+  },
+  "monthly_unlocks": {
+    "2026-11": 6
+  },
+  "transactions": [
+    {
+      "transaction_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-801BA63F",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19",
+      "buyer_name": "Test Buyer",
+      "amount_inr": 49,
+      "status": "success",
+      "timestamp": "2026-11-22T05:54:38.261622",
+      "entitlement_id": "ENT-LOC-24FE241A"
+    },
+    {
+      "transaction_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-602D833D",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19-9b9259",
+      "buyer_name": "Test Buyer",
+      "amount_inr": 49,
+      "status": "success",
+      "timestamp": "2026-11-22T05:56:09.609716",
+      "entitlement_id": "ENT-LOC-A01F0D6E"
+    },
+    {
+      "transaction_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-25B4CF97",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19-c9e30d",
+      "buyer_name": "Test Buyer",
+      "amount_inr": 49,
+      "status": "success",
+      "timestamp": "2026-11-22T05:57:20.484303",
+      "entitlement_id": "ENT-LOC-E32AF755"
+    },
+    {
+      "transaction_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-0DD11EEF",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19-a5aff9",
+      "buyer_name": "Test Buyer",
+      "amount_inr": 49,
+      "status": "success",
+      "timestamp": "2026-11-22T06:00:51.879121",
+      "entitlement_id": "ENT-LOC-B349A9CD"
+    },
+    {
+      "transaction_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-4BC9D05C",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19-68b850",
+      "buyer_name": "Test Buyer",
+      "amount_inr": 49,
+      "status": "success",
+      "timestamp": "2026-11-22T06:11:14.882814",
+      "entitlement_id": "ENT-LOC-BAF76A4C"
+    },
+    {
+      "transaction_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-E0A06774",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19-a1523d",
+      "buyer_name": "Test Buyer",
+      "amount_inr": 49,
+      "status": "success",
+      "timestamp": "2026-11-22T06:19:32.660327",
+      "entitlement_id": "ENT-LOC-CEDB7A1F"
+    }
+  ]
+}
