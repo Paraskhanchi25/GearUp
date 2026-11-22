@@ -96,7 +96,7 @@ export const HowItWorksPage: React.FC = () => {
               to="/sell"
               className="px-6 py-3 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider inline-flex items-center gap-2"
             >
-              <span>List Your Bike Free</span>
+              <span>Sell Your Bike</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

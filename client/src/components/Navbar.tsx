@@ -229,7 +229,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               to="/sell"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-forest-600 to-forest-500 hover:from-forest-500 hover:to-forest-400 text-white shadow-elevated hover:shadow-glow transition-all"
             >
-              <span>Post Free Ad</span>
+              <PlusCircle className="w-3.5 h-3.5 text-forest-200" />
+              <span>Sell Your Bike</span>
             </Link>
           </div>
 

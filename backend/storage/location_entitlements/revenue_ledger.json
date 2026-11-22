@@ -1,15 +1,15 @@
 {
-  "total_unlocks": 6,
-  "successful_payments": 6,
+  "total_unlocks": 7,
+  "successful_payments": 7,
   "failed_payments": 0,
   "refunds": 0,
-  "gross_revenue_inr": 294,
-  "net_revenue_inr": 294,
+  "gross_revenue_inr": 343,
+  "net_revenue_inr": 343,
   "daily_unlocks": {
-    "2026-11-22": 6
+    "2026-11-22": 7
   },
   "monthly_unlocks": {
-    "2026-11": 6
+    "2026-11": 7
   },
   "transactions": [
     {
@@ -77,6 +77,17 @@
       "status": "success",
       "timestamp": "2026-11-22T06:19:32.660327",
       "entitlement_id": "ENT-LOC-CEDB7A1F"
+    },
+    {
+      "transaction_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-13036162",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19-95a316",
+      "buyer_name": "Test Buyer",
+      "amount_inr": 49,
+      "status": "success",
+      "timestamp": "2026-11-22T06:50:53.340690",
+      "entitlement_id": "ENT-LOC-FA64686E"
     }
   ]
 }
