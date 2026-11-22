@@ -45,6 +45,7 @@ import { formatINR } from '../utils/geo';
 import { PickupLocation } from '../types';
 import { SellerPickupLocationPicker } from '../components/SellerPickupLocationPicker';
 import { SmartRCVerificationModal } from '../components/SmartRCVerificationModal';
+import { Vehicle3DViewer } from '../components/3d/Vehicle3DViewer';
 import { 
   getVehicleCatalog,
   uploadVerificationDocument, 
@@ -1551,6 +1552,43 @@ export const SellBikePage: React.FC = () => {
                   <span className="text-[#85857E] block text-[10px]">Asking Price</span>
                   <span className="font-bold text-[#242622]">{formatINR(askingPrice)}</span>
                 </div>
+              </div>
+            </div>
+
+            {/* Section A.2: 3D Digital Twin Platform Representation Preview */}
+            <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#060C0A] text-white space-y-3 shadow-xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-emerald-400" />
+                  <h4 className="font-bold text-sm text-white">3D Digital Twin Representation Preview</h4>
+                </div>
+                <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 bg-emerald-950/80 px-2 py-0.5 border border-emerald-800">
+                  Architectural Twin
+                </span>
+              </div>
+              <p className="text-xs text-[#A4AD98]">
+                Every verified listing on GEAR UP is automatically linked to its interactive 3D digital twin based on chassis platform specifications ({brand} {model}).
+              </p>
+              <div className="relative w-full h-[280px] rounded-none overflow-hidden border border-white/10 bg-black/50">
+                <Vehicle3DViewer
+                  vehicle={{
+                    id: listingId,
+                    brand,
+                    model,
+                    variant,
+                    category,
+                    year,
+                    km,
+                    price: askingPrice,
+                    title: `${year} ${brand} ${model}`,
+                    primaryImage: uploadedPhotos['front']?.url || ''
+                  } as any}
+                  height="280px"
+                  showControls={true}
+                  enableColorCustomization={false}
+                  enableComponentInspection={false}
+                  inspectionOverlay={false}
+                />
               </div>
             </div>
 

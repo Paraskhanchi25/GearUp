@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getLiveComparisonListings, compareLiveListings } from '../services/aiApi';
+import { Vehicle3DViewer } from '../components/3d/Vehicle3DViewer';
 
 export const ComparePage: React.FC = () => {
   const [availableListings, setAvailableListings] = useState<any[]>([]);
@@ -41,6 +42,7 @@ export const ComparePage: React.FC = () => {
 
   // Contact Seller Drawer / Modal State
   const [contactVehicle, setContactVehicle] = useState<any | null>(null);
+  const [show3DArena, setShow3DArena] = useState<boolean>(false);
 
   // Load active selling listings from backend or seed fallback
   const fetchListings = async () => {
@@ -255,11 +257,25 @@ export const ComparePage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 self-start md:self-center">
+          <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
             <span className="px-3 py-1.5 rounded-none bg-white border border-[#E9E3D8] text-xs font-bold text-[#242622] flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>{availableListings.length} Live Listings</span>
             </span>
+
+            <button
+              type="button"
+              onClick={() => setShow3DArena(!show3DArena)}
+              className={`px-4 py-2 rounded-none border text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
+                show3DArena
+                  ? 'bg-amber-600 text-white border-amber-600'
+                  : 'bg-white hover:bg-[#E9E3D8] text-[#242622] border-[#E9E3D8]'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span>{show3DArena ? 'Exit 3D Arena' : '3D Twin Arena'}</span>
+            </button>
+
             {selectedIds.length < 4 && (
               <button
                 type="button"
@@ -272,6 +288,64 @@ export const ComparePage: React.FC = () => {
             )}
           </div>
         </div>
+
+        {/* 3D Twin Comparison Arena (when activated) */}
+        {show3DArena && (
+          <div className="p-6 rounded-none border border-[#E9E3D8] bg-[#060C0A] text-white space-y-4 shadow-2xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-white/10">
+              <div>
+                <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Interactive Head-to-Head 3D Visualization</span>
+                </span>
+                <h3 className="font-heading font-extrabold text-xl text-white">
+                  3D Digital Twin Arena
+                </h3>
+              </div>
+              <p className="text-xs text-[#A4AD98]">
+                Examine aerodynamic ergonomics, dimensions and assembly side-by-side.
+              </p>
+            </div>
+
+            <div className={`grid gap-4 ${
+              comparedVehicles.length === 2 ? 'grid-cols-1 md:grid-cols-2' :
+              comparedVehicles.length === 3 ? 'grid-cols-1 md:grid-cols-3' :
+              'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+            }`}>
+              {comparedVehicles.map((bike, idx) => (
+                <div key={bike.id} className="border border-white/15 bg-[#091411] flex flex-col overflow-hidden">
+                  <div className="p-3 border-b border-white/10 bg-black/40 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-mono text-emerald-400">SLOT {idx + 1}</span>
+                      <h4 className="font-bold text-xs text-white line-clamp-1">{bike.title}</h4>
+                    </div>
+                    <span className="font-mono text-xs font-bold text-emerald-300">{formatINR(bike.price)}</span>
+                  </div>
+                  <div className="relative w-full h-[320px] bg-[#060C0A]">
+                    <Vehicle3DViewer
+                      vehicle={bike as any}
+                      height="320px"
+                      showControls={true}
+                      enableColorCustomization={false}
+                      enableComponentInspection={true}
+                      inspectionOverlay={false}
+                    />
+                  </div>
+                  <div className="p-2 border-t border-white/10 bg-black/20 flex items-center justify-between text-[11px] text-[#A4AD98]">
+                    <span>{bike.year} • {bike.km.toLocaleString('en-IN')} km</span>
+                    <Link
+                      to={`/bike/${bike.id}`}
+                      className="text-white hover:text-emerald-300 font-semibold underline underline-offset-2 flex items-center gap-1"
+                    >
+                      <span>View Listing</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Comparison Vehicle Cards Row */}
         <div className={`grid gap-4 sm:gap-6 ${

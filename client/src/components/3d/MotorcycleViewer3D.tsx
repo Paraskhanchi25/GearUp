@@ -209,7 +209,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     setLoadError(null);
 
     const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+    dracoLoader.setDecoderPath('/draco/gltf/');
     const loader = new GLTFLoader();
     loader.setDRACOLoader(dracoLoader);
 
@@ -366,8 +366,24 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     return () => {
       window.removeEventListener('resize', handleResize);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (modelRef.current) {
+        modelRef.current.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            mesh.geometry?.dispose();
+            if (Array.isArray(mesh.material)) {
+              mesh.material.forEach(m => m.dispose());
+            } else if (mesh.material) {
+              mesh.material.dispose();
+            }
+          }
+        });
+      }
       if (rendererRef.current) {
         rendererRef.current.dispose();
+        if (rendererRef.current.domElement && rendererRef.current.domElement.parentNode) {
+          rendererRef.current.domElement.parentNode.removeChild(rendererRef.current.domElement);
+        }
       }
       dracoLoader.dispose();
     };
