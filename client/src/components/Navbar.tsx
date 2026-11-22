@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   MapPin, 
@@ -29,6 +29,26 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
+  // On the homepage, adapt navbar styling to dark cinematic hero while scrolled over it
+  const [isDark, setIsDark] = useState(() => location.pathname === '/');
+
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setIsDark(false);
+      return;
+    }
+
+    const handleScroll = () => {
+      // Exploded hero section is 280vh, so until 2.2 viewport heights it sits over dark canvas
+      const isOverHero = window.scrollY < window.innerHeight * 2.2;
+      setIsDark(isOverHero);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [location.pathname]);
+
   const navLinks = [
     { num: '01', label: 'Explore', path: '/explore' },
     { num: '02', label: 'Valuation', path: '/price-estimator' },
@@ -40,7 +60,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E9E3D8] shadow-[0_4px_25px_-5px_rgba(36,38,34,0.08)] transition-all duration-300">
+    <header className={`fixed top-0 inset-x-0 z-40 backdrop-blur-md transition-colors duration-300 ${
+      isDark 
+        ? 'bg-[#1E201E]/90 border-b border-white/10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.6)]' 
+        : 'bg-white/95 border-b border-[#E9E3D8] shadow-[0_4px_25px_-5px_rgba(36,38,34,0.08)]'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4 h-16 sm:h-20 w-full">
           
@@ -54,33 +78,43 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="font-heading font-extrabold text-xs sm:text-sm tracking-wider">GU</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-heading text-lg sm:text-2xl font-extrabold tracking-tight text-[#242622] group-hover:text-[#35483C] transition-colors leading-none sm:leading-tight">
+                <span className={`font-heading text-lg sm:text-2xl font-extrabold tracking-tight transition-colors leading-none sm:leading-tight ${
+                  isDark ? 'text-white group-hover:text-[#A4AD98]' : 'text-[#242622] group-hover:text-[#35483C]'
+                }`}>
                   GEAR UP
                 </span>
-                <span className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-[#85857E] font-mono hidden xs:block">
+                <span className={`text-[8px] sm:text-[9px] uppercase tracking-[0.2em] font-mono hidden xs:block ${
+                  isDark ? 'text-[#A4AD98]' : 'text-[#85857E]'
+                }`}>
                   Automotive // Telemetry
                 </span>
               </div>
             </Link>
 
             {/* Hub Location Selector Pill */}
-            <div className="relative shrink-0 pl-1 sm:pl-2 border-l border-[#E9E3D8]">
+            <div className={`relative shrink-0 pl-1 sm:pl-2 border-l ${isDark ? 'border-white/10' : 'border-[#E9E3D8]'}`}>
               <button
                 type="button"
                 onClick={() => setLocationDropdownOpen(!locationDropdownOpen)}
-                className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 min-h-[38px] sm:min-h-[40px] text-[10px] sm:text-xs font-mono uppercase tracking-wider text-[#242622] bg-white hover:bg-[#F7F5EF] border border-[#E9E3D8] transition-colors active:scale-95 shrink-0"
+                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 min-h-[38px] sm:min-h-[40px] text-[10px] sm:text-xs font-mono uppercase tracking-wider transition-colors active:scale-95 shrink-0 border ${
+                  isDark
+                    ? 'text-white bg-white/10 hover:bg-white/20 border-white/20'
+                    : 'text-[#242622] bg-white hover:bg-[#F7F5EF] border-[#E9E3D8]'
+                }`}
                 title="Select Regional Hub"
               >
-                <MapPin className="w-3.5 h-3.5 text-[#35483C] shrink-0" />
-                <span className="max-w-[80px] xs:max-w-[100px] sm:max-w-[120px] truncate font-bold text-[#242622]">
+                <MapPin className={`w-3.5 h-3.5 shrink-0 ${isDark ? 'text-[#A4AD98]' : 'text-[#35483C]'}`} />
+                <span className={`max-w-[80px] xs:max-w-[100px] sm:max-w-[120px] truncate font-bold ${
+                  isDark ? 'text-white' : 'text-[#242622]'
+                }`}>
                   {currentLocation.city}
                 </span>
-                <ChevronDown className="w-3 h-3 text-[#85857E] shrink-0" />
+                <ChevronDown className={`w-3 h-3 shrink-0 ${isDark ? 'text-white/60' : 'text-[#85857E]'}`} />
               </button>
 
               {/* Hub Dropdown Menu */}
               {locationDropdownOpen && (
-                <div className="absolute left-0 mt-2 w-72 sm:w-80 bg-white border border-[#E9E3D8] p-3 shadow-2xl z-50 animate-fade-in text-xs max-w-[calc(100vw-1.5rem)]">
+                <div className="absolute left-0 mt-2 w-72 sm:w-80 bg-white border border-[#E9E3D8] p-3 shadow-2xl z-50 animate-fade-in text-xs max-w-[calc(100vw-1.5rem)] text-[#242622]">
                   <div className="px-2 py-1.5 text-[10px] font-mono font-bold text-[#85857E] uppercase tracking-[0.2em] border-b border-[#E9E3D8]">
                     Select Regional Hub
                   </div>
@@ -137,14 +171,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   to={item.path}
                   className={`group relative text-[11px] 2xl:text-xs font-mono uppercase tracking-[0.12em] 2xl:tracking-[0.16em] transition-all py-1.5 whitespace-nowrap shrink-0 ${
                     isActive
-                      ? 'text-[#242622] font-bold'
-                      : 'text-[#85857E] hover:text-[#242622]'
+                      ? isDark ? 'text-white font-bold' : 'text-[#242622] font-bold'
+                      : isDark ? 'text-white/70 hover:text-white' : 'text-[#85857E] hover:text-[#242622]'
                   }`}
                 >
                   <span className="text-[9px] text-[#A4AD98] mr-1 hidden 2xl:inline">{item.num} /</span>
                   <span>{item.label}</span>
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#35483C]" />
+                    <span className={`absolute bottom-0 left-0 right-0 h-[2px] ${isDark ? 'bg-[#A4AD98]' : 'bg-[#35483C]'}`} />
                   )}
                 </Link>
               );
@@ -168,7 +202,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Dashboard / Account Button */}
             <Link
               to="/dashboard"
-              className="w-10 h-10 sm:w-10 sm:h-10 flex items-center justify-center text-[#242622] hover:bg-[#F7F5EF] bg-white border border-[#E9E3D8] transition-colors active:scale-95 shrink-0 shadow-sm"
+              className={`w-10 h-10 sm:w-10 sm:h-10 flex items-center justify-center transition-colors active:scale-95 shrink-0 shadow-sm border ${
+                isDark
+                  ? 'text-white bg-white/10 hover:bg-white/20 border-white/20'
+                  : 'text-[#242622] hover:bg-[#F7F5EF] bg-white border-[#E9E3D8]'
+              }`}
               title="Dashboard"
               aria-label="User Dashboard"
             >
@@ -178,7 +216,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Mobile / Tablet Menu Trigger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-10 h-10 flex items-center justify-center text-[#242622] border border-[#E9E3D8] hover:bg-[#F7F5EF] bg-white transition-colors active:scale-95 shrink-0 shadow-sm"
+              className={`lg:hidden w-10 h-10 flex items-center justify-center transition-colors active:scale-95 shrink-0 shadow-sm border ${
+                isDark
+                  ? 'text-white border-white/20 hover:bg-white/20 bg-white/10'
+                  : 'text-[#242622] border-[#E9E3D8] hover:bg-[#F7F5EF] bg-white'
+              }`}
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -189,12 +231,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile Navigation Drawer with Glassmorphism */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-[#E9E3D8] py-4 space-y-1.5 bg-white/95 backdrop-blur-xl animate-fade-in shadow-xl -mx-4 px-4 sm:-mx-6 sm:px-6">
-            <div className="px-1 pb-2 border-b border-[#E9E3D8] flex items-center justify-between">
+          <div className={`lg:hidden border-t py-4 space-y-1.5 animate-fade-in shadow-xl -mx-4 px-4 sm:-mx-6 sm:px-6 ${
+            isDark ? 'border-white/10 bg-[#1E201E]/95 backdrop-blur-xl text-white' : 'border-[#E9E3D8] bg-white/95 backdrop-blur-xl text-[#242622]'
+          }`}>
+            <div className={`px-1 pb-2 border-b flex items-center justify-between ${
+              isDark ? 'border-white/10' : 'border-[#E9E3D8]'
+            }`}>
               <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#85857E]">
                 GEAR UP Destinations
               </span>
-              <span className="text-[10px] font-mono text-[#35483C] font-semibold">Active Fleet</span>
+              <span className="text-[10px] font-mono text-[#A4AD98] font-semibold">Active Fleet</span>
             </div>
 
             {navLinks.map((item) => (
@@ -202,14 +248,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between px-3 py-3 text-xs font-mono uppercase tracking-wider text-[#242622] hover:bg-[#F7F5EF] border border-transparent hover:border-[#E9E3D8] transition-all min-h-[44px] active:bg-[#E9E3D8]/40"
+                className={`flex items-center justify-between px-3 py-3 text-xs font-mono uppercase tracking-wider border border-transparent transition-all min-h-[44px] ${
+                  isDark
+                    ? 'text-white hover:bg-white/10 hover:border-white/10 active:bg-white/20'
+                    : 'text-[#242622] hover:bg-[#F7F5EF] hover:border-[#E9E3D8] active:bg-[#E9E3D8]/40'
+                }`}
               >
                 <span>{item.num} // {item.label}</span>
-                <span className="text-[#85857E]">→</span>
+                <span className={isDark ? 'text-[#A4AD98]' : 'text-[#85857E]'}>→</span>
               </Link>
             ))}
 
-            <div className="pt-2 border-t border-[#E9E3D8] flex gap-2">
+            <div className={`pt-2 border-t flex gap-2 ${isDark ? 'border-white/10' : 'border-[#E9E3D8]'}`}>
               <Link
                 to="/ai-buddy"
                 onClick={() => setMobileMenuOpen(false)}
@@ -220,7 +270,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Link
                 to="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 py-2.5 px-3 bg-white text-[#242622] text-xs font-mono uppercase text-center font-bold border border-[#E9E3D8] min-h-[44px] flex items-center justify-center hover:bg-[#F7F5EF]"
+                className={`flex-1 py-2.5 px-3 text-xs font-mono uppercase text-center font-bold border min-h-[44px] flex items-center justify-center ${
+                  isDark
+                    ? 'bg-white/10 text-white border-white/20 hover:bg-white/20'
+                    : 'bg-white text-[#242622] border-[#E9E3D8] hover:bg-[#F7F5EF]'
+                }`}
               >
                 My Account
               </Link>

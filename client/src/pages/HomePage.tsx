@@ -61,7 +61,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   };
 
   return (
-    <div ref={pageRef} className="bg-[#F7F5EF] text-[#242622] selection:bg-[#35483C] selection:text-white overflow-x-hidden">
+    <div ref={pageRef} className="relative w-full bg-[#F7F5EF] text-[#242622] selection:bg-[#35483C] selection:text-white">
       
       {/* =========================================================================
           SECTION 1: FULL-SCREEN SCROLL-CONTROLLED 3D EXPLODED MOTORCYCLE (100VW x 100VH)

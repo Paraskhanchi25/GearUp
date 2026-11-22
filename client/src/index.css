@@ -14,76 +14,15 @@
     --color-border: #E9E3D8;
   }
 
-  html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-    width: 100%;
-    -webkit-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
-  }
-
   body {
     background-color: #F7F5EF;
     color: #242622;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    overflow-x: hidden;
-    width: 100%;
-    min-height: 100%;
   }
 
   h1, h2, h3, h4, .font-heading {
     font-family: 'Syne', 'Space Grotesk', sans-serif;
     letter-spacing: -0.02em;
-  }
-}
-
-/* Clearly Defined Buttons (Standardized across the Application) */
-@layer components {
-  .btn-base {
-    @apply inline-flex items-center justify-center font-mono uppercase text-xs tracking-wider font-bold transition-all duration-200 select-none;
-    min-height: 44px;
-    min-width: 44px;
-    border-width: 1.5px;
-    border-style: solid;
-  }
-
-  .btn-primary {
-    @apply btn-base bg-[#35483C] text-white border-[#35483C] shadow-sm hover:bg-[#242622] hover:border-[#242622] active:scale-[0.98];
-  }
-
-  .btn-secondary {
-    @apply btn-base bg-white text-[#242622] border-[#E9E3D8] hover:bg-[#F7F5EF] hover:border-[#35483C] active:scale-[0.98];
-  }
-
-  .btn-outline {
-    @apply btn-base bg-transparent text-[#35483C] border-[#35483C] hover:bg-[#35483C] hover:text-white active:scale-[0.98];
-  }
-
-  .btn-destructive {
-    @apply btn-base bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700 active:scale-[0.98];
-  }
-
-  /* Glassmorphism Design Tokens */
-  .glass-surface {
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(233, 227, 216, 0.85);
-  }
-
-  .glass-card {
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid #E9E3D8;
-    box-shadow: 0 4px 20px -2px rgba(36, 38, 34, 0.06);
-  }
-
-  .glass-pill {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid #E9E3D8;
   }
 }
 
