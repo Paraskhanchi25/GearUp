@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { FloatingBikeBuddy } from './components/FloatingBikeBuddy';
@@ -18,7 +18,6 @@ import { BikeDoctorPage } from './pages/BikeDoctorPage';
 import { ComparePage } from './pages/ComparePage';
 import { PriceEstimatorPage } from './pages/PriceEstimatorPage';
 import { DashboardPage } from './pages/Dashboard';
-import { HowItWorksPage } from './pages/HowItWorksPage';
 import { TrustPage } from './pages/TrustPage';
 import { AuthPage } from './pages/AuthPage';
 import { AdminPage } from './pages/AdminPage';
@@ -122,7 +121,7 @@ export const App: React.FC = () => {
             <Route path="/dashboard/seller" element={<DashboardPage />} />
             <Route path="/dashboard/dealer" element={<DashboardPage />} />
             <Route path="/admin" element={<AdminPage />} />
-            <Route path="/how-it-works" element={<HowItWorksPage />} />
+            <Route path="/how-it-works" element={<Navigate to="/trust" replace />} />
             <Route path="/trust" element={<TrustPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/signup" element={<AuthPage />} />

@@ -59,7 +59,7 @@ export const Footer: React.FC = () => {
             <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Trust & Contact</h4>
             <ul className="space-y-2.5 text-sm">
               <li><Link to="/trust" className="hover:text-forest-300 transition-colors">120-Point Inspection</Link></li>
-              <li><Link to="/how-it-works" className="hover:text-forest-300 transition-colors">RC Ownership Transfer</Link></li>
+              <li><Link to="/trust" className="hover:text-forest-300 transition-colors">RC Ownership Transfer</Link></li>
               <li className="flex items-center gap-2 pt-2">
                 <Phone className="w-4 h-4 text-forest-400" />
                 <span className="text-slate-200 font-medium">+91 1800-432-787</span>

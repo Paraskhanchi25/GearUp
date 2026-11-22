@@ -146,14 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               Compare
             </Link>
 
-            <Link
-              to="/how-it-works"
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive('/how-it-works') ? 'text-forest-300' : 'text-slate-300 hover:text-white'
-              }`}
-            >
-              How It Works
-            </Link>
+
           </nav>
 
           {/* Right Action Bar: Location & Auth */}
