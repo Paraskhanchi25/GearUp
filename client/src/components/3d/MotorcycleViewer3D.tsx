@@ -208,7 +208,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
     loader.load(
       modelUrl,
-      (gltf) => {
+      (gltf: any) => {
         const root = gltf.scene;
         modelRef.current = root;
 
@@ -230,7 +230,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         const meshMap = new Map();
         const clickable: THREE.Mesh[] = [];
 
-        root.traverse((child) => {
+        root.traverse((child: any) => {
           if ((child as THREE.Mesh).isMesh) {
             const mesh = child as THREE.Mesh;
             mesh.castShadow = true;
@@ -268,7 +268,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         setIsLoading(false);
         setLoadingProgress(100);
       },
-      (xhr) => {
+      (xhr: any) => {
         if (xhr.total > 0) {
           const pct = Math.round((xhr.loaded / xhr.total) * 100);
           setLoadingProgress(Math.min(pct, 98));
@@ -276,7 +276,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           setLoadingProgress((prev) => Math.min(prev + 12, 90));
         }
       },
-      (err) => {
+      (err: any) => {
         console.error('Error loading 3D motorcycle model:', err);
         setLoadError('Failed to load 3D motorcycle asset. Falling back to high-res inspection viewer.');
         setIsLoading(false);

@@ -605,3 +605,131 @@ export async function getDocumentAnalysisReport(listingId: string, docType: stri
   return null;
 }
 
+// ==============================================================================
+// 8 Required Vehicle Photos API
+// ==============================================================================
+
+export async function uploadVehiclePhoto(formData: FormData) {
+  const res = await fetch(`${API_BASE}/verification/upload-photo`, {
+    method: 'POST',
+    body: formData,
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Photo upload failed.');
+  }
+  return data;
+}
+
+export async function getVehiclePhotos(listingId: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/photos/${listingId}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Get vehicle photos error:', err);
+  }
+  return null;
+}
+
+export async function deleteVehiclePhoto(listingId: string, slot: string) {
+  try {
+    const res = await fetch(`${API_BASE}/verification/photo/${listingId}/${slot}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Delete vehicle photo error:', err);
+  }
+  return null;
+}
+
+// ==============================================================================
+// Paid Pickup Location & Ride Access Monetization API
+// ==============================================================================
+
+export async function setSellerLocationConfig(payload: any) {
+  try {
+    const res = await fetch(`${API_BASE}/location/seller-config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Set seller location error:', err);
+  }
+  return null;
+}
+
+export async function getLocationAccess(listingId: string, buyerId?: string) {
+  try {
+    const url = buyerId
+      ? `${API_BASE}/location/access/${listingId}?buyer_id=${encodeURIComponent(buyerId)}`
+      : `${API_BASE}/location/access/${listingId}`;
+    const res = await fetch(url);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Get location access error:', err);
+  }
+  return null;
+}
+
+export async function createLocationOrder(payload: { listing_id: string; buyer_id: string; buyer_name?: string; buyer_email?: string; buyer_phone?: string }) {
+  const res = await fetch(`${API_BASE}/location/create-order`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Could not create location order.');
+  }
+  return data;
+}
+
+export async function verifyLocationPayment(payload: { listing_id: string; buyer_id: string; order_id: string; payment_id: string; signature: string; buyer_name?: string }) {
+  const res = await fetch(`${API_BASE}/location/verify-payment`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.detail?.message || data.detail || 'Payment verification failed.');
+  }
+  return data;
+}
+
+export async function getBuyerPurchases(buyerId: string) {
+  try {
+    const res = await fetch(`${API_BASE}/location/buyer-purchases/${encodeURIComponent(buyerId)}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Get buyer purchases error:', err);
+  }
+  return null;
+}
+
+export async function getAdminRevenueStats() {
+  try {
+    const res = await fetch(`${API_BASE}/location/admin-revenue`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Get admin revenue error:', err);
+  }
+  return null;
+}
+
+

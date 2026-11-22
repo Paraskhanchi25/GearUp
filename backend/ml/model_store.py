@@ -514,8 +514,9 @@ class EnhancedPriceEstimatorModel:
 
         # 12. Factor: Accident History
         if "major" in accident_history:
-            acc_penalty = round(base_val * 0.25 / 500) * 500
+            acc_penalty = round(base_val * 0.12 / 500) * 500
             net_adjustments_inr -= acc_penalty
+            paperwork_adjustments_inr -= acc_penalty
             factors_log.append({
                 "factor": "Major Accident / Structural Repair",
                 "impact": f"-₹{int(acc_penalty):,}",

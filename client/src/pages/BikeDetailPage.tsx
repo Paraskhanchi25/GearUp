@@ -27,17 +27,29 @@ import {
   Box,
   Layers,
   RotateCcw,
-  Maximize2
+  Maximize2,
+  Navigation,
+  Compass,
+  CreditCard,
+  Camera,
+  CheckCircle,
+  Clock,
+  ShieldAlert
 } from 'lucide-react';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR, formatINRLakh } from '../utils/geo';
 import { VehicleListing } from '../types';
 import { BookTestRideModal } from '../components/BookTestRideModal';
 import { AudioPlayerModal } from '../components/AudioPlayerModal';
-import { getPublicTrustSummary } from '../services/aiApi';
 import { MotorcycleViewer3D } from '../components/3d/MotorcycleViewer3D';
 import { ComponentInfoDrawer } from '../components/3d/ComponentInfoDrawer';
 import { MOTORCYCLE_COMPONENTS } from '../components/3d/inspectionComponentData';
+import { 
+  getPublicTrustSummary,
+  getLocationAccess,
+  createLocationOrder,
+  verifyLocationPayment
+} from '../services/aiApi';
 
 interface BikeDetailPageProps {
   savedIds: string[];
@@ -48,7 +60,17 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const vehicle = SEED_LISTINGS.find((b) => b.id === id) || SEED_LISTINGS[0];
+  // Support custom published listings alongside seed listings
+  const customListings: VehicleListing[] = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('gearup_custom_listings') || '[]');
+    } catch {
+      return [];
+    }
+  })();
+  const allListings = [...customListings, ...SEED_LISTINGS];
+  const vehicle = allListings.find((b) => b.id === id) || SEED_LISTINGS[0];
+
   const [activeImage, setActiveImage] = useState<string>(vehicle.primaryImage);
   const [viewMode, setViewMode] = useState<'3d' | 'gallery'>('3d');
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
@@ -63,6 +85,36 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
       ? '/models/scooter.glb'
       : '/models/motorcycle.glb';
 
+  // Paid Pickup Location & Ride Access State
+  const [currentBuyerId] = useState<string>(() => {
+    const b = localStorage.getItem('gearup_buyer_id');
+    if (b) return b;
+    const newB = 'buyer-' + Math.floor(100 + Math.random() * 900);
+    localStorage.setItem('gearup_buyer_id', newB);
+    return newB;
+  });
+  const [locationAccess, setLocationAccess] = useState<any>(null);
+  const [isLocationLoading, setIsLocationLoading] = useState(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [locationOrder, setLocationOrder] = useState<any>(null);
+  const [unlockSuccessToast, setUnlockSuccessToast] = useState(false);
+
+  // Load public trust report & location access entitlement
+  const refreshLocationAccess = async () => {
+    try {
+      setIsLocationLoading(true);
+      const loc = await getLocationAccess(vehicle.id, currentBuyerId);
+      if (loc) {
+        setLocationAccess(loc);
+      }
+    } catch (err) {
+      console.warn('Error loading location access:', err);
+    } finally {
+      setIsLocationLoading(false);
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     getPublicTrustSummary(vehicle.id).then(res => {
@@ -70,8 +122,9 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
         setPublicTrust(res);
       }
     });
+    refreshLocationAccess();
     return () => { isMounted = false; };
-  }, [vehicle.id]);
+  }, [vehicle.id, currentBuyerId]);
 
   const isSaved = savedIds.includes(vehicle.id);
   const similarBikes = SEED_LISTINGS.filter(b => b.category === vehicle.category && b.id !== vehicle.id).slice(0, 3);
@@ -204,12 +257,22 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
             ) : (
               <>
                 {/* Main Stage Image */}
-                <div className="relative aspect-[16/10] rounded-3xl overflow-hidden bg-forest-950 border border-forest-800 shadow-2xl">
-                  <img
-                    src={activeImage}
-                    alt={vehicle.title}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="relative aspect-[16/10] rounded-3xl overflow-hidden bg-forest-950 border border-forest-800 shadow-2xl flex items-center justify-center">
+                  {activeImage ? (
+                    <img
+                      src={activeImage}
+                      alt={vehicle.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-center p-8 space-y-2">
+                      <Camera className="w-12 h-12 text-slate-600 mb-1" />
+                      <p className="font-heading font-bold text-base text-slate-300">No vehicle photos uploaded yet.</p>
+                      <p className="text-xs text-slate-500 max-w-xs">
+                        The seller has not uploaded the required 8 vehicle photographs for this listing.
+                      </p>
+                    </div>
+                  )}
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="px-3 py-1 rounded-full text-xs font-bold bg-black/70 backdrop-blur-md text-white border border-white/10 uppercase tracking-wider">
                       {vehicle.category}
@@ -446,37 +509,186 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               </p>
             </div>
 
-            {/* Vehicle Pickup Locality & Privacy Protection (Phase 4 & 5 Requirement) */}
-            <div className="p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-forest-400" />
+            {/* PAID PICKUP / MEETUP LOCATION & RIDE ACCESS (REVENUE FEATURE) */}
+            <div className={`p-6 rounded-3xl border transition-all ${
+              locationAccess?.is_unlocked
+                ? 'bg-[#10221B] border-emerald-500/70 shadow-glow'
+                : 'bg-[#101D19] border-gold/40 shadow-xl'
+            }`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${
+                    locationAccess?.is_unlocked ? 'bg-emerald-950 text-emerald-400' : 'bg-gold/20 text-gold-light'
+                  }`}>
+                    <MapPin className="w-5 h-5" />
+                  </div>
                   <div>
-                    <h3 className="font-heading font-bold text-base text-white">Pickup & Viewing Location</h3>
-                    <p className="text-xs text-slate-400">Available for doorstep or partner hub test rides</p>
+                    <h3 className="font-heading font-bold text-base text-white">
+                      {locationAccess?.is_unlocked ? 'Exact Meetup & Test Ride Location' : 'Unlock Pickup & Ride Location'}
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      {locationAccess?.is_unlocked
+                        ? 'Verified inspection address & navigation coordinates'
+                        : 'Exact meetup address and inspection pin protected by GEAR UP gate'}
+                    </p>
                   </div>
                 </div>
-                <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-forest-950 text-forest-200 border border-forest-700">
-                  {vehicle.pickupLocality || vehicle.area}, {vehicle.city}
+
+                <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                  locationAccess?.is_unlocked
+                    ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50'
+                    : 'bg-gold/20 text-gold border border-gold/40'
+                }`}>
+                  {locationAccess?.is_unlocked ? 'UNLOCKED • 7 DAYS ACTIVE' : `₹${locationAccess?.access_fee_inr || 49} ACCESS FEE`}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Public Locality:</span>
-                  <span className="font-bold text-white">{vehicle.pickupLocality || vehicle.area}</span>
+              {locationAccess?.is_unlocked ? (
+                /* UNLOCKED VIEW */
+                <div className="space-y-4">
+                  <div className="p-4 rounded-2xl bg-forest-950/90 border border-emerald-500/40 space-y-2.5 text-xs">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Exact Meetup Address</span>
+                        <p className="font-bold text-white text-sm mt-0.5">{locationAccess.exact_address}</p>
+                      </div>
+                      <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 text-[10px] font-bold border border-emerald-700/50 flex-shrink-0">
+                        {locationAccess.days_remaining} Days Left
+                      </span>
+                    </div>
+
+                    {locationAccess.landmark && (
+                      <div className="flex items-center gap-1.5 text-slate-300">
+                        <Compass className="w-3.5 h-3.5 text-forest-400 flex-shrink-0" />
+                        <span>Landmark: <strong>{locationAccess.landmark}</strong></span>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-forest-900 text-[11px]">
+                      <div>
+                        <span className="text-slate-400">Meetup Spot Type:</span>
+                        <p className="font-semibold text-white">{locationAccess.meetup_spot_type || 'Safe Public Hub'}</p>
+                      </div>
+                      <div>
+                        <span className="text-slate-400">Test Ride Policy:</span>
+                        <p className={`font-semibold ${locationAccess.test_ride_available ? 'text-emerald-400' : 'text-slate-300'}`}>
+                          {locationAccess.test_ride_available ? '✓ Test Rides Permitted with DL' : 'Inspection Only'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {locationAccess.pickup_instructions && (
+                      <div className="pt-2 border-t border-forest-900/60 text-[11px]">
+                        <span className="text-slate-400">Seller Instructions:</span>
+                        <p className="text-slate-200 italic mt-0.5">&ldquo;{locationAccess.pickup_instructions}&rdquo;</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Directions Button */}
+                  <div className="flex items-center gap-3">
+                    <a
+                      href={locationAccess.directions_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-3 px-4 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-glow transition-all"
+                    >
+                      <Navigation className="w-4 h-4" />
+                      <span>Open in Google Maps</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+
+                  {/* Safety reminder */}
+                  <div className="p-3 rounded-xl bg-[#08120F] border border-forest-900/80 text-[10px] text-slate-400 flex items-start gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <p>
+                      <strong>Safety Reminder:</strong> Meet in daylight at the agreed public hub. Inspect vehicle documents and carry an original driving licence and helmet before initiating a test ride.
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Distance from Selected Center:</span>
-                  <span className="font-bold text-forest-300">{vehicle.distanceKm !== undefined ? `${vehicle.distanceKm} km` : 'Near City Center'}</span>
+              ) : (
+                /* LOCKED APPROXIMATE VIEW */
+                <div className="space-y-4">
+                  <div className="p-4 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-2 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Approximate Viewing Area:</span>
+                      <span className="font-bold text-white">
+                        {locationAccess?.approximate_locality || vehicle.area}, {locationAccess?.approximate_city || vehicle.city}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Test Ride Option:</span>
+                      <span className={`font-semibold ${locationAccess?.test_ride_available ? 'text-emerald-400' : 'text-slate-300'}`}>
+                        {locationAccess?.test_ride_available ? 'Offered by Seller' : 'Inspection Only'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-forest-900/60">
+                      <span className="text-slate-400">Privacy Status:</span>
+                      <span className="text-amber-300 font-semibold flex items-center gap-1 text-[11px]">
+                        <Lock className="w-3.5 h-3.5" /> Exact address revealed upon verified unlock
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Feature explanation */}
+                  <div className="space-y-1.5 text-xs text-slate-300">
+                    <p className="font-semibold text-white">Want to inspect or test ride this vehicle?</p>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      Unlock the seller&apos;s verified meetup location and pickup schedule to arrange your in-person visit.
+                    </p>
+                    <ul className="text-[11px] text-slate-300 space-y-1 pt-1">
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        <span>Exact street address, landmark & GPS coordinates</span>
+                      </li>
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        <span>Seller inspection instructions & test ride schedule</span>
+                      </li>
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        <span>Valid for 7 full days from purchase</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Payment Button */}
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const ord = await createLocationOrder({
+                            listing_id: vehicle.id,
+                            buyer_id: currentBuyerId,
+                            buyer_name: 'Verified Buyer',
+                            buyer_email: 'buyer@gearup.in'
+                          });
+                          if (ord.status === 'already_unlocked') {
+                            alert('You already possess active access to this seller location!');
+                            await refreshLocationAccess();
+                            return;
+                          }
+                          setLocationOrder(ord);
+                          setPaymentModalOpen(true);
+                        } catch (err: any) {
+                          alert('Error creating location order: ' + err.message);
+                        }
+                      }}
+                      className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-forest-500 hover:from-emerald-500 hover:to-forest-400 text-white font-heading font-extrabold text-xs uppercase tracking-wider transition-all shadow-glow flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Lock className="w-4 h-4 text-emerald-200" />
+                      <span>Unlock Location — ₹{locationAccess?.access_fee_inr || 49}</span>
+                    </button>
+                    <p className="text-[10px] text-slate-500 text-center mt-2 italic">
+                      * One-time ₹49 fee is for GEAR UP&apos;s verified location-access service, not a payment for the vehicle.
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between pt-1 border-t border-forest-900/60">
-                  <span className="text-slate-400">Location Privacy Policy:</span>
-                  <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5" /> Exact address revealed upon test ride booking
-                  </span>
-                </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -834,6 +1046,126 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
         onClose={() => setSelectedComponentId(null)}
         onSelectComponent={(compId) => setSelectedComponentId(compId)}
       />
+
+      {/* Paid Location Unlock Checkout Modal */}
+      {paymentModalOpen && locationOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-md rounded-3xl bg-[#0E1B17] border border-emerald-500/60 p-6 sm:p-8 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-forest-900 pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-950 text-emerald-400 flex items-center justify-center">
+                  <CreditCard className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-extrabold text-base text-white">Location Access Checkout</h3>
+                  <p className="text-[10px] text-slate-400">Order: {locationOrder.order_id}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setPaymentModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-forest-950 border border-forest-800 flex items-center justify-center text-slate-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Order Summary */}
+            <div className="p-4 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-slate-400">Target Vehicle:</span>
+                <span className="font-bold text-white">{vehicle.year} {vehicle.brand} {vehicle.model}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Service:</span>
+                <span className="font-semibold text-emerald-400">Exact Pickup Pin & Test Ride Details</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Access Duration:</span>
+                <span className="font-semibold text-white">7 Full Days Access</span>
+              </div>
+              <div className="flex justify-between pt-2 border-t border-forest-900 font-bold text-sm">
+                <span className="text-white">Amount Payable:</span>
+                <span className="text-emerald-400 font-heading font-extrabold text-base">₹{locationOrder.amount_inr || 49}</span>
+              </div>
+            </div>
+
+            {/* Test/Sandbox Mode Notice */}
+            <div className="p-3 rounded-xl bg-forest-950/50 border border-forest-900 text-[11px] text-slate-400 space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-emerald-400">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Verified Server Gateway</span>
+              </div>
+              <p>
+                Demonstration sandbox mode enabled. Completing this order validates the transaction signature server-side and immediately unlocks the seller&apos;s exact meetup coordinates and navigation details.
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2 pt-2">
+              <button
+                type="button"
+                disabled={isProcessingPayment}
+                onClick={async () => {
+                  setIsProcessingPayment(true);
+                  try {
+                    const paymentId = 'pay_' + Math.random().toString(36).substring(2, 10).toUpperCase();
+                    const res = await verifyLocationPayment({
+                      listing_id: vehicle.id,
+                      buyer_id: currentBuyerId,
+                      order_id: locationOrder.order_id,
+                      payment_id: paymentId,
+                      signature: 'mock_sandbox_sig',
+                      buyer_name: 'Verified Buyer'
+                    });
+                    if (res && res.status === 'success') {
+                      setPaymentModalOpen(false);
+                      setUnlockSuccessToast(true);
+                      setTimeout(() => setUnlockSuccessToast(false), 5000);
+                      await refreshLocationAccess();
+                    }
+                  } catch (err: any) {
+                    alert('Payment Verification Failed: ' + err.message);
+                  } finally {
+                    setIsProcessingPayment(false);
+                  }
+                }}
+                className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-glow transition-all cursor-pointer"
+              >
+                {isProcessingPayment ? (
+                  <>
+                    <Clock className="w-4 h-4 animate-spin text-white" />
+                    <span>Verifying Transaction...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4 text-emerald-200" />
+                    <span>Confirm & Pay ₹{locationOrder.amount_inr || 49}</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPaymentModalOpen(false)}
+                className="w-full py-2.5 rounded-xl bg-transparent hover:bg-forest-950 text-slate-400 hover:text-white text-xs font-semibold transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Unlock Success Notification Toast */}
+      {unlockSuccessToast && (
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-emerald-950 border border-emerald-500/80 text-emerald-200 text-xs shadow-2xl flex items-center gap-2.5 animate-bounce">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+          <div>
+            <p className="font-bold text-white">Location Unlocked Successfully!</p>
+            <p className="text-[11px] text-emerald-300">Exact meetup address and navigation directions are now visible.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

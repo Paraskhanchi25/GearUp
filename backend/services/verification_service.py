@@ -28,6 +28,21 @@ STORAGE_DIR = os.path.join(os.path.dirname(__file__), "..", "storage", "verifica
 os.makedirs(STORAGE_DIR, exist_ok=True)
 RECORDS_FILE = os.path.join(STORAGE_DIR, "verification_records.json")
 
+PHOTOS_STORAGE_DIR = os.path.join(os.path.dirname(__file__), "..", "storage", "vehicle_photos")
+os.makedirs(PHOTOS_STORAGE_DIR, exist_ok=True)
+
+# Exactly 8 Required Vehicle Photo Angles
+REQUIRED_PHOTO_SLOTS = [
+    {"slot": "front", "label": "Front View", "description": "Direct eye-level frontal angle showing headlamp, mirrors and windshield"},
+    {"slot": "rear", "label": "Rear View", "description": "Direct rear angle showing tail lamp, indicators and number plate frame"},
+    {"slot": "left_side", "label": "Left Side View", "description": "Full side profile showing exhaust, left panels, footrests and frame"},
+    {"slot": "right_side", "label": "Right Side View", "description": "Full side profile showing chain/belt, brake levers, and right bodywork"},
+    {"slot": "front_left_diagonal", "label": "Front-Left Diagonal View", "description": "45-degree angle capturing front tyre, mudguard and left body panels"},
+    {"slot": "front_right_diagonal", "label": "Front-Right Diagonal View", "description": "45-degree angle capturing front tyre, mudguard and right body panels"},
+    {"slot": "rear_left_diagonal", "label": "Rear-Left Diagonal View", "description": "45-degree angle capturing rear wheel, suspension, and left side"},
+    {"slot": "rear_right_diagonal", "label": "Rear-Right Diagonal View", "description": "45-degree angle capturing silencer/exhaust, rear swingarm and right side"}
+]
+
 # In-Memory / File-Backed Verification Database
 VERIFICATION_STORE: Dict[str, Dict[str, Any]] = {}
 
@@ -719,13 +734,24 @@ class CrossValidationEngine:
         elif any(c["status"] == "needs_manual_review" for c in checklist):
             overall_status = "pending_review"
 
+        # Vehicle Photo Completeness Tracking (Exactly 8 Angles)
+        photos = record.get("photos", {})
+        uploaded_slots = [s["slot"] for s in REQUIRED_PHOTO_SLOTS if s["slot"] in photos and photos[s["slot"]].get("url")]
+        photos_count = len(uploaded_slots)
+        photos_complete = (photos_count == 8)
+        missing_photo_slots = [s["slot"] for s in REQUIRED_PHOTO_SLOTS if s["slot"] not in uploaded_slots]
+
         gate_summary = {
             "can_publish": can_publish,
             "passed_count": passed_count,
             "total_required": 4,
             "overall_status": overall_status,
             "blocking_reasons": blocking_reasons,
-            "checklist": checklist
+            "checklist": checklist,
+            "photos_count": photos_count,
+            "photos_total_required": 8,
+            "photos_complete": photos_complete,
+            "missing_photo_slots": missing_photo_slots
         }
 
         record["publication_gate"] = gate_summary

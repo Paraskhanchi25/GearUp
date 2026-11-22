@@ -25,19 +25,26 @@ import {
   Lock,
   ThumbsUp,
   ThumbsDown,
-  RotateCcw
+  RotateCcw,
+  DollarSign,
+  CreditCard,
+  TrendingUp,
+  MapPin,
+  Calendar
 } from 'lucide-react';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
 import { 
   getAdminVerificationQueue, 
   getAdminListingDetail, 
-  recordReviewerDecision 
+  recordReviewerDecision,
+  getAdminRevenueStats
 } from '../services/aiApi';
 
 export const AdminPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'verification_desk' | 'marketplace_moderation'>('verification_desk');
+  const [activeTab, setActiveTab] = useState<'verification_desk' | 'marketplace_moderation' | 'location_revenue'>('verification_desk');
   const [listings, setListings] = useState(SEED_LISTINGS);
+  const [revenueStats, setRevenueStats] = useState<any>(null);
 
   // Verification Desk State
   const [queue, setQueue] = useState<any[]>([]);
@@ -71,6 +78,21 @@ export const AdminPage: React.FC = () => {
   useEffect(() => {
     fetchQueue();
   }, [filterStatus]);
+
+  const fetchRevenue = async () => {
+    try {
+      const stats = await getAdminRevenueStats();
+      if (stats) setRevenueStats(stats);
+    } catch (err) {
+      console.warn('Revenue fetch error:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'location_revenue') {
+      fetchRevenue();
+    }
+  }, [activeTab]);
 
   // Load Selected Listing Detail
   useEffect(() => {
@@ -187,6 +209,17 @@ export const AdminPage: React.FC = () => {
             >
               <Users className="w-4 h-4" />
               <span>Marketplace Listings</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('location_revenue')}
+              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                activeTab === 'location_revenue'
+                  ? 'bg-forest-600 text-white shadow-glow'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <DollarSign className="w-4 h-4 text-emerald-400" />
+              <span>Location Monetization</span>
             </button>
           </div>
         </div>
@@ -683,6 +716,162 @@ export const AdminPage: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* TAB 3: LOCATION MONETIZATION & REVENUE DASHBOARD */}
+        {/* ======================================================== */}
+        {activeTab === 'location_revenue' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Top Revenue Metric Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400">Total Location Unlocks</span>
+                <p className="font-heading font-extrabold text-3xl text-white mt-1">
+                  {revenueStats?.total_location_unlocks || 0}
+                </p>
+                <p className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                  <TrendingUp className="w-3.5 h-3.5" /> Paid verified buyer accesses
+                </p>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400">Gross Revenue</span>
+                <p className="font-heading font-extrabold text-3xl text-emerald-400 mt-1">
+                  ₹{(revenueStats?.gross_revenue_inr || 0).toLocaleString('en-IN')}
+                </p>
+                <p className="text-[11px] text-slate-400">@ ₹49 per meetup unlock</p>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400">Successful Payments</span>
+                <p className="font-heading font-extrabold text-3xl text-forest-300 mt-1">
+                  {revenueStats?.successful_payments || 0}
+                </p>
+                <p className="text-[11px] text-emerald-400 font-semibold">100% server verified</p>
+              </div>
+
+              <div className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400">Net Revenue (After Refunds)</span>
+                <p className="font-heading font-extrabold text-3xl text-gold mt-1">
+                  ₹{(revenueStats?.net_revenue_inr || 0).toLocaleString('en-IN')}
+                </p>
+                <p className="text-[11px] text-slate-400">Zero active dispute deductions</p>
+              </div>
+            </div>
+
+            {/* Daily Breakdown & Monetization Rule Summary */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Daily Breakdown (7 Cols) */}
+              <div className="lg:col-span-7 p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-emerald-400" />
+                    <h3 className="font-heading font-bold text-base text-white">Daily Unlocks Breakdown</h3>
+                  </div>
+                  <span className="text-xs text-forest-300 font-semibold">Real-Time Ledger</span>
+                </div>
+
+                <div className="divide-y divide-forest-900/60 text-xs">
+                  {Object.entries(revenueStats?.daily_breakdown || {}).length === 0 ? (
+                    <div className="py-8 text-center text-slate-500">
+                      No unlocks recorded today. Unlocks made on vehicle detail pages will appear here.
+                    </div>
+                  ) : (
+                    Object.entries(revenueStats?.daily_breakdown || {}).map(([day, count]) => (
+                      <div key={day} className="py-3 flex items-center justify-between">
+                        <span className="font-semibold text-white">{day}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="px-2.5 py-0.5 rounded-full bg-forest-950 text-forest-300 font-bold border border-forest-800">
+                            {Number(count)} unlock(s)
+                          </span>
+                          <span className="font-bold text-emerald-400 font-mono">
+                            ₹{(Number(count) * 49).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Revenue Engine Specifications (5 Cols) */}
+              <div className="lg:col-span-5 p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <h3 className="font-heading font-bold text-base text-white">Monetization Engine Rules</h3>
+                </div>
+
+                <div className="space-y-3 text-slate-300">
+                  <div className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-1">
+                    <span className="text-slate-400 text-[10px] block uppercase font-bold">Pricing Model</span>
+                    <p className="font-semibold text-white">₹49 Flat Location Access Fee</p>
+                    <p className="text-[11px] text-slate-400">One-time payment per buyer per listing. No vehicle percentage cut.</p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-1">
+                    <span className="text-slate-400 text-[10px] block uppercase font-bold">Privacy Guard</span>
+                    <p className="font-semibold text-white">Strict Approximate Masking</p>
+                    <p className="text-[11px] text-slate-400">Before payment, APIs and frontend omit exact GPS coordinates and house numbers.</p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-forest-950/80 border border-forest-900 space-y-1">
+                    <span className="text-slate-400 text-[10px] block uppercase font-bold">Access Duration</span>
+                    <p className="font-semibold text-white">7 Calendar Days Validity</p>
+                    <p className="text-[11px] text-slate-400">Buyer cannot be double-charged during active entitlement term.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Verified Transactions Table */}
+            <div className="p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-emerald-400" />
+                  <h3 className="font-heading font-bold text-base text-white">Recent Payment Transactions</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={fetchRevenue}
+                  className="px-3 py-1.5 rounded-xl bg-forest-900 hover:bg-forest-800 text-forest-200 text-xs font-semibold flex items-center gap-1"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Refresh Ledger</span>
+                </button>
+              </div>
+
+              <div className="divide-y divide-forest-900/60 text-xs">
+                {(revenueStats?.recent_transactions || []).length === 0 ? (
+                  <div className="py-8 text-center text-slate-500">
+                    No transactions yet. Complete an unlock on any vehicle detail page to test.
+                  </div>
+                ) : (
+                  (revenueStats?.recent_transactions || []).map((txn: any, idx: number) => (
+                    <div key={idx} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-white font-mono">{txn.transaction_id}</span>
+                          <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 text-[10px] font-bold">
+                            Success
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          Listing: <strong className="text-slate-300">{txn.listing_id}</strong> • Buyer: {txn.buyer_name || txn.buyer_id}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-heading font-extrabold text-sm text-emerald-400 font-mono">
+                          +₹{txn.amount_inr || 49}
+                        </span>
+                        <p className="text-[10px] text-slate-500">{new Date(txn.timestamp).toLocaleString()}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         )}

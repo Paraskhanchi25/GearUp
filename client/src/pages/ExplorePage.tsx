@@ -83,7 +83,16 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
 
   // Compute distances & filter listings dynamically using Haversine formula & Polygon logic
   const filteredVehicles = useMemo(() => {
-    let list = SEED_LISTINGS.map((v) => {
+    const customListings: VehicleListing[] = (() => {
+      try {
+        return JSON.parse(localStorage.getItem('gearup_custom_listings') || '[]');
+      } catch {
+        return [];
+      }
+    })();
+    const allListings = [...customListings, ...SEED_LISTINGS];
+
+    let list = allListings.map((v) => {
       const distance = calculateDistanceKm(
         searchCenter.lat,
         searchCenter.lng,

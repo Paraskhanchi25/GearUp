@@ -1,0 +1,44 @@
+{
+  "buyer-test-verify-19": [
+    {
+      "entitlement_id": "ENT-LOC-24FE241A",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19",
+      "buyer_name": "Test Buyer",
+      "payment_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-801BA63F",
+      "fee_paid_inr": 49,
+      "unlocked_at": "2026-11-22T05:54:38.261622",
+      "expires_at": "2026-11-29T05:54:38.261622",
+      "status": "active"
+    }
+  ],
+  "buyer-test-verify-19-9b9259": [
+    {
+      "entitlement_id": "ENT-LOC-A01F0D6E",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19-9b9259",
+      "buyer_name": "Test Buyer",
+      "payment_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-602D833D",
+      "fee_paid_inr": 49,
+      "unlocked_at": "2026-11-22T05:56:09.609716",
+      "expires_at": "2026-11-29T05:56:09.609716",
+      "status": "active"
+    }
+  ],
+  "buyer-test-verify-19-c9e30d": [
+    {
+      "entitlement_id": "ENT-LOC-E32AF755",
+      "listing_id": "GEAR-UP-101",
+      "buyer_id": "buyer-test-verify-19-c9e30d",
+      "buyer_name": "Test Buyer",
+      "payment_id": "pay_test_12345",
+      "order_id": "ORDER-LOC-25B4CF97",
+      "fee_paid_inr": 49,
+      "unlocked_at": "2026-11-22T05:57:20.484303",
+      "expires_at": "2026-11-29T05:57:20.484303",
+      "status": "active"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BarChart3, 
   MapPin, 
@@ -13,14 +13,28 @@ import {
   AlertTriangle,
   CheckCircle2,
   PhoneCall,
-  DollarSign
+  DollarSign,
+  Navigation,
+  ExternalLink,
+  Compass
 } from 'lucide-react';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
 import { Link } from 'react-router-dom';
+import { getBuyerPurchases } from '../services/aiApi';
 
 export const DashboardPage: React.FC = () => {
   const [role, setRole] = useState<'buyer' | 'seller' | 'dealer' | 'admin'>('dealer');
+  const [buyerPurchases, setBuyerPurchases] = useState<any[]>([]);
+
+  useEffect(() => {
+    const buyerId = localStorage.getItem('gearup_buyer_id') || 'buyer-101';
+    getBuyerPurchases(buyerId).then(res => {
+      if (res && res.purchases) {
+        setBuyerPurchases(res.purchases);
+      }
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0A1411] text-slate-100 pb-24 px-4 sm:px-6 lg:px-8 pt-8">
@@ -68,6 +82,76 @@ export const DashboardPage: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* BUYER VIEW: UNLOCKED MEETUP LOCATIONS & PURCHASES */}
+        {role === 'buyer' && (
+          <div className="p-6 rounded-3xl bg-[#101D19] border border-emerald-500/50 space-y-4 animate-fade-in shadow-2xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-950 text-emerald-400 flex items-center justify-center">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-extrabold text-base text-white">My Unlocked Meetup Locations</h3>
+                  <p className="text-xs text-slate-400">Paid seller locations and test-ride authorizations active for your account</p>
+                </div>
+              </div>
+              <span className="px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 text-xs font-bold border border-emerald-500/40">
+                {buyerPurchases.length} Active Pass(es)
+              </span>
+            </div>
+
+            {buyerPurchases.length === 0 ? (
+              <div className="p-6 rounded-2xl bg-forest-950/60 border border-forest-900 text-center space-y-2">
+                <Compass className="w-8 h-8 text-forest-700 mx-auto" />
+                <p className="text-xs font-semibold text-slate-300">No active location passes unlocked yet.</p>
+                <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
+                  When you unlock a seller&apos;s exact meetup spot from any vehicle details page, it will be saved here for quick navigation.
+                </p>
+                <Link
+                  to="/explore"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-forest-800 hover:bg-forest-700 text-white font-bold text-xs mt-2"
+                >
+                  <Navigation className="w-3.5 h-3.5" />
+                  <span>Explore Marketplace</span>
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {buyerPurchases.map((p, idx) => (
+                  <div key={idx} className="p-4 rounded-2xl bg-forest-950/80 border border-forest-800 space-y-2.5 text-xs">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-emerald-400">Listing: {p.listing_id}</span>
+                        <p className="font-bold text-white text-sm mt-0.5">{p.location_details?.address}</p>
+                        <p className="text-slate-400 text-[11px]">{p.location_details?.locality}, {p.location_details?.city}</p>
+                      </div>
+                      <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 text-[10px] font-bold border border-emerald-600/50 flex-shrink-0">
+                        {p.days_remaining} Days Left
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-forest-900">
+                      <span className="text-[11px] text-slate-400">
+                        {p.location_details?.test_ride_available ? '✓ Test Ride Authorized' : 'Inspection Only'}
+                      </span>
+                      <a
+                        href={p.location_details?.directions_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 rounded-lg bg-forest-700 hover:bg-forest-600 text-white font-bold text-[11px] flex items-center gap-1 transition-colors"
+                      >
+                        <Navigation className="w-3 h-3" />
+                        <span>Get Directions</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* STATS METRICS (Inspired by Bolt / Telematics visual reference) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

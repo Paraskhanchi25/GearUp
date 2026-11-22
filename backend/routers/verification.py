@@ -7,12 +7,15 @@ import os
 import uuid
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Query
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 
 from services.verification_service import (
     VERIFICATION_STORE,
     STORAGE_DIR,
+    PHOTOS_STORAGE_DIR,
+    REQUIRED_PHOTO_SLOTS,
     save_records,
     get_or_create_verification_record,
     validate_file_content,
@@ -233,6 +236,155 @@ async def reuse_rc_ownership(listing_id: str = Form(...), seller_name: Optional[
     }
 
 # ==============================================================================
+# 2B. 8 Required Vehicle Photo Angles Management
+# ==============================================================================
+
+@router.post("/upload-photo")
+async def upload_vehicle_photo(
+    listing_id: str = Form(...),
+    slot: str = Form(...),
+    seller_id: Optional[str] = Form("seller-default"),
+    file: UploadFile = File(...)
+):
+    """
+    Upload an actual photo for one of the 8 required vehicle angles.
+    Validates magic bytes, file size, saves to storage, and persists slot metadata.
+    """
+    valid_slots = [s["slot"] for s in REQUIRED_PHOTO_SLOTS]
+    if slot not in valid_slots:
+        raise HTTPException(status_code=400, detail=f"Invalid photo slot '{slot}'. Valid slots: {valid_slots}")
+
+    content = await file.read()
+    if len(content) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Photo file exceeds 10MB limit.")
+
+    # Validate image magic bytes
+    val_res = validate_file_content(content, file.filename)
+    if not val_res.get("valid") or val_res.get("mime_type") not in ["image/jpeg", "image/png", "image/webp"]:
+        raise HTTPException(
+            status_code=400,
+            detail=val_res.get("error") or f"Invalid image format ({val_res.get('mime_type')}). Only authentic JPG, PNG, and WEBP photos are accepted."
+        )
+
+    # Save to disk
+    ext = file.filename.split(".")[-1].lower() if "." in file.filename else "jpg"
+    listing_photos_dir = os.path.join(PHOTOS_STORAGE_DIR, listing_id)
+    os.makedirs(listing_photos_dir, exist_ok=True)
+    saved_filename = f"{slot}.{ext}"
+    saved_path = os.path.join(listing_photos_dir, saved_filename)
+    with open(saved_path, "wb") as f:
+        f.write(content)
+
+    record = get_or_create_verification_record(listing_id, seller_id)
+    if "photos" not in record:
+        record["photos"] = {}
+
+    photo_entry = {
+        "slot": slot,
+        "filename": file.filename,
+        "saved_path": saved_path,
+        "url": f"/api/verification/photo-file/{listing_id}/{slot}?t={int(datetime.now().timestamp())}",
+        "size_bytes": len(content),
+        "upload_timestamp": datetime.now().isoformat()
+    }
+    record["photos"][slot] = photo_entry
+
+    gate_summary = CrossValidationEngine.validate_all_documents(record)
+    save_records()
+
+    return {
+        "status": "success",
+        "slot": slot,
+        "photo": photo_entry,
+        "uploaded_count": gate_summary["photos_count"],
+        "total_required": 8,
+        "remaining_count": 8 - gate_summary["photos_count"],
+        "is_complete": gate_summary["photos_complete"],
+        "gate_summary": gate_summary
+    }
+
+@router.get("/photos/{listing_id}")
+async def get_vehicle_photos(listing_id: str):
+    """
+    Returns all uploaded photos for this listing across the 8 angle slots.
+    """
+    record = get_or_create_verification_record(listing_id)
+    photos = record.get("photos", {})
+    gate_summary = CrossValidationEngine.validate_all_documents(record)
+
+    slots_data = []
+    for s in REQUIRED_PHOTO_SLOTS:
+        slot_key = s["slot"]
+        existing = photos.get(slot_key)
+        slots_data.append({
+            "slot": slot_key,
+            "label": s["label"],
+            "description": s["description"],
+            "is_uploaded": bool(existing and existing.get("url")),
+            "photo": existing
+        })
+
+    return {
+        "listing_id": listing_id,
+        "uploaded_count": gate_summary["photos_count"],
+        "total_required": 8,
+        "remaining_count": 8 - gate_summary["photos_count"],
+        "is_complete": gate_summary["photos_complete"],
+        "slots": slots_data
+    }
+
+@router.delete("/photo/{listing_id}/{slot}")
+async def delete_vehicle_photo(listing_id: str, slot: str):
+    """
+    Deletes the uploaded photograph for a specific slot.
+    """
+    record = get_or_create_verification_record(listing_id)
+    photos = record.get("photos", {})
+    if slot in photos:
+        entry = photos.pop(slot)
+        saved_path = entry.get("saved_path")
+        if saved_path and os.path.exists(saved_path):
+            try:
+                os.remove(saved_path)
+            except Exception:
+                pass
+
+    gate_summary = CrossValidationEngine.validate_all_documents(record)
+    save_records()
+
+    return {
+        "status": "success",
+        "slot": slot,
+        "message": f"Photo for slot '{slot}' removed.",
+        "uploaded_count": gate_summary["photos_count"],
+        "total_required": 8,
+        "gate_summary": gate_summary
+    }
+
+@router.get("/photo-file/{listing_id}/{slot}")
+async def get_vehicle_photo_file(listing_id: str, slot: str):
+    """
+    Serves the binary photo file for the specified slot.
+    """
+    record = get_or_create_verification_record(listing_id)
+    photos = record.get("photos", {})
+    if slot not in photos or "saved_path" not in photos[slot]:
+        raise HTTPException(status_code=404, detail="Photo not found for this slot.")
+
+    path = photos[slot]["saved_path"]
+    if not os.path.exists(path):
+        raise HTTPException(status_code=404, detail="Photo file not found on disk.")
+
+    ext = path.split(".")[-1].lower()
+    media_type = "image/jpeg"
+    if ext == "png":
+        media_type = "image/png"
+    elif ext == "webp":
+        media_type = "image/webp"
+
+    return FileResponse(path, media_type=media_type)
+
+# ==============================================================================
 # 3. Document Deletion / Replacement
 # ==============================================================================
 
@@ -302,14 +454,32 @@ async def publish_listing(payload: PublishListingPayload):
             }
         )
 
-    # If all 4 passed, publish listing live
+    # Enforce exactly 8 vehicle photos from required angles
+    photos_count = gate_summary.get("photos_count", 0)
+    if photos_count < 8:
+        missing = gate_summary.get("missing_photo_slots", [])
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": f"Listing publication blocked: Exactly 8 vehicle photographs from required angles are mandatory (currently {photos_count}/8 uploaded).",
+                "passed_count": gate_summary["passed_count"],
+                "total_required": 4,
+                "photos_count": photos_count,
+                "photos_total_required": 8,
+                "blocking_reasons": gate_summary["blocking_reasons"] + [f"Vehicle photos incomplete: {8 - photos_count} angle photograph(s) required before publishing."],
+                "missing_photo_slots": missing
+            }
+        )
+
+    # If all 4 documents passed and all 8 photos are uploaded, publish listing live
     record["is_published"] = True
     record["published_at"] = datetime.now().isoformat()
     record["publication_event"] = {
         "event_id": f"PUB-{uuid.uuid4().hex[:8].upper()}",
         "timestamp": datetime.now().isoformat(),
         "verified_by_gate": True,
-        "passed_documents": 4
+        "passed_documents": 4,
+        "uploaded_photos": photos_count
     }
     save_records()
 

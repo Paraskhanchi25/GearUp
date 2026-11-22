@@ -10,7 +10,8 @@ import {
   Zap, 
   CheckCircle2, 
   Sparkles,
-  Heart
+  Heart,
+  Camera
 } from 'lucide-react';
 import { VehicleListing } from '../types';
 import { formatINR, formatINRLakh } from '../utils/geo';
@@ -43,12 +44,19 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
     >
       {/* Top Image & Badges */}
       <div className="relative aspect-[16/10] overflow-hidden bg-forest-950">
-        <img
-          src={vehicle.primaryImage}
-          alt={vehicle.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-        />
+        {vehicle.primaryImage ? (
+          <img
+            src={vehicle.primaryImage}
+            alt={vehicle.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-forest-950/80 text-slate-500 border border-dashed border-forest-900 p-4 text-center">
+            <Camera className="w-8 h-8 text-forest-700 mb-1" />
+            <span className="text-[11px] font-semibold text-slate-400">No vehicle photos uploaded yet</span>
+          </div>
+        )}
         
         {/* Subtle Dark Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#101D19] via-transparent to-black/30 pointer-events-none" />
