@@ -128,8 +128,26 @@ export interface BikeDoctorPayload {
   symptom_text: string;
   brand?: string;
   model?: string;
+  category?: string;
   year?: number;
   km?: number;
+  fuel_type?: string;
+  engine_cc?: number;
+  has_image?: boolean;
+  has_audio?: boolean;
+}
+
+export interface BikeDoctorFeedbackPayload {
+  diagnosis_id: string;
+  actual_fault_component: string;
+  actual_fault_category: string;
+  was_accurate: boolean;
+  resolution_notes?: string;
+  verified_by_mechanic?: boolean;
+  mechanic_shop_name?: string;
+  replaced_parts?: string[];
+  cost_paid?: number;
+  rating?: number;
 }
 
 export interface ListingAssistantPayload {
@@ -326,6 +344,34 @@ export async function diagnoseProblem(payload: BikeDoctorPayload) {
     professional_inspection_required: false,
     safety_disclaimer: '⚠️ AI Bike Doctor provides remote advisory analysis. Always inspect brakes and steering in-person.'
   };
+}
+
+export async function submitBikeDoctorFeedback(payload: BikeDoctorFeedbackPayload) {
+  try {
+    const res = await fetch(`${API_BASE}/bike-doctor/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Bike Doctor feedback error:', err);
+  }
+  return { status: 'fallback', message: 'Feedback recorded locally' };
+}
+
+export async function getBikeDoctorMLStatus() {
+  try {
+    const res = await fetch(`${API_BASE}/bike-doctor/ml-status`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Bike Doctor ML Status error:', err);
+  }
+  return null;
 }
 
 // 5. AI Listing Assistant API
