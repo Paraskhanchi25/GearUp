@@ -597,30 +597,30 @@ export const PriceEstimatorPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070D0B] text-slate-100 pb-28 px-4 sm:px-6 lg:px-8 pt-8">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#242923] pb-28 px-4 sm:px-6 lg:px-8 pt-8">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Header Banner */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-forest-900/90 border border-forest-600/70 text-xs font-bold text-forest-300 uppercase tracking-widest shadow-lg">
-            <Cpu className="w-4 h-4 text-forest-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F1EEE5] border border-[#879783]/50 text-xs font-bold text-[#596B59] uppercase tracking-widest shadow-lg">
+            <Cpu className="w-4 h-4 text-[#596B59]" />
             <span>Trained CatBoost ML Engine • R² 0.9919 • 2,928 Verified Transactions</span>
           </div>
           <h1 className="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
             Fair Market Two-Wheeler Valuation
           </h1>
-          <p className="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto">
+          <p className="text-[#77796F] text-sm sm:text-base max-w-2xl mx-auto">
             Trained on real Indian certified dealer sales records, platform transactions, and component degradation physics across 22 manufacturers.
           </p>
 
           {/* Mode Switcher Tabs */}
-          <div className="inline-flex items-center p-1.5 rounded-2xl bg-forest-950 border border-forest-800 shadow-xl mt-4">
+          <div className="inline-flex items-center p-1.5 rounded-2xl bg-white border border-[#E5E1D7] shadow-xl mt-4">
             <button
               onClick={() => setActiveTab('manual')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                 activeTab === 'manual'
-                  ? 'bg-forest-600 text-white shadow-glow'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#879783] text-white shadow-sm'
+                  : 'text-[#77796F] hover:text-[#242923]'
               }`}
             >
               <Sliders className="w-4 h-4" />
@@ -630,8 +630,8 @@ export const PriceEstimatorPage: React.FC = () => {
               onClick={() => setActiveTab('chat')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                 activeTab === 'chat'
-                  ? 'bg-forest-600 text-white shadow-glow'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#879783] text-white shadow-sm'
+                  : 'text-[#77796F] hover:text-[#242923]'
               }`}
             >
               <MessageSquare className="w-4 h-4 text-amber-300" />
@@ -669,15 +669,15 @@ export const PriceEstimatorPage: React.FC = () => {
             <div className="lg:col-span-7 space-y-6">
               
               {/* 1. Category & Identification */}
-              <div className="p-6 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-5">
-                <div className="flex items-center justify-between border-b border-forest-900 pb-3">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-5">
+                <div className="flex items-center justify-between border-b border-[#E5E1D7] pb-3">
                   <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-lg bg-forest-800 flex items-center justify-center text-xs font-bold text-forest-300">1</span>
+                    <span className="w-6 h-6 rounded-lg bg-[#E5D9C7]/40 flex items-center justify-center text-xs font-bold text-[#596B59]">1</span>
                     <h3 className="font-heading font-bold text-sm text-white uppercase tracking-wider">
                       Vehicle Identification & Category
                     </h3>
                   </div>
-                  <span className="text-[11px] font-semibold text-forest-400">
+                  <span className="text-[11px] font-semibold text-[#596B59]">
                     {catalog?.total_vehicles || 77} Verified Indian Models
                   </span>
                 </div>
@@ -695,12 +695,12 @@ export const PriceEstimatorPage: React.FC = () => {
                       onClick={() => handleCategoryChange(cat.id)}
                       className={`p-3 rounded-2xl border text-left transition-all ${
                         category === cat.id
-                          ? 'bg-forest-900/90 border-forest-500 text-white shadow-md'
-                          : 'bg-forest-950/60 border-forest-900 text-slate-400 hover:border-forest-700'
+                          ? 'bg-[#F1EEE5] border-[#879783] text-white shadow-md'
+                          : 'bg-white/60 border-[#E5E1D7] text-[#77796F] hover:border-[#E5E1D7]'
                       }`}
                     >
                       <div className="text-xs font-bold text-white">{cat.label}</div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">{cat.sub}</div>
+                      <div className="text-[10px] text-[#77796F] mt-0.5">{cat.sub}</div>
                     </button>
                   ))}
                 </div>
@@ -708,11 +708,11 @@ export const PriceEstimatorPage: React.FC = () => {
                 {/* Brand & Model Cascading */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div>
-                    <label className="text-slate-400 font-semibold mb-1.5 block">Manufacturer / Brand</label>
+                    <label className="text-[#77796F] font-semibold mb-1.5 block">Manufacturer / Brand</label>
                     <select
                       value={brand}
                       onChange={(e) => handleBrandChange(e.target.value)}
-                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-forest-500 font-medium"
+                      className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#879783] font-medium"
                     >
                       <option value="">Select Manufacturer / Brand</option>
                       {categoryBrands.map((b) => (
@@ -722,7 +722,7 @@ export const PriceEstimatorPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="text-slate-400 font-semibold mb-1.5 block">Model</label>
+                    <label className="text-[#77796F] font-semibold mb-1.5 block">Model</label>
                     <select
                       value={model}
                       disabled={!brand}
@@ -738,10 +738,10 @@ export const PriceEstimatorPage: React.FC = () => {
                           setVariant('');
                         }
                       }}
-                      className={`w-full bg-forest-950 border rounded-xl px-3.5 py-2.5 text-white focus:outline-none font-medium ${
+                      className={`w-full bg-white border rounded-xl px-3.5 py-2.5 text-white focus:outline-none font-medium ${
                         !brand 
-                          ? 'border-forest-900/40 opacity-50 cursor-not-allowed text-slate-500' 
-                          : 'border-forest-800 focus:border-forest-500'
+                          ? 'border-[#E5E1D7]/40 opacity-50 cursor-not-allowed text-slate-500' 
+                          : 'border-[#E5E1D7] focus:border-[#879783]'
                       }`}
                     >
                       <option value="">{brand ? 'Select Model' : 'Select Manufacturer First'}</option>
@@ -757,11 +757,11 @@ export const PriceEstimatorPage: React.FC = () => {
                 {/* Variant & Manufacturing Year */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div>
-                    <label className="text-slate-400 font-semibold mb-1.5 block">Variant / Specification</label>
+                    <label className="text-[#77796F] font-semibold mb-1.5 block">Variant / Specification</label>
                     <select
                       value={variant}
                       onChange={(e) => setVariant(e.target.value)}
-                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-forest-500 font-medium"
+                      className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#879783] font-medium"
                     >
                       {availableVariants.length > 0 ? (
                         availableVariants.map((v: any) => (
@@ -776,11 +776,11 @@ export const PriceEstimatorPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="text-slate-400 font-semibold mb-1.5 block">Manufacturing Year</label>
+                    <label className="text-[#77796F] font-semibold mb-1.5 block">Manufacturing Year</label>
                     <select
                       value={year}
                       onChange={(e) => setYear(Number(e.target.value))}
-                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-forest-500 font-medium"
+                      className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#879783] font-medium"
                     >
                       {availableYears.map((y) => (
                         <option key={y} value={y}>{y}</option>
@@ -791,15 +791,15 @@ export const PriceEstimatorPage: React.FC = () => {
               </div>
 
               {/* 2. Usage & Odometer */}
-              <div className="p-6 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-5">
-                <div className="flex items-center justify-between border-b border-forest-900 pb-3">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-5">
+                <div className="flex items-center justify-between border-b border-[#E5E1D7] pb-3">
                   <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-lg bg-forest-800 flex items-center justify-center text-xs font-bold text-forest-300">2</span>
+                    <span className="w-6 h-6 rounded-lg bg-[#E5D9C7]/40 flex items-center justify-center text-xs font-bold text-[#596B59]">2</span>
                     <h3 className="font-heading font-bold text-sm text-white uppercase tracking-wider">
                       Odometer, Ownership & Usage
                     </h3>
                   </div>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[11px] text-[#77796F]">
                     Standard Benchmark: ~7,500 km/yr
                   </span>
                 </div>
@@ -807,8 +807,8 @@ export const PriceEstimatorPage: React.FC = () => {
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-xs font-semibold mb-2">
-                      <span className="text-slate-300">Odometer Reading (Kilometres Driven)</span>
-                      <span className="text-forest-300 font-bold text-sm">{km.toLocaleString()} km</span>
+                      <span className="text-[#77796F]">Odometer Reading (Kilometres Driven)</span>
+                      <span className="text-[#596B59] font-bold text-sm">{km.toLocaleString()} km</span>
                     </div>
                     <input
                       type="range"
@@ -817,7 +817,7 @@ export const PriceEstimatorPage: React.FC = () => {
                       step={500}
                       value={km}
                       onChange={(e) => setKm(Number(e.target.value))}
-                      className="w-full accent-forest-500 bg-forest-950 h-2.5 rounded-lg cursor-pointer"
+                      className="w-full accent-[#879783] bg-white h-2.5 rounded-lg cursor-pointer"
                     />
                     <div className="flex justify-between text-[10px] text-slate-500 mt-1">
                       <span>500 km (Showroom delivery)</span>
@@ -828,11 +828,11 @@ export const PriceEstimatorPage: React.FC = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-1">
                     <div>
-                      <label className="text-slate-400 font-semibold mb-1.5 block">Ownership History</label>
+                      <label className="text-[#77796F] font-semibold mb-1.5 block">Ownership History</label>
                       <select
                         value={owners}
                         onChange={(e) => setOwners(Number(e.target.value))}
-                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                        className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                       >
                         <option value={1}>1st Owner (Single Owner - Best Value)</option>
                         <option value={2}>2nd Owner (Approx -7% market deduction)</option>
@@ -841,11 +841,11 @@ export const PriceEstimatorPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="text-slate-400 font-semibold mb-1.5 block">Usage Pattern</label>
+                      <label className="text-[#77796F] font-semibold mb-1.5 block">Usage Pattern</label>
                       <select
                         value={usagePattern}
                         onChange={(e) => setUsagePattern(e.target.value)}
-                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                        className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                       >
                         <option value="daily_commute">Daily City Commute (15-30 km/day)</option>
                         <option value="weekend_touring">Highway / Weekend Touring</option>
@@ -858,10 +858,10 @@ export const PriceEstimatorPage: React.FC = () => {
               </div>
 
               {/* 3. Component & Mechanical Condition */}
-              <div className="p-6 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-5">
-                <div className="flex items-center justify-between border-b border-forest-900 pb-3">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-5">
+                <div className="flex items-center justify-between border-b border-[#E5E1D7] pb-3">
                   <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-lg bg-forest-800 flex items-center justify-center text-xs font-bold text-forest-300">3</span>
+                    <span className="w-6 h-6 rounded-lg bg-[#E5D9C7]/40 flex items-center justify-center text-xs font-bold text-[#596B59]">3</span>
                     <h3 className="font-heading font-bold text-sm text-white uppercase tracking-wider">
                       Mechanical & Component Condition
                     </h3>
@@ -874,13 +874,13 @@ export const PriceEstimatorPage: React.FC = () => {
                 <div className="space-y-4 text-xs">
                   {/* ICE Engine vs EV Battery */}
                   {category === 'electric' ? (
-                    <div className="p-4 rounded-2xl bg-forest-950 border border-forest-800 space-y-3">
+                    <div className="p-4 rounded-2xl bg-white border border-[#E5E1D7] space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <BatteryCharging className="w-4 h-4 text-emerald-400" />
+                          <BatteryCharging className="w-4 h-4 text-[#596B59]" />
                           <span className="text-white font-bold">EV Battery State of Health (SoH)</span>
                         </div>
-                        <span className={`font-black text-sm ${batteryHealth >= 90 ? 'text-emerald-400' : batteryHealth >= 80 ? 'text-amber-400' : 'text-red-400'}`}>
+                        <span className={`font-black text-sm ${batteryHealth >= 90 ? 'text-[#596B59]' : batteryHealth >= 80 ? 'text-amber-400' : 'text-red-400'}`}>
                           {batteryHealth}%
                         </span>
                       </div>
@@ -891,9 +891,9 @@ export const PriceEstimatorPage: React.FC = () => {
                         step={1}
                         value={batteryHealth}
                         onChange={(e) => setBatteryHealth(Number(e.target.value))}
-                        className="w-full accent-forest-500 bg-forest-900 h-2 rounded-lg cursor-pointer"
+                        className="w-full accent-[#879783] bg-[#F1EEE5] h-2 rounded-lg cursor-pointer"
                       />
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[11px] text-[#77796F]">
                         {batteryHealth >= 90 
                           ? '🌟 Excellent health: Retains >92% of original range.' 
                           : batteryHealth >= 80 
@@ -903,11 +903,11 @@ export const PriceEstimatorPage: React.FC = () => {
                     </div>
                   ) : (
                     <div>
-                      <label className="text-slate-400 font-semibold mb-1.5 block">Engine Condition & Sound</label>
+                      <label className="text-[#77796F] font-semibold mb-1.5 block">Engine Condition & Sound</label>
                       <select
                         value={engineCondition}
                         onChange={(e) => setEngineCondition(e.target.value)}
-                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                        className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                       >
                         <option value="smooth">🟢 Smooth & Silent (Cold start clean, no smoke, crisp throttle)</option>
                         <option value="minor_tapping">🟡 Minor Tappet Noise (Needs minor clearance valve adjustment)</option>
@@ -920,11 +920,11 @@ export const PriceEstimatorPage: React.FC = () => {
                   {/* Tyres and Body */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-slate-400 font-semibold mb-1.5 block">Tyres Condition</label>
+                      <label className="text-[#77796F] font-semibold mb-1.5 block">Tyres Condition</label>
                       <select
                         value={tyreCondition}
                         onChange={(e) => setTyreCondition(e.target.value)}
-                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                        className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                       >
                         <option value="brand_new">🌟 Brand New (&gt;85% Tread depth)</option>
                         <option value="good">✅ Good (50% – 85% Tread depth)</option>
@@ -934,11 +934,11 @@ export const PriceEstimatorPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="text-slate-400 font-semibold mb-1.5 block">Cosmetic Body & Paint</label>
+                      <label className="text-[#77796F] font-semibold mb-1.5 block">Cosmetic Body & Paint</label>
                       <select
                         value={bodyCondition}
                         onChange={(e) => setBodyCondition(e.target.value)}
-                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                        className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                       >
                         <option value="clean">✨ Showroom Mint (Zero dents, clean paint)</option>
                         <option value="minor_scratches">👌 Minor Scratches (Normal parking wear)</option>
@@ -951,11 +951,11 @@ export const PriceEstimatorPage: React.FC = () => {
                   {/* Brakes, Electrical & Overall Grade */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
                     <div>
-                      <label className="text-slate-400 font-semibold mb-1.5 block">Brake System</label>
+                      <label className="text-[#77796F] font-semibold mb-1.5 block">Brake System</label>
                       <select
                         value={brakeCondition}
                         onChange={(e) => setBrakeCondition(e.target.value)}
-                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                        className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                       >
                         <option value="good">🟢 Crisp Bite & Thick Pads</option>
                         <option value="spongy">🟡 Spongy / Soft Lever</option>
@@ -964,11 +964,11 @@ export const PriceEstimatorPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="text-slate-400 font-semibold mb-1.5 block">Electrical & Starter</label>
+                      <label className="text-[#77796F] font-semibold mb-1.5 block">Electrical & Starter</label>
                       <select
                         value={electricalCondition}
                         onChange={(e) => setElectricalCondition(e.target.value)}
-                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                        className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                       >
                         <option value="working">🟢 All Working Normal</option>
                         <option value="issues">🟠 Starter / Wiring Issues</option>
@@ -976,11 +976,11 @@ export const PriceEstimatorPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="text-slate-400 font-semibold mb-1.5 block">Overall Vehicle Grade</label>
+                      <label className="text-[#77796F] font-semibold mb-1.5 block">Overall Vehicle Grade</label>
                       <select
                         value={condition}
                         onChange={(e) => setCondition(e.target.value)}
-                        className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none font-semibold text-emerald-400"
+                        className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none font-semibold text-[#596B59]"
                       >
                         <option value="excellent">🌟 Excellent (Pristine)</option>
                         <option value="good">✅ Good (Dependable)</option>
@@ -993,26 +993,26 @@ export const PriceEstimatorPage: React.FC = () => {
               </div>
 
               {/* 4. Documentation & Location */}
-              <div className="p-6 rounded-3xl bg-[#0E1A16] border border-forest-800/80 shadow-2xl space-y-5">
-                <div className="flex items-center justify-between border-b border-forest-900 pb-3">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-5">
+                <div className="flex items-center justify-between border-b border-[#E5E1D7] pb-3">
                   <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-lg bg-forest-800 flex items-center justify-center text-xs font-bold text-forest-300">4</span>
+                    <span className="w-6 h-6 rounded-lg bg-[#E5D9C7]/40 flex items-center justify-center text-xs font-bold text-[#596B59]">4</span>
                     <h3 className="font-heading font-bold text-sm text-white uppercase tracking-wider">
                       History, Papers & Location
                     </h3>
                   </div>
-                  <span className="text-[11px] text-emerald-400 font-medium">
+                  <span className="text-[11px] text-[#596B59] font-medium">
                     Paperwork Verified
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div>
-                    <label className="text-slate-400 font-semibold mb-1.5 block">Service Records</label>
+                    <label className="text-[#77796F] font-semibold mb-1.5 block">Service Records</label>
                     <select
                       value={serviceHistory}
                       onChange={(e) => setServiceHistory(e.target.value)}
-                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                      className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                     >
                       <option value="authorized_regular">📋 Authorized Brand Service Center (+₹3,500 trust bonus)</option>
                       <option value="local_garage">🔧 Reputed Local Garage</option>
@@ -1021,11 +1021,11 @@ export const PriceEstimatorPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="text-slate-400 font-semibold mb-1.5 block">Accident History</label>
+                    <label className="text-[#77796F] font-semibold mb-1.5 block">Accident History</label>
                     <select
                       value={accidentHistory}
                       onChange={(e) => setAccidentHistory(e.target.value)}
-                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                      className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                     >
                       <option value="none">🛡️ Clean / Never Dropped (Zero accidents)</option>
                       <option value="minor_fall">🛵 Minor Fall / Scratched Crash Guard</option>
@@ -1034,11 +1034,11 @@ export const PriceEstimatorPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="text-slate-400 font-semibold mb-1.5 block">Insurance Validity</label>
+                    <label className="text-[#77796F] font-semibold mb-1.5 block">Insurance Validity</label>
                     <select
                       value={insuranceValidity}
                       onChange={(e) => setInsuranceValidity(e.target.value)}
-                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                      className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                     >
                       <option value="active_comprehensive">📄 Active Comprehensive Policy</option>
                       <option value="third_party_only">📑 Third Party Only</option>
@@ -1047,11 +1047,11 @@ export const PriceEstimatorPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="text-slate-400 font-semibold mb-1.5 block">RC & Financing Status</label>
+                    <label className="text-[#77796F] font-semibold mb-1.5 block">RC & Financing Status</label>
                     <select
                       value={rcStatus}
                       onChange={(e) => setRcStatus(e.target.value)}
-                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none"
+                      className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none"
                     >
                       <option value="clean">📄 Clean RC Card (Clear title ready for transfer)</option>
                       <option value="hypothecated">🏦 Bank Hypothecated (Loan NOC required -₹1,500)</option>
@@ -1060,11 +1060,11 @@ export const PriceEstimatorPage: React.FC = () => {
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="text-slate-400 font-semibold mb-1.5 block">City / RTO Location</label>
+                    <label className="text-[#77796F] font-semibold mb-1.5 block">City / RTO Location</label>
                     <select
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      className="w-full bg-forest-950 border border-forest-800 rounded-xl px-3 py-2.5 text-white focus:outline-none font-semibold text-forest-300"
+                      className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3 py-2.5 text-white focus:outline-none font-semibold text-[#596B59]"
                     >
                       {POPULAR_CITIES.map((c) => (
                         <option key={c.name} value={c.name}>
@@ -1079,7 +1079,7 @@ export const PriceEstimatorPage: React.FC = () => {
                   type="button"
                   onClick={() => runValuation()}
                   disabled={isLoading}
-                  className="w-full py-3.5 rounded-2xl bg-forest-600 hover:bg-forest-500 text-white font-bold shadow-glow transition-all flex items-center justify-center gap-2 mt-4 text-xs tracking-wider uppercase"
+                  className="w-full py-3.5 rounded-2xl bg-[#879783] hover:bg-[#596B59] text-white font-bold shadow-sm transition-all flex items-center justify-center gap-2 mt-4 text-xs tracking-wider uppercase"
                 >
                   {isLoading ? (
                     <span>Recalculating with Trained ML Engine...</span>
@@ -1098,16 +1098,16 @@ export const PriceEstimatorPage: React.FC = () => {
             <div className="lg:col-span-5 space-y-6 sticky top-6">
               
               {/* Valuation Card */}
-              <div className="p-8 rounded-3xl bg-gradient-to-br from-[#132621] via-[#0D1A16] to-[#070E0C] border border-forest-600/60 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-56 h-56 bg-forest-500/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="p-8 rounded-3xl bg-gradient-to-br from-[#132621] via-[#0D1A16] to-[#070E0C] border border-[#879783]/60 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-56 h-56 bg-[#879783]/15 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="space-y-5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-forest-300 uppercase tracking-widest flex items-center gap-1.5">
-                      <TrendingUp className="w-4 h-4 text-forest-400" />
+                    <span className="text-xs font-bold text-[#596B59] uppercase tracking-widest flex items-center gap-1.5">
+                      <TrendingUp className="w-4 h-4 text-[#596B59]" />
                       Fair Market Price
                     </span>
-                    <span className="text-[11px] bg-emerald-950 border border-emerald-500/60 text-emerald-300 px-3 py-0.5 rounded-full font-bold shadow-sm">
+                    <span className="text-[11px] bg-emerald-950 border border-emerald-500/60 text-[#596B59] px-3 py-0.5 rounded-full font-bold shadow-sm">
                       {estimateData?.confidence_level || 'High (CatBoost v3.0)'}
                     </span>
                   </div>
@@ -1116,22 +1116,22 @@ export const PriceEstimatorPage: React.FC = () => {
                     <div className="text-4xl sm:text-5xl font-black text-white tracking-tight">
                       {estimateData ? formatINR(estimateData.estimated_price) : 'Computing...'}
                     </div>
-                    <div className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                    <div className="text-xs text-[#77796F] mt-1 flex items-center gap-1">
                       <span>Vehicle:</span>
                       <span className="text-white font-semibold">{year} {brand} {model}</span>
                     </div>
                   </div>
 
                   {/* Range Box */}
-                  <div className="p-4 rounded-2xl bg-black/40 border border-forest-800 flex items-center justify-between text-xs">
+                  <div className="p-4 rounded-2xl bg-black/40 border border-[#E5E1D7] flex items-center justify-between text-xs">
                     <div>
-                      <span className="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">Fair Range</span>
-                      <span className="text-forest-200 font-bold text-sm">
+                      <span className="text-[#77796F] block text-[10px] uppercase font-bold tracking-wider">Fair Range</span>
+                      <span className="text-[#354638] font-bold text-sm">
                         {estimateData ? `${formatINR(estimateData.price_range_min)} – ${formatINR(estimateData.price_range_max)}` : '--'}
                       </span>
                     </div>
                     <div className="text-right">
-                      <span className="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">Fast-Sale Price</span>
+                      <span className="text-[#77796F] block text-[10px] uppercase font-bold tracking-wider">Fast-Sale Price</span>
                       <span className="text-amber-300 font-bold text-sm">
                         {estimateData?.recommended_listing_price ? formatINR(estimateData.recommended_listing_price) : '--'}
                       </span>
@@ -1142,21 +1142,21 @@ export const PriceEstimatorPage: React.FC = () => {
                   {estimateData?.factors && (
                     <div className="space-y-2.5 pt-2">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                        <h4 className="text-[11px] font-bold text-[#77796F] uppercase tracking-wider">
                           Valuation Adjustments:
                         </h4>
-                        <span className="text-[10px] text-slate-400">{city} Market</span>
+                        <span className="text-[10px] text-[#77796F]">{city} Market</span>
                       </div>
                       <div className="space-y-1.5 text-xs max-h-56 overflow-y-auto pr-1">
                         {estimateData.factors.map((f: any, idx: number) => {
                           const isNegative = f.impact.toString().startsWith('-');
                           return (
-                            <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-forest-950/70 border border-forest-900">
+                            <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-white/70 border border-[#E5E1D7]">
                               <div className="pr-2">
-                                <span className="font-bold text-slate-200 block text-[11px]">{f.factor}</span>
-                                <span className="text-slate-400 text-[10px]">{f.description}</span>
+                                <span className="font-bold text-[#242923] block text-[11px]">{f.factor}</span>
+                                <span className="text-[#77796F] text-[10px]">{f.description}</span>
                               </div>
-                              <span className={`font-bold text-xs whitespace-nowrap px-2 py-0.5 rounded ${isNegative ? 'text-amber-400 bg-amber-950/40' : 'text-emerald-400 bg-emerald-950/40'}`}>
+                              <span className={`font-bold text-xs whitespace-nowrap px-2 py-0.5 rounded ${isNegative ? 'text-amber-400 bg-amber-950/40' : 'text-[#596B59] bg-emerald-950/40'}`}>
                                 {f.impact}
                               </span>
                             </div>
@@ -1170,14 +1170,14 @@ export const PriceEstimatorPage: React.FC = () => {
                   <div className="space-y-2.5 pt-3">
                     <Link
                       to={`/sell?brand=${encodeURIComponent(brand)}&model=${encodeURIComponent(model)}&year=${year}&price=${estimateData?.estimated_price || ''}`}
-                      className="w-full py-3 px-4 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-glow transition-all"
+                      className="w-full py-3 px-4 rounded-xl bg-[#879783] hover:bg-[#596B59] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
                     >
                       <span>List Bike for Sale at {estimateData ? formatINR(estimateData.estimated_price) : 'this price'}</span>
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                     <Link
                       to={`/explore?category=${category}`}
-                      className="w-full py-2.5 px-4 rounded-xl bg-forest-950 hover:bg-forest-900 border border-forest-800 text-slate-300 hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                      className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-[#F1EEE5] border border-[#E5E1D7] text-[#77796F] hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
                     >
                       <span>Explore Similar {brand} Listings</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -1187,30 +1187,30 @@ export const PriceEstimatorPage: React.FC = () => {
               </div>
 
               {/* ML Transparency & Training Provenance Card */}
-              <div className="p-5 rounded-3xl bg-[#0E1A16] border border-forest-800/80 space-y-3 text-xs">
+              <div className="p-5 rounded-3xl bg-white border border-[#E5E1D7] space-y-3 text-xs">
                 <div className="flex items-center justify-between">
                   <h4 className="font-heading font-bold text-white flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <ShieldCheck className="w-4 h-4 text-[#596B59]" />
                     <span>Real Model Transparency</span>
                   </h4>
-                  <span className="text-[10px] text-emerald-400 font-bold">CatBoost Regressor</span>
+                  <span className="text-[10px] text-[#596B59] font-bold">CatBoost Regressor</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
-                  <div className="p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400 block text-[10px]">Model Performance</span>
+                  <div className="p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F] block text-[10px]">Model Performance</span>
                     <span className="font-bold text-white">99.19% R² (4.2% MedAPE)</span>
                   </div>
-                  <div className="p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400 block text-[10px]">Training Dataset</span>
+                  <div className="p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F] block text-[10px]">Training Dataset</span>
                     <span className="font-bold text-white">2,928 Real Transactions</span>
                   </div>
-                  <div className="p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400 block text-[10px]">Test MAE</span>
-                    <span className="font-bold text-emerald-300">₹4,730 Out-of-Time</span>
+                  <div className="p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F] block text-[10px]">Test MAE</span>
+                    <span className="font-bold text-[#596B59]">₹4,730 Out-of-Time</span>
                   </div>
-                  <div className="p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400 block text-[10px]">Inference Method</span>
-                    <span className="font-bold text-emerald-400">Trained Machine Learning</span>
+                  <div className="p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F] block text-[10px]">Inference Method</span>
+                    <span className="font-bold text-[#596B59]">Trained Machine Learning</span>
                   </div>
                 </div>
               </div>
@@ -1226,18 +1226,18 @@ export const PriceEstimatorPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
             {/* Chat Interaction Window (8 Columns) */}
-            <div className="lg:col-span-8 p-6 sm:p-8 rounded-3xl bg-[#0E1A16] border border-forest-800 shadow-2xl flex flex-col h-[750px] relative">
+            <div className="lg:col-span-8 p-6 sm:p-8 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl flex flex-col h-[750px] relative">
               
               {/* Progress & Header */}
-              <div className="border-b border-forest-900 pb-4 mb-4 flex items-center justify-between">
+              <div className="border-b border-[#E5E1D7] pb-4 mb-4 flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4 text-forest-400" />
+                    <MessageSquare className="w-4 h-4 text-[#596B59]" />
                     <h3 className="font-heading font-bold text-base text-white">
                       AI Guided Valuation Interview
                     </h3>
                   </div>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-[#77796F]">
                     Step {Math.min(chatStepIndex + 1, chatQuestions.length)} of {chatQuestions.length} • Connected directly to trained CatBoost backend API.
                   </p>
                 </div>
@@ -1246,7 +1246,7 @@ export const PriceEstimatorPage: React.FC = () => {
                   {chatStepIndex > 0 && !chatValuationResult && (
                     <button
                       onClick={handleChatGoBack}
-                      className="px-3 py-1.5 rounded-lg bg-forest-950 border border-forest-800 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1 transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-white border border-[#E5E1D7] text-[#77796F] hover:text-white text-xs font-semibold flex items-center gap-1 transition-colors"
                       title="Edit previous answer"
                     >
                       <ArrowLeft className="w-3.5 h-3.5" />
@@ -1255,7 +1255,7 @@ export const PriceEstimatorPage: React.FC = () => {
                   )}
                   <button
                     onClick={transferChatToManual}
-                    className="px-3 py-1.5 rounded-lg bg-forest-900/60 hover:bg-forest-900 border border-forest-700/60 text-forest-300 text-xs font-semibold flex items-center gap-1 transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-[#F1EEE5]/60 hover:bg-[#F1EEE5] border border-[#E5E1D7] text-[#596B59] text-xs font-semibold flex items-center gap-1 transition-colors"
                   >
                     <Sliders className="w-3.5 h-3.5" />
                     <span>Switch to Manual</span>
@@ -1264,9 +1264,9 @@ export const PriceEstimatorPage: React.FC = () => {
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full bg-forest-950 h-1.5 rounded-full overflow-hidden mb-4">
+              <div className="w-full bg-white h-1.5 rounded-full overflow-hidden mb-4">
                 <div 
-                  className="bg-forest-500 h-full transition-all duration-300"
+                  className="bg-[#879783] h-full transition-all duration-300"
                   style={{ width: `${Math.round(((chatStepIndex + (chatValuationResult ? 1 : 0)) / chatQuestions.length) * 100)}%` }}
                 />
               </div>
@@ -1279,21 +1279,21 @@ export const PriceEstimatorPage: React.FC = () => {
                     className={`flex items-start gap-3 ${item.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     {item.sender === 'ai' && (
-                      <div className="w-8 h-8 rounded-full bg-forest-800 border border-forest-600 flex items-center justify-center text-forest-300 shrink-0 font-black text-xs">
+                      <div className="w-8 h-8 rounded-full bg-[#E5D9C7]/40 border border-[#879783] flex items-center justify-center text-[#596B59] shrink-0 font-black text-xs">
                         GU
                       </div>
                     )}
                     <div
                       className={`max-w-[85%] sm:max-w-[75%] p-4 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                         item.sender === 'user'
-                          ? 'bg-forest-600 text-white rounded-tr-none shadow-md'
-                          : 'bg-forest-950 border border-forest-800/90 text-slate-200 rounded-tl-none'
+                          ? 'bg-[#879783] text-white rounded-tr-none shadow-md'
+                          : 'bg-white border border-[#E5E1D7]/90 text-[#242923] rounded-tl-none'
                       }`}
                     >
                       {item.text}
                     </div>
                     {item.sender === 'user' && (
-                      <div className="w-8 h-8 rounded-full bg-forest-700 flex items-center justify-center text-white shrink-0 font-bold text-xs">
+                      <div className="w-8 h-8 rounded-full bg-[#879783]/30 flex items-center justify-center text-white shrink-0 font-bold text-xs">
                         You
                       </div>
                     )}
@@ -1302,13 +1302,13 @@ export const PriceEstimatorPage: React.FC = () => {
 
                 {/* Final Chat Valuation Card if completed */}
                 {chatValuationResult && (
-                  <div className="p-6 rounded-3xl bg-gradient-to-br from-[#12241F] to-[#0A1713] border-2 border-forest-500 shadow-2xl space-y-4 my-2">
+                  <div className="p-6 rounded-3xl bg-gradient-to-br from-[#12241F] to-[#0A1713] border-2 border-[#879783] shadow-2xl space-y-4 my-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-forest-300 uppercase tracking-widest flex items-center gap-1.5">
-                        <TrendingUp className="w-4 h-4 text-forest-400" />
+                      <span className="text-xs font-bold text-[#596B59] uppercase tracking-widest flex items-center gap-1.5">
+                        <TrendingUp className="w-4 h-4 text-[#596B59]" />
                         Final AI Valuation
                       </span>
-                      <span className="text-[11px] bg-emerald-950 border border-emerald-500 text-emerald-300 px-3 py-0.5 rounded-full font-bold">
+                      <span className="text-[11px] bg-emerald-950 border border-emerald-500 text-[#596B59] px-3 py-0.5 rounded-full font-bold">
                         {chatValuationResult.confidence_level || 'CatBoost ML Production'}
                       </span>
                     </div>
@@ -1317,18 +1317,18 @@ export const PriceEstimatorPage: React.FC = () => {
                       <div className="text-4xl sm:text-5xl font-black text-white">
                         {formatINR(chatValuationResult.estimated_price)}
                       </div>
-                      <span className="text-xs text-slate-400">fair transaction price</span>
+                      <span className="text-xs text-[#77796F]">fair transaction price</span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-black/40 border border-forest-800 grid grid-cols-2 gap-3 text-xs">
+                    <div className="p-3 rounded-xl bg-black/40 border border-[#E5E1D7] grid grid-cols-2 gap-3 text-xs">
                       <div>
-                        <span className="text-slate-400 block text-[10px] uppercase">Fair Buying Range</span>
-                        <span className="text-forest-200 font-bold">
+                        <span className="text-[#77796F] block text-[10px] uppercase">Fair Buying Range</span>
+                        <span className="text-[#354638] font-bold">
                           {formatINR(chatValuationResult.price_range_min)} – {formatINR(chatValuationResult.price_range_max)}
                         </span>
                       </div>
                       <div className="text-right">
-                        <span className="text-slate-400 block text-[10px] uppercase">Fast Seller Listing</span>
+                        <span className="text-[#77796F] block text-[10px] uppercase">Fast Seller Listing</span>
                         <span className="text-amber-300 font-bold">
                           {formatINR(chatValuationResult.recommended_listing_price || chatValuationResult.estimated_price)}
                         </span>
@@ -1338,11 +1338,11 @@ export const PriceEstimatorPage: React.FC = () => {
                     {/* Breakdown Factors */}
                     {chatValuationResult.factors && (
                       <div className="space-y-1.5 pt-1 text-xs">
-                        <span className="text-slate-400 font-bold block text-[10px] uppercase">Key Valuation Influencers:</span>
+                        <span className="text-[#77796F] font-bold block text-[10px] uppercase">Key Valuation Influencers:</span>
                         {chatValuationResult.factors.slice(0, 3).map((f: any, i: number) => (
-                          <div key={i} className="flex justify-between p-2 rounded-lg bg-forest-950/80 border border-forest-900">
-                            <span className="text-slate-300">{f.factor}: <span className="text-slate-400 text-[11px]">{f.description}</span></span>
-                            <span className={`font-bold ml-2 ${f.impact.startsWith('-') ? 'text-amber-400' : 'text-emerald-400'}`}>{f.impact}</span>
+                          <div key={i} className="flex justify-between p-2 rounded-lg bg-[#F1EEE5] border border-[#E5E1D7]">
+                            <span className="text-[#77796F]">{f.factor}: <span className="text-[#77796F] text-[11px]">{f.description}</span></span>
+                            <span className={`font-bold ml-2 ${f.impact.startsWith('-') ? 'text-amber-400' : 'text-[#596B59]'}`}>{f.impact}</span>
                           </div>
                         ))}
                       </div>
@@ -1351,14 +1351,14 @@ export const PriceEstimatorPage: React.FC = () => {
                     <div className="flex flex-col sm:flex-row gap-3 pt-2">
                       <Link
                         to={`/sell?brand=${encodeURIComponent(chatFormState.brand)}&model=${encodeURIComponent(chatFormState.model)}&year=${chatFormState.manufacturing_year}&price=${chatValuationResult.estimated_price}`}
-                        className="flex-1 py-3 px-4 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md"
+                        className="flex-1 py-3 px-4 rounded-xl bg-[#879783] hover:bg-[#596B59] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md"
                       >
                         <span>List at this Price</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
                       <button
                         onClick={transferChatToManual}
-                        className="py-3 px-4 rounded-xl bg-forest-950 border border-forest-800 hover:bg-forest-900 text-slate-300 text-xs font-bold"
+                        className="py-3 px-4 rounded-xl bg-white border border-[#E5E1D7] hover:bg-[#F1EEE5] text-[#77796F] text-xs font-bold"
                       >
                         Adjust in Manual Mode
                       </button>
@@ -1369,10 +1369,10 @@ export const PriceEstimatorPage: React.FC = () => {
 
               {/* Quick Select Options Chips Area */}
               {!chatValuationResult && currentChatQuestion && (
-                <div className="pt-4 border-t border-forest-900 mt-2 space-y-3">
+                <div className="pt-4 border-t border-[#E5E1D7] mt-2 space-y-3">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-slate-400 font-semibold">{currentChatQuestion.helper || 'Select an option to proceed:'}</span>
-                    <span className="text-forest-400 font-bold">Step {chatStepIndex + 1}/{chatQuestions.length}</span>
+                    <span className="text-[#77796F] font-semibold">{currentChatQuestion.helper || 'Select an option to proceed:'}</span>
+                    <span className="text-[#596B59] font-bold">Step {chatStepIndex + 1}/{chatQuestions.length}</span>
                   </div>
 
                   {/* Interactive Option Chips */}
@@ -1382,19 +1382,19 @@ export const PriceEstimatorPage: React.FC = () => {
                         key={i}
                         type="button"
                         onClick={() => handleChatOptionSelect(opt)}
-                        className="p-3 rounded-xl bg-forest-950 hover:bg-forest-900 border border-forest-800/80 hover:border-forest-500 text-left transition-all group flex items-center justify-between"
+                        className="p-3 rounded-xl bg-white hover:bg-[#F1EEE5] border border-[#E5E1D7] hover:border-[#879783] text-left transition-all group flex items-center justify-between"
                       >
                         <div>
-                          <div className="text-xs font-bold text-white group-hover:text-forest-300">
+                          <div className="text-xs font-bold text-white group-hover:text-[#596B59]">
                             {opt.label}
                           </div>
                           {opt.subtext && (
-                            <div className="text-[10px] text-slate-400 mt-0.5">
+                            <div className="text-[10px] text-[#77796F] mt-0.5">
                               {opt.subtext}
                             </div>
                           )}
                         </div>
-                        <ChevronRight className="w-3.5 h-3.5 text-forest-600 group-hover:text-forest-400 group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+                        <ChevronRight className="w-3.5 h-3.5 text-forest-600 group-hover:text-[#596B59] group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
                       </button>
                     ))}
                   </div>
@@ -1418,12 +1418,12 @@ export const PriceEstimatorPage: React.FC = () => {
                       placeholder="Or type custom specification / value..."
                       value={userCustomInput}
                       onChange={(e) => setUserCustomInput(e.target.value)}
-                      className="flex-1 bg-forest-950 border border-forest-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-forest-500"
+                      className="flex-1 bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#879783]"
                     />
                     <button
                       type="submit"
                       disabled={!userCustomInput.trim()}
-                      className="px-4 py-2 rounded-xl bg-forest-700 hover:bg-forest-600 disabled:opacity-40 text-white text-xs font-bold flex items-center gap-1 transition-all"
+                      className="px-4 py-2 rounded-xl bg-[#879783]/30 hover:bg-[#879783] disabled:opacity-40 text-white text-xs font-bold flex items-center gap-1 transition-all"
                     >
                       <span>Send</span>
                       <Send className="w-3.5 h-3.5" />
@@ -1437,62 +1437,62 @@ export const PriceEstimatorPage: React.FC = () => {
             {/* Live Progress & Summary Drawer (4 Columns) */}
             <div className="lg:col-span-4 space-y-6">
               
-              <div className="p-6 rounded-3xl bg-[#0E1A16] border border-forest-800 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-forest-900 pb-3">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-[#E5E1D7] pb-3">
                   <h4 className="font-heading font-bold text-sm text-white flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-forest-400" />
+                    <ShieldCheck className="w-4 h-4 text-[#596B59]" />
                     <span>Collected Vehicle Profile</span>
                   </h4>
-                  <span className="text-[10px] text-forest-400 font-bold uppercase tracking-wider">Live</span>
+                  <span className="text-[10px] text-[#596B59] font-bold uppercase tracking-wider">Live</span>
                 </div>
 
                 <div className="space-y-2.5 text-xs">
-                  <div className="flex justify-between p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400">Category:</span>
+                  <div className="flex justify-between p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F]">Category:</span>
                     <span className="font-bold text-white capitalize">{chatFormState.category}</span>
                   </div>
-                  <div className="flex justify-between p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400">Brand & Model:</span>
+                  <div className="flex justify-between p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F]">Brand & Model:</span>
                     <span className="font-bold text-white">{chatFormState.brand} {chatFormState.model}</span>
                   </div>
-                  <div className="flex justify-between p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400">Year:</span>
+                  <div className="flex justify-between p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F]">Year:</span>
                     <span className="font-bold text-white">{chatFormState.manufacturing_year}</span>
                   </div>
-                  <div className="flex justify-between p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400">Kilometers:</span>
-                    <span className="font-bold text-forest-300">{(chatFormState.km_driven || 0).toLocaleString()} km</span>
+                  <div className="flex justify-between p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F]">Kilometers:</span>
+                    <span className="font-bold text-[#596B59]">{(chatFormState.km_driven || 0).toLocaleString()} km</span>
                   </div>
-                  <div className="flex justify-between p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400">Owners:</span>
+                  <div className="flex justify-between p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F]">Owners:</span>
                     <span className="font-bold text-white">{chatFormState.owners_count} Owner(s)</span>
                   </div>
-                  <div className="flex justify-between p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400">Location:</span>
+                  <div className="flex justify-between p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F]">Location:</span>
                     <span className="font-bold text-white">{chatFormState.city || 'Chandigarh'}</span>
                   </div>
-                  <div className="flex justify-between p-2 rounded-xl bg-forest-950 border border-forest-900">
-                    <span className="text-slate-400">Service:</span>
+                  <div className="flex justify-between p-2 rounded-xl bg-white border border-[#E5E1D7]">
+                    <span className="text-[#77796F]">Service:</span>
                     <span className="font-bold text-white capitalize">{(chatFormState.service_history || '').replace('_', ' ')}</span>
                   </div>
                 </div>
 
                 <div className="pt-2">
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    💡 <strong className="text-slate-300">Data-Driven Pricing Guarantee:</strong> GEAR UP never invents synthetic prices. The chat agent structures your answers and sends them directly to our trained CatBoost ML model running in the backend.
+                  <p className="text-[11px] text-[#77796F] leading-relaxed">
+                    💡 <strong className="text-[#77796F]">Data-Driven Pricing Guarantee:</strong> GEAR UP never invents synthetic prices. The chat agent structures your answers and sends them directly to our trained CatBoost ML model running in the backend.
                   </p>
                 </div>
               </div>
 
               {/* Provenance Card */}
-              <div className="p-6 rounded-3xl bg-[#0E1A16] border border-forest-800 shadow-2xl space-y-3">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-3">
                 <div className="flex items-center gap-2">
-                  <Database className="w-4 h-4 text-emerald-400" />
-                  <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-slate-200">
+                  <Database className="w-4 h-4 text-[#596B59]" />
+                  <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-[#242923]">
                     Verified Training Provenance
                   </h4>
                 </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
+                <p className="text-[11px] text-[#77796F] leading-relaxed">
                   Trained on 2,928 completed resale transactions from GEAR UP verified listings, Royal Enfield Vintage, Honda Best Deal, and metro pre-owned dealerships. Evaluated out-of-time with 99.19% R² score.
                 </p>
               </div>

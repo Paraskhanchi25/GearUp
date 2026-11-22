@@ -87,10 +87,10 @@ export const FloatingBikeBuddy: React.FC = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-forest-700 to-forest-500 text-white font-bold text-xs shadow-glow hover:scale-105 transition-transform border border-forest-400/50"
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-forest-700 to-forest-500 text-white font-bold text-xs shadow-sm hover:scale-105 transition-transform border border-forest-400/50"
         >
-          <div className="w-6 h-6 rounded-full bg-forest-900 flex items-center justify-center">
-            <Bot className="w-4 h-4 text-forest-300" />
+          <div className="w-6 h-6 rounded-full bg-[#F1EEE5] flex items-center justify-center">
+            <Bot className="w-4 h-4 text-[#596B59]" />
           </div>
           <span>AI Bike Buddy</span>
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -99,19 +99,19 @@ export const FloatingBikeBuddy: React.FC = () => {
 
       {/* Floating Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)] h-[540px] bg-[#101E19] border border-forest-700/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-fade-in">
+        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)] h-[540px] bg-[#101E19] border border-[#E5E1D7]/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-fade-in">
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-forest-900 to-forest-800 border-b border-forest-700 flex items-center justify-between">
+          <div className="p-4 bg-gradient-to-r from-forest-900 to-forest-800 border-b border-[#E5E1D7] flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-forest-700 flex items-center justify-center text-forest-100 border border-forest-500/40">
+              <div className="w-8 h-8 rounded-xl bg-[#879783]/30 flex items-center justify-center text-[#354638] border border-[#879783]/40">
                 <Bot className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h4 className="font-heading font-bold text-sm text-white">AI Bike Buddy</h4>
-                  <span className="text-[10px] bg-forest-600/60 text-forest-200 px-1.5 rounded font-mono">Mechanic</span>
+                  <span className="text-[10px] bg-[#879783]/60 text-[#354638] px-1.5 rounded font-mono">Mechanic</span>
                 </div>
-                <p className="text-[10px] text-forest-300">2-Wheeler Diagnostic Expert</p>
+                <p className="text-[10px] text-[#596B59]">2-Wheeler Diagnostic Expert</p>
               </div>
             </div>
 
@@ -119,13 +119,13 @@ export const FloatingBikeBuddy: React.FC = () => {
               <Link
                 to="/ai-buddy"
                 onClick={() => setIsOpen(false)}
-                className="text-[10px] font-bold text-forest-300 hover:text-white bg-forest-950 px-2 py-1 rounded-md border border-forest-800"
+                className="text-[10px] font-bold text-[#596B59] hover:text-white bg-white px-2 py-1 rounded-md border border-[#E5E1D7]"
               >
                 Expand
               </Link>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg bg-forest-950 hover:bg-forest-900 text-slate-400 hover:text-white"
+                className="p-1.5 rounded-lg bg-white hover:bg-[#F1EEE5] text-[#77796F] hover:text-white"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -142,8 +142,8 @@ export const FloatingBikeBuddy: React.FC = () => {
                 <div
                   className={`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed ${
                     m.sender === 'user'
-                      ? 'bg-forest-600 text-white rounded-br-none'
-                      : 'bg-forest-950 text-slate-200 border border-forest-800/80 rounded-bl-none'
+                      ? 'bg-[#879783] text-white rounded-br-none'
+                      : 'bg-white text-[#242923] border border-[#E5E1D7] rounded-bl-none'
                   }`}
                 >
                   <div className="whitespace-pre-line">{m.text}</div>
@@ -166,14 +166,14 @@ export const FloatingBikeBuddy: React.FC = () => {
                           key={item.id}
                           to={`/bike/${item.id}`}
                           onClick={() => setIsOpen(false)}
-                          className="flex items-center gap-2 p-2 rounded-xl bg-forest-900/60 hover:bg-forest-800 border border-forest-700/60 text-xs transition-colors"
+                          className="flex items-center gap-2 p-2 rounded-xl bg-[#F1EEE5]/60 hover:bg-[#E5D9C7]/40 border border-[#E5E1D7] text-xs transition-colors"
                         >
                           <img src={item.primaryImage} alt={item.title} className="w-10 h-10 rounded-lg object-cover" />
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-white truncate">{item.title}</p>
-                            <p className="text-forest-300 font-semibold">{formatINR(item.price)} • {item.city}</p>
+                            <p className="text-[#596B59] font-semibold">{formatINR(item.price)} • {item.city}</p>
                           </div>
-                          <ChevronRight className="w-4 h-4 text-slate-400" />
+                          <ChevronRight className="w-4 h-4 text-[#77796F]" />
                         </Link>
                       );
                     })}
@@ -184,35 +184,35 @@ export const FloatingBikeBuddy: React.FC = () => {
           </div>
 
           {/* Quick Prompts */}
-          <div className="px-3 py-1.5 bg-[#0B1512] border-t border-forest-900 flex gap-1.5 overflow-x-auto text-[10px]">
+          <div className="px-3 py-1.5 bg-[#0B1512] border-t border-[#E5E1D7] flex gap-1.5 overflow-x-auto text-[10px]">
             <button
               onClick={() => handleSend('Clicking sound when I press starter')}
-              className="px-2 py-1 rounded-full bg-forest-950 border border-forest-800 text-slate-300 whitespace-nowrap hover:border-forest-600"
+              className="px-2 py-1 rounded-full bg-white border border-[#E5E1D7] text-[#77796F] whitespace-nowrap hover:border-[#879783]"
             >
               Clicking sound
             </button>
             <button
               onClick={() => handleSend('My scooter mileage suddenly dropped')}
-              className="px-2 py-1 rounded-full bg-forest-950 border border-forest-800 text-slate-300 whitespace-nowrap hover:border-forest-600"
+              className="px-2 py-1 rounded-full bg-white border border-[#E5E1D7] text-[#77796F] whitespace-nowrap hover:border-[#879783]"
             >
               Mileage drop
             </button>
             <button
               onClick={() => handleSend('Brake lever feels soft and spongy')}
-              className="px-2 py-1 rounded-full bg-forest-950 border border-forest-800 text-slate-300 whitespace-nowrap hover:border-forest-600"
+              className="px-2 py-1 rounded-full bg-white border border-[#E5E1D7] text-[#77796F] whitespace-nowrap hover:border-[#879783]"
             >
               Spongy brakes
             </button>
           </div>
 
           {/* Input Box */}
-          <div className="p-3 bg-forest-950 border-t border-forest-800 flex items-center gap-2">
+          <div className="p-3 bg-white border-t border-[#E5E1D7] flex items-center gap-2">
             <button
               onClick={toggleSpeech}
               className={`p-2 rounded-xl border transition-colors ${
                 isListening
                   ? 'bg-red-500 text-white border-red-400 animate-pulse'
-                  : 'bg-forest-900 text-forest-300 border-forest-700 hover:text-white'
+                  : 'bg-[#F1EEE5] text-[#596B59] border-[#E5E1D7] hover:text-white'
               }`}
               title="Voice Input"
             >
@@ -225,13 +225,13 @@ export const FloatingBikeBuddy: React.FC = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Ask anything about 2-wheeler mechanics..."
-              className="flex-1 bg-[#101E19] border border-forest-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-forest-500"
+              className="flex-1 bg-[#101E19] border border-[#E5E1D7] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#879783]"
             />
 
             <button
               onClick={() => handleSend()}
               disabled={!input.trim()}
-              className="p-2 rounded-xl bg-forest-600 hover:bg-forest-500 disabled:opacity-40 text-white transition-colors"
+              className="p-2 rounded-xl bg-[#879783] hover:bg-[#596B59] disabled:opacity-40 text-white transition-colors"
             >
               <Send className="w-4 h-4" />
             </button>

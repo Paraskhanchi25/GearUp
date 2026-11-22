@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { FloatingBikeBuddy } from './components/FloatingBikeBuddy';
@@ -67,7 +67,7 @@ export const App: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#0A1411] flex flex-col font-sans selection:bg-forest-600 selection:text-white">
+      <div className="min-h-screen bg-[#F7F5EF] text-[#242923] flex flex-col font-sans selection:bg-[#879783] selection:text-white">
         <Navbar
           currentLocation={currentLocation}
           onLocationChange={setCurrentLocation}
@@ -109,6 +109,7 @@ export const App: React.FC = () => {
                 />
               }
             />
+            <Route path="/inspect/:id" element={<Navigate to="/explore" replace />} />
             <Route path="/sell" element={<SellBikePage />} />
             <Route path="/resale-studio" element={<ResaleStudioPage />} />
             <Route path="/bike-doctor" element={<BikeDoctorPage />} />

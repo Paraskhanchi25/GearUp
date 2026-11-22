@@ -16,16 +16,16 @@ export const ComparePage: React.FC = () => {
   const selectedBikes = [bike1, bike2, bike3];
 
   return (
-    <div className="min-h-screen bg-[#0A1411] text-slate-100 pb-24 px-4 sm:px-6 lg:px-8 pt-8">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#242923] pb-24 px-4 sm:px-6 lg:px-8 pt-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <div>
-          <span className="text-xs font-bold text-forest-300 uppercase tracking-widest">
+          <span className="text-xs font-bold text-[#596B59] uppercase tracking-widest">
             HEAD-TO-HEAD MATRIX
           </span>
           <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mt-1">
             Compare Two-Wheelers Side-by-Side
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-[#77796F] text-sm mt-1">
             Evaluate specifications, estimated running cost, fair price valuation and AI verdict across up to 3 rides.
           </p>
         </div>
@@ -33,8 +33,8 @@ export const ComparePage: React.FC = () => {
         {/* Vehicles Header Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {selectedBikes.map((bike, idx) => (
-            <div key={idx} className="p-5 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
-              <div className="relative aspect-video rounded-2xl overflow-hidden bg-forest-950">
+            <div key={idx} className="p-5 rounded-3xl bg-white border border-[#E5E1D7] space-y-4">
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-white">
                 <img src={bike.primaryImage} alt={bike.title} className="w-full h-full object-cover" />
                 <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-black/70 text-white uppercase">
                   {bike.category}
@@ -49,7 +49,7 @@ export const ComparePage: React.FC = () => {
                     if (idx === 1) setBike2Id(e.target.value);
                     if (idx === 2) setBike3Id(e.target.value);
                   }}
-                  className="w-full bg-forest-950 text-white text-xs font-bold border border-forest-800 rounded-xl px-3 py-2"
+                  className="w-full bg-white text-white text-xs font-bold border border-[#E5E1D7] rounded-xl px-3 py-2"
                 >
                   {SEED_LISTINGS.map((b) => (
                     <option key={b.id} value={b.id}>
@@ -59,7 +59,7 @@ export const ComparePage: React.FC = () => {
                 </select>
                 <div className="flex items-center justify-between pt-2">
                   <span className="font-heading font-extrabold text-xl text-white">{formatINR(bike.price)}</span>
-                  <Link to={`/bike/${bike.id}`} className="text-xs text-forest-300 font-bold hover:underline">
+                  <Link to={`/bike/${bike.id}`} className="text-xs text-[#596B59] font-bold hover:underline">
                     Details →
                   </Link>
                 </div>
@@ -69,24 +69,24 @@ export const ComparePage: React.FC = () => {
         </div>
 
         {/* Comparison Table */}
-        <div className="rounded-3xl bg-[#101D19] border border-forest-800 overflow-hidden shadow-2xl">
-          <div className="p-5 bg-forest-950 border-b border-forest-800 flex items-center justify-between">
+        <div className="rounded-3xl bg-white border border-[#E5E1D7] overflow-hidden shadow-2xl">
+          <div className="p-5 bg-white border-b border-[#E5E1D7] flex items-center justify-between">
             <h3 className="font-heading font-bold text-base text-white">Full Specifications Comparison</h3>
-            <span className="text-xs text-forest-300 font-medium">3 Rides Selected</span>
+            <span className="text-xs text-[#596B59] font-medium">3 Rides Selected</span>
           </div>
 
           <div className="divide-y divide-forest-900/60 text-xs">
             {/* Manufacturing Year */}
             <div className="grid grid-cols-4 p-4 items-center">
-              <span className="text-slate-400 font-semibold">Manufacturing Year</span>
+              <span className="text-[#77796F] font-semibold">Manufacturing Year</span>
               {selectedBikes.map((b, i) => (
                 <span key={i} className="font-bold text-white">{b.year} ({b.regState})</span>
               ))}
             </div>
 
             {/* Odometer */}
-            <div className="grid grid-cols-4 p-4 items-center bg-forest-950/30">
-              <span className="text-slate-400 font-semibold">Odometer (KM)</span>
+            <div className="grid grid-cols-4 p-4 items-center bg-white/30">
+              <span className="text-[#77796F] font-semibold">Odometer (KM)</span>
               {selectedBikes.map((b, i) => (
                 <span key={i} className="font-bold text-white">{b.km.toLocaleString('en-IN')} km</span>
               ))}
@@ -94,33 +94,33 @@ export const ComparePage: React.FC = () => {
 
             {/* Fuel / Powertrain */}
             <div className="grid grid-cols-4 p-4 items-center">
-              <span className="text-slate-400 font-semibold">Powertrain</span>
+              <span className="text-[#77796F] font-semibold">Powertrain</span>
               {selectedBikes.map((b, i) => (
                 <span key={i} className="font-bold text-white capitalize">{b.fuel}</span>
               ))}
             </div>
 
             {/* Power Output */}
-            <div className="grid grid-cols-4 p-4 items-center bg-forest-950/30">
-              <span className="text-slate-400 font-semibold">Max Power</span>
+            <div className="grid grid-cols-4 p-4 items-center bg-white/30">
+              <span className="text-[#77796F] font-semibold">Max Power</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="font-bold text-forest-300">{b.specs.powerBhp || 'N/A'}</span>
+                <span key={i} className="font-bold text-[#596B59]">{b.specs.powerBhp || 'N/A'}</span>
               ))}
             </div>
 
             {/* Fuel Mileage / EV Range */}
             <div className="grid grid-cols-4 p-4 items-center">
-              <span className="text-slate-400 font-semibold">Efficiency / Range</span>
+              <span className="text-[#77796F] font-semibold">Efficiency / Range</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="font-bold text-emerald-400">
+                <span key={i} className="font-bold text-[#596B59]">
                   {b.specs.mileageKmpl ? `${b.specs.mileageKmpl} kmpl` : `${b.specs.rangeKm} km Range`}
                 </span>
               ))}
             </div>
 
             {/* Estimated Running Cost per Month (assuming 500 km/month) */}
-            <div className="grid grid-cols-4 p-4 items-center bg-forest-950/30">
-              <span className="text-slate-400 font-semibold">Running Cost (500 km/mo)</span>
+            <div className="grid grid-cols-4 p-4 items-center bg-white/30">
+              <span className="text-[#77796F] font-semibold">Running Cost (500 km/mo)</span>
               {selectedBikes.map((b, i) => {
                 const cost = b.fuel === 'electric' ? '₹125 / month' : '₹1,450 / month';
                 return (
@@ -131,17 +131,17 @@ export const ComparePage: React.FC = () => {
 
             {/* Inspection Score */}
             <div className="grid grid-cols-4 p-4 items-center">
-              <span className="text-slate-400 font-semibold">120-Point Inspection</span>
+              <span className="text-[#77796F] font-semibold">120-Point Inspection</span>
               {selectedBikes.map((b, i) => (
                 <span key={i} className="font-bold text-white">{b.inspectionScore} / 5.0</span>
               ))}
             </div>
 
             {/* Document Verification */}
-            <div className="grid grid-cols-4 p-4 items-center bg-forest-950/30">
-              <span className="text-slate-400 font-semibold">RTO Verified</span>
+            <div className="grid grid-cols-4 p-4 items-center bg-white/30">
+              <span className="text-[#77796F] font-semibold">RTO Verified</span>
               {selectedBikes.map((b, i) => (
-                <span key={i} className="flex items-center gap-1 text-emerald-400 font-bold">
+                <span key={i} className="flex items-center gap-1 text-[#596B59] font-bold">
                   <CheckCircle2 className="w-4 h-4" /> Yes (Parivahan)
                 </span>
               ))}
@@ -150,12 +150,12 @@ export const ComparePage: React.FC = () => {
         </div>
 
         {/* AI Final Verdict Box */}
-        <div className="p-6 rounded-3xl bg-gradient-to-r from-[#142B23] to-[#0D1C17] border border-forest-600/70 space-y-3">
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-[#142B23] to-[#0D1C17] border border-[#879783]/50 space-y-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-emerald-400" />
+            <Sparkles className="w-5 h-5 text-[#596B59]" />
             <h3 className="font-heading font-bold text-base text-white">AI Verdict & Recommendations</h3>
           </div>
-          <p className="text-xs text-slate-300 leading-relaxed">
+          <p className="text-xs text-[#77796F] leading-relaxed">
             • <strong>For Minimum Operating Costs:</strong> {bike2.title} ({bike2.fuel}) will save you over ₹15,000 per year in fuel.<br />
             • <strong>For Weekend Highway Touring:</strong> {bike1.title} provides superior torque and highway stability.<br />
             • <strong>For City Traffic & Grocery Errands:</strong> {bike3.title} offers the lightest kerb weight and easiest handling.

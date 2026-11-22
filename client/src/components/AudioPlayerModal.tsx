@@ -14,11 +14,11 @@ export const AudioPlayerModal: React.FC<AudioPlayerModalProps> = ({ vehicle, onC
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#12221D] border border-forest-700 rounded-3xl max-w-lg w-full p-6 text-white shadow-2xl relative space-y-5">
+      <div className="bg-[#12221D] border border-[#E5E1D7] rounded-3xl max-w-lg w-full p-6 text-white shadow-2xl relative space-y-5">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full bg-forest-950 hover:bg-forest-900 text-slate-300 hover:text-white transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-full bg-white hover:bg-[#F1EEE5] text-[#77796F] hover:text-white transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -39,19 +39,19 @@ export const AudioPlayerModal: React.FC<AudioPlayerModalProps> = ({ vehicle, onC
         </div>
 
         {/* Vehicle Mini Bar */}
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-forest-950/70 border border-forest-900">
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-white/70 border border-[#E5E1D7]">
           <img src={vehicle.primaryImage} alt={vehicle.title} className="w-12 h-12 rounded-lg object-cover" />
           <div className="text-xs">
             <p className="font-bold text-white line-clamp-1">{vehicle.title}</p>
-            <p className="text-slate-400">{vehicle.area}, {vehicle.city} • By {audioStory.speakerName}</p>
+            <p className="text-[#77796F]">{vehicle.area}, {vehicle.city} • By {audioStory.speakerName}</p>
           </div>
         </div>
 
         {/* Audio Player Element */}
-        <div className="bg-[#0B1512] p-4 rounded-2xl border border-forest-900/80 space-y-3">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+        <div className="bg-[#0B1512] p-4 rounded-2xl border border-[#E5E1D7]/80 space-y-3">
+          <div className="flex items-center justify-between text-xs text-[#77796F]">
             <span>Audio Testimonial Duration</span>
-            <span className="font-bold text-forest-300">{audioStory.duration}s</span>
+            <span className="font-bold text-[#596B59]">{audioStory.duration}s</span>
           </div>
 
           {/* HTML5 Native Audio Control */}
@@ -63,13 +63,13 @@ export const AudioPlayerModal: React.FC<AudioPlayerModalProps> = ({ vehicle, onC
 
         {/* Transcript Box */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-300">
-            <span className="font-semibold text-forest-200">AI Voice-to-Text Transcript</span>
-            <span className="flex items-center gap-1 text-[11px] text-emerald-400">
+          <div className="flex items-center justify-between text-xs text-[#77796F]">
+            <span className="font-semibold text-[#354638]">AI Voice-to-Text Transcript</span>
+            <span className="flex items-center gap-1 text-[11px] text-[#596B59]">
               <CheckCircle2 className="w-3.5 h-3.5" /> Authenticated
             </span>
           </div>
-          <p className="p-3.5 rounded-xl bg-forest-950/50 border border-forest-900 text-xs text-slate-300 italic leading-relaxed">
+          <p className="p-3.5 rounded-xl bg-white/50 border border-[#E5E1D7] text-xs text-[#77796F] italic leading-relaxed">
             &ldquo;{audioStory.transcript}&rdquo;
           </p>
         </div>
@@ -78,7 +78,7 @@ export const AudioPlayerModal: React.FC<AudioPlayerModalProps> = ({ vehicle, onC
         <div className="flex justify-end pt-2">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-600 text-white font-bold text-xs transition-colors"
+            className="px-5 py-2.5 rounded-xl bg-[#879783]/30 hover:bg-[#879783] text-white font-bold text-xs transition-colors"
           >
             Close Story
           </button>
