@@ -116,24 +116,24 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
   return (
     <div className="min-h-screen bg-[#F7F5EF] text-[#242622] pb-24">
       {/* Editorial Breadcrumb Header */}
-      <div className="border-b border-[#E9E3D8] bg-[#E9E3D8]/80 backdrop-blur-md px-4 sm:px-6 py-3">
+      <div className="border-b border-[#242622]/[0.06] bg-[#FAF9F5]/85 backdrop-blur-[24px] saturate-[180%] px-4 sm:px-6 py-3.5 sticky top-16 z-20">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-xs">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-[#242622] hover:text-[#242622] font-medium transition-colors"
+            className="flex items-center gap-1.5 text-[#242622] hover:text-[#35483C] font-semibold transition-colors tactile-btn active:scale-95"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Back to Collection</span>
           </button>
 
             <div className="flex items-center gap-2 sm:gap-3">
-              <span className="text-[#85857E] font-mono text-[11px] hidden xs:inline">ID: {vehicle.id}</span>
+              <span className="text-[#85857E] font-mono text-[11px] hidden xs:inline px-2.5 py-1 rounded-full bg-[#FAF9F5] border border-[#242622]/[0.06]">ID: {vehicle.id}</span>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
                   alert('Listing link copied to clipboard!');
                 }}
-                className="w-10 h-10 flex items-center justify-center bg-white text-[#242622] hover:text-[#35483C] border border-[#E9E3D8] shadow-sm transition-colors active:scale-95"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-[#242622] hover:text-[#35483C] border border-[#242622]/[0.08] shadow-sm transition-all tactile-btn active:scale-90"
                 title="Share Listing"
                 aria-label="Share Listing"
               >
@@ -141,7 +141,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               </button>
               <button
                 onClick={() => onToggleSave(vehicle.id)}
-                className="w-10 h-10 flex items-center justify-center bg-white text-[#85857E] hover:text-red-500 border border-[#E9E3D8] shadow-sm transition-colors active:scale-95"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-[#85857E] hover:text-red-500 border border-[#242622]/[0.08] shadow-sm transition-all tactile-btn active:scale-90"
                 title={isSaved ? "Remove from Saved" : "Save Listing"}
                 aria-label={isSaved ? "Remove from Saved" : "Save Listing"}
               >
@@ -156,8 +156,8 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
           {/* Left Column: Visual Gallery & Detailed AI Reports (7 Cols) */}
           <div className="lg:col-span-7 space-y-6">
             {/* Main Stage Image & Gallery Presentation */}
-            <div className="bg-white rounded-none border border-[#E9E3D8] p-3 shadow-subtle overflow-hidden">
-              <div className="relative aspect-[16/10] rounded-none overflow-hidden bg-[#E9E3D8] flex items-center justify-center">
+            <div className="bg-white rounded-3xl border border-[#242622]/[0.08] p-3.5 sm:p-4 shadow-subtle overflow-hidden">
+              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-[#FAF9F5] flex items-center justify-center">
                 {activeImage ? (
                   <img
                     src={activeImage}
@@ -176,31 +176,31 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                 
                 {/* Badges Overlay */}
                 <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                  <span className="px-3 py-1 rounded-full text-xs font-medium tracking-wider uppercase bg-[#242622]/80 backdrop-blur-md text-white">
+                  <span className="px-3.5 py-1 rounded-full text-xs font-semibold tracking-wider uppercase bg-[#161816]/80 backdrop-blur-md text-white border border-white/10 shadow-sm">
                     {vehicle.category}
                   </span>
                   {vehicle.batteryHealth && (
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#35483C]/90 backdrop-blur-md text-white flex items-center gap-1 shadow-sm">
+                    <span className="px-3.5 py-1 rounded-full text-xs font-semibold bg-[#35483C]/90 backdrop-blur-md text-white flex items-center gap-1.5 shadow-sm border border-white/10">
                       <Zap className="w-3.5 h-3.5" /> Battery Health: {vehicle.batteryHealth}%
                     </span>
                   )}
                 </div>
 
                 <div className="absolute bottom-4 right-4">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-white/90 backdrop-blur-md text-[#242622] border border-[#E9E3D8] shadow-sm">
+                  <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-white/90 backdrop-blur-md text-[#242622] border border-[#242622]/[0.08] shadow-sm">
                     {1 + (vehicle.galleryImages?.length || 0)} Certified Photos
                   </span>
                 </div>
               </div>
 
               {/* Gallery Thumbnails */}
-              <div className="flex items-center gap-3 overflow-x-auto pt-3 px-1 pb-1">
+              <div className="flex items-center gap-2.5 overflow-x-auto pt-3 px-1 pb-1">
                 {[vehicle.primaryImage, ...(vehicle.galleryImages || [])].map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImage(img)}
-                    className={`w-20 h-14 rounded-none overflow-hidden border-2 transition-all flex-shrink-0 ${
-                      activeImage === img ? 'border-[#35483C] shadow-sm scale-105' : 'border-[#E9E3D8] opacity-60 hover:opacity-100'
+                    className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 tactile-btn ${
+                      activeImage === img ? 'border-[#35483C] shadow-md scale-105' : 'border-[#242622]/[0.08] opacity-60 hover:opacity-100'
                     }`}
                   >
                     <img src={img} alt="Thumb" className="w-full h-full object-cover" />
@@ -211,13 +211,13 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
 
             {/* Rider Audio Story Banner (if available) */}
             {vehicle.audioStory && (
-              <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#E9E3D8] border border-[#E9E3D8] flex items-center justify-between shadow-subtle">
+              <div className="p-5 sm:p-6 rounded-3xl border border-[#35483C]/20 bg-gradient-to-r from-white to-[#FAF9F5] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-subtle">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-none bg-white text-[#242622] flex items-center justify-center border border-[#E9E3D8] shadow-sm">
-                    <Volume2 className="w-5 h-5 text-[#35483C]" />
+                  <div className="w-12 h-12 rounded-2xl bg-[#35483C]/10 text-[#35483C] flex items-center justify-center border border-[#35483C]/20">
+                    <Volume2 className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-heading font-medium text-sm text-[#242622]">Listen to Owner&apos;s Voice Note</h4>
+                    <h4 className="font-heading font-bold text-sm text-[#242622]">Listen to Owner&apos;s Voice Note</h4>
                     <p className="text-xs text-[#85857E]">
                       {vehicle.audioStory.speakerName} shares ownership history & route habits ({vehicle.audioStory.duration}s)
                     </p>
@@ -225,7 +225,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                 </div>
                 <button
                   onClick={() => setAudioModalOpen(true)}
-                  className="px-4 py-2 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs transition-colors shadow-sm"
+                  className="px-5 py-2.5 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md tactile-btn active:scale-[0.96] self-start sm:self-auto"
                 >
                   Play Audio
                 </button>
@@ -233,18 +233,18 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
             )}
 
             {/* AI Fair-Price Assessment Gauge Box */}
-            <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-subtle space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="p-6 sm:p-8 rounded-3xl border border-[#242622]/[0.08] bg-white shadow-subtle space-y-5">
+              <div className="flex items-center justify-between border-b border-[#242622]/[0.06] pb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-[#35483C]" />
+                  <div className="w-10 h-10 rounded-2xl bg-[#35483C]/10 text-[#35483C] flex items-center justify-center">
+                    <Sparkles className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-heading text-lg font-medium text-[#242622]">AI Fair-Price Valuation</h3>
+                    <h3 className="font-heading text-lg font-bold text-[#242622]">AI Fair-Price Valuation</h3>
                     <p className="text-xs text-[#85857E]">Trained on 45,000+ verified Indian two-wheeler transactions</p>
                   </div>
                 </div>
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#E9E3D8] text-[#242622] border border-[#E9E3D8] uppercase tracking-wider">
+                <span className="px-3.5 py-1 rounded-full text-xs font-semibold bg-[#FAF9F5] text-[#242622] border border-[#242622]/[0.08] uppercase tracking-wider">
                   {vehicle.aiDealBadge.replace('_', ' ')}
                 </span>
               </div>
@@ -273,10 +273,10 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
             </div>
 
             {/* AI Visible Cosmetic Condition Observations */}
-            <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-subtle space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-heading text-lg font-medium text-[#242622]">Cosmetic Condition Observations</h3>
-                <span className="text-xs font-semibold text-[#242622] bg-[#E9E3D8] px-3 py-1 rounded-full border border-[#E9E3D8]">
+            <div className="p-6 sm:p-8 rounded-3xl border border-[#242622]/[0.08] bg-white shadow-subtle space-y-4">
+              <div className="flex items-center justify-between border-b border-[#242622]/[0.06] pb-3">
+                <h3 className="font-heading text-lg font-bold text-[#242622]">Cosmetic Condition Observations</h3>
+                <span className="text-xs font-semibold text-[#35483C] bg-[#35483C]/10 px-3 py-1 rounded-full border border-[#35483C]/20">
                   Cosmetic Score: {vehicle.aiCosmeticScore} / 10
                 </span>
               </div>
@@ -290,7 +290,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                 ))}
               </div>
 
-              <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] flex items-start gap-2 text-xs text-[#85857E]">
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-start gap-2.5 text-xs text-[#85857E]">
                 <AlertCircle className="w-4 h-4 text-[#35483C] flex-shrink-0 mt-0.5" />
                 <p>
                   <strong>Notice:</strong> AI photo analysis strictly detects visible exterior cosmetic conditions. It does not certify engine health, accident history, or odometer authenticity. In-person physical inspection is always recommended.
@@ -299,40 +299,40 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
             </div>
 
             {/* 120-Point Inspection Breakdown */}
-            <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-subtle space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="p-6 sm:p-8 rounded-3xl border border-[#242622]/[0.08] bg-white shadow-subtle space-y-5">
+              <div className="flex items-center justify-between border-b border-[#242622]/[0.06] pb-3">
                 <div>
-                  <h3 className="font-heading text-lg font-medium text-[#242622]">Certified Physical Inspection</h3>
+                  <h3 className="font-heading text-lg font-bold text-[#242622]">Certified Physical Inspection</h3>
                   <p className="text-xs text-[#85857E]">Conducted at GEAR UP Inspection Hub</p>
                 </div>
                 <div className="text-right">
-                  <span className="font-heading font-medium text-2xl text-[#242622]">{vehicle.inspectionScore}</span>
+                  <span className="font-heading font-black text-2xl text-[#242622]">{vehicle.inspectionScore}</span>
                   <span className="text-xs text-[#85857E]"> / 5.0</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8]">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06]">
                   <p className="text-[#85857E] text-[10px]">Engine Compression</p>
                   <p className="font-semibold text-[#242622] mt-0.5">Pass (4.9/5)</p>
                 </div>
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8]">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06]">
                   <p className="text-[#85857E] text-[10px]">Chassis & Frame Alignment</p>
                   <p className="font-semibold text-[#242622] mt-0.5">Zero Tilt (Pass)</p>
                 </div>
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8]">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06]">
                   <p className="text-[#85857E] text-[10px]">Tyre Tread Depth</p>
                   <p className="font-semibold text-[#242622] mt-0.5">4.2mm remaining</p>
                 </div>
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8]">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06]">
                   <p className="text-[#85857E] text-[10px]">Electrical & Wiring</p>
                   <p className="font-semibold text-[#242622] mt-0.5">OEM Standard</p>
                 </div>
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8]">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06]">
                   <p className="text-[#85857E] text-[10px]">Braking & ABS Sensor</p>
                   <p className="font-semibold text-[#242622] mt-0.5">Optimal Response</p>
                 </div>
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8]">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06]">
                   <p className="text-[#85857E] text-[10px]">Document Authenticity</p>
                   <p className="font-semibold text-[#242622] mt-0.5">RC & PUC Match</p>
                 </div>
@@ -341,7 +341,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               <div className="pt-2 flex justify-end">
                 <Link
                   to={`/inspect/${vehicle.id}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-none bg-[#35483C] hover:bg-[#242622] text-white text-xs font-semibold shadow-sm transition-all"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#35483C] hover:bg-[#242622] text-white text-xs font-semibold shadow-md transition-all tactile-btn active:scale-[0.96]"
                 >
                   <Layers className="w-3.5 h-3.5" />
                   <span>Launch 3D Digital Twin Inspection</span>
@@ -350,18 +350,18 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
             </div>
 
             {/* GEAR UP Comprehensive Document Verification */}
-            <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-subtle space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="p-6 sm:p-8 rounded-3xl border border-[#242622]/[0.08] bg-white shadow-subtle space-y-5">
+              <div className="flex items-center justify-between border-b border-[#242622]/[0.06] pb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center border border-[#E9E3D8]">
+                  <div className="w-10 h-10 rounded-2xl bg-[#35483C]/10 text-[#35483C] flex items-center justify-center">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-heading text-lg font-medium text-[#242622]">GEAR UP Verification</h3>
+                    <h3 className="font-heading text-lg font-bold text-[#242622]">GEAR UP Verification</h3>
                     <p className="text-xs text-[#85857E]">Multi-level document & ownership readiness verification</p>
                   </div>
                 </div>
-                <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#E9E3D8] text-[#242622] border border-[#E9E3D8] uppercase tracking-wider">
+                <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#FAF9F5] text-[#242622] border border-[#242622]/[0.08] uppercase tracking-wider">
                   {publicTrust?.badge_label || (vehicle.documentVerified ? 'Document Verified' : 'Partially Verified')}
                 </span>
               </div>
@@ -374,14 +374,14 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                   { category: 'Condition', title: 'Condition & Service History', status: 'OEM Workshop Serviced', details: 'Periodic maintenance bills and tyre tread depth inspected.', is_passed: true },
                   { category: 'Ownership & NOC', title: 'Transfer Authorisation', status: 'Seller Identity Confirmed', details: 'Form 29/30 transfer readiness checked. Zero active bank lien.', is_passed: true }
                 ]).map((check: any, idx: number) => (
-                  <div key={idx} className="p-4 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] space-y-1">
+                  <div key={idx} className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-semibold text-[#85857E] uppercase tracking-wider">{check.category}</span>
-                      <span className="flex items-center gap-1 text-[11px] font-semibold text-[#242622]">
+                      <span className="flex items-center gap-1 text-[11px] font-semibold text-[#35483C]">
                         <CheckCircle2 className="w-3.5 h-3.5" /> Matched
                       </span>
                     </div>
-                    <p className="font-medium text-[#242622] text-xs">{check.title}</p>
+                    <p className="font-semibold text-[#242622] text-xs">{check.title}</p>
                     <p className="text-[11px] text-[#85857E]">{check.status}</p>
                     <p className="text-[10px] text-[#85857E]/80 leading-relaxed pt-0.5">{check.details}</p>
                   </div>
@@ -389,7 +389,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               </div>
 
               {/* Masked Info & Privacy Protection Callout */}
-              <div className="p-4 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] flex items-center justify-between text-xs">
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <Lock className="w-4 h-4 text-[#242622] flex-shrink-0" />
                   <span className="text-[#85857E] text-xs">
@@ -398,7 +398,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                 </div>
                 <button
                   onClick={() => setTrustModalOpen(true)}
-                  className="px-3.5 py-1.5 rounded-none bg-white hover:bg-[#F7F5EF] text-[#242622] border border-[#E9E3D8] font-medium text-xs flex items-center gap-1 transition-colors shadow-sm"
+                  className="px-4 py-1.5 rounded-full bg-white hover:bg-[#FAF9F5] text-[#242622] border border-[#242622]/[0.08] font-medium text-xs flex items-center gap-1.5 transition-colors shadow-sm tactile-btn active:scale-95"
                 >
                   <span>View Trust Report</span>
                   <ExternalLink className="w-3.5 h-3.5 text-[#242622]" />
@@ -411,20 +411,20 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
             </div>
 
             {/* PAID PICKUP / MEETUP LOCATION & RIDE ACCESS */}
-            <div className={`p-6 rounded-none border border-[#E9E3D8] border transition-all ${
+            <div className={`p-6 sm:p-8 rounded-3xl border transition-all ${
               locationAccess?.is_unlocked
                 ? 'bg-white border-[#35483C] shadow-elevated'
-                : 'bg-white border-[#E9E3D8] shadow-subtle'
+                : 'bg-white border-[#242622]/[0.08] shadow-subtle'
             }`}>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 border-b border-[#242622]/[0.06] pb-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-none flex items-center justify-center font-bold ${
-                    locationAccess?.is_unlocked ? 'bg-[#E9E3D8] text-[#242622]' : 'bg-[#E9E3D8] text-[#242622]'
+                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold ${
+                    locationAccess?.is_unlocked ? 'bg-[#35483C]/10 text-[#35483C]' : 'bg-[#FAF9F5] text-[#242622]'
                   }`}>
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-heading text-lg font-medium text-[#242622]">
+                    <h3 className="font-heading text-lg font-bold text-[#242622]">
                       {locationAccess?.is_unlocked ? 'Exact Meetup & Test Ride Location' : 'Unlock Pickup & Ride Location'}
                     </h3>
                     <p className="text-xs text-[#85857E]">
@@ -437,8 +437,8 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
 
                 <span className={`px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider ${
                   locationAccess?.is_unlocked
-                    ? 'bg-[#E9E3D8] text-[#242622] border border-[#E9E3D8]'
-                    : 'bg-[#E9E3D8] text-[#85857E] border border-[#E9E3D8]'
+                    ? 'bg-[#35483C]/10 text-[#35483C] border border-[#35483C]/20'
+                    : 'bg-[#FAF9F5] text-[#85857E] border border-[#242622]/[0.08]'
                 }`}>
                   {locationAccess?.is_unlocked ? 'UNLOCKED • 7 DAYS ACTIVE' : `₹${locationAccess?.access_fee_inr || 49} ACCESS FEE`}
                 </span>
@@ -447,13 +447,13 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               {locationAccess?.is_unlocked ? (
                 /* UNLOCKED VIEW */
                 <div className="space-y-4">
-                  <div className="p-4 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] space-y-2.5 text-xs">
+                  <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] space-y-2.5 text-xs">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="text-[10px] font-semibold text-[#242622] uppercase tracking-wider">Exact Meetup Address</span>
-                        <p className="font-medium text-[#242622] text-sm mt-0.5">{locationAccess.exact_address}</p>
+                        <span className="text-[10px] font-semibold text-[#35483C] uppercase tracking-wider">Exact Meetup Address</span>
+                        <p className="font-semibold text-[#242622] text-sm mt-0.5">{locationAccess.exact_address}</p>
                       </div>
-                      <span className="px-2.5 py-0.5 rounded-full bg-white text-[#242622] text-[10px] font-semibold border border-[#E9E3D8] flex-shrink-0">
+                      <span className="px-2.5 py-0.5 rounded-full bg-white text-[#242622] text-[10px] font-semibold border border-[#242622]/[0.08] flex-shrink-0">
                         {locationAccess.days_remaining} Days Left
                       </span>
                     </div>
@@ -465,21 +465,21 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                       </div>
                     )}
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-[#E9E3D8] text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-[#242622]/[0.06] text-xs">
                       <div>
                         <span className="text-[#85857E]">Meetup Spot Type:</span>
                         <p className="font-medium text-[#242622]">{locationAccess.meetup_spot_type || 'Safe Public Hub'}</p>
                       </div>
                       <div>
                         <span className="text-[#85857E]">Test Ride Policy:</span>
-                        <p className={`font-medium ${locationAccess.test_ride_available ? 'text-[#242622]' : 'text-[#85857E]'}`}>
+                        <p className={`font-medium ${locationAccess.test_ride_available ? 'text-[#35483C]' : 'text-[#85857E]'}`}>
                           {locationAccess.test_ride_available ? '✓ Test Rides Permitted with DL' : 'Inspection Only'}
                         </p>
                       </div>
                     </div>
 
                     {locationAccess.pickup_instructions && (
-                      <div className="pt-2 border-t border-[#E9E3D8] text-xs">
+                      <div className="pt-2 border-t border-[#242622]/[0.06] text-xs">
                         <span className="text-[#85857E]">Seller Instructions:</span>
                         <p className="text-[#242622] italic mt-0.5">&ldquo;{locationAccess.pickup_instructions}&rdquo;</p>
                       </div>
@@ -492,7 +492,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                       href={locationAccess.directions_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 py-3 px-4 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-sm transition-all"
+                      className="flex-1 py-3.5 px-5 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-md transition-all tactile-btn active:scale-[0.96]"
                     >
                       <Navigation className="w-4 h-4" />
                       <span>Open in Google Maps</span>
@@ -500,7 +500,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                     </a>
                   </div>
 
-                  <div className="p-3 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] text-[11px] text-[#85857E] flex items-start gap-2">
+                  <div className="p-3.5 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] text-[11px] text-[#85857E] flex items-start gap-2">
                     <ShieldCheck className="w-4 h-4 text-[#35483C] flex-shrink-0 mt-0.5" />
                     <p>
                       <strong>Safety Reminder:</strong> Meet in daylight at the agreed public hub. Inspect vehicle documents and carry an original driving licence and helmet before initiating a test ride.
@@ -510,22 +510,22 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               ) : (
                 /* LOCKED VIEW */
                 <div className="space-y-4">
-                  <div className="p-4 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] space-y-2 text-xs">
+                  <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] space-y-2 text-xs">
                     <div className="flex items-center justify-between">
                       <span className="text-[#85857E]">Approximate Viewing Area:</span>
-                      <span className="font-medium text-[#242622]">
+                      <span className="font-semibold text-[#242622]">
                         {locationAccess?.approximate_locality || vehicle.area}, {locationAccess?.approximate_city || vehicle.city}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <span className="text-[#85857E]">Test Ride Option:</span>
-                      <span className={`font-medium ${locationAccess?.test_ride_available ? 'text-[#242622]' : 'text-[#85857E]'}`}>
+                      <span className={`font-medium ${locationAccess?.test_ride_available ? 'text-[#35483C]' : 'text-[#85857E]'}`}>
                         {locationAccess?.test_ride_available ? 'Offered by Seller' : 'Inspection Only'}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between pt-1 border-t border-[#E9E3D8]">
+                    <div className="flex items-center justify-between pt-1 border-t border-[#242622]/[0.06]">
                       <span className="text-[#85857E]">Privacy Status:</span>
                       <span className="text-[#242622] font-medium flex items-center gap-1 text-xs">
                         <Lock className="w-3.5 h-3.5" /> Exact address revealed upon verified unlock
@@ -577,7 +577,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                           alert('Error creating location order: ' + err.message);
                         }
                       }}
-                      className="w-full py-3.5 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs tracking-wider uppercase transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-4 min-h-[48px] rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer tactile-btn active:scale-[0.96]"
                     >
                       <Lock className="w-4 h-4" />
                       <span>Unlock Location — ₹{locationAccess?.access_fee_inr || 49}</span>
@@ -593,23 +593,23 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
 
           {/* Right Column: Pricing, Specs & Booking Actions (5 Cols Sticky) */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-elevated space-y-6 sticky top-24">
+            <div className="p-6 sm:p-8 rounded-3xl border border-[#242622]/[0.08] bg-white shadow-elevated space-y-6 sticky top-24">
               <div>
                 <div className="flex items-center justify-between text-xs text-[#85857E] mb-1.5">
-                  <span className="font-medium">{vehicle.brand} • {vehicle.variant}</span>
+                  <span className="font-semibold text-[#35483C]">{vehicle.brand} • {vehicle.variant}</span>
                   <span className="text-[#242622] font-medium">{vehicle.area}, {vehicle.city}</span>
                 </div>
-                <h1 className="font-heading font-medium text-2xl sm:text-3xl text-[#242622] tracking-tight">
+                <h1 className="font-heading font-bold text-2xl sm:text-3xl text-[#242622] tracking-tight">
                   {vehicle.title}
                 </h1>
                 <div className="flex items-center gap-2 mt-2.5">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#E9E3D8] text-[#242622] border border-[#E9E3D8]">
-                    <ShieldCheck className="w-3.5 h-3.5" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF9F5] text-[#242622] border border-[#242622]/[0.08]">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#35483C]" />
                     <span>{publicTrust?.badge_label || (vehicle.documentVerified ? 'Document Verified' : 'Partially Verified')}</span>
                   </span>
                   <button
                     onClick={() => setTrustModalOpen(true)}
-                    className="text-xs font-medium text-[#242622] hover:text-[#242622] underline underline-offset-2 flex items-center gap-0.5"
+                    className="text-xs font-semibold text-[#35483C] hover:text-[#242622] underline underline-offset-2 flex items-center gap-0.5"
                   >
                     <span>Trust Report</span>
                     <ExternalLink className="w-3 h-3" />
@@ -618,21 +618,21 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               </div>
 
               {/* Price Banner */}
-              <div className="p-5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] flex items-center justify-between">
+              <div className="p-5 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase font-semibold text-[#85857E] tracking-wider">Asking Price</span>
-                  <div className="font-heading font-medium text-3xl text-[#242622]">
+                  <span className="text-[10px] uppercase font-bold text-[#85857E] tracking-wider">Asking Price</span>
+                  <div className="font-heading font-black text-3xl text-[#242622] font-mono mt-0.5">
                     {formatINR(vehicle.price)}
                   </div>
                   {vehicle.originalMrp && (
-                    <span className="text-xs text-[#85857E] line-through">
+                    <span className="text-xs text-[#85857E] line-through font-mono">
                       New MRP: {formatINR(vehicle.originalMrp)}
                     </span>
                   )}
                 </div>
 
                 <div className="text-right">
-                  <span className="text-xs font-semibold text-[#242622] block">
+                  <span className="text-xs font-bold text-[#35483C] block">
                     Save ~₹{(vehicle.originalMrp ? vehicle.originalMrp - vehicle.price : 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-[11px] text-[#85857E]">EMI from ₹3,490/mo</span>
@@ -640,69 +640,69 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               </div>
 
               {/* Quick Specs Grid */}
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] flex items-center gap-2.5">
+              <div className="grid grid-cols-2 gap-2.5 text-xs">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-center gap-3">
                   <Calendar className="w-4 h-4 text-[#35483C]" />
                   <div>
                     <p className="text-[#85857E] text-[10px]">Year / Reg</p>
-                    <p className="font-medium text-[#242622]">{vehicle.year} ({vehicle.regState})</p>
+                    <p className="font-semibold text-[#242622]">{vehicle.year} ({vehicle.regState})</p>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] flex items-center gap-2.5">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-center gap-3">
                   <Gauge className="w-4 h-4 text-[#35483C]" />
                   <div>
                     <p className="text-[#85857E] text-[10px]">Odometer</p>
-                    <p className="font-medium text-[#242622]">{vehicle.km.toLocaleString('en-IN')} km</p>
+                    <p className="font-semibold text-[#242622] font-mono">{vehicle.km.toLocaleString('en-IN')} km</p>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] flex items-center gap-2.5">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-center gap-3">
                   <Fuel className="w-4 h-4 text-[#35483C]" />
                   <div>
                     <p className="text-[#85857E] text-[10px]">Fuel / Battery</p>
-                    <p className="font-medium text-[#242622] capitalize">{vehicle.fuel}</p>
+                    <p className="font-semibold text-[#242622] capitalize">{vehicle.fuel}</p>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] flex items-center gap-2.5">
+                <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-center gap-3">
                   <UserCheck className="w-4 h-4 text-[#35483C]" />
                   <div>
                     <p className="text-[#85857E] text-[10px]">Ownership</p>
-                    <p className="font-medium text-[#242622]">{vehicle.owners === 1 ? '1st Owner' : `${vehicle.owners} Owners`}</p>
+                    <p className="font-semibold text-[#242622]">{vehicle.owners === 1 ? '1st Owner' : `${vehicle.owners} Owners`}</p>
                   </div>
                 </div>
               </div>
 
               {/* Technical Specifications */}
-              <div className="space-y-2 pt-2 border-t border-[#E9E3D8] text-xs">
-                <h4 className="font-heading font-medium text-sm text-[#242622]">Technical Highlights</h4>
+              <div className="space-y-2 pt-2 border-t border-[#242622]/[0.06] text-xs">
+                <h4 className="font-heading font-bold text-sm text-[#242622]">Technical Highlights</h4>
                 <div className="space-y-2 text-[#85857E]">
                   {vehicle.specs.powerBhp && (
-                    <div className="flex justify-between py-1 border-b border-[#E9E3D8]">
+                    <div className="flex justify-between py-1 border-b border-[#242622]/[0.06]">
                       <span>Max Power</span>
-                      <span className="font-medium text-[#242622]">{vehicle.specs.powerBhp}</span>
+                      <span className="font-semibold text-[#242622]">{vehicle.specs.powerBhp}</span>
                     </div>
                   )}
                   {vehicle.specs.mileageKmpl && (
-                    <div className="flex justify-between py-1 border-b border-[#E9E3D8]">
+                    <div className="flex justify-between py-1 border-b border-[#242622]/[0.06]">
                       <span>Tested Mileage</span>
-                      <span className="font-medium text-[#242622]">{vehicle.specs.mileageKmpl} kmpl</span>
+                      <span className="font-semibold text-[#242622]">{vehicle.specs.mileageKmpl} kmpl</span>
                     </div>
                   )}
                   {vehicle.specs.rangeKm && (
-                    <div className="flex justify-between py-1 border-b border-[#E9E3D8]">
+                    <div className="flex justify-between py-1 border-b border-[#242622]/[0.06]">
                       <span>Real-World Range</span>
-                      <span className="font-medium text-[#242622]">{vehicle.specs.rangeKm} km</span>
+                      <span className="font-semibold text-[#242622]">{vehicle.specs.rangeKm} km</span>
                     </div>
                   )}
-                  <div className="flex justify-between py-1 border-b border-[#E9E3D8]">
+                  <div className="flex justify-between py-1 border-b border-[#242622]/[0.06]">
                     <span>Insurance Validity</span>
-                    <span className="font-medium text-[#242622]">{vehicle.insuranceValidUntil}</span>
+                    <span className="font-semibold text-[#242622]">{vehicle.insuranceValidUntil}</span>
                   </div>
                   <div className="flex justify-between py-1">
                     <span>PUC Pollution Certificate</span>
-                    <span className="font-medium text-[#242622]">{vehicle.pucValidUntil}</span>
+                    <span className="font-semibold text-[#242622]">{vehicle.pucValidUntil}</span>
                   </div>
                 </div>
               </div>
@@ -711,7 +711,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               <div className="space-y-3 pt-2">
                 <button
                   onClick={() => setTestRideModalOpen(true)}
-                  className="w-full py-3.5 min-h-[48px] bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95"
+                  className="w-full py-4 min-h-[50px] rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 active:scale-[0.96] tactile-btn"
                 >
                   <Calendar className="w-4 h-4" />
                   <span>Book Test Ride</span>
@@ -719,14 +719,14 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               </div>
 
               {/* Resale Studio Cross-Promotion */}
-              <div className="p-4 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] flex items-center justify-between text-xs">
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-center justify-between text-xs">
                 <div>
-                  <p className="font-medium text-[#242622]">Selling a motorcycle too?</p>
+                  <p className="font-semibold text-[#242622]">Selling a motorcycle too?</p>
                   <p className="text-[11px] text-[#85857E]">Boost resale value by up to ₹12,000 with AI</p>
                 </div>
                 <Link
                   to="/resale-studio"
-                  className="px-3.5 py-1.5 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs transition-colors shadow-sm"
+                  className="px-4 py-2 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-semibold text-xs transition-colors shadow-sm tactile-btn active:scale-95"
                 >
                   Try Studio
                 </Link>
@@ -756,15 +756,15 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                   navigate(`/bike/${bike.id}`);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="rounded-none border border-[#E9E3D8] overflow-hidden bg-white border border-[#E9E3D8] hover:border-[#35483C] hover:shadow-elevated cursor-pointer transition-all p-3"
+                className="rounded-3xl border border-[#242622]/[0.08] overflow-hidden bg-white hover:border-[#35483C]/40 hover:shadow-elevated cursor-pointer transition-all duration-300 p-3.5 space-y-3 group"
               >
-                <div className="aspect-[16/10] overflow-hidden rounded-none bg-[#E9E3D8]">
-                  <img src={bike.primaryImage} alt={bike.title} className="w-full h-full object-cover" />
+                <div className="aspect-[16/10] overflow-hidden rounded-2xl bg-[#FAF9F5]">
+                  <img src={bike.primaryImage} alt={bike.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <div className="p-3 space-y-1">
-                  <p className="text-xs text-[#85857E]">{bike.brand} • {bike.year}</p>
-                  <h4 className="font-heading font-medium text-base text-[#242622] line-clamp-1">{bike.title}</h4>
-                  <p className="font-heading font-medium text-base text-[#242622] pt-1">{formatINR(bike.price)}</p>
+                <div className="p-2 space-y-1">
+                  <p className="text-xs text-[#85857E] font-medium">{bike.brand} • {bike.year}</p>
+                  <h4 className="font-heading font-bold text-base text-[#242622] line-clamp-1">{bike.title}</h4>
+                  <p className="font-heading font-black text-base text-[#242622] font-mono pt-1">{formatINR(bike.price)}</p>
                 </div>
               </div>
             ))}
@@ -778,17 +778,17 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
 
       {/* Public Trust & Verification Report Modal */}
       {trustModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#242622]/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-elevated p-6 sm:p-8 space-y-6 text-[#242622]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-[#242622]/[0.08] bg-white shadow-2xl p-6 sm:p-8 space-y-6 text-[#242622]">
             {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-[#E9E3D8] pb-4">
+            <div className="flex items-start justify-between border-b border-[#242622]/[0.06] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center border border-[#E9E3D8]">
+                <div className="w-12 h-12 rounded-2xl bg-[#35483C]/10 text-[#35483C] flex items-center justify-center border border-[#35483C]/20">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#242622]">Official Buyer Trust Report</span>
-                  <h3 className="font-heading font-medium text-xl text-[#242622]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#35483C]">Official Buyer Trust Report</span>
+                  <h3 className="font-heading font-bold text-xl text-[#242622]">
                     {vehicle.title}
                   </h3>
                   <p className="text-xs text-[#85857E] flex items-center gap-2 mt-0.5">
@@ -801,31 +801,31 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
 
               <button
                 onClick={() => setTrustModalOpen(false)}
-                className="p-2 rounded-none bg-[#F7F5EF] text-[#85857E] hover:text-[#242622] border border-[#E9E3D8] transition-colors"
+                className="w-10 h-10 rounded-full bg-[#FAF9F5] text-[#85857E] hover:text-[#242622] border border-[#242622]/[0.08] flex items-center justify-center transition-colors tactile-btn active:scale-90"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Overall Status Banner */}
-            <div className="p-4 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] flex items-center justify-between">
+            <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-semibold text-[#242622] uppercase tracking-wider">Verification Status</span>
-                <h4 className="font-heading font-medium text-base text-[#242622] capitalize mt-0.5">
+                <span className="text-[10px] font-bold text-[#35483C] uppercase tracking-wider">Verification Status</span>
+                <h4 className="font-heading font-bold text-base text-[#242622] capitalize mt-0.5">
                   {publicTrust?.badge_label || 'GEAR UP Document Verified'}
                 </h4>
                 <p className="text-xs text-[#85857E] mt-0.5">
                   Multi-level OCR document consistency and ownership readiness checks completed.
                 </p>
               </div>
-              <span className="px-3 py-1.5 rounded-none bg-white text-[#242622] border border-[#E9E3D8] font-mono text-xs font-semibold shadow-sm">
+              <span className="px-3.5 py-1.5 rounded-full bg-white text-[#242622] border border-[#242622]/[0.08] font-mono text-xs font-bold shadow-sm">
                 Level 1–3 Cleared
               </span>
             </div>
 
             {/* Detailed Verification Checks */}
             <div className="space-y-3">
-              <h4 className="font-semibold text-xs uppercase tracking-wider text-[#85857E]">Verified Checkpoints</h4>
+              <h4 className="font-bold text-xs uppercase tracking-wider text-[#85857E]">Verified Checkpoints</h4>
               <div className="space-y-2.5">
                 {(publicTrust?.verified_checks || [
                   {
@@ -864,13 +864,13 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                     is_passed: true
                   }
                 ]).map((item: any, idx: number) => (
-                  <div key={idx} className="p-4 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] space-y-1">
+                  <div key={idx} className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-[#242622] flex items-center gap-2">
+                      <span className="font-semibold text-[#242622] flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-[#35483C] flex-shrink-0" />
                         <span>{item.title}</span>
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white text-[#242622] border border-[#E9E3D8]">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white text-[#35483C] border border-[#242622]/[0.08]">
                         {item.status}
                       </span>
                     </div>
@@ -883,10 +883,10 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
             </div>
 
             {/* Privacy Shield Notice */}
-            <div className="p-4 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] flex items-start gap-3">
-              <Lock className="w-5 h-5 text-[#242622] flex-shrink-0 mt-0.5" />
+            <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] flex items-start gap-3">
+              <Lock className="w-5 h-5 text-[#35483C] flex-shrink-0 mt-0.5" />
               <div className="text-xs space-y-1">
-                <p className="font-medium text-[#242622]">Seller Privacy & Identity Shield</p>
+                <p className="font-semibold text-[#242622]">Seller Privacy & Identity Shield</p>
                 <p className="text-[#85857E] leading-relaxed">
                   To protect seller privacy against identity theft and misuse, full unmasked registration numbers, chassis/engine serial numbers, and raw government document images are kept secure in encrypted storage and never exposed on public pages.
                 </p>
@@ -896,7 +896,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
             <div className="flex justify-end pt-2">
               <button
                 onClick={() => setTrustModalOpen(false)}
-                className="px-6 py-2.5 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs transition-colors shadow-sm"
+                className="px-6 py-3 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-semibold text-xs transition-colors shadow-md tactile-btn active:scale-95"
               >
                 Close Report
               </button>
@@ -907,31 +907,31 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
 
       {/* Paid Location Unlock Checkout Modal */}
       {paymentModalOpen && locationOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#242622]/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-md rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] p-6 sm:p-8 space-y-5 shadow-elevated">
-            <div className="flex items-center justify-between border-b border-[#E9E3D8] pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-md rounded-3xl border border-[#242622]/[0.08] bg-white p-6 sm:p-8 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#242622]/[0.06] pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center">
-                  <CreditCard className="w-4 h-4" />
+                <div className="w-10 h-10 rounded-2xl bg-[#35483C]/10 text-[#35483C] flex items-center justify-center">
+                  <CreditCard className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-medium text-base text-[#242622]">Location Access Checkout</h3>
-                  <p className="text-[10px] text-[#85857E]">Order: {locationOrder.order_id}</p>
+                  <h3 className="font-heading font-bold text-base text-[#242622]">Location Access Checkout</h3>
+                  <p className="text-[10px] text-[#85857E] font-mono">Order: {locationOrder.order_id}</p>
                 </div>
               </div>
               <button
                 onClick={() => setPaymentModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-[#F7F5EF] border border-[#E9E3D8] flex items-center justify-center text-[#85857E] hover:text-[#242622]"
+                className="w-9 h-9 rounded-full bg-[#FAF9F5] border border-[#242622]/[0.08] flex items-center justify-center text-[#85857E] hover:text-[#242622] tactile-btn active:scale-90"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Order Summary */}
-            <div className="p-4 rounded-none bg-[#F7F5EF] border border-[#E9E3D8] space-y-2 text-xs">
+            <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] space-y-2 text-xs">
               <div className="flex justify-between">
                 <span className="text-[#85857E]">Target Vehicle:</span>
-                <span className="font-medium text-[#242622]">{vehicle.year} {vehicle.brand} {vehicle.model}</span>
+                <span className="font-semibold text-[#242622]">{vehicle.year} {vehicle.brand} {vehicle.model}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#85857E]">Service:</span>
@@ -941,9 +941,9 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                 <span className="text-[#85857E]">Access Duration:</span>
                 <span className="font-medium text-[#242622]">7 Full Days Access</span>
               </div>
-              <div className="flex justify-between pt-2 border-t border-[#E9E3D8] font-semibold text-sm">
+              <div className="flex justify-between pt-2 border-t border-[#242622]/[0.06] font-semibold text-sm">
                 <span className="text-[#242622]">Amount Payable:</span>
-                <span className="text-[#242622] font-heading text-lg">₹{locationOrder.amount_inr || 49}</span>
+                <span className="text-[#242622] font-heading font-bold text-lg font-mono">₹{locationOrder.amount_inr || 49}</span>
               </div>
             </div>
 
@@ -975,7 +975,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                     setIsProcessingPayment(false);
                   }
                 }}
-                className="w-full py-3.5 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                className="w-full py-4 min-h-[48px] rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer tactile-btn active:scale-[0.96]"
               >
                 {isProcessingPayment ? (
                   <>
@@ -993,7 +993,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               <button
                 type="button"
                 onClick={() => setPaymentModalOpen(false)}
-                className="w-full py-2.5 rounded-none bg-transparent hover:bg-[#F7F5EF] text-[#85857E] hover:text-[#242622] text-xs font-medium transition-colors"
+                className="w-full py-2.5 rounded-full bg-transparent hover:bg-[#FAF9F5] text-[#85857E] hover:text-[#242622] text-xs font-medium transition-colors"
               >
                 Cancel
               </button>
@@ -1004,24 +1004,24 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
 
       {/* Unlock Success Notification Toast */}
       {unlockSuccessToast && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-none bg-white border border-[#35483C] text-[#242622] text-xs shadow-elevated flex items-center gap-2.5 animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-white border border-[#35483C] text-[#242622] text-xs shadow-2xl flex items-center gap-3 animate-bounce">
           <CheckCircle2 className="w-5 h-5 text-[#35483C] flex-shrink-0" />
           <div>
-            <p className="font-semibold text-[#242622]">Location Unlocked Successfully!</p>
+            <p className="font-bold text-[#242622]">Location Unlocked Successfully!</p>
             <p className="text-[11px] text-[#85857E]">Exact meetup address and navigation directions are now visible.</p>
           </div>
         </div>
       )}
 
       {/* Mobile Floating Sticky CTA */}
-      <div className="fixed bottom-20 left-3 right-3 sm:left-auto sm:right-auto sm:w-[440px] sm:left-1/2 sm:-translate-x-1/2 z-30 lg:hidden p-3 bg-white/95 backdrop-blur-xl border border-[#E9E3D8] shadow-luxury flex items-center justify-between gap-3">
-        <div className="min-w-0">
+      <div className="fixed bottom-20 left-3 right-3 sm:left-auto sm:right-auto sm:w-[440px] sm:left-1/2 sm:-translate-x-1/2 z-30 lg:hidden p-3.5 bg-[#FAF9F5]/90 backdrop-blur-[24px] saturate-[180%] border border-[#242622]/[0.08] rounded-full shadow-2xl flex items-center justify-between gap-3">
+        <div className="min-w-0 pl-2">
           <span className="block text-[8px] font-mono uppercase text-[#85857E]">Certified Value</span>
-          <span className="font-heading font-extrabold text-base text-[#242622] truncate block">{formatINR(vehicle.price)}</span>
+          <span className="font-heading font-black text-base text-[#242622] font-mono truncate block">{formatINR(vehicle.price)}</span>
         </div>
         <button
           onClick={() => setTestRideModalOpen(true)}
-          className="px-5 py-2.5 min-h-[44px] bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-sm flex items-center gap-2 active:scale-95 shrink-0"
+          className="px-6 py-3 min-h-[44px] rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md flex items-center gap-2 active:scale-95 shrink-0 tactile-btn"
         >
           <Calendar className="w-4 h-4 shrink-0" />
           <span>Book Test Ride</span>

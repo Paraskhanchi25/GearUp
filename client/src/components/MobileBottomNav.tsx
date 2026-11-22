@@ -44,18 +44,18 @@ export const MobileBottomNav: React.FC = () => {
         className="fixed bottom-3 left-3 right-3 sm:left-auto sm:right-auto sm:w-[440px] sm:left-1/2 sm:-translate-x-1/2 z-40 lg:hidden pointer-events-auto"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
-        <div className="bg-white/90 backdrop-blur-xl border border-[#E9E3D8] shadow-[0_12px_36px_rgba(36,38,34,0.14)] rounded-2xl px-2 py-1.5 flex items-center justify-around transition-all">
+        <div className="bg-[#FAF9F5]/85 backdrop-blur-[24px] saturate-[180%] border border-white/60 shadow-[0_16px_40px_rgba(36,38,34,0.16)] rounded-full px-2.5 py-1.5 flex items-center justify-around transition-all">
           {/* 1. Explore Fleet */}
           <Link
             to="/explore"
             onClick={() => setMoreOpen(false)}
-            className={`flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-1.5 rounded-xl transition-all ${
+            className={`flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-1.5 rounded-full transition-all duration-300 ${
               isCurrent('/explore')
-                ? 'text-[#35483C] font-bold bg-[#E9E3D8]/40'
+                ? 'text-[#35483C] font-bold bg-[#35483C]/10 shadow-sm'
                 : 'text-[#85857E] hover:text-[#242622] active:scale-95'
             }`}
           >
-            <Compass className={`w-5 h-5 mb-0.5 transition-transform ${isCurrent('/explore') ? 'scale-110 stroke-[2.5]' : ''}`} />
+            <Compass className={`w-5 h-5 mb-0.5 transition-transform duration-300 ${isCurrent('/explore') ? 'scale-110 stroke-[2.5]' : ''}`} />
             <span className="text-[10px] font-mono tracking-tight leading-none">Explore</span>
             {isCurrent('/explore') && (
               <span className="w-1.5 h-1.5 rounded-full bg-[#35483C] mt-0.5" />
@@ -66,13 +66,13 @@ export const MobileBottomNav: React.FC = () => {
           <Link
             to="/price-estimator"
             onClick={() => setMoreOpen(false)}
-            className={`flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-1.5 rounded-xl transition-all ${
+            className={`flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-1.5 rounded-full transition-all duration-300 ${
               isCurrent('/price-estimator')
-                ? 'text-[#35483C] font-bold bg-[#E9E3D8]/40'
+                ? 'text-[#35483C] font-bold bg-[#35483C]/10 shadow-sm'
                 : 'text-[#85857E] hover:text-[#242622] active:scale-95'
             }`}
           >
-            <Gauge className={`w-5 h-5 mb-0.5 transition-transform ${isCurrent('/price-estimator') ? 'scale-110 stroke-[2.5]' : ''}`} />
+            <Gauge className={`w-5 h-5 mb-0.5 transition-transform duration-300 ${isCurrent('/price-estimator') ? 'scale-110 stroke-[2.5]' : ''}`} />
             <span className="text-[10px] font-mono tracking-tight leading-none">Value</span>
             {isCurrent('/price-estimator') && (
               <span className="w-1.5 h-1.5 rounded-full bg-[#35483C] mt-0.5" />
@@ -85,7 +85,7 @@ export const MobileBottomNav: React.FC = () => {
             onClick={() => setMoreOpen(false)}
             className="flex flex-col items-center justify-center min-w-[58px] min-h-[48px] -my-1 group"
           >
-            <div className="w-11 h-11 rounded-full bg-[#35483C] group-hover:bg-[#242622] text-white flex items-center justify-center shadow-md border-2 border-white transition-all active:scale-90 group-hover:scale-105">
+            <div className="w-11 h-11 rounded-full bg-[#35483C] group-hover:bg-[#28372e] text-white flex items-center justify-center shadow-[0_4px_16px_rgba(53,72,60,0.4)] border-2 border-white transition-all duration-300 active:scale-90 group-hover:scale-105">
               <Plus className="w-5 h-5 stroke-[2.5]" />
             </div>
             <span className="text-[9px] font-mono font-bold tracking-tight text-[#35483C] mt-0.5">Sell</span>
@@ -95,14 +95,14 @@ export const MobileBottomNav: React.FC = () => {
           <Link
             to="/ai-buddy"
             onClick={() => setMoreOpen(false)}
-            className={`flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-1.5 rounded-xl transition-all relative ${
+            className={`flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-1.5 rounded-full transition-all duration-300 relative ${
               isCurrent('/ai-buddy')
-                ? 'text-[#35483C] font-bold bg-[#E9E3D8]/40'
+                ? 'text-[#35483C] font-bold bg-[#35483C]/10 shadow-sm'
                 : 'text-[#85857E] hover:text-[#242622] active:scale-95'
             }`}
           >
             <div className="relative">
-              <Bot className={`w-5 h-5 mb-0.5 transition-transform ${isCurrent('/ai-buddy') ? 'scale-110 stroke-[2.5]' : ''}`} />
+              <Bot className={`w-5 h-5 mb-0.5 transition-transform duration-300 ${isCurrent('/ai-buddy') ? 'scale-110 stroke-[2.5]' : ''}`} />
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border border-white animate-pulse" />
             </div>
             <span className="text-[10px] font-mono tracking-tight leading-none">AI Buddy</span>
@@ -115,9 +115,9 @@ export const MobileBottomNav: React.FC = () => {
           <button
             type="button"
             onClick={() => setMoreOpen(!moreOpen)}
-            className={`flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-1.5 rounded-xl transition-all ${
+            className={`flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-1.5 rounded-full transition-all duration-300 ${
               moreOpen
-                ? 'text-[#35483C] font-bold bg-[#E9E3D8]/40'
+                ? 'text-[#35483C] font-bold bg-[#35483C]/10 shadow-sm'
                 : 'text-[#85857E] hover:text-[#242622] active:scale-95'
             }`}
           >
@@ -137,18 +137,18 @@ export const MobileBottomNav: React.FC = () => {
           {/* Backdrop */}
           <div
             onClick={() => setMoreOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
           />
 
           {/* Sheet Surface */}
           <div
-            className="relative bg-[#F7F5EF]/95 backdrop-blur-2xl border-t border-x border-[#E9E3D8] rounded-t-3xl p-5 shadow-2xl space-y-4 max-h-[80vh] overflow-y-auto"
+            className="relative bg-white/95 backdrop-blur-[28px] border-t border-x border-[#242622]/10 rounded-t-[32px] p-5 shadow-[0_24px_50px_rgba(0,0,0,0.3)] space-y-4 max-h-[80vh] overflow-y-auto"
             style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 5rem)' }}
           >
             {/* Sheet Handle */}
-            <div className="w-10 h-1 bg-[#85857E]/40 rounded-full mx-auto -mt-1" />
+            <div className="w-10 h-1 bg-[#85857E]/30 rounded-full mx-auto -mt-1" />
 
-            <div className="flex items-center justify-between border-b border-[#E9E3D8] pb-3">
+            <div className="flex items-center justify-between border-b border-[#242622]/10 pb-3">
               <div>
                 <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#85857E] block">
                   GEAR UP Navigation
@@ -158,7 +158,7 @@ export const MobileBottomNav: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setMoreOpen(false)}
-                className="w-8 h-8 rounded-full bg-white border border-[#E9E3D8] flex items-center justify-center text-[#85857E] hover:text-[#242622]"
+                className="w-8 h-8 rounded-full bg-black/[0.04] hover:bg-black/[0.08] flex items-center justify-center text-[#85857E] hover:text-[#242622] transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -174,14 +174,14 @@ export const MobileBottomNav: React.FC = () => {
                     key={item.path}
                     to={item.path}
                     onClick={() => setMoreOpen(false)}
-                    className={`flex items-center justify-between p-3 rounded-xl border transition-all min-h-[50px] ${
+                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all duration-300 min-h-[50px] ${
                       active
-                        ? 'bg-[#E9E3D8] border-[#35483C] text-[#242622]'
-                        : 'bg-white border-[#E9E3D8] text-[#242622] hover:bg-[#F7F5EF] active:bg-[#E9E3D8]/50'
+                        ? 'bg-[#35483C]/10 border-[#35483C]/30 text-[#242622]'
+                        : 'bg-white border-[#242622]/10 text-[#242622] hover:bg-[#F7F5EF] active:bg-black/[0.04]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#F7F5EF] border border-[#E9E3D8] flex items-center justify-center text-[#35483C] shrink-0">
+                      <div className="w-9 h-9 rounded-xl bg-[#F7F5EF] border border-[#242622]/10 flex items-center justify-center text-[#35483C] shrink-0">
                         <Icon className="w-4 h-4" />
                       </div>
                       <div>
@@ -196,7 +196,7 @@ export const MobileBottomNav: React.FC = () => {
             </div>
 
             {/* Quick Home / Support Links */}
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E9E3D8]">
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#242622]/10">
               <Link
                 to="/"
                 onClick={() => setMoreOpen(false)}

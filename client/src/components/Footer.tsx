@@ -106,7 +106,7 @@ export const Footer: React.FC = () => {
               Physical inspection and escrow hubs active across Chandigarh Tricity, Delhi NCR, Bengaluru, Pune, and Mumbai.
             </p>
             <div className="pt-2">
-              <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 text-[10px] text-[#242622]">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-[#A4AD98]">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#A4AD98]" />
                 <span>RTO Parivahan Verified</span>
               </span>

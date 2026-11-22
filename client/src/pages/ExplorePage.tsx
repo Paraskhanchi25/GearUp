@@ -152,30 +152,30 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F5EF] text-[#242622] overflow-x-hidden">
-      {/* Top Filter & Radius Control Bar (AC Motorsport Minimal Telemetry) */}
-      <div className="sticky top-16 sm:top-20 z-30 bg-[#F7F5EF]/95 backdrop-blur-md border-b border-[#E9E3D8] px-3 sm:px-6 py-2.5 sm:py-3">
+      {/* Top Filter & Radius Control Bar (Apple Liquid Glass Telemetry) */}
+      <div className="sticky top-16 sm:top-20 z-30 bg-[#FAF9F5]/85 backdrop-blur-[24px] saturate-[180%] border-b border-[#242622]/[0.08] px-3 sm:px-6 py-2.5 sm:py-3 shadow-sm">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-3 font-mono text-xs">
           {/* Left: Origin & Radius Filter Pills */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 min-h-[38px] sm:min-h-[42px] bg-white border border-[#E9E3D8] text-[#242622]">
+            <div className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 min-h-[38px] rounded-full bg-white border border-[#242622]/10 text-[#242622] shadow-sm">
               <MapPin className="w-3.5 h-3.5 text-[#35483C] shrink-0" />
               <span className="font-semibold truncate max-w-[120px] sm:max-w-[140px] uppercase">{searchCenter.name}</span>
             </div>
 
             {polygonCoords.length >= 3 ? (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 min-h-[38px] sm:min-h-[42px] bg-[#35483C] text-white text-[11px] font-semibold animate-fade-in border border-[#35483C]">
+              <div className="flex items-center gap-1.5 px-3.5 py-1.5 min-h-[38px] rounded-full bg-[#35483C] text-white text-[11px] font-semibold animate-fade-in border border-[#35483C] shadow-sm">
                 <PenTool className="w-3.5 h-3.5 shrink-0" />
                 <span className="truncate">Polygon Active ({polygonCoords.length} pts)</span>
                 <button
                   onClick={() => setPolygonCoords([])}
-                  className="ml-1 hover:text-[#A4AD98] p-1"
+                  className="ml-1 hover:text-[#A4AD98] p-1 rounded-full hover:bg-white/10"
                   title="Clear polygon"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-1 overflow-x-auto py-1 max-w-full">
+              <div className="flex items-center gap-1.5 overflow-x-auto py-1 max-w-full">
                 {RADIUS_OPTIONS.map((opt) => (
                   <button
                     key={opt.label}
@@ -184,10 +184,10 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                       setCustomRadiusActive(false);
                       setPolygonCoords([]);
                     }}
-                    className={`px-3 py-1.5 min-h-[38px] sm:min-h-[42px] text-[11px] font-mono uppercase whitespace-nowrap transition-colors border ${
+                    className={`px-3.5 py-1.5 min-h-[36px] rounded-full text-[11px] font-mono uppercase whitespace-nowrap transition-all duration-300 border active:scale-95 ${
                       radiusKm === opt.value && !customRadiusActive
                         ? 'bg-[#35483C] border-[#35483C] text-white font-bold shadow-sm'
-                        : 'bg-white text-[#85857E] hover:text-[#242622] border-[#E9E3D8]'
+                        : 'bg-white text-[#85857E] hover:text-[#242622] border-[#242622]/10 hover:border-[#35483C]/30'
                     }`}
                   >
                     {opt.label}
@@ -199,10 +199,10 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                     setCustomRadiusActive(!customRadiusActive);
                     setPolygonCoords([]);
                   }}
-                  className={`px-3 py-1.5 min-h-[38px] sm:min-h-[42px] text-[11px] font-mono uppercase transition-colors border ${
+                  className={`px-3.5 py-1.5 min-h-[36px] rounded-full text-[11px] font-mono uppercase transition-all duration-300 border active:scale-95 ${
                     customRadiusActive
-                      ? 'bg-[#242622] border-[#242622] text-white font-bold'
-                      : 'bg-white text-[#85857E] hover:text-[#242622] border-[#E9E3D8]'
+                      ? 'bg-[#242622] border-[#242622] text-white font-bold shadow-sm'
+                      : 'bg-white text-[#85857E] hover:text-[#242622] border-[#242622]/10'
                   }`}
                 >
                   Custom {customRadiusActive ? `(${radiusKm} km)` : ''}
@@ -217,12 +217,12 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
               <strong className="text-[#242622] font-bold font-mono">{filteredVehicles.length}</strong> SPECIMENS
             </span>
 
-            <div className="flex items-center gap-1 font-mono">
+            <div className="flex items-center gap-1.5 font-mono">
               <ArrowUpDown className="w-3.5 h-3.5 text-[#85857E] shrink-0" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-white text-[#242622] text-xs border border-[#E9E3D8] px-2.5 py-1.5 min-h-[38px] sm:min-h-[42px] focus:outline-none"
+                className="bg-white text-[#242622] text-xs border border-[#242622]/10 rounded-xl px-3 py-1.5 min-h-[38px] focus:outline-none shadow-sm cursor-pointer"
               >
                 <option value="distance">Nearest First</option>
                 <option value="price_low">Price: Low to High</option>
@@ -231,12 +231,12 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
               </select>
             </div>
 
-            {/* Mobile View Toggle (44x44px min touch target) */}
-            <div className="flex lg:hidden bg-white p-0.5 border border-[#E9E3D8] shrink-0">
+            {/* Mobile View Toggle */}
+            <div className="flex lg:hidden bg-black/[0.04] p-1 rounded-full border border-[#242622]/10 shrink-0">
               <button
                 onClick={() => setMobileView('map')}
-                className={`w-10 h-10 flex items-center justify-center transition-colors ${
-                  mobileView === 'map' ? 'bg-[#35483C] text-white' : 'text-[#85857E] hover:text-[#242622]'
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  mobileView === 'map' ? 'bg-[#35483C] text-white shadow-sm' : 'text-[#85857E] hover:text-[#242622]'
                 }`}
                 title="Map View"
                 aria-label="Switch to Map View"
@@ -245,8 +245,8 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
               </button>
               <button
                 onClick={() => setMobileView('list')}
-                className={`w-10 h-10 flex items-center justify-center transition-colors ${
-                  mobileView === 'list' ? 'bg-[#35483C] text-white' : 'text-[#85857E] hover:text-[#242622]'
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  mobileView === 'list' ? 'bg-[#35483C] text-white shadow-sm' : 'text-[#85857E] hover:text-[#242622]'
                 }`}
                 title="List View"
                 aria-label="Switch to List View"
@@ -274,12 +274,12 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
       </div>
 
       {/* Secondary Quick Filters Bar */}
-      <div className="bg-[#F7F5EF] border-b border-[#E9E3D8] px-3 sm:px-6 py-2.5 font-mono text-xs">
-        <div className="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+      <div className="bg-[#F7F5EF] border-b border-[#242622]/10 px-3 sm:px-6 py-2.5 font-mono text-xs">
+        <div className="max-w-7xl mx-auto flex items-center gap-2.5 overflow-x-auto pb-1 sm:pb-0">
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-white text-[#242622] border border-[#E9E3D8] px-3 py-2 min-h-[42px] focus:outline-none shrink-0"
+            className="bg-white text-[#242622] border border-[#242622]/10 rounded-full px-4 py-2 min-h-[38px] focus:outline-none shrink-0 shadow-sm cursor-pointer"
           >
             <option value="all">Category: All Types</option>
             <option value="motorcycle">Motorcycle</option>
@@ -290,7 +290,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
           <select
             value={selectedBrand}
             onChange={(e) => setSelectedBrand(e.target.value)}
-            className="bg-white text-[#242622] border border-[#E9E3D8] px-3 py-2 min-h-[42px] focus:outline-none shrink-0"
+            className="bg-white text-[#242622] border border-[#242622]/10 rounded-full px-4 py-2 min-h-[38px] focus:outline-none shrink-0 shadow-sm cursor-pointer"
           >
             <option value="all">Manufacturer: All</option>
             <option value="royal enfield">Royal Enfield</option>
@@ -306,10 +306,10 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
 
           <button
             onClick={() => setVerifiedOnly(!verifiedOnly)}
-            className={`px-3 py-2 min-h-[42px] border flex items-center gap-1.5 transition-colors whitespace-nowrap font-bold shrink-0 ${
+            className={`px-4 py-2 min-h-[38px] rounded-full border flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap font-semibold shrink-0 active:scale-95 ${
               verifiedOnly
                 ? 'bg-[#35483C] border-[#35483C] text-white shadow-sm'
-                : 'bg-white text-[#85857E] border-[#E9E3D8] hover:text-[#242622]'
+                : 'bg-white text-[#85857E] border-[#242622]/10 hover:text-[#242622] shadow-sm'
             }`}
           >
             <span>Verified / Inspected</span>
@@ -317,7 +317,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
 
           <button
             onClick={resetFilters}
-            className="px-3 py-2 min-h-[42px] text-[#85857E] hover:text-[#242622] bg-white border border-[#E9E3D8] flex items-center gap-1 ml-auto whitespace-nowrap active:scale-95 shrink-0"
+            className="px-4 py-2 min-h-[38px] rounded-full text-[#85857E] hover:text-[#242622] bg-white border border-[#242622]/10 flex items-center gap-1 ml-auto whitespace-nowrap active:scale-95 shrink-0 shadow-sm transition-all duration-300"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset</span>
@@ -329,7 +329,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
       <div className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 min-h-[calc(100vh-180px)]">
         {/* Left Column: Interactive Map */}
         <div
-          className={`lg:col-span-7 h-[420px] sm:h-[500px] lg:h-full min-h-[380px] lg:min-h-[480px] sticky top-36 sm:top-40 overflow-hidden border border-[#E9E3D8] shadow-sm ${
+          className={`lg:col-span-7 h-[420px] sm:h-[500px] lg:h-full min-h-[380px] lg:min-h-[480px] sticky top-36 sm:top-40 overflow-hidden rounded-2xl border border-[#242622]/10 shadow-md ${
             mobileView === 'list' ? 'hidden lg:block' : 'block'
           }`}
         >

@@ -171,7 +171,7 @@ export const BikeDoctorPage: React.FC = () => {
         {/* Header & ML Telemetry Status */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E9E3D8] pb-6">
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#E9E3D8] border border-[#35483C]/30 text-[11px] font-bold text-[#242622] tracking-wider uppercase">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FAF9F5] border border-[#35483C]/30 text-xs font-bold text-[#35483C] tracking-wider uppercase shadow-sm">
               <Stethoscope className="w-3.5 h-3.5 text-[#35483C]" />
               <span>GEAR UP • AI Bike Doctor ML Intelligence Engine</span>
             </div>
@@ -184,7 +184,7 @@ export const BikeDoctorPage: React.FC = () => {
           </div>
 
           {/* Real ML Status Live Pill */}
-          <div className="flex items-center gap-2 bg-white border border-[#E9E3D8] p-3 shadow-sm self-start">
+          <div className="flex items-center gap-3 bg-white border border-[#242622]/[0.08] p-3.5 rounded-2xl shadow-subtle self-start">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
             <div className="text-left text-xs space-y-0.5">
               <div className="flex items-center gap-2">
@@ -203,7 +203,7 @@ export const BikeDoctorPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Input Form (5 cols) */}
-          <div className="lg:col-span-5 bg-white border border-[#E9E3D8] p-6 space-y-5 shadow-sm">
+          <div className="lg:col-span-5 bg-white border border-[#242622]/[0.08] p-6 sm:p-8 rounded-3xl space-y-5 shadow-subtle">
             <div className="flex items-center justify-between border-b border-[#E9E3D8] pb-3">
               <h3 className="font-heading font-bold text-sm text-[#242622] flex items-center gap-2">
                 <Wrench className="w-4 h-4 text-[#35483C]" />
@@ -227,10 +227,10 @@ export const BikeDoctorPage: React.FC = () => {
                     key={item.id}
                     type="button"
                     onClick={() => handleCategoryChange(item.id as any)}
-                    className={`py-2 text-xs font-bold border transition-colors ${
+                    className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all tactile-btn ${
                       category === item.id
-                        ? 'bg-[#35483C] text-white border-[#35483C]'
-                        : 'bg-[#F7F5EF] text-[#85857E] border-[#E9E3D8] hover:text-[#242622]'
+                        ? 'bg-[#35483C] text-white border-[#35483C] shadow-sm'
+                        : 'bg-[#FAF9F5] text-[#85857E] border-[#242622]/[0.08] hover:text-[#242622] hover:border-[#35483C]/40'
                     }`}
                   >
                     {item.label}
@@ -247,7 +247,7 @@ export const BikeDoctorPage: React.FC = () => {
                   type="text"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
-                  className="w-full bg-[#F7F5EF] border border-[#E9E3D8] px-3 py-2 text-[#242622] focus:outline-none focus:border-[#35483C]"
+                  className="w-full bg-[#FAF9F5] border border-[#242622]/[0.1] rounded-xl px-3.5 py-2.5 text-[#242622] focus:outline-none focus:border-[#35483C] focus:ring-2 focus:ring-[#35483C]/20 transition-all"
                 />
               </div>
               <div>
@@ -256,7 +256,7 @@ export const BikeDoctorPage: React.FC = () => {
                   type="text"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="w-full bg-[#F7F5EF] border border-[#E9E3D8] px-3 py-2 text-[#242622] focus:outline-none focus:border-[#35483C]"
+                  className="w-full bg-[#FAF9F5] border border-[#242622]/[0.1] rounded-xl px-3.5 py-2.5 text-[#242622] focus:outline-none focus:border-[#35483C] focus:ring-2 focus:ring-[#35483C]/20 transition-all"
                 />
               </div>
               <div>
@@ -265,7 +265,7 @@ export const BikeDoctorPage: React.FC = () => {
                   type="number"
                   value={year}
                   onChange={(e) => setYear(Number(e.target.value))}
-                  className="w-full bg-[#F7F5EF] border border-[#E9E3D8] px-3 py-2 text-[#242622] focus:outline-none focus:border-[#35483C]"
+                  className="w-full bg-[#FAF9F5] border border-[#242622]/[0.1] rounded-xl px-3.5 py-2.5 text-[#242622] focus:outline-none focus:border-[#35483C] focus:ring-2 focus:ring-[#35483C]/20 transition-all"
                 />
               </div>
               <div>
@@ -274,7 +274,7 @@ export const BikeDoctorPage: React.FC = () => {
                   type="number"
                   value={km}
                   onChange={(e) => setKm(Number(e.target.value))}
-                  className="w-full bg-[#F7F5EF] border border-[#E9E3D8] px-3 py-2 text-[#242622] focus:outline-none focus:border-[#35483C]"
+                  className="w-full bg-[#FAF9F5] border border-[#242622]/[0.1] rounded-xl px-3.5 py-2.5 text-[#242622] focus:outline-none focus:border-[#35483C] focus:ring-2 focus:ring-[#35483C]/20 transition-all"
                 />
               </div>
             </div>
@@ -289,7 +289,7 @@ export const BikeDoctorPage: React.FC = () => {
                 value={symptom}
                 onChange={(e) => setSymptom(e.target.value)}
                 placeholder="e.g. Metallic clicking from engine head, spongy front brake lever, heavy vibration at 60 km/h..."
-                className="w-full bg-[#F7F5EF] border border-[#E9E3D8] p-3 text-xs text-[#242622] focus:outline-none focus:border-[#35483C] leading-relaxed"
+                className="w-full bg-[#FAF9F5] border border-[#242622]/[0.1] rounded-2xl p-4 text-xs text-[#242622] focus:outline-none focus:border-[#35483C] focus:ring-2 focus:ring-[#35483C]/20 leading-relaxed transition-all"
               />
             </div>
 
@@ -310,7 +310,7 @@ export const BikeDoctorPage: React.FC = () => {
                       setSymptom(sc.text);
                       setFuelType(sc.category === 'electric_scooter' ? 'electric' : 'petrol');
                     }}
-                    className="w-full text-left p-2 bg-[#F7F5EF] hover:bg-[#E9E3D8] border border-[#E9E3D8] text-[11px] text-[#242622] flex items-center justify-between transition-colors"
+                    className="w-full text-left p-2.5 rounded-xl bg-[#FAF9F5] hover:bg-[#E9E3D8]/60 border border-[#242622]/[0.06] text-[11px] text-[#242622] flex items-center justify-between transition-colors tactile-btn active:scale-95"
                   >
                     <span className="truncate">• {sc.title}</span>
                     <span className="text-[9px] text-[#85857E] uppercase font-bold shrink-0 ml-2">{sc.brand}</span>
@@ -324,7 +324,7 @@ export const BikeDoctorPage: React.FC = () => {
               type="button"
               onClick={handleDiagnose}
               disabled={isAnalyzing}
-              className="w-full py-3.5 bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-4 min-h-[48px] rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer tactile-btn active:scale-[0.96]"
             >
               <Stethoscope className="w-4 h-4" />
               <span>{isAnalyzing ? 'Running ML Diagnostics...' : 'Run Bike Doctor ML Diagnosis'}</span>
@@ -334,7 +334,7 @@ export const BikeDoctorPage: React.FC = () => {
           {/* Diagnosis Result View (7 cols) */}
           <div className="lg:col-span-7 space-y-5">
             {diagnosis ? (
-              <div className="bg-white border border-[#E9E3D8] p-6 sm:p-8 space-y-6 shadow-sm">
+              <div className="bg-white border border-[#242622]/[0.08] p-6 sm:p-8 rounded-3xl space-y-6 shadow-subtle">
                 
                 {/* Header with Case ID and Machine Badge */}
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E9E3D8] pb-4">
@@ -357,7 +357,7 @@ export const BikeDoctorPage: React.FC = () => {
 
                 {/* Safety Assessment Alert Box */}
                 {diagnosis.safety_assessment && (
-                  <div className={`p-4 border text-xs leading-relaxed ${
+                  <div className={`p-4 sm:p-5 rounded-2xl border text-xs leading-relaxed ${
                     diagnosis.safety_assessment.severity === 'CRITICAL'
                       ? 'bg-red-50 border-red-300 text-red-900'
                       : (diagnosis.safety_assessment.severity === 'HIGH'
@@ -387,7 +387,7 @@ export const BikeDoctorPage: React.FC = () => {
 
                 {/* AI Mechanic Grounded Explanation */}
                 {diagnosis.ai_mechanic_explanation && (
-                  <div className="p-4 bg-[#F7F5EF] border border-[#E9E3D8] space-y-2">
+                  <div className="p-5 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] space-y-2">
                     <div className="flex items-center gap-2 text-xs font-bold text-[#35483C] uppercase tracking-wider">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>AI Master Mechanic Assessment</span>
@@ -406,7 +406,7 @@ export const BikeDoctorPage: React.FC = () => {
                   </h4>
                   <div className="space-y-2.5">
                     {diagnosis.ranked_causes?.map((cause: any, idx: number) => (
-                      <div key={idx} className="p-3.5 bg-[#F7F5EF] border border-[#E9E3D8] space-y-1.5">
+                      <div key={idx} className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#242622]/[0.06] space-y-1.5">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-xs text-[#242622]">{cause.component}</span>
                           <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-[#E9E3D8] text-[#242622]">
@@ -640,7 +640,7 @@ export const BikeDoctorPage: React.FC = () => {
 
               </div>
             ) : (
-              <div className="bg-white border border-[#E9E3D8] p-12 text-center space-y-4 shadow-sm">
+              <div className="bg-white border border-[#242622]/[0.08] p-12 rounded-3xl text-center space-y-4 shadow-subtle">
                 <div className="w-14 h-14 bg-[#E9E3D8] flex items-center justify-center mx-auto text-[#35483C]">
                   <Stethoscope className="w-7 h-7" />
                 </div>
@@ -651,7 +651,7 @@ export const BikeDoctorPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleDiagnose}
-                  className="px-5 py-2.5 bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs shadow-sm transition-colors cursor-pointer"
+                  className="px-6 py-3 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer tactile-btn active:scale-95"
                 >
                   Run Sample Royal Enfield Diagnosis
                 </button>
