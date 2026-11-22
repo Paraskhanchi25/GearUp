@@ -210,19 +210,19 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
-      <div className="relative w-full max-w-4xl my-8 rounded-none border border-[#E9E3D8] bg-[#0B1512] border border-emerald-500/50 p-6 sm:p-8 space-y-6 shadow-2xl text-[#242622]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
+      <div className="relative w-full max-w-4xl my-auto bg-white border border-[#E9E3D8] p-4 sm:p-8 space-y-5 sm:space-y-6 shadow-2xl text-[#242622] max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
         <div className="flex items-start justify-between border-b border-[#E9E3D8] pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-none bg-gradient-to-br from-emerald-500 to-forest-700 flex items-center justify-center text-white shadow-sm">
+            <div className="w-10 h-10 bg-[#35483C] flex items-center justify-center text-white shadow-sm shrink-0">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="font-heading font-extrabold text-xl text-[#242622]">SMART RC VERIFICATION</h2>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-[#242622] border border-emerald-500/40 uppercase tracking-wider">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="font-heading font-extrabold text-lg sm:text-xl text-[#242622]">SMART RC VERIFICATION</h2>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E9E3D8] text-[#35483C] border border-[#E9E3D8] uppercase tracking-wider">
                   AI Authenticity Engine
                 </span>
               </div>
@@ -233,7 +233,8 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white border border-[#E9E3D8] flex items-center justify-center text-[#85857E] hover:text-[#242622] transition-colors cursor-pointer"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F7F5EF] hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622] transition-colors border border-[#E9E3D8] shrink-0 active:scale-95"
+            aria-label="Close modal"
           >
             <X className="w-4 h-4" />
           </button>

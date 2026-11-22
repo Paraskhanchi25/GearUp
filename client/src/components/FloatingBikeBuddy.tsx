@@ -191,35 +191,35 @@ export const FloatingBikeBuddy: React.FC = () => {
 
   return (
     <>
-      {/* Floating Toggle Button */}
+      {/* Floating Toggle Button (Positioned safely above bottom nav on mobile) */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-forest-700 to-forest-500 text-white font-bold text-xs shadow-sm hover:scale-105 transition-transform border border-forest-400/50"
+          className="fixed bottom-20 right-3 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-[#35483C] hover:bg-[#242622] text-white font-mono font-bold text-xs shadow-elevated hover:scale-105 transition-all border border-[#35483C]"
         >
-          <div className="w-6 h-6 rounded-full bg-[#E9E3D8] flex items-center justify-center">
-            <Bot className="w-4 h-4 text-[#242622]" />
+          <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+            <Bot className="w-3.5 h-3.5 text-[#35483C]" />
           </div>
-          <span>AI Bike Buddy</span>
+          <span className="hidden xs:inline">AI Bike Buddy</span>
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         </button>
       )}
 
       {/* Floating Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)] h-[540px] bg-[#101E19] border border-[#E9E3D8]/80 rounded-none border border-[#E9E3D8] shadow-2xl flex flex-col overflow-hidden animate-fade-in">
+        <div className="fixed inset-x-3 bottom-20 sm:inset-auto sm:bottom-6 sm:right-6 z-50 sm:w-96 max-w-[calc(100vw-1.5rem)] h-[520px] max-h-[80vh] bg-white border border-[#E9E3D8] shadow-2xl flex flex-col overflow-hidden animate-fade-in">
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-forest-900 to-forest-800 border-b border-[#E9E3D8] flex items-center justify-between">
+          <div className="p-3.5 bg-[#242622] text-white border-b border-[#35483C] flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-none bg-[#35483C]/30 flex items-center justify-center text-[#35483C] border border-[#35483C]/40">
-                <Bot className="w-5 h-5" />
+              <div className="w-8 h-8 bg-[#35483C] flex items-center justify-center text-white border border-[#A4AD98]/30">
+                <Bot className="w-4 h-4" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h4 className="font-heading font-bold text-sm text-white">AI Bike Buddy</h4>
-                  <span className="text-[10px] bg-[#35483C]/60 text-[#35483C] px-1.5 rounded font-mono">Mechanic</span>
+                  <span className="text-[9px] bg-[#35483C] text-white px-1.5 py-0.5 font-mono uppercase tracking-wider">Mechanic</span>
                 </div>
-                <p className="text-[10px] text-[#242622]">2-Wheeler Diagnostic Expert</p>
+                <p className="text-[10px] text-[#A4AD98]">Two-Wheeler Advisor</p>
               </div>
             </div>
 
@@ -227,13 +227,13 @@ export const FloatingBikeBuddy: React.FC = () => {
               <Link
                 to="/ai-buddy"
                 onClick={() => setIsOpen(false)}
-                className="text-[10px] font-bold text-[#242622] hover:text-white bg-white px-2 py-1 rounded-md border border-[#E9E3D8]"
+                className="text-[10px] font-mono font-bold text-white hover:text-[#35483C] bg-white/10 hover:bg-white px-2 py-1 border border-white/20 transition-colors"
               >
                 Expand
               </Link>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-white"
+                className="p-1.5 bg-white/10 hover:bg-white text-white hover:text-[#242622] transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -241,23 +241,23 @@ export const FloatingBikeBuddy: React.FC = () => {
           </div>
 
           {/* Messages Log */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#F7F5EF]">
             {messages.map((m, idx) => (
               <div
                 key={idx}
                 className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'}`}
               >
                 <div
-                  className={`max-w-[85%] p-3 rounded-none text-xs leading-relaxed ${
+                  className={`max-w-[85%] p-3 text-xs leading-relaxed ${
                     m.sender === 'user'
-                      ? 'bg-[#35483C] text-white rounded-br-none'
-                      : 'bg-white text-[#242622] border border-[#E9E3D8] rounded-bl-none'
+                      ? 'bg-[#35483C] text-white'
+                      : 'bg-white text-[#242622] border border-[#E9E3D8]'
                   }`}
                 >
                   <div className="whitespace-pre-line">{m.text}</div>
                   {m.warning && (
-                    <div className="mt-2 p-2 rounded-lg bg-red-950/80 border border-red-800 text-red-200 text-[10px] flex items-start gap-1.5">
-                      <AlertTriangle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <div className="mt-2 p-2 bg-red-50 border border-red-200 text-red-700 text-[10px] flex items-start gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 text-red-600 flex-shrink-0 mt-0.5" />
                       <span>{m.warning}</span>
                     </div>
                   )}
@@ -274,12 +274,12 @@ export const FloatingBikeBuddy: React.FC = () => {
                           key={item.id}
                           to={`/bike/${item.id}`}
                           onClick={() => setIsOpen(false)}
-                          className="flex items-center gap-2 p-2 rounded-none bg-[#E9E3D8]/60 hover:bg-[#E9E3D8]/40 border border-[#E9E3D8] text-xs transition-colors"
+                          className="flex items-center gap-2 p-2 bg-white hover:bg-[#F7F5EF] border border-[#E9E3D8] text-xs transition-colors"
                         >
-                          <img src={item.primaryImage} alt={item.title} className="w-10 h-10 rounded-lg object-cover" />
+                          <img src={item.primaryImage} alt={item.title} className="w-10 h-10 object-cover border border-[#E9E3D8]" />
                           <div className="flex-1 min-w-0">
-                            <p className="font-bold text-white truncate">{item.title}</p>
-                            <p className="text-[#242622] font-semibold">{formatINR(item.price)} • {item.city}</p>
+                            <p className="font-bold text-[#242622] truncate">{item.title}</p>
+                            <p className="text-[#35483C] font-semibold">{formatINR(item.price)} • {item.city}</p>
                           </div>
                           <ChevronRight className="w-4 h-4 text-[#85857E]" />
                         </Link>
@@ -292,22 +292,22 @@ export const FloatingBikeBuddy: React.FC = () => {
           </div>
 
           {/* Quick Prompts */}
-          <div className="px-3 py-1.5 bg-[#0B1512] border-t border-[#E9E3D8] flex gap-1.5 overflow-x-auto text-[10px]">
+          <div className="px-3 py-2 bg-white border-t border-[#E9E3D8] flex gap-1.5 overflow-x-auto text-[10px]">
             <button
               onClick={() => handleSend('Clicking sound when I press starter')}
-              className="px-2 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] whitespace-nowrap hover:border-[#35483C]"
+              className="px-2.5 py-1 bg-[#F7F5EF] border border-[#E9E3D8] text-[#242622] whitespace-nowrap hover:border-[#35483C] transition-colors"
             >
               Clicking sound
             </button>
             <button
               onClick={() => handleSend('My scooter mileage suddenly dropped')}
-              className="px-2 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] whitespace-nowrap hover:border-[#35483C]"
+              className="px-2.5 py-1 bg-[#F7F5EF] border border-[#E9E3D8] text-[#242622] whitespace-nowrap hover:border-[#35483C] transition-colors"
             >
               Mileage drop
             </button>
             <button
               onClick={() => handleSend('Brake lever feels soft and spongy')}
-              className="px-2 py-1 rounded-full bg-white border border-[#E9E3D8] text-[#85857E] whitespace-nowrap hover:border-[#35483C]"
+              className="px-2.5 py-1 bg-[#F7F5EF] border border-[#E9E3D8] text-[#242622] whitespace-nowrap hover:border-[#35483C] transition-colors"
             >
               Spongy brakes
             </button>
@@ -318,10 +318,10 @@ export const FloatingBikeBuddy: React.FC = () => {
             <button
               onClick={toggleSpeech}
               disabled={isTranscribing}
-              className={`p-2 rounded-none border transition-colors ${
+              className={`p-2.5 border transition-colors ${
                 isListening
-                  ? 'bg-red-500 text-white border-red-400 animate-pulse'
-                  : 'bg-[#E9E3D8] text-[#242622] border-[#E9E3D8] hover:text-[#35483C]'
+                  ? 'bg-red-500 text-white border-red-500 animate-pulse'
+                  : 'bg-[#F7F5EF] text-[#242622] border-[#E9E3D8] hover:border-[#35483C]'
               }`}
               title="Voice Input"
             >
@@ -335,13 +335,13 @@ export const FloatingBikeBuddy: React.FC = () => {
               onKeyDown={(e) => e.key === 'Enter' && !isTyping && handleSend()}
               disabled={isTyping}
               placeholder={isTranscribing ? "Transcribing speech..." : "Ask anything about 2-wheelers or market..."}
-              className="flex-1 bg-white border border-[#E9E3D8] rounded-none px-3 py-2 text-xs text-[#242622] focus:outline-none focus:border-[#35483C] disabled:opacity-50"
+              className="flex-1 bg-[#F7F5EF] border border-[#E9E3D8] px-3 py-2 text-xs text-[#242622] focus:outline-none focus:border-[#35483C] disabled:opacity-50"
             />
 
             <button
               onClick={() => handleSend()}
               disabled={isTyping || !input.trim()}
-              className="p-2 rounded-none bg-[#35483C] hover:bg-[#242622] disabled:opacity-40 text-white transition-colors"
+              className="p-2.5 bg-[#35483C] hover:bg-[#242622] border border-[#35483C] disabled:opacity-40 text-white transition-colors"
             >
               {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>

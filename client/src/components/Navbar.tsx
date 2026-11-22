@@ -30,50 +30,53 @@ export const Navbar: React.FC<NavbarProps> = ({
   const location = useLocation();
 
   const navLinks = [
-    { num: '01', label: 'Explore', path: '/explore' },
-    { num: '02', label: 'Valuation', path: '/price-estimator' },
-    { num: '03', label: '3D Twin', path: '/inspect/bike-001' },
+    { num: '01', label: 'Explore Fleet', path: '/explore' },
+    { num: '02', label: 'ML Valuation', path: '/price-estimator' },
+    { num: '03', label: '3D Digital Twin', path: '/inspect/bike-001' },
     { num: '04', label: 'Resale Studio', path: '/resale-studio' },
     { num: '05', label: 'Bike Doctor', path: '/bike-doctor' },
-    { num: '06', label: 'Compare', path: '/compare' },
-    { num: '07', label: 'Standards', path: '/trust' },
+    { num: '06', label: 'Compare Matrix', path: '/compare' },
+    { num: '07', label: '120-Pt Standards', path: '/trust' },
   ];
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E9E3D8] shadow-[0_4px_25px_-5px_rgba(36,38,34,0.08)] transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           
           {/* Left: Brand Emblem & Location Selector */}
-          <div className="flex items-center gap-6">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-none bg-[#35483C] flex items-center justify-center text-white shadow-sm group-hover:bg-[#242622] transition-colors border border-[#35483C]">
-                <span className="font-heading font-extrabold text-sm tracking-wider">GU</span>
+          <div className="flex items-center gap-2.5 sm:gap-6 min-w-0">
+            <Link to="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#35483C] flex items-center justify-center text-white shadow-sm group-hover:bg-[#242622] transition-colors border border-[#35483C]">
+                <span className="font-heading font-extrabold text-xs sm:text-sm tracking-wider">GU</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-heading text-xl sm:text-2xl font-extrabold tracking-tight text-[#242622] group-hover:text-[#35483C] transition-colors">
+                <span className="font-heading text-lg sm:text-2xl font-extrabold tracking-tight text-[#242622] group-hover:text-[#35483C] transition-colors leading-none sm:leading-tight">
                   GEAR UP
                 </span>
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#85857E] font-mono -mt-1">
+                <span className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-[#85857E] font-mono hidden xs:block">
                   Automotive // Telemetry
                 </span>
               </div>
             </Link>
 
-            {/* Hub Selector Dropdown */}
-            <div className="relative hidden lg:block">
+            {/* Hub Selector Dropdown (Responsive: visible on both desktop and compact mobile pill) */}
+            <div className="relative">
               <button
                 type="button"
                 onClick={() => setLocationDropdownOpen(!locationDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-none text-xs font-mono uppercase tracking-wider text-[#242622] bg-[#FFFFFF] hover:bg-[#E9E3D8]/50 border border-[#E9E3D8] transition-colors"
+                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 min-h-[38px] sm:min-h-[42px] text-[10px] sm:text-xs font-mono uppercase tracking-wider text-[#242622] bg-white hover:bg-[#F7F5EF] border border-[#E9E3D8] transition-colors active:scale-95"
+                title="Select City / Hub"
               >
-                <MapPin className="w-3.5 h-3.5 text-[#35483C]" />
-                <span className="max-w-[120px] truncate">{currentLocation.city}</span>
-                <ChevronDown className="w-3 h-3 text-[#85857E]" />
+                <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#35483C] shrink-0" />
+                <span className="max-w-[70px] xs:max-w-[100px] sm:max-w-[140px] truncate font-semibold">
+                  {currentLocation.city}
+                </span>
+                <ChevronDown className="w-3 h-3 text-[#85857E] shrink-0" />
               </button>
 
               {locationDropdownOpen && (
-                <div className="absolute left-0 mt-2 w-72 bg-white border border-[#E9E3D8] p-3 shadow-2xl z-50 animate-fade-in text-xs">
+                <div className="absolute left-0 mt-2 w-72 sm:w-80 bg-white border border-[#E9E3D8] p-3 shadow-2xl z-50 animate-fade-in text-xs max-w-[calc(100vw-1.5rem)]">
                   <div className="px-2 py-1.5 text-[10px] font-mono font-bold text-[#85857E] uppercase tracking-[0.2em] border-b border-[#E9E3D8]">
                     Select Regional Hub
                   </div>
@@ -83,9 +86,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onRequestGPS();
                       setLocationDropdownOpen(false);
                     }}
-                    className="w-full flex items-center gap-2.5 px-2 py-2 mt-2 hover:bg-[#F7F5EF] text-[#35483C] font-mono text-[11px] font-medium transition-colors border-b border-[#E9E3D8]/40"
+                    className="w-full flex items-center gap-2.5 px-2 py-2.5 mt-2 hover:bg-[#F7F5EF] text-[#35483C] font-mono text-[11px] font-medium transition-colors border-b border-[#E9E3D8]/50 min-h-[44px]"
                   >
-                    <Navigation className="w-3.5 h-3.5 text-[#35483C]" />
+                    <Navigation className="w-3.5 h-3.5 text-[#35483C] shrink-0" />
                     <span>Device GPS Telemetry</span>
                   </button>
 
@@ -97,7 +100,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           onLocationChange(hub);
                           setLocationDropdownOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-2.5 py-1.5 text-left transition-colors font-mono text-[11px] ${
+                        className={`w-full flex items-center justify-between px-2.5 py-2 text-left transition-colors font-mono text-[11px] min-h-[44px] ${
                           currentLocation.name === hub.name
                             ? 'bg-[#35483C] text-white'
                             : 'text-[#242622] hover:bg-[#E9E3D8]/40'
@@ -108,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           <p className={`text-[9px] ${currentLocation.name === hub.name ? 'text-white/70' : 'text-[#85857E]'}`}>{hub.city}</p>
                         </div>
                         {currentLocation.name === hub.name && (
-                          <Check className="w-3 h-3 text-white" />
+                          <Check className="w-3.5 h-3.5 text-white shrink-0" />
                         )}
                       </button>
                     ))}
@@ -118,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Center Navigation Links (AC Motorsport Inspired Minimal Header) */}
+          {/* Center Navigation Links (Desktop) */}
           <nav className="hidden xl:flex items-center gap-6">
             {navLinks.map((item) => {
               const isActive = location.pathname === item.path || (item.path.startsWith('/inspect') && location.pathname.startsWith('/inspect'));
@@ -143,47 +146,75 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            {/* Sell Action Button */}
             <Link
               to="/sell"
-              className="px-5 py-2.5 rounded-none text-xs font-mono uppercase tracking-[0.15em] font-bold bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] shadow-sm flex items-center gap-2 transition-all group"
+              className="px-3 sm:px-5 py-2 sm:py-2.5 text-xs font-mono uppercase tracking-[0.12em] font-bold bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] shadow-sm flex items-center gap-1.5 sm:gap-2 transition-all min-h-[40px] sm:min-h-[44px] active:scale-95 group"
             >
-              <Plus className="w-3.5 h-3.5 group-hover:rotate-90 transition-transform duration-300" />
-              <span>List Machine</span>
+              <Plus className="w-3.5 h-3.5 group-hover:rotate-90 transition-transform duration-300 shrink-0" />
+              <span className="hidden sm:inline">List Machine</span>
+              <span className="sm:hidden">Sell</span>
             </Link>
 
+            {/* Dashboard / Profile Button */}
             <Link
               to="/dashboard"
-              className="p-2.5 rounded-none text-[#242622] hover:bg-white bg-[#F7F5EF] border border-[#E9E3D8] transition-colors"
+              className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-[#242622] hover:bg-[#F7F5EF] bg-white border border-[#E9E3D8] transition-colors active:scale-95 shrink-0"
               title="Dashboard"
             >
               <User className="w-4 h-4" />
             </Link>
 
-            {/* Mobile menu trigger */}
+            {/* Mobile / Tablet Menu Trigger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 rounded-none text-[#242622] border border-[#E9E3D8] hover:bg-white"
+              className="xl:hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-[#242622] border border-[#E9E3D8] hover:bg-[#F7F5EF] bg-white transition-colors active:scale-95 shrink-0"
+              aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile Navigation Drawer with Glassmorphism */}
         {mobileMenuOpen && (
-          <div className="xl:hidden border-t border-[#E9E3D8] py-4 space-y-2 bg-[#F7F5EF] animate-fade-in">
+          <div className="xl:hidden border-t border-[#E9E3D8] py-4 space-y-1.5 bg-white/95 backdrop-blur-xl animate-fade-in shadow-xl -mx-3 px-4 sm:-mx-6 sm:px-6">
+            <div className="px-1 pb-2 border-b border-[#E9E3D8] flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#85857E]">
+                GEAR UP Destinations
+              </span>
+              <span className="text-[10px] font-mono text-[#35483C] font-semibold">Active Fleet</span>
+            </div>
+
             {navLinks.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between px-3 py-2 text-xs font-mono uppercase tracking-wider text-[#242622] hover:bg-white border border-transparent hover:border-[#E9E3D8]"
+                className="flex items-center justify-between px-3 py-3 text-xs font-mono uppercase tracking-wider text-[#242622] hover:bg-[#F7F5EF] border border-transparent hover:border-[#E9E3D8] transition-all min-h-[44px] active:bg-[#E9E3D8]/40"
               >
                 <span>{item.num} // {item.label}</span>
                 <span className="text-[#85857E]">→</span>
               </Link>
             ))}
+
+            <div className="pt-2 border-t border-[#E9E3D8] flex gap-2">
+              <Link
+                to="/ai-buddy"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 py-2.5 px-3 bg-[#35483C] text-white text-xs font-mono uppercase text-center font-bold border border-[#35483C] min-h-[44px] flex items-center justify-center"
+              >
+                Open AI Buddy
+              </Link>
+              <Link
+                to="/dashboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 py-2.5 px-3 bg-white text-[#242622] text-xs font-mono uppercase text-center font-bold border border-[#E9E3D8] min-h-[44px] flex items-center justify-center hover:bg-[#F7F5EF]"
+              >
+                My Account
+              </Link>
+            </div>
           </div>
         )}
       </div>

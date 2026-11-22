@@ -13,12 +13,13 @@ export const AudioPlayerModal: React.FC<AudioPlayerModalProps> = ({ vehicle, onC
   const { audioStory } = vehicle;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white border border-[#E9E3D8] rounded-none max-w-lg w-full p-6 text-[#242622] shadow-2xl relative space-y-5">
-        {/* Close Button */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto">
+      <div className="bg-white border border-[#E9E3D8] max-w-lg w-full p-4 sm:p-6 text-[#242622] shadow-2xl relative space-y-4 sm:space-y-5 my-auto max-h-[90vh] overflow-y-auto">
+        {/* Close Button (44x44px touch target) */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622] transition-colors"
+          className="absolute top-4 right-4 w-11 h-11 flex items-center justify-center rounded-full bg-[#F7F5EF] hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622] transition-colors border border-[#E9E3D8] active:scale-95"
+          aria-label="Close Story"
         >
           <X className="w-5 h-5" />
         </button>
@@ -78,7 +79,7 @@ export const AudioPlayerModal: React.FC<AudioPlayerModalProps> = ({ vehicle, onC
         <div className="flex justify-end pt-2">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-none bg-[#35483C]/30 hover:bg-[#35483C] text-white font-bold text-xs transition-colors"
+            className="w-full sm:w-auto px-6 py-2.5 min-h-[44px] bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] font-mono font-bold text-xs uppercase tracking-wider transition-colors shadow-sm active:scale-95"
           >
             Close Story
           </button>

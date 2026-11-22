@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { FloatingBikeBuddy } from './components/FloatingBikeBuddy';
 import { AudioPlayerModal } from './components/AudioPlayerModal';
 import { SearchCenter, VehicleListing } from './types';
@@ -74,7 +75,7 @@ export const App: React.FC = () => {
           onRequestGPS={handleRequestGPS}
         />
 
-        <main className="flex-1">
+        <main className="flex-1 pb-24 lg:pb-0">
           <Routes>
             <Route
               path="/"
@@ -132,6 +133,9 @@ export const App: React.FC = () => {
 
         {/* Global Floating AI Bike Buddy */}
         <FloatingBikeBuddy />
+
+        {/* Premium Mobile Glassmorphism Bottom Navigation */}
+        <MobileBottomNav />
 
         {/* Global Rider Audio Story Player Modal */}
         <AudioPlayerModal

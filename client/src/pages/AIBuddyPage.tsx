@@ -550,9 +550,9 @@ export const AIBuddyPage: React.FC = () => {
         </div>
       )}
 
-      {/* Input Control Bar */}
-      <div className="border-t border-[#E9E3D8] bg-white px-4 sm:px-6 py-4">
-        <div className="max-w-5xl mx-auto flex items-center gap-2">
+      {/* Input Control Bar (Sticky & touch-friendly) */}
+      <div className="sticky bottom-0 border-t border-[#E9E3D8] bg-white/95 backdrop-blur-md px-3 sm:px-6 py-3 sm:py-4 z-20">
+        <div className="max-w-5xl mx-auto flex items-center gap-1.5 sm:gap-2">
           {/* Hidden Image File Input */}
           <input
             type="file"
@@ -562,24 +562,26 @@ export const AIBuddyPage: React.FC = () => {
             className="hidden"
           />
 
-          {/* Photo Upload Button */}
+          {/* Photo Upload Button (44x44px min touch target) */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="p-3 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] hover:bg-[#F7F5EF] transition-colors"
+            className="w-11 h-11 flex items-center justify-center bg-white border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] hover:bg-[#F7F5EF] transition-colors shrink-0 active:scale-95"
             title="Attach photo, handwritten notes, RC document, or component"
+            aria-label="Attach photo or document"
           >
             <Camera className="w-5 h-5 text-[#242622]" />
           </button>
 
-          {/* Microphone Audio Button */}
+          {/* Microphone Audio Button (44x44px min touch target) */}
           <button
             onClick={toggleSpeechRecording}
-            className={`p-3 rounded-none border transition-colors ${
+            className={`w-11 h-11 flex items-center justify-center border transition-colors shrink-0 active:scale-95 ${
               isListening
                 ? 'bg-red-600 text-white border-red-500 animate-pulse'
                 : 'bg-white text-[#85857E] border-[#E9E3D8] hover:text-[#242622] hover:bg-[#F7F5EF]'
             }`}
             title={isListening ? 'Stop recording and transcribe' : 'Record voice or audio'}
+            aria-label="Voice input recording"
           >
             {isListening ? <MicOff className="w-5 h-5 text-white" /> : <Mic className="w-5 h-5 text-[#242622]" />}
           </button>
@@ -591,17 +593,19 @@ export const AIBuddyPage: React.FC = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && !isTyping && handleSend()}
             disabled={isTyping}
-            placeholder={attachedImage ? 'Ask about this image (e.g., "What is written into it?")' : 'Ask about buying, selling, prices, RC/insurance, or diagnostics...'}
-            className="flex-1 bg-white border border-[#E9E3D8] rounded-none px-4 py-3 text-sm text-[#242622] focus:outline-none focus:border-[#35483C] disabled:opacity-50"
+            placeholder={attachedImage ? 'Ask about image...' : 'Ask about 2-wheelers, prices, RC...'}
+            className="flex-1 bg-white border border-[#E9E3D8] px-3.5 py-2.5 min-h-[44px] text-xs sm:text-sm text-[#242622] focus:outline-none focus:border-[#35483C] disabled:opacity-50 min-w-0"
           />
 
+          {/* Submit Action Button */}
           <button
             onClick={() => handleSend()}
             disabled={isTyping || (!input.trim() && !attachedImage && !attachedAudio)}
-            className="px-6 py-3 rounded-none bg-[#35483C] hover:bg-[#242622] disabled:opacity-40 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-sm"
+            className="px-4 sm:px-6 py-2.5 min-h-[44px] bg-[#35483C] hover:bg-[#242622] disabled:opacity-40 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-sm shrink-0 active:scale-95 border border-[#35483C]"
+            aria-label="Send message"
           >
-            <span>{isTyping ? 'Thinking...' : 'Ask'}</span>
-            <Send className="w-4 h-4" />
+            <span className="hidden xs:inline">{isTyping ? 'Thinking...' : 'Ask'}</span>
+            <Send className="w-4 h-4 shrink-0" />
           </button>
         </div>
       </div>

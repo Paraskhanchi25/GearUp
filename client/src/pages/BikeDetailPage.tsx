@@ -126,26 +126,28 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
             <span>Back to Collection</span>
           </button>
 
-          <div className="flex items-center gap-3">
-            <span className="text-[#85857E] font-mono text-[11px]">ID: {vehicle.id}</span>
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-                alert('Listing link copied to clipboard!');
-              }}
-              className="p-1.5 rounded-lg bg-white text-[#242622] hover:text-[#242622] border border-[#E9E3D8] shadow-sm transition-colors"
-              title="Share"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => onToggleSave(vehicle.id)}
-              className="p-1.5 rounded-lg bg-white text-[#85857E] hover:text-red-500 border border-[#E9E3D8] shadow-sm transition-colors"
-              title="Save"
-            >
-              <Heart className={`w-3.5 h-3.5 ${isSaved ? 'fill-red-500 text-red-500' : ''}`} />
-            </button>
-          </div>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="text-[#85857E] font-mono text-[11px] hidden xs:inline">ID: {vehicle.id}</span>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert('Listing link copied to clipboard!');
+                }}
+                className="w-10 h-10 flex items-center justify-center bg-white text-[#242622] hover:text-[#35483C] border border-[#E9E3D8] shadow-sm transition-colors active:scale-95"
+                title="Share Listing"
+                aria-label="Share Listing"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => onToggleSave(vehicle.id)}
+                className="w-10 h-10 flex items-center justify-center bg-white text-[#85857E] hover:text-red-500 border border-[#E9E3D8] shadow-sm transition-colors active:scale-95"
+                title={isSaved ? "Remove from Saved" : "Save Listing"}
+                aria-label={isSaved ? "Remove from Saved" : "Save Listing"}
+              >
+                <Heart className={`w-4 h-4 ${isSaved ? 'fill-red-500 text-red-500' : ''}`} />
+              </button>
+            </div>
         </div>
       </div>
 
@@ -709,7 +711,7 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
               <div className="space-y-3 pt-2">
                 <button
                   onClick={() => setTestRideModalOpen(true)}
-                  className="w-full py-3.5 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-medium text-xs uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2"
+                  className="w-full py-3.5 min-h-[48px] bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95"
                 >
                   <Calendar className="w-4 h-4" />
                   <span>Book Test Ride</span>
@@ -1010,6 +1012,21 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
           </div>
         </div>
       )}
+
+      {/* Mobile Floating Sticky CTA */}
+      <div className="fixed bottom-20 left-3 right-3 sm:left-auto sm:right-auto sm:w-[440px] sm:left-1/2 sm:-translate-x-1/2 z-30 lg:hidden p-3 bg-white/95 backdrop-blur-xl border border-[#E9E3D8] shadow-luxury flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <span className="block text-[8px] font-mono uppercase text-[#85857E]">Certified Value</span>
+          <span className="font-heading font-extrabold text-base text-[#242622] truncate block">{formatINR(vehicle.price)}</span>
+        </div>
+        <button
+          onClick={() => setTestRideModalOpen(true)}
+          className="px-5 py-2.5 min-h-[44px] bg-[#35483C] hover:bg-[#242622] text-white border border-[#35483C] font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-sm flex items-center gap-2 active:scale-95 shrink-0"
+        >
+          <Calendar className="w-4 h-4 shrink-0" />
+          <span>Book Test Ride</span>
+        </button>
+      </div>
     </div>
   );
 };

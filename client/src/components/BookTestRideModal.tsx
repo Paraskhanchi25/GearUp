@@ -78,14 +78,15 @@ export const BookTestRideModal: React.FC<BookTestRideModalProps> = ({ vehicle, o
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto">
-      <div className="bg-white border border-[#E9E3D8] rounded-none max-w-lg w-full p-6 text-[#242622] shadow-2xl relative my-8">
-        {/* Close Button */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto">
+      <div className="bg-white border border-[#E9E3D8] max-w-lg w-full p-4 sm:p-6 text-[#242622] shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto">
+        {/* Close Button (44x44px touch target) */}
         <button
           onClick={onClose}
           disabled={isProcessing}
-          className="absolute top-5 right-5 p-2 rounded-full bg-white hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622] transition-colors"
+          className="absolute top-4 right-4 w-11 h-11 flex items-center justify-center rounded-full bg-[#F7F5EF] hover:bg-[#E9E3D8] text-[#85857E] hover:text-[#242622] transition-colors border border-[#E9E3D8] active:scale-95"
           title="Close"
+          aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>

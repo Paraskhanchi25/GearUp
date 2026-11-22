@@ -441,8 +441,14 @@ export const ComparePage: React.FC = () => {
             </span>
           </div>
 
+          {/* Mobile Swipe Guidance Banner */}
+          <div className="px-4 py-2.5 bg-[#F7F5EF] border-b border-[#E9E3D8] text-[11px] font-mono text-[#35483C] flex items-center justify-between lg:hidden">
+            <span className="font-semibold">← Swipe table sideways to compare →</span>
+            <span className="text-[10px] text-[#85857E]">{comparedVehicles.length} vehicles</span>
+          </div>
+
           <div className="overflow-x-auto">
-            <div className="divide-y divide-forest-900/60 text-xs min-w-[700px]">
+            <div className="divide-y divide-[#E9E3D8] text-xs min-w-[640px]">
 
               {/* Group 1: Pricing & Valuation */}
               <div className="p-3.5 bg-[#E9E3D8] font-bold uppercase tracking-wider text-[11px] text-[#242622] flex items-center gap-2">
@@ -765,7 +771,7 @@ export const ComparePage: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4 shrink-0">
+                      <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4 shrink-0">
                         <div className="text-right">
                           <p className="font-heading font-black text-sm text-[#242622] font-mono">
                             {formatINR(bike.price)}
@@ -777,10 +783,10 @@ export const ComparePage: React.FC = () => {
                           type="button"
                           disabled={isAlreadySelected}
                           onClick={() => handleSelectVehicle(bike.id)}
-                          className={`px-4 py-2 rounded-none text-xs font-bold transition-all ${
+                          className={`px-4 py-2.5 min-h-[44px] rounded-none text-xs font-bold transition-all border ${
                             isAlreadySelected
-                              ? 'bg-white text-slate-600 cursor-not-allowed border border-[#E9E3D8]'
-                              : 'bg-[#35483C] hover:bg-[#242622] text-white shadow-sm'
+                              ? 'bg-white text-slate-400 cursor-not-allowed border-[#E9E3D8]'
+                              : 'bg-[#35483C] hover:bg-[#242622] text-white border-[#35483C] shadow-sm active:scale-95'
                           }`}
                         >
                           {isAlreadySelected ? 'In Comparison' : 'Select'}

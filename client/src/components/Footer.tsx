@@ -5,7 +5,7 @@ import { ShieldCheck, MapPin, Gauge, ArrowUpRight } from 'lucide-react';
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-[#242622] text-[#85857E] text-xs font-mono border-t border-[#35483C]">
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-12 lg:px-20 pt-12 pb-32 sm:py-20">
         
         {/* Top 4-Column Editorial Matrix */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-white/10">
