@@ -73,6 +73,7 @@ export interface EnvironmentControlPanelProps {
   // Actions
   onCaptureScreenshot: () => void;
   onResetAppearance: () => void;
+  onPlayCinematicIntro?: () => void;
 
   // UI Drawer State
   isOpen: boolean;
@@ -114,6 +115,7 @@ export const EnvironmentControlPanel: React.FC<EnvironmentControlPanelProps> = (
   onPaintRoughnessChange,
   onCaptureScreenshot,
   onResetAppearance,
+  onPlayCinematicIntro,
   isOpen,
   onToggleOpen,
   className = ''
@@ -662,6 +664,17 @@ export const EnvironmentControlPanel: React.FC<EnvironmentControlPanelProps> = (
 
           {/* Action Footer (Screenshot & Reset) */}
           <div className="p-4 border-t border-white/10 bg-black/50 space-y-2">
+            {onPlayCinematicIntro && (
+              <button
+                type="button"
+                onClick={onPlayCinematicIntro}
+                className="w-full py-2.5 px-4 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500 text-emerald-300 font-mono text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2 shadow-lg active:scale-98"
+              >
+                <Sparkles className="w-4 h-4 text-emerald-400" />
+                <span>Replay Workshop Intro</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={onCaptureScreenshot}

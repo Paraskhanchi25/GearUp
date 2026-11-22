@@ -27,7 +27,8 @@ import {
 } from './paintPresets';
 import { 
   buildWorkshopEnvironment, 
-  disposeWorkshopEnvironment 
+  disposeWorkshopEnvironment,
+  WorkshopEnvironmentResult 
 } from './workshopEnvironment';
 import { EnvironmentControlPanel } from './EnvironmentControlPanel';
 import { VehicleListing } from '../../types';
@@ -102,6 +103,8 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   const innerRingRef = useRef<THREE.Mesh | null>(null);
   const outerRingRef = useRef<THREE.Mesh | null>(null);
   const workshopGroupRef = useRef<THREE.Group | null>(null);
+  const workshopResultRef = useRef<WorkshopEnvironmentResult | null>(null);
+  const introTimelineRef = useRef<gsap.core.Timeline | null>(null);
 
   // Particle System
   const particleSystemRef = useRef<THREE.Points | null>(null);
@@ -279,6 +282,119 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   }, []);
 
   // ---------------------------------------------------------------------------
+  // CAMERA PRESETS & CINEMATIC WORKSHOP INTRO ANIMATION
+  // ---------------------------------------------------------------------------
+  const applyCameraPreset = useCallback((presetKey: string) => {
+    setActivePreset(presetKey);
+    onSelectComponent(null);
+
+    const preset = (CAMERA_PRESETS as any)[presetKey] || CAMERA_PRESETS.perspective;
+    cameraTargetPos.current = new THREE.Vector3(...preset.position);
+    controlsTargetPos.current = new THREE.Vector3(...preset.target);
+    isTransitioning.current = true;
+  }, [onSelectComponent]);
+
+  const playCinematicIntro = useCallback(() => {
+    if (!cameraRef.current || !controlsRef.current || !workshopResultRef.current) return;
+    const { overheadLights, verticalWallLights, inspectionSpot } = workshopResultRef.current;
+    const camera = cameraRef.current;
+    const controls = controlsRef.current;
+
+    if (introTimelineRef.current) {
+      introTimelineRef.current.kill();
+    }
+
+    controls.enabled = false;
+    onSelectComponent(null);
+
+    // Scene 1: Dark opening down the runway aisle
+    camera.position.set(0, 1.75, 5.8);
+    controls.target.set(0, 0.7, 0);
+
+    overheadLights.forEach(({ mesh, light }) => {
+      (mesh.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.05;
+      if (light) light.intensity = 0;
+    });
+    verticalWallLights.forEach(({ mesh, light }) => {
+      (mesh.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.05;
+      if (light) light.intensity = 0;
+    });
+    if (ambientLightRef.current) ambientLightRef.current.intensity = 0.12;
+    if (keyLightRef.current) keyLightRef.current.intensity = 0.2;
+    if (rimLightRef.current) rimLightRef.current.intensity = 0;
+    if (inspectionSpot) inspectionSpot.intensity = 0;
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        controls.enabled = true;
+        applyCameraPreset('perspective');
+      }
+    });
+
+    introTimelineRef.current = tl;
+
+    // Scene 1 -> 2: Fade in ambient
+    tl.to(ambientLightRef.current, { intensity: 0.65, duration: 1.0, ease: 'power1.inOut' }, 0.2);
+
+    // Scene 2: Progressive activation of overhead chevron LED strip lights from back to front
+    const maxRow = Math.max(...overheadLights.map(l => l.rowOrder));
+    overheadLights.forEach(({ mesh, light, targetIntensity, rowOrder }) => {
+      const delay = 0.6 + (rowOrder / maxRow) * 1.5;
+      tl.to(
+        (mesh.material as THREE.MeshStandardMaterial),
+        { emissiveIntensity: 1.6, duration: 0.25, ease: 'power2.out' },
+        delay
+      );
+      if (light) {
+        tl.to(light, { intensity: targetIntensity, duration: 0.35, ease: 'power2.out' }, delay);
+      }
+    });
+
+    // Vertical wall lights ignite in tandem
+    verticalWallLights.forEach(({ mesh, light, targetIntensity, rowOrder }) => {
+      const delay = 0.8 + (rowOrder / 8) * 1.4;
+      tl.to(
+        (mesh.material as THREE.MeshStandardMaterial),
+        { emissiveIntensity: 1.6, duration: 0.3, ease: 'power2.out' },
+        delay
+      );
+      if (light) {
+        tl.to(light, { intensity: targetIntensity, duration: 0.4, ease: 'power2.out' }, delay);
+      }
+    });
+
+    // Scene 3: Motorcycle reveal on hydraulic lift
+    tl.to(inspectionSpot, { intensity: 2.6, duration: 0.8, ease: 'power2.inOut' }, 2.2);
+    tl.to(keyLightRef.current, { intensity: keyLightIntensity, duration: 0.8, ease: 'power2.inOut' }, 2.2);
+    tl.to(rimLightRef.current, { intensity: rimLightIntensity, duration: 0.8, ease: 'power2.inOut' }, 2.4);
+
+    // Scene 4: Camera cinematic dolly & arc toward front 3/4 hero view
+    tl.to(
+      camera.position,
+      {
+        x: CAMERA_PRESETS.perspective.position[0],
+        y: CAMERA_PRESETS.perspective.position[1],
+        z: CAMERA_PRESETS.perspective.position[2],
+        duration: 3.8,
+        ease: 'power2.inOut'
+      },
+      0.8
+    );
+
+    tl.to(
+      controls.target,
+      {
+        x: CAMERA_PRESETS.perspective.target[0],
+        y: CAMERA_PRESETS.perspective.target[1],
+        z: CAMERA_PRESETS.perspective.target[2],
+        duration: 3.8,
+        ease: 'power2.inOut'
+      },
+      0.8
+    );
+  }, [keyLightIntensity, rimLightIntensity, onSelectComponent, applyCameraPreset]);
+
+  // ---------------------------------------------------------------------------
   // 3. SCENE INITIALIZATION & CLEANUP
   // ---------------------------------------------------------------------------
   useEffect(() => {
@@ -422,13 +538,14 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     underLightRef.current = underLight;
 
     // 7. Complete 3D Motorcycle Service Workshop Environment
-    const workshop = buildWorkshopEnvironment();
-    workshopGroupRef.current = workshop;
-    const floorMesh = workshop.getObjectByName('workshop_floor_mesh') as THREE.Mesh;
+    const workshopResult = buildWorkshopEnvironment();
+    workshopResultRef.current = workshopResult;
+    workshopGroupRef.current = workshopResult.group;
+    const floorMesh = workshopResult.group.getObjectByName('workshop_floor_mesh') as THREE.Mesh;
     if (floorMesh) {
       floorMeshRef.current = floorMesh;
     }
-    scene.add(workshop);
+    scene.add(workshopResult.group);
 
     // Initialize particles
     updateParticles(currentPreset, scene);
@@ -492,6 +609,9 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         scene.add(root);
         setIsLoading(false);
         setLoadingProgress(100);
+
+        // Trigger cinematic workshop entry reveal
+        playCinematicIntro();
       },
       (xhr) => {
         if (xhr.total > 0) {
@@ -632,6 +752,11 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         disposeWorkshopEnvironment(workshopGroupRef.current);
         scene.remove(workshopGroupRef.current);
         workshopGroupRef.current = null;
+      }
+
+      if (introTimelineRef.current) {
+        introTimelineRef.current.kill();
+        introTimelineRef.current = null;
       }
 
       if (particleSystemRef.current) {
@@ -984,17 +1109,8 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   }, [exploded]);
 
   // ---------------------------------------------------------------------------
-  // 10. CAMERA PRESET SWITCHER
+  // 10. ZOOM CONTROLS
   // ---------------------------------------------------------------------------
-  const applyCameraPreset = (presetKey: string) => {
-    setActivePreset(presetKey);
-    onSelectComponent(null);
-
-    const preset = (CAMERA_PRESETS as any)[presetKey] || CAMERA_PRESETS.perspective;
-    cameraTargetPos.current = new THREE.Vector3(...preset.position);
-    controlsTargetPos.current = new THREE.Vector3(...preset.target);
-    isTransitioning.current = true;
-  };
 
   const handleZoom = (direction: 'in' | 'out') => {
     if (!controlsRef.current || !cameraRef.current) return;
@@ -1140,6 +1256,16 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           </button>
         ))}
 
+        <div className="h-4 w-px bg-white/20 mx-0.5" />
+        <button
+          onClick={playCinematicIntro}
+          className="px-2.5 py-1 rounded-none text-[10px] font-mono uppercase tracking-wider flex items-center gap-1 transition-all border bg-emerald-950/80 hover:bg-emerald-900 border-emerald-500 text-emerald-300 font-bold active:scale-95 shadow-sm"
+          title="Replay Cinematic Workshop Entry Sequence"
+        >
+          <Sparkles className="w-3 h-3 text-emerald-400" />
+          <span>Cinematic Intro</span>
+        </button>
+
         {onToggleExploded && (
           <>
             <div className="h-4 w-px bg-white/20 mx-0.5" />
@@ -1193,6 +1319,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           onPaintRoughnessChange={setPaintRoughness}
           onCaptureScreenshot={handleCaptureScreenshot}
           onResetAppearance={handleResetAppearance}
+          onPlayCinematicIntro={playCinematicIntro}
           isOpen={isStudioDrawerOpen}
           onToggleOpen={() => setIsStudioDrawerOpen(!isStudioDrawerOpen)}
         />
