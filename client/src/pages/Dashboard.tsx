@@ -200,9 +200,6 @@ export const DashboardPage: React.FC = () => {
           <div className="lg:col-span-7 p-6 rounded-3xl bg-[#101D19] border border-forest-800 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-heading font-bold text-base text-white">Inventory & Enquiries</h3>
-              <Link to="/sell" className="text-xs font-bold text-forest-300 hover:underline">
-                + Add Two-Wheeler
-              </Link>
             </div>
 
             <div className="space-y-3">
