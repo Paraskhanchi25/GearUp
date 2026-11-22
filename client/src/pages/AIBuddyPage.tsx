@@ -43,7 +43,6 @@ interface ChatMessage {
 
 export const AIBuddyPage: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<PersonalizedVehicleProfile>(POPULAR_PROFILES[0]);
-  const [language, setLanguage] = useState<'en' | 'hi' | 'pa'>('en');
   const [input, setInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -58,11 +57,7 @@ export const AIBuddyPage: React.FC = () => {
     {
       id: '1',
       sender: 'ai',
-      text: `Namaste! I am AI Bike Buddy, your 24/7 dedicated two-wheeler master mechanic and ownership advisor. I specialize exclusively in motorcycles, scooters, and electric two-wheelers.
-
-Currently tailored to your vehicle: **${selectedProfile.brand} ${selectedProfile.model} (${selectedProfile.year})**.
-
-Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, spongy brakes, EV battery charging, or scheduled maintenance checklists!`,
+      text: `Hello! I am GEAR UP AI Buddy, your advisor for India's used two-wheeler marketplace. Ask me about used bike/scooter buying, condition checks, price negotiation, RC & insurance verification, or maintenance.`,
       timestamp: 'Just now',
     },
   ]);
@@ -116,33 +111,34 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
       const res = await sendAIBuddyMessage({
         message: q || (hadImage ? 'Photo component inspection' : 'Engine audio sound check'),
         history: historyPayload,
-        language,
         vehicle_context: selectedProfile
       });
 
-      // 2. Also run complementary local diagnostic checks if it's a mechanical query
-      const diagnosis = diagnoseTwoWheelerQuery(
-        q || (hadImage ? 'Inspect bike component image' : 'Unusual engine sound recording'),
-        selectedProfile,
-        hadImage,
-        hadAudio
-      );
+      // 2. Only attach diagnostic card if user provided audio sound recording or image
+      const diagnosis = (hadImage || hadAudio)
+        ? diagnoseTwoWheelerQuery(
+            q || (hadImage ? 'Inspect bike component image' : 'Unusual engine sound recording'),
+            selectedProfile,
+            hadImage,
+            hadAudio
+          )
+        : undefined;
 
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
         text: res.response || res.text || `Here is my assessment for your ${selectedProfile.brand} ${selectedProfile.model}:`,
-        diagnosis: res.is_refusal ? undefined : diagnosis,
-        recommendations: res.matched_listings?.map((l: any) => l.title) || diagnosis.recommendedListings,
+        diagnosis,
+        recommendations: res.matched_listings?.map((l: any) => l.title),
         timestamp: res.timestamp || 'Just now',
       };
 
       setMessages((prev) => [...prev, aiMsg]);
 
       // Spoken narration
-      if ('speechSynthesis' in window && language !== 'pa' && !res.is_refusal) {
-        const briefUtterance = new SpeechSynthesisUtterance(diagnosis.title || 'Technical assessment generated');
-        briefUtterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+      if ('speechSynthesis' in window && !res.is_refusal) {
+        const briefUtterance = new SpeechSynthesisUtterance(res.response || 'Assessment generated');
+        briefUtterance.lang = 'en-IN';
         window.speechSynthesis.speak(briefUtterance);
       }
     } catch (err: any) {
@@ -168,7 +164,7 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = language === 'hi' ? 'hi-IN' : language === 'pa' ? 'pa-IN' : 'en-IN';
+    recognition.lang = 'en-IN';
     recognition.continuous = false;
 
     if (!isListening) {
@@ -239,27 +235,6 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
                   </option>
                 ))}
               </select>
-            </div>
-
-            <div className="flex items-center rounded-none bg-white p-1 border border-[#E9E3D8] text-[11px] font-bold">
-              <button
-                onClick={() => setLanguage('en')}
-                className={`px-2 py-0.5 rounded-lg ${language === 'en' ? 'bg-[#35483C] text-white' : 'text-[#85857E]'}`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => setLanguage('hi')}
-                className={`px-2 py-0.5 rounded-lg ${language === 'hi' ? 'bg-[#35483C] text-white' : 'text-[#85857E]'}`}
-              >
-                हिन्दी
-              </button>
-              <button
-                onClick={() => setLanguage('pa')}
-                className={`px-2 py-0.5 rounded-lg ${language === 'pa' ? 'bg-[#35483C] text-white' : 'text-[#85857E]'}`}
-              >
-                ਪੰਜਾਬੀ
-              </button>
             </div>
 
             {/* Clear / New Chat Button */}

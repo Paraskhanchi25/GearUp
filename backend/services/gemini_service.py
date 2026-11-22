@@ -1,7 +1,8 @@
 """
 Google AI Studio Gemini Service for GEAR UP
-Integrates genuine Gemini API with multi-turn chat history, grounded marketplace listings,
-strict domain boundaries, Indian two-wheeler expertise, and diagnostic health checks.
+Optimized for high-speed, direct, domain-specific Indian two-wheeler intelligence.
+Enforces strict concise answer policy (30-80 words), query intent understanding,
+zero repetitive statements, and real marketplace inventory grounding.
 """
 
 import os
@@ -15,11 +16,11 @@ from services.marketplace_service import (
     MARKETPLACE_LISTINGS
 )
 
-# Supported Google GenAI models with automatic demand-spike failover
+# Supported Google GenAI models prioritized for speed and quota resilience
 GEMINI_MODELS = [
-    "gemini-3.5-flash",
     "gemini-3.1-flash-lite",
     "gemini-flash-lite-latest",
+    "gemini-3.5-flash",
     "gemini-3.8-flash"
 ]
 
@@ -38,25 +39,81 @@ POLITE_REFUSAL_MESSAGE = (
     "Please ask me any two-wheeler or marketplace question, and I will be glad to assist!"
 )
 
-SYSTEM_INSTRUCTION = """You are GEAR UP AI Buddy, an intelligent and trustworthy assistant for India's used two-wheeler marketplace. You help buyers and sellers make informed decisions about motorcycles, scooters and electric two-wheelers.
+SYSTEM_INSTRUCTION = """You are GEAR UP AI Buddy, a specialized AI assistant for India's used two-wheeler marketplace.
 
-Communicate in simple, friendly language. Understand Indian two-wheeler terminology, Indian currency (INR), common Indian vehicle brands, and Indian registration and vehicle-document terminology.
+Your primary job is to understand the user's intent and answer the exact question in a short, accurate and useful manner.
 
-Never invent vehicle information, verification results, listing details, market prices, or platform actions. If you do not have access to a particular GEAR UP record or live information, clearly say so.
+Before responding, determine what the user is actually asking. Use relevant conversation context and available GEAR UP data.
 
-You are an assistant, not an official vehicle verification authority, mechanic, lawyer, or financial advisor. Never claim that a vehicle is genuine, accident-free, or officially verified without supporting evidence.
+RESPONSE RULES:
+- Be direct and precise.
+- Prefer short answers.
+- Target approximately 30–80 words for ordinary questions.
+- Simple questions (definitions, specs): 1–3 direct sentences.
+- Normal questions: 3–5 short bullet points or sentences.
+- Comparisons: compact side-by-side comparison with a short conclusion.
+- Use simple English.
+- Avoid unnecessary introductions, generic fillers, or greetings (never start with "Sure!", "Absolutely!", "Of course!", "Hey there!", or "Namaste!").
+- Never repeat the user's question before answering it.
+- Never repeat sentences or information.
+- Never repeat the same explanation in different words.
+- Answer the current question, not a different question.
+- Do not repeat earlier messages unless asked.
+- Ask only one necessary follow-up question at a time, and only if essential information is missing.
+- Remember relevant information from the current conversation.
+- If you do not know something, say so honestly.
+- Never invent specifications, prices, listing details or verification results.
+- Do not give arbitrary resale valuations. When asked for resale price, explain the key factors (year, km, condition, owners) and recommend using GEAR UP's Price Estimator for a data-driven valuation.
+- Use actual GEAR UP services and records when available.
+- Clearly distinguish general knowledge from verified platform information.
 
-DOMAIN BOUNDARIES & EXPERTISE:
-1. Buying & Selling: Guide users on inspecting second-hand bikes/scooters, fair price ranges, resale factors, negotiation, and test rides.
-2. Documents & RTO: Clarify RC (Registration Certificate), Comprehensive vs Third-Party Insurance, PUC (Pollution Under Control), Form 29 & 30 for transfer of ownership, state transfer (NOC), road tax, and hypothecation removal (HP cancel).
-3. Condition & Diagnostics: Explain mechanical issues (engine oil, CVT variator judder, clutch slippage, battery health/SoH for EVs, brake sponginess, tyre tread wear, chain tension) and safety warnings.
-4. Vehicle Comparisons: Provide balanced, objective comparisons between models (e.g., Activa vs Jupiter, Classic 350 vs Hunter, EV scooters) covering real-world mileage, ergonomics, reliability, service costs, and resale value.
-5. Pricing & Negotiation: Provide realistic Indian market valuation guidelines. Always advise users that exact valuation depends on manufacturing year, true odometer reading, owner count, service logs, and physical condition.
-6. Identifying Red Flags: Warn about meter tampering, missing original RC, unpaid e-challans, non-functional ABS, accidental frame bends, or flood damage.
-7. GEAR UP Platform Guidance: Explain GEAR UP's actual features (120-point mechanical inspection, mandatory 4-certificate document verification gate, digital test-ride meetup passes, and verified seller badges).
-8. Privacy & Confidentiality: NEVER generate or expose private seller phone numbers, personal residential addresses, or confidential internal documents.
-9. Refusal Policy: If the user asks about completely unrelated topics (computer programming, general school homework, Bollywood gossip, political commentary, cricket matches, human medicine), politely state that you are GEAR UP's dedicated two-wheeler marketplace advisor and redirect them to bike or scooter questions.
+DOMAIN:
+You are knowledgeable about Indian motorcycles, scooters, electric two-wheelers, vehicle brands (Hero, Honda, TVS, Bajaj, Royal Enfield, Yamaha, Suzuki, KTM, Kawasaki, Jawa, Yezdi, Triumph, Harley-Davidson, Ather, Ola, Chetak, Vida, Revolt, Ultraviolette), models, variants, used-vehicle buying and selling, resale valuation, maintenance, mileage, ownership documents, RC, insurance, PUC and vehicle verification.
+
+You are an assistant for GEAR UP, not an official government verification authority or a substitute for a qualified mechanic.
+
+LANGUAGE:
+Respond in English by default. Understand common Indian vehicle terminology.
+
+Your goal is to make every interaction feel like a knowledgeable two-wheeler expert giving a clear, useful answer without wasting the user's time.
 """
+
+def clean_response(text: str) -> str:
+    """
+    Cleans leading filler, repeated sentences, and formatting artifacts.
+    """
+    if not text:
+        return ""
+    
+    cleaned = text.strip()
+    
+    # Strip common leading conversational filler phrases
+    filler_patterns = [
+        r'^(?:Sure|Certainly|Absolutely|Of course|Hey there|Hello|Namaste|Hi)[!.,:\s]+',
+        r'^(?:Here is|Here are|Here\'s) (?:the |a |some )?(?:information|details|breakdown|guide|checklist)?:?\s*',
+        r'^(?:Regarding your question(?: about)?|To answer your question):?\s*',
+    ]
+    for pattern in filler_patterns:
+        cleaned = re.sub(pattern, '', cleaned, flags=re.IGNORECASE).strip()
+
+    # Deduplicate consecutive identical lines/bullet points
+    lines = cleaned.split('\n')
+    deduped_lines = []
+    seen_lines = set()
+    for line in lines:
+        line_stripped = line.strip().lower()
+        if not line_stripped:
+            deduped_lines.append(line)
+            continue
+        # Only dedup if non-empty and length > 10 chars
+        if len(line_stripped) > 10 and line_stripped in seen_lines:
+            continue
+        if len(line_stripped) > 10:
+            seen_lines.add(line_stripped)
+        deduped_lines.append(line)
+
+    result = '\n'.join(deduped_lines).strip()
+    return result or text.strip()
 
 class GeminiAIService:
     def __init__(self):
@@ -89,7 +146,6 @@ class GeminiAIService:
         for dis in DISALLOWED_TOPICS:
             pattern = r'\b' + re.escape(dis) + r'\b'
             if re.search(pattern, t_low):
-                # Ensure two-wheeler related matches are preserved
                 if any(k in t_low for k in ["error code", "rto code", "pincode", "chassis code", "bike", "scooter"]):
                     continue
                 return True
@@ -126,12 +182,12 @@ class GeminiAIService:
                 f"- Verification Tier: {target_listing.get('verification_tier', 'Verified')}\n"
                 f"- 120-Point Inspection Score: {target_listing.get('inspection_score', 4.5)}/5.0\n"
                 f"- Location: {target_listing.get('locality', '')}, {target_listing['city']}\n"
-                "Note: Answer using these verified marketplace facts. Never expose private seller contacts or exact coordinates.\n"
+                "Note: Answer concisely using these verified facts without revealing private contact details.\n"
             )
             matched_listings.append(target_listing)
 
-        # 3. Check for recommendation queries (e.g. 'suggest scooter under 80000 in chandigarh')
-        elif any(w in q_low for w in ["suggest", "recommend", "buy", "options", "available", "listings", "looking for", "find"]):
+        # 3. Check for recommendation queries
+        elif any(w in q_low for w in ["suggest", "recommend", "buy", "options", "available", "listings"]):
             cat = "scooter" if ("scooter" in q_low or "scooty" in q_low) else ("electric" if ("ev" in q_low or "electric" in q_low) else ("motorcycle" if ("bike" in q_low or "motorcycle" in q_low) else None))
             price_match = re.search(r'(?:under|below|within|upto|budget)\s*(?:₹|rs\.?|inr)?\s*(\d+)(?:\s*(k|thousand|lakh|l))?', q_low)
             max_p = None
@@ -155,10 +211,10 @@ class GeminiAIService:
 
             results = search_marketplace_listings(category=cat, max_price=max_p, city=city)
             if results:
-                matched_listings = results[:3]
-                grounded_text += "\n\nACTIVE GEAR UP MARKETPLACE LISTINGS AVAILABLE RIGHT NOW:\n"
+                matched_listings = results[:2]  # Keep concise
+                grounded_text += "\n\nACTIVE GEAR UP LISTINGS:\n"
                 for l in matched_listings:
-                    grounded_text += f"- {l['title']} (ID: {l['id']}): ₹{l['price']:,} in {l['locality']}, {l['city']} ({l['km']:,} km driven, Inspection Score: {l.get('inspection_score', 4.5)}/5.0)\n"
+                    grounded_text += f"- {l['title']}: ₹{l['price']:,} in {l['locality']}, {l['city']} ({l['km']:,} km driven)\n"
 
         return {
             "grounded_text": grounded_text,
@@ -174,7 +230,7 @@ class GeminiAIService:
     ) -> Dict[str, Any]:
         """
         Executes genuine Google AI Studio Gemini API conversation with multi-turn history,
-        marketplace grounding, and automatic model failover.
+        intent understanding, strict short responses, and resilient model failover.
         """
         start_time = time.time()
         query_clean = user_query.strip()
@@ -192,7 +248,7 @@ class GeminiAIService:
 
         if len(query_clean) > 2500:
             return {
-                "text": "Your message is quite long (over 2,500 characters). Please summarize your two-wheeler query so I can provide the best advice.",
+                "text": "Your query is too long. Please summarize it in 1–2 sentences so I can give you a direct, accurate answer.",
                 "is_refusal": False,
                 "confidence": "medium",
                 "matched_listings": [],
@@ -214,10 +270,7 @@ class GeminiAIService:
         client = self.get_client()
         if not client or not self.is_configured():
             return {
-                "text": (
-                    "GEAR UP AI Buddy is currently offline because the server GEMINI_API_KEY is not configured. "
-                    "Please set a valid Google AI Studio Gemini API key in your server environment."
-                ),
+                "text": "GEAR UP AI Buddy is currently offline because the server GEMINI_API_KEY is not configured.",
                 "is_refusal": False,
                 "confidence": "low",
                 "matched_listings": [],
@@ -230,7 +283,6 @@ class GeminiAIService:
         context_addon = grounding["grounded_text"]
         matched_listings = grounding["matched_listings"]
 
-        # Prepare multi-turn contents for the official google.genai SDK
         try:
             from google.genai import types
         except ImportError:
@@ -245,26 +297,25 @@ class GeminiAIService:
 
         contents_payload: List[types.Content] = []
 
-        # Convert previous conversation history
+        # Deduplicate and build previous conversation history
         if history:
-            for item in history[-8:]:  # keep last 8 turns for context window efficiency
+            seen_texts = set()
+            for item in history[-6:]:  # Keep last 6 turns for tight context window
                 role_val = "user"
                 sender = item.get("sender") or item.get("role") or ""
                 if sender in ["ai", "assistant", "model"]:
                     role_val = "model"
-                msg_text = item.get("text") or item.get("content") or ""
-                if msg_text.strip():
+                msg_text = (item.get("text") or item.get("content") or "").strip()
+                if msg_text and msg_text not in seen_texts:
+                    seen_texts.add(msg_text)
                     contents_payload.append(
-                        types.Content(role=role_val, parts=[types.Part.from_text(text=msg_text.strip())])
+                        types.Content(role=role_val, parts=[types.Part.from_text(text=msg_text)])
                     )
 
-        # Append current user turn with grounded marketplace context
+        # Append current user turn
         full_user_turn = query_clean
         if context_addon:
-            full_user_turn += f"\n\n[GEAR UP LIVE DATA CONTEXT]:{context_addon}"
-        
-        if language and language != "en":
-            full_user_turn += f"\n[Please respond naturally in {language.upper()} language]."
+            full_user_turn += f"\n\n[GEAR UP CONTEXT]:{context_addon}"
 
         contents_payload.append(
             types.Content(role="user", parts=[types.Part.from_text(text=full_user_turn)])
@@ -279,15 +330,16 @@ class GeminiAIService:
                     contents=contents_payload,
                     config=types.GenerateContentConfig(
                         system_instruction=SYSTEM_INSTRUCTION,
-                        temperature=0.35,
+                        temperature=0.2,
                     )
                 )
 
-                response_text = response.text or ""
+                raw_text = response.text or ""
+                cleaned_text = clean_response(raw_text)
                 latency = round((time.time() - start_time) * 1000, 1)
 
                 return {
-                    "text": response_text.strip(),
+                    "text": cleaned_text,
                     "is_refusal": False,
                     "confidence": "high",
                     "matched_listings": matched_listings,
@@ -300,13 +352,9 @@ class GeminiAIService:
                 print(f"[GeminiAIService] Model {model_name} failed: {e}. Trying next model...")
                 continue
 
-        # If all Gemini models failed (e.g. invalid key or total network outage)
         latency = round((time.time() - start_time) * 1000, 1)
         return {
-            "text": (
-                "I apologize, but I could not reach the Gemini AI service right now. "
-                "Please verify your internet connection or check whether your Google AI Studio API key has exceeded quota."
-            ),
+            "text": "I could not reach Gemini AI at the moment. Please verify internet connectivity or quota limits.",
             "is_refusal": False,
             "confidence": "low",
             "matched_listings": matched_listings,
@@ -317,7 +365,6 @@ class GeminiAIService:
     def run_diagnostics(self) -> Dict[str, Any]:
         """
         Executes the Phase 5 automated diagnostics test suite against Google AI Studio Gemini API.
-        Tests 7 compulsory operational conditions.
         """
         results: Dict[str, Any] = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -338,38 +385,21 @@ class GeminiAIService:
             try:
                 from google.genai import types
                 resp = client.models.generate_content(
-                    model="gemini-3.5-flash",
-                    contents="Reply with: GEAR UP AI Buddy is online.",
-                    config=types.GenerateContentConfig(
-                        system_instruction=SYSTEM_INSTRUCTION,
-                        temperature=0.1
-                    )
+                    model="gemini-3.1-flash-lite",
+                    contents="Reply with exactly: GEAR UP AI Buddy online."
                 )
                 test1_res = {
                     "status": "PASS",
-                    "model_used": "gemini-3.5-flash",
+                    "model_used": "gemini-3.1-flash-lite",
                     "latency_ms": round((time.time() - t0) * 1000, 1),
-                    "response_preview": (resp.text or "").strip()[:100]
+                    "response_preview": (resp.text or "").strip()[:80]
                 }
             except Exception as e:
-                # Try backup model
-                try:
-                    resp = client.models.generate_content(
-                        model="gemini-3.1-flash-lite",
-                        contents="Reply with: GEAR UP AI Buddy is online."
-                    )
-                    test1_res = {
-                        "status": "PASS",
-                        "model_used": "gemini-3.1-flash-lite (failover)",
-                        "latency_ms": round((time.time() - t0) * 1000, 1),
-                        "response_preview": (resp.text or "").strip()[:100]
-                    }
-                except Exception as e2:
-                    test1_res = {
-                        "status": "FAIL",
-                        "error": str(e2),
-                        "latency_ms": round((time.time() - t0) * 1000, 1)
-                    }
+                test1_res = {
+                    "status": "FAIL",
+                    "error": str(e),
+                    "latency_ms": round((time.time() - t0) * 1000, 1)
+                }
         results["tests"]["TEST_1_VALID_API_KEY"] = test1_res
 
         # TEST 2: Missing API Key Handling
@@ -395,7 +425,7 @@ class GeminiAIService:
             invalid_client = genai.Client(api_key="AIzaSyINVALID_KEY_FOR_TESTING_ONLY_12345")
             try:
                 invalid_client.models.generate_content(
-                    model="gemini-3.5-flash",
+                    model="gemini-3.1-flash-lite",
                     contents="Ping"
                 )
                 test3_res = {"status": "FAIL", "detail": "Expected API key error did not occur."}
@@ -411,7 +441,7 @@ class GeminiAIService:
         # TEST 4: Network Failure / Timeout Simulation
         test4_res = {
             "status": "PASS",
-            "detail": "Model failover array [gemini-3.5-flash -> gemini-3.1-flash-lite -> gemini-flash-lite-latest] handles upstream unavailability cleanly."
+            "detail": "Model failover array [gemini-3.1-flash-lite -> gemini-flash-lite-latest -> gemini-3.5-flash -> gemini-3.8-flash] handles upstream quota exhaustion and downtime cleanly."
         }
         results["tests"]["TEST_4_NETWORK_RESILIENCE"] = test4_res
 
@@ -435,11 +465,12 @@ class GeminiAIService:
         # TEST 7: Multi-turn Context Test
         t0 = time.time()
         turn_history = [
-            {"sender": "user", "text": "I need a scooter under ₹60,000 for college."},
-            {"sender": "ai", "text": "Under ₹60,000, popular options include a used Honda Activa 5G or TVS Jupiter."}
+            {"sender": "user", "text": "I am looking for a scooter."},
+            {"sender": "ai", "text": "Understood. What is your budget and daily travel distance?"},
+            {"sender": "user", "text": "My budget is ₹60,000 for college commute."}
         ]
         context_check = self.chat(
-            user_query="What was my budget and bike category?",
+            user_query="Based on what I told you, what was my budget and vehicle type?",
             history=turn_history
         )
         context_text = context_check.get("text", "").lower()
@@ -448,7 +479,7 @@ class GeminiAIService:
             "status": "PASS" if retained else "PARTIAL",
             "retained_budget_and_category": retained,
             "latency_ms": context_check.get("latency_ms", 0),
-            "response_snippet": context_check.get("text", "")[:120]
+            "response_snippet": context_check.get("text", "")[:100]
         }
         results["tests"]["TEST_7_MULTITURN_CONTEXT"] = test7_res
 

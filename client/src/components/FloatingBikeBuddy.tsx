@@ -18,12 +18,11 @@ export const FloatingBikeBuddy: React.FC = () => {
   const [input, setInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [language, setLanguage] = useState<'en' | 'hi' | 'pa'>('en');
 
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: 'ai',
-      text: "Namaste! I'm GEAR UP AI Buddy, your 24/7 used two-wheeler advisor. Ask me about buying, selling, prices, condition checks, or RC/insurance!",
+      text: "Hello! I'm GEAR UP AI Buddy, your advisor for India's used two-wheeler marketplace. Ask me about buying, selling, prices, condition checks, or RC/insurance.",
     },
   ]);
 
@@ -45,7 +44,6 @@ export const FloatingBikeBuddy: React.FC = () => {
       const res = await sendAIBuddyMessage({
         message: q,
         history: historyPayload,
-        language,
       });
 
       const reply = res.response || res.text || 'Diagnostic assessment generated.';
@@ -86,7 +84,7 @@ export const FloatingBikeBuddy: React.FC = () => {
       return;
     }
     const recognition = new SpeechRecognition();
-    recognition.lang = language === 'hi' ? 'hi-IN' : language === 'pa' ? 'pa-IN' : 'en-IN';
+    recognition.lang = 'en-IN';
     recognition.continuous = false;
 
     if (!isListening) {
