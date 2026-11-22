@@ -487,39 +487,39 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 bg-[#060C0A]/95 backdrop-blur-md flex flex-col items-center justify-center gap-4 z-20 text-white">
-          <div className="w-16 h-16 rounded-2xl bg-[#F1EEE5] border border-[#879783] flex items-center justify-center shadow-glow animate-pulse">
-            <Compass className="w-8 h-8 text-[#596B59] animate-spin" />
+          <div className="w-16 h-16 rounded-none bg-[#E9E3D8] border border-[#35483C] flex items-center justify-center shadow-glow animate-pulse">
+            <Compass className="w-8 h-8 text-[#242622] animate-spin" />
           </div>
           <div className="text-center space-y-1.5 max-w-sm px-4">
             <h3 className="font-heading font-bold text-base text-white tracking-wide">
               Loading 3D Digital Twin Showroom
             </h3>
-            <p className="text-xs text-[#77796F]">
+            <p className="text-xs text-[#85857E]">
               Initializing {vehicle?.brand || 'Motorcycle'} {vehicle?.model || '350'} inspection meshes...
             </p>
           </div>
-          <div className="w-64 h-2 rounded-full bg-white border border-[#E5E1D7] overflow-hidden">
+          <div className="w-64 h-2 rounded-full bg-white border border-[#E9E3D8] overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-emerald-500 to-forest-400 rounded-full transition-all duration-300"
               style={{ width: `${loadingProgress}%` }}
             />
           </div>
-          <span className="text-[11px] font-mono text-[#596B59]">{loadingProgress}%</span>
+          <span className="text-[11px] font-mono text-[#242622]">{loadingProgress}%</span>
         </div>
       )}
 
       {/* Fallback / Error State */}
       {loadError && (
         <div className="absolute inset-0 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-20 space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-amber-950/80 border border-amber-600/50 flex items-center justify-center text-amber-400">
+          <div className="w-12 h-12 rounded-none bg-amber-950/80 border border-amber-600/50 flex items-center justify-center text-amber-400">
             <AlertTriangle className="w-6 h-6" />
           </div>
           <div className="space-y-1 max-w-md">
             <h4 className="font-heading font-bold text-sm text-white">Interactive 3D Notice</h4>
-            <p className="text-xs text-[#77796F]">{loadError}</p>
+            <p className="text-xs text-[#85857E]">{loadError}</p>
           </div>
           {vehicle?.primaryImage && (
-            <div className="relative aspect-video w-full max-w-md rounded-2xl overflow-hidden border border-[#E5E1D7]">
+            <div className="relative aspect-video w-full max-w-md rounded-none overflow-hidden border border-[#E9E3D8]">
               <img src={vehicle.primaryImage} alt="Vehicle visual" className="w-full h-full object-cover" />
               <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-md bg-black/80 text-[10px] text-white">
                 Certified 120-Point Photographic Inspection
@@ -553,7 +553,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
                   <span className="w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white shadow-glow" />
                 </div>
                 {/* Hotspot Label Pill */}
-                <span className="px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E5E1D7] text-[10px] font-bold text-white shadow-xl whitespace-nowrap opacity-75 group-hover:opacity-100 group-hover:border-emerald-400 transition-opacity">
+                <span className="px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E9E3D8] text-[10px] font-bold text-white shadow-xl whitespace-nowrap opacity-75 group-hover:opacity-100 group-hover:border-emerald-400 transition-opacity">
                   {h.name}
                 </span>
               </button>
@@ -564,13 +564,13 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
       {/* Top Floating Badge: Discloses Representative 3D Model with Real Inspection Data */}
       <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <div className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#E5E1D7] shadow-2xl text-xs">
-          <Sparkles className="w-4 h-4 text-[#596B59] flex-shrink-0" />
+        <div className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] shadow-2xl text-xs">
+          <Sparkles className="w-4 h-4 text-[#242622] flex-shrink-0" />
           <div className="leading-tight">
             <span className="font-bold text-white block text-[11px]">
               {vehicle?.brand || 'Royal Enfield'} {vehicle?.model || 'Classic 350'} 3D Digital Twin
             </span>
-            <span className="text-[10px] text-[#596B59]">
+            <span className="text-[10px] text-[#242622]">
               Representative Asset • Actual Seller Condition Displayed in Real-Time
             </span>
           </div>
@@ -580,10 +580,10 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         <div className="pointer-events-auto flex items-center gap-1.5">
           <button
             onClick={() => setShowHotspots(!showHotspots)}
-            className={`p-2 rounded-xl backdrop-blur-md border text-xs transition-colors shadow-lg ${
+            className={`p-2 rounded-none backdrop-blur-md border text-xs transition-colors shadow-lg ${
               showHotspots
-                ? 'bg-emerald-950/80 border-emerald-600/70 text-[#596B59]'
-                : 'bg-white/95 border-[#E5E1D7] text-[#77796F] hover:text-white'
+                ? 'bg-emerald-950/80 border-emerald-600/70 text-[#242622]'
+                : 'bg-white/95 border-[#E9E3D8] text-[#85857E] hover:text-white'
             }`}
             title={showHotspots ? 'Hide Component Hotspot Pins' : 'Show Component Hotspot Pins'}
           >
@@ -593,10 +593,10 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           {onToggleExploded && (
             <button
               onClick={onToggleExploded}
-              className={`p-2 rounded-xl backdrop-blur-md border text-xs transition-colors shadow-lg flex items-center gap-1 ${
+              className={`p-2 rounded-none backdrop-blur-md border text-xs transition-colors shadow-lg flex items-center gap-1 ${
                 exploded
                   ? 'bg-amber-950/80 border-amber-600/70 text-amber-300'
-                  : 'bg-white/95 border-[#E5E1D7] text-[#77796F] hover:text-white'
+                  : 'bg-white/95 border-[#E9E3D8] text-[#85857E] hover:text-white'
               }`}
               title="Exploded Assembly View"
             >
@@ -608,7 +608,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           {onToggleFullscreen && (
             <button
               onClick={onToggleFullscreen}
-              className="p-2 rounded-xl bg-white/95 backdrop-blur-md border border-[#E5E1D7] text-[#77796F] hover:text-white text-xs transition-colors shadow-lg"
+              className="p-2 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] text-[#85857E] hover:text-white text-xs transition-colors shadow-lg"
               title={fullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen Showroom'}
             >
               {fullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -618,13 +618,13 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       </div>
 
       {/* Bottom Camera Perspectives Bar (Front, Rear, Left, Right, Top, Reset) */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 p-1.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#E5E1D7] shadow-2xl z-10 max-w-[95%] overflow-x-auto">
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 p-1.5 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] shadow-2xl z-10 max-w-[95%] overflow-x-auto">
         <button
           onClick={() => applyCameraPreset('perspective')}
-          className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all flex items-center gap-1 whitespace-nowrap ${
+          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all flex items-center gap-1 whitespace-nowrap ${
             activePreset === 'perspective' && !selectedComponentId
               ? 'bg-emerald-600 text-white shadow-glow'
-              : 'text-[#77796F] hover:text-white hover:bg-[#F1EEE5]'
+              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
           }`}
           title="3/4 Perspective Hero View"
         >
@@ -634,10 +634,10 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
         <button
           onClick={() => applyCameraPreset('front')}
-          className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap ${
+          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'front'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#77796F] hover:text-white hover:bg-[#F1EEE5]'
+              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
           }`}
         >
           Front
@@ -645,10 +645,10 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
         <button
           onClick={() => applyCameraPreset('side_left')}
-          className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap ${
+          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'side_left'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#77796F] hover:text-white hover:bg-[#F1EEE5]'
+              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
           }`}
         >
           Left Profile
@@ -656,10 +656,10 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
         <button
           onClick={() => applyCameraPreset('side_right')}
-          className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap ${
+          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'side_right'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#77796F] hover:text-white hover:bg-[#F1EEE5]'
+              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
           }`}
         >
           Right Profile
@@ -667,10 +667,10 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
         <button
           onClick={() => applyCameraPreset('rear')}
-          className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap ${
+          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'rear'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#77796F] hover:text-white hover:bg-[#F1EEE5]'
+              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
           }`}
         >
           Rear
@@ -678,28 +678,28 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
         <button
           onClick={() => applyCameraPreset('top')}
-          className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap ${
+          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
             activePreset === 'top'
               ? 'bg-emerald-600 text-white'
-              : 'text-[#77796F] hover:text-white hover:bg-[#F1EEE5]'
+              : 'text-[#85857E] hover:text-white hover:bg-[#E9E3D8]'
           }`}
         >
           Top Down
         </button>
 
-        <div className="w-[1px] h-4 bg-[#E5D9C7]/40 mx-0.5" />
+        <div className="w-[1px] h-4 bg-[#E9E3D8]/40 mx-0.5" />
 
         {/* Zoom Controls */}
         <button
           onClick={() => handleZoom('in')}
-          className="p-1.5 rounded-lg text-[#77796F] hover:text-white hover:bg-[#F1EEE5] transition-colors"
+          className="p-1.5 rounded-lg text-[#85857E] hover:text-white hover:bg-[#E9E3D8] transition-colors"
           title="Zoom In (+)"
         >
           <ZoomIn className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={() => handleZoom('out')}
-          className="p-1.5 rounded-lg text-[#77796F] hover:text-white hover:bg-[#F1EEE5] transition-colors"
+          className="p-1.5 rounded-lg text-[#85857E] hover:text-white hover:bg-[#E9E3D8] transition-colors"
           title="Zoom Out (-)"
         >
           <ZoomOut className="w-3.5 h-3.5" />

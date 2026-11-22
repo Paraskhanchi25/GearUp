@@ -1,111 +1,130 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, MapPin, Gauge, Heart, ArrowUpRight } from 'lucide-react';
+import { ShieldCheck, MapPin, Gauge, ArrowUpRight } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#F1EEE5] border-t border-[#E5E1D7] text-[#77796F] text-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+    <footer className="bg-[#242622] text-[#85857E] text-xs font-mono border-t border-[#35483C]">
+      <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-20">
+        
+        {/* Top 4-Column Editorial Matrix */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-white/10">
           
-          {/* Brand Column */}
+          {/* Brand & Ethos */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#879783] flex items-center justify-center text-white">
-                <Gauge className="w-5 h-5 text-white" />
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="w-8 h-8 bg-[#35483C] flex items-center justify-center text-white border border-[#A4AD98]/30">
+                <span className="font-heading font-extrabold text-xs">GU</span>
               </div>
-              <span className="font-heading text-2xl font-bold tracking-tight text-[#242923]">
+              <span className="font-heading font-extrabold text-xl tracking-tight text-white">
                 GEAR UP
               </span>
             </Link>
-            <p className="text-xs leading-relaxed text-[#77796F]">
-              A refined automotive marketplace for verified pre-owned two-wheelers. Built on mechanical telemetry, transparent ML valuation, and certified physical hub inspections.
+            <p className="text-[11px] leading-relaxed text-[#85857E] font-sans">
+              Haute engineering and transparent telemetry for verified pre-owned two-wheelers across India. Certified via 120-point mechanical audits and trained CatBoost ML inference.
             </p>
+            <div className="pt-2 flex items-center gap-2 text-[10px] text-[#A4AD98]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#A4AD98] animate-pulse" />
+              <span>REGIONAL INSPECTION HUBS ONLINE</span>
+            </div>
           </div>
 
-          {/* Marketplace Column */}
+          {/* Column 2: Discovery */}
           <div className="space-y-3">
-            <h4 className="font-heading text-sm font-semibold text-[#242923] uppercase tracking-wider">
-              Marketplace
-            </h4>
-            <ul className="space-y-2 text-xs">
+            <span className="block text-[10px] font-bold text-white uppercase tracking-[0.25em]">
+              [ INVENTORY ]
+            </span>
+            <ul className="space-y-2 text-[11px]">
               <li>
-                <Link to="/explore" className="hover:text-[#242923] transition-colors">
-                  Browse Motorcycle Collection
+                <Link to="/explore" className="hover:text-white transition-colors">
+                  01 // Verified Fleet Discovery
                 </Link>
               </li>
               <li>
-                <Link to="/price-estimator" className="hover:text-[#242923] transition-colors">
-                  AI Fair-Price Valuation
+                <Link to="/price-estimator" className="hover:text-white transition-colors">
+                  02 // CatBoost ML Valuation
                 </Link>
               </li>
               <li>
-                <Link to="/sell" className="hover:text-[#242923] transition-colors">
-                  Seller Submission Concierge
+                <Link to="/inspect/bike-001" className="hover:text-white transition-colors">
+                  03 // 3D Digital Twin Viewer
                 </Link>
               </li>
               <li>
-                <Link to="/compare" className="hover:text-[#242923] transition-colors">
-                  Side-by-Side Comparison
+                <Link to="/compare" className="hover:text-white transition-colors">
+                  04 // Side-by-Side Matrix
+                </Link>
+              </li>
+              <li>
+                <Link to="/sell" className="hover:text-white transition-colors">
+                  05 // Seller Submission Protocol
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Intelligence Column */}
+          {/* Column 3: AI Telemetry & Diagnostics */}
           <div className="space-y-3">
-            <h4 className="font-heading text-sm font-semibold text-[#242923] uppercase tracking-wider">
-              Intelligence & Care
-            </h4>
-            <ul className="space-y-2 text-xs">
+            <span className="block text-[10px] font-bold text-white uppercase tracking-[0.25em]">
+              [ TELEMETRY ]
+            </span>
+            <ul className="space-y-2 text-[11px]">
               <li>
-                <Link to="/resale-studio" className="hover:text-[#242923] transition-colors">
-                  AI Resale Studio
+                <Link to="/bike-doctor" className="hover:text-white transition-colors">
+                  01 // Acoustic Stethoscope
                 </Link>
               </li>
               <li>
-                <Link to="/bike-doctor" className="hover:text-[#242923] transition-colors">
-                  Acoustic Symptom Doctor
+                <Link to="/resale-studio" className="hover:text-white transition-colors">
+                  02 // AI Upgrade Studio
                 </Link>
               </li>
               <li>
-                <Link to="/ai-buddy" className="hover:text-[#242923] transition-colors">
-                  24/7 AI Master Mechanic
+                <Link to="/ai-buddy" className="hover:text-white transition-colors">
+                  03 // 24/7 AI Master Mechanic
                 </Link>
               </li>
               <li>
-                <Link to="/trust" className="hover:text-[#242923] transition-colors">
-                  120-Point Inspection Standards
+                <Link to="/trust" className="hover:text-white transition-colors">
+                  04 // 120-Point Standards
+                </Link>
+              </li>
+              <li>
+                <Link to="/admin" className="hover:text-white transition-colors">
+                  05 // Inspector Review Desk
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Hubs Column */}
+          {/* Column 4: Certified Hubs */}
           <div className="space-y-3">
-            <h4 className="font-heading text-sm font-semibold text-[#242923] uppercase tracking-wider">
-              Inspection Hubs
-            </h4>
-            <p className="text-xs text-[#77796F] leading-relaxed">
-              Certified facilities active in Chandigarh Tricity, Delhi NCR, Bengaluru, Pune, and Mumbai.
+            <span className="block text-[10px] font-bold text-white uppercase tracking-[0.25em]">
+              [ REGIONAL HUBS ]
+            </span>
+            <p className="text-[11px] text-[#85857E] leading-relaxed font-sans">
+              Physical inspection and escrow hubs active across Chandigarh Tricity, Delhi NCR, Bengaluru, Pune, and Mumbai.
             </p>
             <div className="pt-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-white text-[#596B59] border border-[#E5E1D7]">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#879783]" />
+              <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 text-[10px] text-white">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#A4AD98]" />
                 <span>RTO Parivahan Verified</span>
               </span>
             </div>
           </div>
+
         </div>
 
-        <div className="mt-12 pt-8 border-t border-[#E5E1D7] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#77796F]">
-          <p>© 2026 GEAR UP Automotive Ltd. All rights reserved.</p>
+        {/* Bottom Strip */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] text-[#85857E]">
+          <p>© 2026 GEAR UP MOBILITY TECHNOLOGIES LTD. ALL RIGHTS RESERVED.</p>
           <div className="flex items-center gap-6">
-            <Link to="/trust" className="hover:text-[#242923] transition-colors">Privacy Policy</Link>
-            <Link to="/trust" className="hover:text-[#242923] transition-colors">Terms of Service</Link>
-            <Link to="/trust" className="hover:text-[#242923] transition-colors">Security & RC Protection</Link>
+            <Link to="/trust" className="hover:text-white transition-colors">PRIVACY POLICY</Link>
+            <Link to="/trust" className="hover:text-white transition-colors">TERMS OF SERVICE</Link>
+            <Link to="/trust" className="hover:text-white transition-colors">ESCROW PROTOCOL</Link>
           </div>
         </div>
+
       </div>
     </footer>
   );

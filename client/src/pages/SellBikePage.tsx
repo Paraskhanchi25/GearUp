@@ -488,24 +488,24 @@ export const SellBikePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F5EF] text-[#242923] pb-28">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#242622] pb-28">
       {/* Save Draft Floating Notification */}
       {draftSavedToast && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-emerald-950 border border-emerald-500/80 text-[#354638] text-xs shadow-2xl flex items-center gap-2 animate-bounce">
-          <CheckCircle2 className="w-4 h-4 text-[#596B59]" />
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-none bg-emerald-950 border border-emerald-500/80 text-[#35483C] text-xs shadow-2xl flex items-center gap-2 animate-bounce">
+          <CheckCircle2 className="w-4 h-4 text-[#242622]" />
           <span>Listing draft saved safely! You can resume anytime.</span>
         </div>
       )}
 
       {/* 5-Step Clear Selling Process Navigation Header */}
-      <div className="border-b border-[#E5E1D7] bg-[#F7F5EF]/95 backdrop-blur-md px-4 sm:px-6 py-4 sticky top-16 z-30 shadow-xl">
+      <div className="border-b border-[#E9E3D8] bg-[#F7F5EF]/95 backdrop-blur-md px-4 sm:px-6 py-4 sticky top-16 z-30 shadow-xl">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="w-8 h-8 rounded-xl bg-[#879783] text-white flex items-center justify-center font-black text-xs shadow-sm">
+            <span className="w-8 h-8 rounded-none bg-[#35483C] text-white flex items-center justify-center font-black text-xs shadow-sm">
               {currentStep}
             </span>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#596B59]">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#242622]">
                 Step {currentStep} of 5
               </span>
               <h2 className="font-heading font-bold text-sm sm:text-base text-white">
@@ -521,9 +521,9 @@ export const SellBikePage: React.FC = () => {
           <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
             <button
               onClick={saveDraft}
-              className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#F1EEE5] border border-[#E5E1D7] text-[#77796F] text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 rounded-none bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] text-[#85857E] text-xs font-semibold flex items-center gap-1.5 transition-colors"
             >
-              <Save className="w-3.5 h-3.5 text-[#596B59]" />
+              <Save className="w-3.5 h-3.5 text-[#242622]" />
               <span>Save Draft</span>
             </button>
 
@@ -545,7 +545,7 @@ export const SellBikePage: React.FC = () => {
                     s.step === currentStep
                       ? 'bg-forest-400 w-8'
                       : s.step < currentStep
-                      ? 'bg-[#879783] w-4'
+                      ? 'bg-[#35483C] w-4'
                       : 'bg-white w-4'
                   }`}
                 />
@@ -561,13 +561,13 @@ export const SellBikePage: React.FC = () => {
         {/* STEP 1: VEHICLE INFORMATION */}
         {/* ======================================================== */}
         {currentStep === 1 && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-6">
+          <div className="p-6 sm:p-8 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-2xl space-y-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F1EEE5] text-[#596B59] text-[10px] font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                 Step 1 of 5
               </div>
               <h2 className="font-heading font-extrabold text-2xl text-white">Vehicle Information</h2>
-              <p className="text-xs text-[#77796F] mt-1">
+              <p className="text-xs text-[#85857E] mt-1">
                 Enter core vehicle specifications, ownership, and pricing to initialize verification.
               </p>
             </div>
@@ -583,14 +583,14 @@ export const SellBikePage: React.FC = () => {
                   key={c.id}
                   type="button"
                   onClick={() => setCategory(c.id as any)}
-                  className={`p-4 rounded-2xl border text-left transition-all ${
+                  className={`p-4 rounded-none border text-left transition-all ${
                     category === c.id
-                      ? 'bg-[#F1EEE5] border-[#879783] text-white shadow-sm'
-                      : 'bg-white/60 border-[#E5E1D7] text-[#77796F] hover:border-[#E5E1D7]'
+                      ? 'bg-[#E9E3D8] border-[#35483C] text-white shadow-sm'
+                      : 'bg-white/60 border-[#E9E3D8] text-[#85857E] hover:border-[#E9E3D8]'
                   }`}
                 >
                   <div className="text-xs font-bold text-white">{c.label}</div>
-                  <div className="text-[10px] text-[#77796F] mt-0.5">{c.sub}</div>
+                  <div className="text-[10px] text-[#85857E] mt-0.5">{c.sub}</div>
                 </button>
               ))}
             </div>
@@ -598,41 +598,41 @@ export const SellBikePage: React.FC = () => {
             {/* Core Fields Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Brand / Manufacturer</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Brand / Manufacturer</label>
                 <input
                   type="text"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#879783] font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none focus:border-[#35483C] font-medium"
                 />
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Model Name</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Model Name</label>
                 <input
                   type="text"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#879783] font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none focus:border-[#35483C] font-medium"
                 />
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Variant / Specification</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Variant / Specification</label>
                 <input
                   type="text"
                   value={variant}
                   onChange={(e) => setVariant(e.target.value)}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#879783] font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none focus:border-[#35483C] font-medium"
                 />
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Manufacturing Year</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Manufacturing Year</label>
                 <select
                   value={year}
                   onChange={(e) => setYear(Number(e.target.value))}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
                 >
                   {[2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
                     <option key={y} value={y}>{y}</option>
@@ -641,21 +641,21 @@ export const SellBikePage: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Kilometers Driven (Odometer)</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Kilometers Driven (Odometer)</label>
                 <input
                   type="number"
                   value={km}
                   onChange={(e) => setKm(Number(e.target.value))}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Number of Previous Owners</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Number of Previous Owners</label>
                 <select
                   value={owners}
                   onChange={(e) => setOwners(Number(e.target.value))}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
                 >
                   <option value={1}>1st Owner (Single Handed)</option>
                   <option value={2}>2nd Owner</option>
@@ -665,35 +665,35 @@ export const SellBikePage: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">
-                  Registration Number <span className="text-[#596B59]">*</span>
+                <label className="text-[#85857E] font-semibold mb-1 block">
+                  Registration Number <span className="text-[#242622]">*</span>
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. CH01AB8821"
                   value={registrationNumber}
                   onChange={(e) => setRegistrationNumber(e.target.value.toUpperCase())}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#879783] uppercase font-mono font-bold"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none focus:border-[#35483C] uppercase font-mono font-bold"
                 />
-                <span className="text-[10px] text-[#77796F] mt-1 block">Masked publicly (e.g. CH01****21)</span>
+                <span className="text-[10px] text-[#85857E] mt-1 block">Masked publicly (e.g. CH01****21)</span>
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">City / RTO Region</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">City / RTO Region</label>
                 <input
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Overall Condition</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Overall Condition</label>
                 <select
                   value={overallCondition}
                   onChange={(e) => setOverallCondition(e.target.value as any)}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none"
                 >
                   <option value="excellent">Excellent (Showroom Like)</option>
                   <option value="good">Good (Normal Wear & Tear)</option>
@@ -703,18 +703,18 @@ export const SellBikePage: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Expected Asking Price (₹)</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Expected Asking Price (₹)</label>
                 <input
                   type="number"
                   value={askingPrice}
                   onChange={(e) => setAskingPrice(Number(e.target.value))}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white font-bold text-[#596B59] focus:outline-none"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white font-bold text-[#242622] focus:outline-none"
                 />
               </div>
             </div>
 
-            <div className="pt-4 flex justify-between items-center border-t border-[#E5E1D7]">
-              <span className="text-xs text-[#77796F]">Step 1 of 5</span>
+            <div className="pt-4 flex justify-between items-center border-t border-[#E9E3D8]">
+              <span className="text-xs text-[#85857E]">Step 1 of 5</span>
               <button
                 type="button"
                 onClick={() => {
@@ -724,7 +724,7 @@ export const SellBikePage: React.FC = () => {
                   }
                   setCurrentStep(2);
                 }}
-                className="px-6 py-3 rounded-xl bg-[#879783] hover:bg-[#596B59] text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-sm"
+                className="px-6 py-3 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-sm"
               >
                 <span>Continue to 8 Photographs</span>
                 <ChevronRight className="w-4 h-4" />
@@ -737,26 +737,26 @@ export const SellBikePage: React.FC = () => {
         {/* STEP 2: VEHICLE PHOTOGRAPHS (EXACTLY 8 REQUIRED ANGLES) */}
         {/* ======================================================== */}
         {currentStep === 2 && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-6">
+          <div className="p-6 sm:p-8 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-2xl space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F1EEE5] text-[#596B59] text-[10px] font-bold uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                   Step 2 of 5 • Mandatory Photos
                 </div>
                 <h2 className="font-heading font-extrabold text-2xl text-white">8 Real Vehicle Photographs</h2>
-                <p className="text-xs text-[#77796F] mt-1">
+                <p className="text-xs text-[#85857E] mt-1">
                   Upload genuine photographs from all 8 required angles. Stock or sample photos are strictly prohibited.
                 </p>
               </div>
 
               {/* Live Counter Badge */}
-              <div className={`px-4 py-2 rounded-2xl border text-xs font-bold flex items-center gap-2 ${
+              <div className={`px-4 py-2 rounded-none border text-xs font-bold flex items-center gap-2 ${
                 isPhotosComplete
-                  ? 'bg-emerald-950/80 border-emerald-500/60 text-[#596B59] shadow-sm'
+                  ? 'bg-emerald-950/80 border-emerald-500/60 text-[#242622] shadow-sm'
                   : 'bg-amber-950/60 border-amber-600/50 text-amber-300'
               }`}>
                 {isPhotosComplete ? (
-                  <CheckCircle2 className="w-4 h-4 text-[#596B59]" />
+                  <CheckCircle2 className="w-4 h-4 text-[#242622]" />
                 ) : (
                   <Clock className="w-4 h-4 text-amber-400 animate-spin" />
                 )}
@@ -765,19 +765,19 @@ export const SellBikePage: React.FC = () => {
             </div>
 
             {photoError && (
-              <div className="p-3.5 rounded-2xl bg-red-950/80 border border-red-600 text-red-200 text-xs flex items-center gap-2">
+              <div className="p-3.5 rounded-none bg-red-950/80 border border-red-600 text-red-200 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
                 <span>{photoError}</span>
               </div>
             )}
 
             {/* Helpful Angle Visual Guide Notice */}
-            <div className="p-4 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7] text-xs text-[#77796F] space-y-1">
-              <div className="flex items-center gap-2 font-bold text-[#596B59]">
-                <Camera className="w-4 h-4 text-[#596B59]" />
+            <div className="p-4 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] text-xs text-[#85857E] space-y-1">
+              <div className="flex items-center gap-2 font-bold text-[#242622]">
+                <Camera className="w-4 h-4 text-[#242622]" />
                 <span>8-Angle Coverage Requirement</span>
               </div>
-              <p className="text-[11px] text-[#77796F] leading-relaxed">
+              <p className="text-[11px] text-[#85857E] leading-relaxed">
                 Take photos during daytime in a clean, well-lit environment. Ensure the entire vehicle fits into each frame. All 8 slots must be completed before your listing can be published live.
               </p>
             </div>
@@ -791,10 +791,10 @@ export const SellBikePage: React.FC = () => {
                 return (
                   <div
                     key={s.slot}
-                    className={`p-3.5 rounded-2xl border flex flex-col justify-between h-56 relative overflow-hidden transition-all ${
+                    className={`p-3.5 rounded-none border flex flex-col justify-between h-56 relative overflow-hidden transition-all ${
                       existing
-                        ? 'bg-[#12221D] border-[#879783]/80 shadow-md'
-                        : 'bg-white/60 border-dashed border-[#E5E1D7] hover:border-[#879783]'
+                        ? 'bg-[#12221D] border-[#35483C]/80 shadow-md'
+                        : 'bg-white/60 border-dashed border-[#E9E3D8] hover:border-[#35483C]'
                     }`}
                   >
                     {/* Angle Title & Status Tag */}
@@ -805,7 +805,7 @@ export const SellBikePage: React.FC = () => {
                           ✓
                         </span>
                       ) : (
-                        <span className="px-1.5 py-0.5 rounded bg-[#F1EEE5] text-[9px] font-semibold text-[#596B59] uppercase">
+                        <span className="px-1.5 py-0.5 rounded bg-[#E9E3D8] text-[9px] font-semibold text-[#242622] uppercase">
                           Required
                         </span>
                       )}
@@ -813,14 +813,14 @@ export const SellBikePage: React.FC = () => {
 
                     {/* Preview Image or Upload Box */}
                     {existing ? (
-                      <div className="relative flex-1 rounded-xl overflow-hidden group bg-black/40">
+                      <div className="relative flex-1 rounded-none overflow-hidden group bg-black/40">
                         <img
                           src={existing.url}
                           alt={s.label}
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
-                          <label className="p-2 rounded-xl bg-[#879783]/30 hover:bg-[#879783] text-white cursor-pointer shadow-lg" title="Replace photo">
+                          <label className="p-2 rounded-none bg-[#35483C]/30 hover:bg-[#35483C] text-white cursor-pointer shadow-lg" title="Replace photo">
                             <RefreshCw className="w-4 h-4" />
                             <input
                               type="file"
@@ -835,7 +835,7 @@ export const SellBikePage: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handlePhotoDelete(s.slot)}
-                            className="p-2 rounded-xl bg-red-700 hover:bg-red-600 text-white shadow-lg"
+                            className="p-2 rounded-none bg-red-700 hover:bg-red-600 text-white shadow-lg"
                             title="Delete photo"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -843,19 +843,19 @@ export const SellBikePage: React.FC = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className="flex-1 flex flex-col items-center justify-center text-center p-2 rounded-xl bg-white/40 border border-[#E5E1D7]/60">
+                      <div className="flex-1 flex flex-col items-center justify-center text-center p-2 rounded-none bg-white/40 border border-[#E9E3D8]/60">
                         {isUploadingThis ? (
                           <div className="flex flex-col items-center gap-2">
-                            <Clock className="w-6 h-6 text-[#596B59] animate-spin" />
-                            <span className="text-[10px] text-[#596B59] font-semibold">Uploading...</span>
+                            <Clock className="w-6 h-6 text-[#242622] animate-spin" />
+                            <span className="text-[10px] text-[#242622] font-semibold">Uploading...</span>
                           </div>
                         ) : (
                           <>
                             <Camera className="w-6 h-6 text-slate-500 mb-1" />
-                            <p className="text-[10px] text-[#77796F] leading-tight mb-2 px-1 line-clamp-2">
+                            <p className="text-[10px] text-[#85857E] leading-tight mb-2 px-1 line-clamp-2">
                               {s.desc}
                             </p>
-                            <label className="cursor-pointer px-3 py-1.5 rounded-xl bg-[#F1EEE5] hover:bg-[#E5D9C7]/40 text-[#354638] border border-[#E5E1D7] text-[10px] font-bold flex items-center gap-1 transition-colors">
+                            <label className="cursor-pointer px-3 py-1.5 rounded-none bg-[#E9E3D8] hover:bg-[#E9E3D8]/40 text-[#35483C] border border-[#E9E3D8] text-[10px] font-bold flex items-center gap-1 transition-colors">
                               <Upload className="w-3 h-3" />
                               <span>Select Photo</span>
                               <input
@@ -882,11 +882,11 @@ export const SellBikePage: React.FC = () => {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="pt-4 flex justify-between items-center border-t border-[#E5E1D7]">
+            <div className="pt-4 flex justify-between items-center border-t border-[#E9E3D8]">
               <button
                 type="button"
                 onClick={() => setCurrentStep(1)}
-                className="px-5 py-2.5 rounded-xl bg-white hover:bg-[#F1EEE5] border border-[#E5E1D7] text-[#77796F] text-xs font-semibold flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-none bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] text-[#85857E] text-xs font-semibold flex items-center gap-1.5"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Back to Vehicle Info</span>
@@ -895,10 +895,10 @@ export const SellBikePage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setCurrentStep(3)}
-                className={`px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all ${
+                className={`px-6 py-3 rounded-none font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all ${
                   isPhotosComplete
-                    ? 'bg-[#879783] hover:bg-[#596B59] text-white shadow-sm'
-                    : 'bg-white hover:bg-[#F1EEE5] text-[#77796F] border border-[#E5E1D7]'
+                    ? 'bg-[#35483C] hover:bg-[#242622] text-white shadow-sm'
+                    : 'bg-white hover:bg-[#E9E3D8] text-[#85857E] border border-[#E9E3D8]'
                 }`}
               >
                 <span>Continue to Documents</span>
@@ -912,26 +912,26 @@ export const SellBikePage: React.FC = () => {
         {/* STEP 3: MANDATORY 4-CERTIFICATE VEHICLE DOCUMENTS */}
         {/* ======================================================== */}
         {currentStep === 3 && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-6">
+          <div className="p-6 sm:p-8 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-2xl space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F1EEE5] text-[#596B59] text-[10px] font-bold uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                   Step 3 of 5 • Mandatory Gate
                 </div>
                 <h2 className="font-heading font-extrabold text-2xl text-white">4 Mandatory Vehicle Certificates</h2>
-                <p className="text-xs text-[#77796F] mt-1">
+                <p className="text-xs text-[#85857E] mt-1">
                   Upload all four required certificates for AI cross-validation and listing submission clearance.
                 </p>
               </div>
 
               {/* Document Progress Counter */}
-              <div className={`px-4 py-2 rounded-2xl border text-xs font-bold flex items-center gap-2 ${
+              <div className={`px-4 py-2 rounded-none border text-xs font-bold flex items-center gap-2 ${
                 isDocumentsComplete
-                  ? 'bg-emerald-950/80 border-emerald-500/60 text-[#596B59] shadow-sm'
+                  ? 'bg-emerald-950/80 border-emerald-500/60 text-[#242622] shadow-sm'
                   : 'bg-amber-950/60 border-amber-600/50 text-amber-300'
               }`}>
                 {isDocumentsComplete ? (
-                  <CheckCircle2 className="w-4 h-4 text-[#596B59]" />
+                  <CheckCircle2 className="w-4 h-4 text-[#242622]" />
                 ) : (
                   <Clock className="w-4 h-4 text-amber-400 animate-spin" />
                 )}
@@ -940,19 +940,19 @@ export const SellBikePage: React.FC = () => {
             </div>
 
             {/* Dedicated Smart RC AI Verification & Hackathon Showcase Banner */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-[#10221B] to-forest-950 border border-emerald-500/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+            <div className="p-4 rounded-none bg-gradient-to-r from-emerald-950/80 via-[#10221B] to-forest-950 border border-emerald-500/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-[#596B59] flex items-center justify-center border border-emerald-500/40">
+                <div className="w-10 h-10 rounded-none bg-emerald-500/20 text-[#242622] flex items-center justify-center border border-emerald-500/40">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-heading font-extrabold text-sm text-white flex items-center gap-2">
                     <span>SMART RC VERIFICATION & AUTHENTICITY ENGINE</span>
-                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-950 text-[#596B59] border border-emerald-500/30 uppercase">
+                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-950 text-[#242622] border border-emerald-500/30 uppercase">
                       AI OCR + ML
                     </span>
                   </h3>
-                  <p className="text-[11px] text-[#77796F] mt-0.5">
+                  <p className="text-[11px] text-[#85857E] mt-0.5">
                     Launch the interactive RC intelligence studio with field confirmation, OpenCV quality checks, and Hackathon demo presets.
                   </p>
                 </div>
@@ -960,7 +960,7 @@ export const SellBikePage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSmartRCModalOpen(true)}
-                className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer flex-shrink-0"
+                className="px-4 py-2.5 rounded-none bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer flex-shrink-0"
               >
                 <Cpu className="w-4 h-4" />
                 <span>Launch RC Studio</span>
@@ -971,29 +971,29 @@ export const SellBikePage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               {/* CARD 1: REGISTRATION CERTIFICATE (RC) */}
-              <div className={`p-5 rounded-3xl border transition-all ${
+              <div className={`p-5 rounded-none border border-[#E9E3D8] border transition-all ${
                 rcResult?.passed
                   ? 'bg-[#10221B] border-emerald-500/70 shadow-sm'
                   : rcResult?.status === 'mismatch_found' || rcResult?.status === 'failed'
                   ? 'bg-red-950/30 border-red-600/60'
-                  : 'bg-[#F1EEE5] border-[#E5E1D7]'
+                  : 'bg-[#E9E3D8] border-[#E9E3D8]'
               }`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-[#F1EEE5] text-[#596B59] flex items-center justify-center font-bold text-xs">
+                    <div className="w-8 h-8 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center font-bold text-xs">
                       RC
                     </div>
                     <div>
                       <h4 className="font-bold text-sm text-white">Registration Certificate (RC)</h4>
-                      <p className="text-[10px] text-[#77796F]">Smart Card or Parivahan Digital Copy</p>
+                      <p className="text-[10px] text-[#85857E]">Smart Card or Parivahan Digital Copy</p>
                     </div>
                   </div>
                   <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
                     rcResult?.passed
-                      ? 'bg-emerald-950 text-[#596B59] border border-emerald-500/50'
+                      ? 'bg-emerald-950 text-[#242622] border border-emerald-500/50'
                       : rcResult?.status === 'mismatch_found'
                       ? 'bg-red-950 text-red-300 border border-red-500/50'
-                      : 'bg-[#F1EEE5] text-[#596B59]'
+                      : 'bg-[#E9E3D8] text-[#242622]'
                   }`}>
                     {rcResult?.status || 'Not Uploaded'}
                   </span>
@@ -1001,25 +1001,25 @@ export const SellBikePage: React.FC = () => {
 
                 {rcResult ? (
                   <div className="space-y-3">
-                    <div className="p-3 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7] text-xs space-y-1">
+                    <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] text-xs space-y-1">
                       <div className="flex justify-between">
-                        <span className="text-[#77796F]">Reg No:</span>
+                        <span className="text-[#85857E]">Reg No:</span>
                         <span className="font-mono font-bold text-white">{rcResult.extracted_preview?.registration_number || registrationNumber}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#77796F]">Owner:</span>
+                        <span className="text-[#85857E]">Owner:</span>
                         <span className="font-semibold text-white">{rcResult.extracted_preview?.owner_name || sellerFullName}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#77796F]">Model:</span>
-                        <span className="font-semibold text-[#596B59]">{rcResult.extracted_preview?.model || `${brand} ${model}`}</span>
+                        <span className="text-[#85857E]">Model:</span>
+                        <span className="font-semibold text-[#242622]">{rcResult.extracted_preview?.model || `${brand} ${model}`}</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between gap-2">
                       <button
                         type="button"
                         onClick={() => handleOpenAnalysisReport('rc')}
-                        className="text-xs text-[#596B59] hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
+                        className="text-xs text-[#242622] hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
                       >
                         <FileSearch className="w-3.5 h-3.5" />
                         <span>View Analysis Report</span>
@@ -1035,17 +1035,17 @@ export const SellBikePage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <label className="border-2 border-dashed border-[#E5E1D7] hover:border-[#879783] rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white/40">
+                  <label className="border-2 border-dashed border-[#E9E3D8] hover:border-[#35483C] rounded-none p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white/40">
                     {isRcUploading ? (
                       <div className="flex flex-col items-center gap-2">
-                        <Clock className="w-6 h-6 text-[#596B59] animate-spin" />
-                        <span className="text-xs text-[#596B59] font-semibold">Analyzing RC Document...</span>
+                        <Clock className="w-6 h-6 text-[#242622] animate-spin" />
+                        <span className="text-xs text-[#242622] font-semibold">Analyzing RC Document...</span>
                       </div>
                     ) : (
                       <>
-                        <Upload className="w-6 h-6 text-[#596B59] mb-2" />
+                        <Upload className="w-6 h-6 text-[#242622] mb-2" />
                         <span className="text-xs font-bold text-white">Upload RC Scan or PDF</span>
-                        <span className="text-[10px] text-[#77796F] mt-0.5">PDF, JPG, PNG up to 10MB</span>
+                        <span className="text-[10px] text-[#85857E] mt-0.5">PDF, JPG, PNG up to 10MB</span>
                       </>
                     )}
                     <input
@@ -1062,29 +1062,29 @@ export const SellBikePage: React.FC = () => {
               </div>
 
               {/* CARD 2: INSURANCE CERTIFICATE */}
-              <div className={`p-5 rounded-3xl border transition-all ${
+              <div className={`p-5 rounded-none border border-[#E9E3D8] border transition-all ${
                 insuranceResult?.passed
                   ? 'bg-[#10221B] border-emerald-500/70 shadow-sm'
                   : insuranceResult?.status === 'expired'
                   ? 'bg-amber-950/30 border-amber-600/60'
-                  : 'bg-[#F1EEE5] border-[#E5E1D7]'
+                  : 'bg-[#E9E3D8] border-[#E9E3D8]'
               }`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-[#F1EEE5] text-[#596B59] flex items-center justify-center font-bold text-xs">
+                    <div className="w-8 h-8 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center font-bold text-xs">
                       INS
                     </div>
                     <div>
                       <h4 className="font-bold text-sm text-white">Insurance Certificate</h4>
-                      <p className="text-[10px] text-[#77796F]">Comprehensive or Third-Party Policy</p>
+                      <p className="text-[10px] text-[#85857E]">Comprehensive or Third-Party Policy</p>
                     </div>
                   </div>
                   <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
                     insuranceResult?.passed
-                      ? 'bg-emerald-950 text-[#596B59] border border-emerald-500/50'
+                      ? 'bg-emerald-950 text-[#242622] border border-emerald-500/50'
                       : insuranceResult?.status === 'expired'
                       ? 'bg-amber-950 text-amber-300 border border-amber-500/50'
-                      : 'bg-[#F1EEE5] text-[#596B59]'
+                      : 'bg-[#E9E3D8] text-[#242622]'
                   }`}>
                     {insuranceResult?.status || 'Not Uploaded'}
                   </span>
@@ -1092,18 +1092,18 @@ export const SellBikePage: React.FC = () => {
 
                 {insuranceResult ? (
                   <div className="space-y-3">
-                    <div className="p-3 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7] text-xs space-y-1">
+                    <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] text-xs space-y-1">
                       <div className="flex justify-between">
-                        <span className="text-[#77796F]">Policy No:</span>
+                        <span className="text-[#85857E]">Policy No:</span>
                         <span className="font-mono font-bold text-white">{insuranceResult.extracted_preview?.policy_number || 'POL-99214'}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#77796F]">Provider:</span>
+                        <span className="text-[#85857E]">Provider:</span>
                         <span className="font-semibold text-white">{insuranceResult.extracted_preview?.provider || 'HDFC ERGO General Insurance'}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#77796F]">Expiry Date:</span>
-                        <span className={`font-semibold ${insuranceResult.is_expired ? 'text-red-400' : 'text-[#596B59]'}`}>
+                        <span className="text-[#85857E]">Expiry Date:</span>
+                        <span className={`font-semibold ${insuranceResult.is_expired ? 'text-red-400' : 'text-[#242622]'}`}>
                           {insuranceResult.expiry_date || '20/12/2026'}
                         </span>
                       </div>
@@ -1112,7 +1112,7 @@ export const SellBikePage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenAnalysisReport('insurance')}
-                        className="text-xs text-[#596B59] hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
+                        className="text-xs text-[#242622] hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
                       >
                         <FileSearch className="w-3.5 h-3.5" />
                         <span>View Analysis Report</span>
@@ -1128,17 +1128,17 @@ export const SellBikePage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <label className="border-2 border-dashed border-[#E5E1D7] hover:border-[#879783] rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white/40">
+                  <label className="border-2 border-dashed border-[#E9E3D8] hover:border-[#35483C] rounded-none p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white/40">
                     {isInsUploading ? (
                       <div className="flex flex-col items-center gap-2">
-                        <Clock className="w-6 h-6 text-[#596B59] animate-spin" />
-                        <span className="text-xs text-[#596B59] font-semibold">Checking Policy Validity...</span>
+                        <Clock className="w-6 h-6 text-[#242622] animate-spin" />
+                        <span className="text-xs text-[#242622] font-semibold">Checking Policy Validity...</span>
                       </div>
                     ) : (
                       <>
-                        <Upload className="w-6 h-6 text-[#596B59] mb-2" />
+                        <Upload className="w-6 h-6 text-[#242622] mb-2" />
                         <span className="text-xs font-bold text-white">Upload Insurance Policy</span>
-                        <span className="text-[10px] text-[#77796F] mt-0.5">Active unexpired policy required</span>
+                        <span className="text-[10px] text-[#85857E] mt-0.5">Active unexpired policy required</span>
                       </>
                     )}
                     <input
@@ -1155,29 +1155,29 @@ export const SellBikePage: React.FC = () => {
               </div>
 
               {/* CARD 3: POLLUTION UNDER CONTROL (PUC) */}
-              <div className={`p-5 rounded-3xl border transition-all ${
+              <div className={`p-5 rounded-none border border-[#E9E3D8] border transition-all ${
                 pucResult?.passed
                   ? 'bg-[#10221B] border-emerald-500/70 shadow-sm'
                   : pucResult?.status === 'expired'
                   ? 'bg-amber-950/30 border-amber-600/60'
-                  : 'bg-[#F1EEE5] border-[#E5E1D7]'
+                  : 'bg-[#E9E3D8] border-[#E9E3D8]'
               }`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-[#F1EEE5] text-[#596B59] flex items-center justify-center font-bold text-xs">
+                    <div className="w-8 h-8 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center font-bold text-xs">
                       PUC
                     </div>
                     <div>
                       <h4 className="font-bold text-sm text-white">Pollution Under Control (PUC)</h4>
-                      <p className="text-[10px] text-[#77796F]">BS6 Emission Compliance Slip</p>
+                      <p className="text-[10px] text-[#85857E]">BS6 Emission Compliance Slip</p>
                     </div>
                   </div>
                   <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
                     pucResult?.passed
-                      ? 'bg-emerald-950 text-[#596B59] border border-emerald-500/50'
+                      ? 'bg-emerald-950 text-[#242622] border border-emerald-500/50'
                       : pucResult?.status === 'expired'
                       ? 'bg-amber-950 text-amber-300 border border-amber-500/50'
-                      : 'bg-[#F1EEE5] text-[#596B59]'
+                      : 'bg-[#E9E3D8] text-[#242622]'
                   }`}>
                     {pucResult?.status || 'Not Uploaded'}
                   </span>
@@ -1185,18 +1185,18 @@ export const SellBikePage: React.FC = () => {
 
                 {pucResult ? (
                   <div className="space-y-3">
-                    <div className="p-3 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7] text-xs space-y-1">
+                    <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] text-xs space-y-1">
                       <div className="flex justify-between">
-                        <span className="text-[#77796F]">Certificate No:</span>
+                        <span className="text-[#85857E]">Certificate No:</span>
                         <span className="font-mono font-bold text-white">{pucResult.extracted_preview?.certificate_number || 'PUC-CH-2026-991'}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#77796F]">Emission Norms:</span>
-                        <span className="font-semibold text-[#596B59]">BS-VI Compliant (Pass)</span>
+                        <span className="text-[#85857E]">Emission Norms:</span>
+                        <span className="font-semibold text-[#242622]">BS-VI Compliant (Pass)</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#77796F]">Valid Through:</span>
-                        <span className={`font-semibold ${pucResult.is_expired ? 'text-red-400' : 'text-[#596B59]'}`}>
+                        <span className="text-[#85857E]">Valid Through:</span>
+                        <span className={`font-semibold ${pucResult.is_expired ? 'text-red-400' : 'text-[#242622]'}`}>
                           {pucResult.expiry_date || '15/11/2026'}
                         </span>
                       </div>
@@ -1205,7 +1205,7 @@ export const SellBikePage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenAnalysisReport('puc')}
-                        className="text-xs text-[#596B59] hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
+                        className="text-xs text-[#242622] hover:text-white font-semibold flex items-center gap-1 underline underline-offset-2"
                       >
                         <FileSearch className="w-3.5 h-3.5" />
                         <span>View Analysis Report</span>
@@ -1221,17 +1221,17 @@ export const SellBikePage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <label className="border-2 border-dashed border-[#E5E1D7] hover:border-[#879783] rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white/40">
+                  <label className="border-2 border-dashed border-[#E9E3D8] hover:border-[#35483C] rounded-none p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white/40">
                     {isPucUploading ? (
                       <div className="flex flex-col items-center gap-2">
-                        <Clock className="w-6 h-6 text-[#596B59] animate-spin" />
-                        <span className="text-xs text-[#596B59] font-semibold">Validating Emission Readings...</span>
+                        <Clock className="w-6 h-6 text-[#242622] animate-spin" />
+                        <span className="text-xs text-[#242622] font-semibold">Validating Emission Readings...</span>
                       </div>
                     ) : (
                       <>
-                        <Upload className="w-6 h-6 text-[#596B59] mb-2" />
+                        <Upload className="w-6 h-6 text-[#242622] mb-2" />
                         <span className="text-xs font-bold text-white">Upload PUC Certificate</span>
-                        <span className="text-[10px] text-[#77796F] mt-0.5">Government RTO emission receipt</span>
+                        <span className="text-[10px] text-[#85857E] mt-0.5">Government RTO emission receipt</span>
                       </>
                     )}
                     <input
@@ -1248,25 +1248,25 @@ export const SellBikePage: React.FC = () => {
               </div>
 
               {/* CARD 4: OWNERSHIP PROOF / SELLER AUTHORISATION */}
-              <div className={`p-5 rounded-3xl border transition-all ${
+              <div className={`p-5 rounded-none border border-[#E9E3D8] border transition-all ${
                 ownershipResult?.passed
                   ? 'bg-[#10221B] border-emerald-500/70 shadow-sm'
-                  : 'bg-[#F1EEE5] border-[#E5E1D7]'
+                  : 'bg-[#E9E3D8] border-[#E9E3D8]'
               }`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-[#F1EEE5] text-[#596B59] flex items-center justify-center font-bold text-xs">
+                    <div className="w-8 h-8 rounded-none bg-[#E9E3D8] text-[#242622] flex items-center justify-center font-bold text-xs">
                       OWN
                     </div>
                     <div>
                       <h4 className="font-bold text-sm text-white">Ownership & Transfer Proof</h4>
-                      <p className="text-[10px] text-[#77796F]">Registered Owner Endorsement or Form 29/30</p>
+                      <p className="text-[10px] text-[#85857E]">Registered Owner Endorsement or Form 29/30</p>
                     </div>
                   </div>
                   <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
                     ownershipResult?.passed
-                      ? 'bg-emerald-950 text-[#596B59] border border-emerald-500/50'
-                      : 'bg-[#F1EEE5] text-[#596B59]'
+                      ? 'bg-emerald-950 text-[#242622] border border-emerald-500/50'
+                      : 'bg-[#E9E3D8] text-[#242622]'
                   }`}>
                     {ownershipResult?.status || 'Pending'}
                   </span>
@@ -1281,54 +1281,54 @@ export const SellBikePage: React.FC = () => {
                         setOwnershipMode('reuse_rc');
                         handleReuseRcOwnership();
                       }}
-                      className={`p-2.5 rounded-xl border text-left font-bold transition-all ${
+                      className={`p-2.5 rounded-none border text-left font-bold transition-all ${
                         ownershipMode === 'reuse_rc'
-                          ? 'bg-[#F1EEE5] border-[#879783] text-white'
-                          : 'bg-white border-[#E5E1D7] text-[#77796F]'
+                          ? 'bg-[#E9E3D8] border-[#35483C] text-white'
+                          : 'bg-white border-[#E9E3D8] text-[#85857E]'
                       }`}
                     >
-                      <UserCheck className="w-3.5 h-3.5 mb-1 text-[#596B59]" />
+                      <UserCheck className="w-3.5 h-3.5 mb-1 text-[#242622]" />
                       <span>I am the Registered Owner</span>
-                      <p className="text-[9px] font-normal text-[#77796F] mt-0.5">Use verified RC endorsement</p>
+                      <p className="text-[9px] font-normal text-[#85857E] mt-0.5">Use verified RC endorsement</p>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setOwnershipMode('upload_custom')}
-                      className={`p-2.5 rounded-xl border text-left font-bold transition-all ${
+                      className={`p-2.5 rounded-none border text-left font-bold transition-all ${
                         ownershipMode === 'upload_custom'
-                          ? 'bg-[#F1EEE5] border-[#879783] text-white'
-                          : 'bg-white border-[#E5E1D7] text-[#77796F]'
+                          ? 'bg-[#E9E3D8] border-[#35483C] text-white'
+                          : 'bg-white border-[#E9E3D8] text-[#85857E]'
                       }`}
                     >
                       <FileText className="w-3.5 h-3.5 mb-1 text-amber-400" />
                       <span>Authorised Representative</span>
-                      <p className="text-[9px] font-normal text-[#77796F] mt-0.5">Upload Form 29/30 / NOC</p>
+                      <p className="text-[9px] font-normal text-[#85857E] mt-0.5">Upload Form 29/30 / NOC</p>
                     </button>
                   </div>
 
                   {ownershipMode === 'reuse_rc' ? (
-                    <div className="p-3 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7] text-xs space-y-1">
-                      <div className="flex items-center gap-2 text-[#596B59] font-bold">
+                    <div className="p-3 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] text-xs space-y-1">
+                      <div className="flex items-center gap-2 text-[#242622] font-bold">
                         <CheckCircle2 className="w-4 h-4" />
                         <span>RC Registered Ownership Reused</span>
                       </div>
-                      <p className="text-[11px] text-[#77796F]">
+                      <p className="text-[11px] text-[#85857E]">
                         Ownership confirmed from verified Registration Certificate for seller <strong>{sellerFullName}</strong>. No redundant re-upload needed.
                       </p>
                     </div>
                   ) : (
-                    <label className="border-2 border-dashed border-[#E5E1D7] hover:border-[#879783] rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white/40">
+                    <label className="border-2 border-dashed border-[#E9E3D8] hover:border-[#35483C] rounded-none p-4 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white/40">
                       {isOwnershipUploading ? (
                         <div className="flex flex-col items-center gap-1">
-                          <Clock className="w-5 h-5 text-[#596B59] animate-spin" />
-                          <span className="text-[11px] text-[#596B59]">Uploading Authorisation Document...</span>
+                          <Clock className="w-5 h-5 text-[#242622] animate-spin" />
+                          <span className="text-[11px] text-[#242622]">Uploading Authorisation Document...</span>
                         </div>
                       ) : (
                         <>
-                          <Upload className="w-5 h-5 text-[#596B59] mb-1" />
+                          <Upload className="w-5 h-5 text-[#242622] mb-1" />
                           <span className="text-xs font-bold text-white">Upload Authorisation Letter / Form 29/30</span>
-                          <span className="text-[10px] text-[#77796F]">PDF, JPG up to 10MB</span>
+                          <span className="text-[10px] text-[#85857E]">PDF, JPG up to 10MB</span>
                         </>
                       )}
                       <input
@@ -1347,11 +1347,11 @@ export const SellBikePage: React.FC = () => {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="pt-4 flex justify-between items-center border-t border-[#E5E1D7]">
+            <div className="pt-4 flex justify-between items-center border-t border-[#E9E3D8]">
               <button
                 type="button"
                 onClick={() => setCurrentStep(2)}
-                className="px-5 py-2.5 rounded-xl bg-white hover:bg-[#F1EEE5] border border-[#E5E1D7] text-[#77796F] text-xs font-semibold flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-none bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] text-[#85857E] text-xs font-semibold flex items-center gap-1.5"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Back to 8 Photographs</span>
@@ -1360,10 +1360,10 @@ export const SellBikePage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setCurrentStep(4)}
-                className={`px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all ${
+                className={`px-6 py-3 rounded-none font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all ${
                   isDocumentsComplete
-                    ? 'bg-[#879783] hover:bg-[#596B59] text-white shadow-sm'
-                    : 'bg-white hover:bg-[#F1EEE5] text-[#77796F] border border-[#E5E1D7]'
+                    ? 'bg-[#35483C] hover:bg-[#242622] text-white shadow-sm'
+                    : 'bg-white hover:bg-[#E9E3D8] text-[#85857E] border border-[#E9E3D8]'
                 }`}
               >
                 <span>Continue to Pickup Location</span>
@@ -1377,23 +1377,23 @@ export const SellBikePage: React.FC = () => {
         {/* STEP 4: PICKUP & TEST RIDE LOCATION */}
         {/* ======================================================== */}
         {currentStep === 4 && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-6">
+          <div className="p-6 sm:p-8 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-2xl space-y-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F1EEE5] text-[#596B59] text-[10px] font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                 Step 4 of 5 • Monetized Pickup Hub
               </div>
               <h2 className="font-heading font-extrabold text-2xl text-white">Pickup & Test Ride Location</h2>
-              <p className="text-xs text-[#77796F] mt-1">
+              <p className="text-xs text-[#85857E] mt-1">
                 Designate where prospective buyers can inspect or test ride your vehicle. Your exact coordinates remain completely private until a buyer unlocks location access.
               </p>
             </div>
 
             {/* Privacy Protection Callout Banner */}
-            <div className="p-4 rounded-2xl bg-[#F1EEE5] border border-emerald-500/40 flex items-start gap-3 text-xs">
-              <Lock className="w-5 h-5 text-[#596B59] flex-shrink-0 mt-0.5" />
+            <div className="p-4 rounded-none bg-[#E9E3D8] border border-emerald-500/40 flex items-start gap-3 text-xs">
+              <Lock className="w-5 h-5 text-[#242622] flex-shrink-0 mt-0.5" />
               <div>
-                <strong className="text-[#596B59] block mb-0.5">Strict Privacy & Revenue Protection:</strong>
-                <p className="text-[#77796F] leading-relaxed text-[11px]">
+                <strong className="text-[#242622] block mb-0.5">Strict Privacy & Revenue Protection:</strong>
+                <p className="text-[#85857E] leading-relaxed text-[11px]">
                   Before payment, buyers only see your approximate locality (e.g. <em>{pickupLocation.locality}, {pickupLocation.city}</em>). Your exact street address and interactive pin are safely hidden behind GEAR UP&apos;s ₹49 location-unlock gate.
                 </p>
               </div>
@@ -1408,11 +1408,11 @@ export const SellBikePage: React.FC = () => {
             {/* Meetup Spot Type & Test Ride Policy */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Preferred Meetup Spot Type</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Preferred Meetup Spot Type</label>
                 <select
                   value={meetupSpotType}
                   onChange={(e) => setMeetupSpotType(e.target.value)}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none font-medium"
                 >
                   <option value="Safe Public Commercial Hub">Safe Public Commercial Hub (Recommended)</option>
                   <option value="Authorized Two-Wheeler Workshop">Authorized Two-Wheeler Workshop</option>
@@ -1422,11 +1422,11 @@ export const SellBikePage: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[#77796F] font-semibold mb-1 block">Test Ride Availability</label>
+                <label className="text-[#85857E] font-semibold mb-1 block">Test Ride Availability</label>
                 <select
                   value={testRideAvailable ? 'yes' : 'no'}
                   onChange={(e) => setTestRideAvailable(e.target.value === 'yes')}
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl px-3.5 py-2.5 text-white focus:outline-none font-medium"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none px-3.5 py-2.5 text-white focus:outline-none font-medium"
                 >
                   <option value="yes">Test Rides Permitted (Valid DL & Helmet Required)</option>
                   <option value="no">Inspection Only (Test Rides Not Permitted)</option>
@@ -1434,7 +1434,7 @@ export const SellBikePage: React.FC = () => {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="text-[#77796F] font-semibold mb-1 block">
+                <label className="text-[#85857E] font-semibold mb-1 block">
                   Pickup & Test Ride Instructions for Unlocked Buyers
                 </label>
                 <textarea
@@ -1442,17 +1442,17 @@ export const SellBikePage: React.FC = () => {
                   value={pickupInstructions}
                   onChange={(e) => setPickupInstructions(e.target.value)}
                   placeholder="e.g. Available on weekends between 10am-4pm. Please call 30 mins before arriving."
-                  className="w-full bg-white border border-[#E5E1D7] rounded-xl p-3 text-white focus:outline-none text-xs"
+                  className="w-full bg-white border border-[#E9E3D8] rounded-none p-3 text-white focus:outline-none text-xs"
                 />
               </div>
             </div>
 
             {/* Navigation Buttons */}
-            <div className="pt-4 flex justify-between items-center border-t border-[#E5E1D7]">
+            <div className="pt-4 flex justify-between items-center border-t border-[#E9E3D8]">
               <button
                 type="button"
                 onClick={() => setCurrentStep(3)}
-                className="px-5 py-2.5 rounded-xl bg-white hover:bg-[#F1EEE5] border border-[#E5E1D7] text-[#77796F] text-xs font-semibold flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-none bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] text-[#85857E] text-xs font-semibold flex items-center gap-1.5"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Back to 4 Documents</span>
@@ -1464,7 +1464,7 @@ export const SellBikePage: React.FC = () => {
                   handleLocationConfirmed(pickupLocation);
                   setCurrentStep(5);
                 }}
-                className="px-6 py-3 rounded-xl bg-[#879783] hover:bg-[#596B59] text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-sm"
+                className="px-6 py-3 rounded-none bg-[#35483C] hover:bg-[#242622] text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-sm"
               >
                 <span>Review & Publish Listing</span>
                 <ChevronRight className="w-4 h-4" />
@@ -1477,20 +1477,20 @@ export const SellBikePage: React.FC = () => {
         {/* STEP 5: REVIEW & PUBLISH LISTING */}
         {/* ======================================================== */}
         {currentStep === 5 && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl space-y-6">
+          <div className="p-6 sm:p-8 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-2xl space-y-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F1EEE5] text-[#596B59] text-[10px] font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E3D8] text-[#242622] text-[10px] font-bold uppercase tracking-wider mb-2">
                 Step 5 of 5 • Final Inspection
               </div>
               <h2 className="font-heading font-extrabold text-2xl text-white">Review & Publish Listing</h2>
-              <p className="text-xs text-[#77796F] mt-1">
+              <p className="text-xs text-[#85857E] mt-1">
                 Inspect your 8 verified photographs, mandatory certificates, and meetup parameters before publishing live.
               </p>
             </div>
 
             {/* Submission Gate Alert Banner if Blocked */}
             {(!isPhotosComplete || !isDocumentsComplete) && (
-              <div className="p-5 rounded-3xl bg-amber-950/70 border border-amber-600 text-xs text-amber-200 space-y-2">
+              <div className="p-5 rounded-none border border-[#E9E3D8] bg-amber-950/70 border border-amber-600 text-xs text-amber-200 space-y-2">
                 <div className="flex items-center gap-2 font-bold text-amber-300 text-sm">
                   <AlertTriangle className="w-5 h-5 flex-shrink-0" />
                   <span>Publication Blocked: Incomplete Verification Requirements</span>
@@ -1511,7 +1511,7 @@ export const SellBikePage: React.FC = () => {
             )}
 
             {publishBlockedAlert && (
-              <div className="p-4 rounded-2xl bg-red-950/80 border border-red-600 text-red-200 text-xs space-y-1">
+              <div className="p-4 rounded-none bg-red-950/80 border border-red-600 text-red-200 text-xs space-y-1">
                 <div className="flex items-center gap-2 font-bold text-red-300">
                   <XCircle className="w-4 h-4 flex-shrink-0" />
                   <span>Publication Rejection Notice</span>
@@ -1523,44 +1523,44 @@ export const SellBikePage: React.FC = () => {
             )}
 
             {/* Section A: Vehicle Core Specifications */}
-            <div className="p-5 rounded-3xl bg-[#F1EEE5] border border-[#E5E1D7] space-y-3">
+            <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#E9E3D8] border border-[#E9E3D8] space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="font-bold text-sm text-white">Vehicle Specifications</h4>
                 <button
                   type="button"
                   onClick={() => setCurrentStep(1)}
-                  className="text-xs text-[#596B59] hover:text-white underline underline-offset-2"
+                  className="text-xs text-[#242622] hover:text-white underline underline-offset-2"
                 >
                   Edit Details
                 </button>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                 <div>
-                  <span className="text-[#77796F] block text-[10px]">Vehicle</span>
+                  <span className="text-[#85857E] block text-[10px]">Vehicle</span>
                   <span className="font-bold text-white">{year} {brand} {model}</span>
                 </div>
                 <div>
-                  <span className="text-[#77796F] block text-[10px]">Variant</span>
+                  <span className="text-[#85857E] block text-[10px]">Variant</span>
                   <span className="font-semibold text-white truncate block">{variant}</span>
                 </div>
                 <div>
-                  <span className="text-[#77796F] block text-[10px]">Odometer & Owners</span>
+                  <span className="text-[#85857E] block text-[10px]">Odometer & Owners</span>
                   <span className="font-semibold text-white">{km.toLocaleString('en-IN')} km • {owners} Owner</span>
                 </div>
                 <div>
-                  <span className="text-[#77796F] block text-[10px]">Asking Price</span>
-                  <span className="font-bold text-[#596B59]">{formatINR(askingPrice)}</span>
+                  <span className="text-[#85857E] block text-[10px]">Asking Price</span>
+                  <span className="font-bold text-[#242622]">{formatINR(askingPrice)}</span>
                 </div>
               </div>
             </div>
 
             {/* Section B: 8-Angle Real Photographs Gallery */}
-            <div className="p-5 rounded-3xl bg-[#F1EEE5] border border-[#E5E1D7] space-y-3">
+            <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#E9E3D8] border border-[#E9E3D8] space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <h4 className="font-bold text-sm text-white">Vehicle Photographs</h4>
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                    isPhotosComplete ? 'bg-emerald-950 text-[#596B59]' : 'bg-amber-950 text-amber-300'
+                    isPhotosComplete ? 'bg-emerald-950 text-[#242622]' : 'bg-amber-950 text-amber-300'
                   }`}>
                     {uploadedPhotosCount}/8 Uploaded
                   </span>
@@ -1568,20 +1568,20 @@ export const SellBikePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(2)}
-                  className="text-xs text-[#596B59] hover:text-white underline underline-offset-2"
+                  className="text-xs text-[#242622] hover:text-white underline underline-offset-2"
                 >
                   Manage Photos
                 </button>
               </div>
 
               {uploadedPhotosCount === 0 ? (
-                <div className="p-8 rounded-2xl bg-[#F7F5EF] border border-dashed border-[#E5E1D7] text-center space-y-2">
+                <div className="p-8 rounded-none bg-[#F7F5EF] border border-dashed border-[#E9E3D8] text-center space-y-2">
                   <Camera className="w-8 h-8 text-slate-600 mx-auto" />
-                  <p className="text-xs font-semibold text-[#77796F]">No vehicle photos uploaded yet.</p>
+                  <p className="text-xs font-semibold text-[#85857E]">No vehicle photos uploaded yet.</p>
                   <button
                     type="button"
                     onClick={() => setCurrentStep(2)}
-                    className="px-4 py-1.5 rounded-xl bg-[#E5D9C7]/40 text-white font-bold text-xs"
+                    className="px-4 py-1.5 rounded-none bg-[#E9E3D8]/40 text-white font-bold text-xs"
                   >
                     Upload 8 Angles
                   </button>
@@ -1591,7 +1591,7 @@ export const SellBikePage: React.FC = () => {
                   {REQUIRED_PHOTO_SLOTS.map((s) => {
                     const p = uploadedPhotos[s.slot];
                     return (
-                      <div key={s.slot} className="relative aspect-[4/3] rounded-xl overflow-hidden bg-black/50 border border-[#E5E1D7]">
+                      <div key={s.slot} className="relative aspect-[4/3] rounded-none overflow-hidden bg-black/50 border border-[#E9E3D8]">
                         {p ? (
                           <>
                             <img src={p.url} alt={s.label} className="w-full h-full object-cover" />
@@ -1613,12 +1613,12 @@ export const SellBikePage: React.FC = () => {
             </div>
 
             {/* Section C: 4 Mandatory Certificates Checklist */}
-            <div className="p-5 rounded-3xl bg-[#F1EEE5] border border-[#E5E1D7] space-y-3">
+            <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#E9E3D8] border border-[#E9E3D8] space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <h4 className="font-bold text-sm text-white">4 Mandatory Certificates</h4>
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                    isDocumentsComplete ? 'bg-emerald-950 text-[#596B59]' : 'bg-amber-950 text-amber-300'
+                    isDocumentsComplete ? 'bg-emerald-950 text-[#242622]' : 'bg-amber-950 text-amber-300'
                   }`}>
                     {passedDocsCount}/4 Verified
                   </span>
@@ -1626,7 +1626,7 @@ export const SellBikePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(3)}
-                  className="text-xs text-[#596B59] hover:text-white underline underline-offset-2"
+                  className="text-xs text-[#242622] hover:text-white underline underline-offset-2"
                 >
                   Manage Documents
                 </button>
@@ -1639,15 +1639,15 @@ export const SellBikePage: React.FC = () => {
                   { name: '3. Pollution Under Control (PUC)', passed: pucResult?.passed, reason: pucResult?.reason || 'BS6 compliance verified' },
                   { name: '4. Ownership / Seller Authorisation', passed: ownershipResult?.passed, reason: ownershipResult?.reason || 'Title and ownership cleared' }
                 ].map((doc, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-white border border-[#E5E1D7] flex items-start gap-2.5">
+                  <div key={idx} className="p-3 rounded-none bg-white border border-[#E9E3D8] flex items-start gap-2.5">
                     {doc.passed ? (
-                      <CheckCircle2 className="w-4 h-4 text-[#596B59] flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-[#242622] flex-shrink-0 mt-0.5" />
                     ) : (
                       <XCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                     )}
                     <div>
                       <p className="font-bold text-white text-xs">{doc.name}</p>
-                      <p className="text-[10px] text-[#77796F] mt-0.5">{doc.reason}</p>
+                      <p className="text-[10px] text-[#85857E] mt-0.5">{doc.reason}</p>
                     </div>
                   </div>
                 ))}
@@ -1655,39 +1655,39 @@ export const SellBikePage: React.FC = () => {
             </div>
 
             {/* Section D: Pickup & Test Ride Parameters */}
-            <div className="p-5 rounded-3xl bg-[#F1EEE5] border border-[#E5E1D7] space-y-2 text-xs">
+            <div className="p-5 rounded-none border border-[#E9E3D8] bg-[#E9E3D8] border border-[#E9E3D8] space-y-2 text-xs">
               <div className="flex items-center justify-between">
                 <h4 className="font-bold text-sm text-white">Pickup & Test Ride Setup</h4>
                 <button
                   type="button"
                   onClick={() => setCurrentStep(4)}
-                  className="text-xs text-[#596B59] hover:text-white underline underline-offset-2"
+                  className="text-xs text-[#242622] hover:text-white underline underline-offset-2"
                 >
                   Change Location
                 </button>
               </div>
               <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                 <div>
-                  <span className="text-[#77796F] block text-[10px]">Public Viewing Area</span>
+                  <span className="text-[#85857E] block text-[10px]">Public Viewing Area</span>
                   <span className="font-bold text-white">{pickupLocation.locality}, {pickupLocation.city}</span>
                 </div>
                 <div>
-                  <span className="text-[#77796F] block text-[10px]">Meetup Spot Type</span>
-                  <span className="font-semibold text-[#596B59]">{meetupSpotType}</span>
+                  <span className="text-[#85857E] block text-[10px]">Meetup Spot Type</span>
+                  <span className="font-semibold text-[#242622]">{meetupSpotType}</span>
                 </div>
                 <div>
-                  <span className="text-[#77796F] block text-[10px]">Test Rides</span>
+                  <span className="text-[#85857E] block text-[10px]">Test Rides</span>
                   <span className="font-semibold text-white">{testRideAvailable ? 'Permitted with DL' : 'Inspection Only'}</span>
                 </div>
               </div>
             </div>
 
             {/* Final Publish Gate Action Buttons */}
-            <div className="pt-4 flex justify-between items-center border-t border-[#E5E1D7]">
+            <div className="pt-4 flex justify-between items-center border-t border-[#E9E3D8]">
               <button
                 type="button"
                 onClick={() => setCurrentStep(4)}
-                className="px-5 py-2.5 rounded-xl bg-white hover:bg-[#F1EEE5] border border-[#E5E1D7] text-[#77796F] text-xs font-semibold flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-none bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] text-[#85857E] text-xs font-semibold flex items-center gap-1.5"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Back to Location</span>
@@ -1697,10 +1697,10 @@ export const SellBikePage: React.FC = () => {
                 type="button"
                 disabled={!isPhotosComplete || !isDocumentsComplete || isPublishing}
                 onClick={handlePublishListing}
-                className={`px-8 py-4 rounded-2xl font-heading font-extrabold text-sm uppercase tracking-wider flex items-center gap-2.5 transition-all ${
+                className={`px-8 py-4 rounded-none font-heading font-extrabold text-sm uppercase tracking-wider flex items-center gap-2.5 transition-all ${
                   isPhotosComplete && isDocumentsComplete && !isPublishing
-                    ? 'bg-[#879783] hover:bg-forest-400 text-white shadow-sm cursor-pointer'
-                    : 'bg-white border border-[#E5E1D7] text-slate-500 cursor-not-allowed'
+                    ? 'bg-[#35483C] hover:bg-forest-400 text-white shadow-sm cursor-pointer'
+                    : 'bg-white border border-[#E9E3D8] text-slate-500 cursor-not-allowed'
                 }`}
               >
                 {isPublishing ? (
@@ -1710,7 +1710,7 @@ export const SellBikePage: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="w-5 h-5 text-[#596B59]" />
+                    <CheckCircle2 className="w-5 h-5 text-[#242622]" />
                     <span>Publish Listing Live Now</span>
                   </>
                 )}
@@ -1724,10 +1724,10 @@ export const SellBikePage: React.FC = () => {
       {/* In-Depth Document Analysis Report Modal */}
       {analysisModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-2xl rounded-3xl bg-[#0D1814] border border-[#E5E1D7] p-6 sm:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <div className="flex items-center justify-between border-b border-[#E5E1D7] pb-4">
+          <div className="relative w-full max-w-2xl rounded-none border border-[#E9E3D8] bg-[#0D1814] border border-[#E9E3D8] p-6 sm:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div className="flex items-center justify-between border-b border-[#E9E3D8] pb-4">
               <div>
-                <span className="text-[10px] font-bold text-[#596B59] uppercase tracking-wider">
+                <span className="text-[10px] font-bold text-[#242622] uppercase tracking-wider">
                   Automated Document Extraction & AI Inspection
                 </span>
                 <h3 className="font-heading font-extrabold text-xl text-white">
@@ -1736,7 +1736,7 @@ export const SellBikePage: React.FC = () => {
               </div>
               <button
                 onClick={() => setAnalysisModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-white border border-[#E5E1D7] flex items-center justify-center text-[#77796F] hover:text-white"
+                className="w-8 h-8 rounded-full bg-white border border-[#E9E3D8] flex items-center justify-center text-[#85857E] hover:text-white"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1744,49 +1744,49 @@ export const SellBikePage: React.FC = () => {
 
             {isLoadingAnalysis ? (
               <div className="py-12 flex flex-col items-center justify-center space-y-3">
-                <Clock className="w-8 h-8 text-[#596B59] animate-spin" />
-                <p className="text-xs text-[#77796F]">Extracting Document Data...</p>
+                <Clock className="w-8 h-8 text-[#242622] animate-spin" />
+                <p className="text-xs text-[#85857E]">Extracting Document Data...</p>
               </div>
             ) : analysisReport ? (
               <div className="space-y-4 text-xs">
-                <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7]">
+                <div className="grid grid-cols-2 gap-3 p-4 rounded-none bg-[#E9E3D8] border border-[#E9E3D8]">
                   <div>
-                    <span className="text-[10px] text-[#77796F]">Document Type</span>
+                    <span className="text-[10px] text-[#85857E]">Document Type</span>
                     <p className="font-bold text-white capitalize">{analysisReport.document_type}</p>
                   </div>
                   <div>
-                    <span className="text-[10px] text-[#77796F]">OCR Confidence</span>
-                    <p className="font-bold text-[#596B59]">{Math.round((analysisReport.ocr_confidence || 0.95) * 100)}% High Confidence</p>
+                    <span className="text-[10px] text-[#85857E]">OCR Confidence</span>
+                    <p className="font-bold text-[#242622]">{Math.round((analysisReport.ocr_confidence || 0.95) * 100)}% High Confidence</p>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-[#242923] mb-2">Automated Field Analysis</h4>
-                  <div className="p-4 rounded-2xl bg-white/60 border border-[#E5E1D7] space-y-2">
+                  <h4 className="font-bold text-[#242622] mb-2">Automated Field Analysis</h4>
+                  <div className="p-4 rounded-none bg-white/60 border border-[#E9E3D8] space-y-2">
                     {Object.entries(analysisReport.extracted_fields || {}).map(([k, v]) => (
-                      <div key={k} className="flex items-center justify-between py-1 border-b border-[#E5E1D7]/50">
-                        <span className="text-[#77796F] capitalize">{k.replace(/_/g, ' ')}:</span>
+                      <div key={k} className="flex items-center justify-between py-1 border-b border-[#E9E3D8]/50">
+                        <span className="text-[#85857E] capitalize">{k.replace(/_/g, ' ')}:</span>
                         <span className="font-semibold text-white font-mono">{String(v || 'N/A')}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-white/60 border border-[#E5E1D7]/80 flex items-center justify-between">
+                <div className="p-3 rounded-none bg-white/60 border border-[#E9E3D8]/80 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-[#596B59]" />
-                    <span className="text-[11px] text-[#77796F]">Sensitive chassis, engine & policy numbers masked.</span>
+                    <Lock className="w-4 h-4 text-[#242622]" />
+                    <span className="text-[11px] text-[#85857E]">Sensitive chassis, engine & policy numbers masked.</span>
                   </div>
                   <button
                     onClick={() => setAnalysisModalOpen(false)}
-                    className="px-4 py-2 rounded-xl bg-[#E5D9C7]/40 hover:bg-[#879783]/30 text-white font-bold text-xs"
+                    className="px-4 py-2 rounded-none bg-[#E9E3D8]/40 hover:bg-[#35483C]/30 text-white font-bold text-xs"
                   >
                     Done
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="py-8 text-center text-[#77796F] text-xs">
+              <div className="py-8 text-center text-[#85857E] text-xs">
                 No analysis data available for this document.
               </div>
             )}

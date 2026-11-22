@@ -57,16 +57,16 @@ export const MotorcycleInspectionPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#060C0A] text-[#242923] flex flex-col overflow-x-hidden selection:bg-emerald-600 selection:text-white">
+    <div className="min-h-screen bg-[#060C0A] text-[#242622] flex flex-col overflow-x-hidden selection:bg-emerald-600 selection:text-white">
       {/* Top Navigation Bar */}
-      <header className="border-b border-[#E5E1D7] bg-[#F7F5EF]/95 backdrop-blur-md px-4 sm:px-6 py-3 sticky top-0 z-40">
+      <header className="border-b border-[#E9E3D8] bg-[#F7F5EF]/95 backdrop-blur-md px-4 sm:px-6 py-3 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <Link
               to={`/bike/${vehicle.id}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-[#E5E1D7] text-[#77796F] hover:text-white hover:border-emerald-500/50 text-xs font-medium transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white hover:border-emerald-500/50 text-xs font-medium transition-all"
             >
-              <ChevronLeft className="w-4 h-4 text-[#596B59]" />
+              <ChevronLeft className="w-4 h-4 text-[#242622]" />
               <span>Back to Listing</span>
             </Link>
 
@@ -77,42 +77,42 @@ export const MotorcycleInspectionPage: React.FC = () => {
                 <h1 className="text-sm sm:text-base font-heading font-bold text-white tracking-wide">
                   {vehicle.title}
                 </h1>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-950 text-[#596B59] border border-emerald-600/40">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-950 text-[#242622] border border-emerald-600/40">
                   {vehicle.year}
                 </span>
               </div>
-              <p className="text-[11px] text-[#77796F] hidden sm:flex items-center gap-3">
+              <p className="text-[11px] text-[#85857E] hidden sm:flex items-center gap-3">
                 <span>{vehicle.km.toLocaleString('en-IN')} km</span>
                 <span>•</span>
                 <span>{vehicle.city}</span>
                 <span>•</span>
-                <span className="text-[#596B59] font-semibold">{formatINR(vehicle.price)}</span>
+                <span className="text-[#242622] font-semibold">{formatINR(vehicle.price)}</span>
               </p>
             </div>
           </div>
 
           {/* Quick Vehicle Switcher & Certified Score */}
           <div className="flex items-center gap-2.5">
-            <div className="hidden md:flex items-center gap-1.5 text-xs bg-white px-3 py-1.5 rounded-xl border border-[#E5E1D7]">
-              <span className="text-[#77796F] text-[11px]">Demo Vehicle:</span>
+            <div className="hidden md:flex items-center gap-1.5 text-xs bg-white px-3 py-1.5 rounded-none border border-[#E9E3D8]">
+              <span className="text-[#85857E] text-[11px]">Demo Vehicle:</span>
               <select
                 value={vehicle.id}
                 onChange={(e) => handleSelectVehicle(e.target.value)}
-                className="bg-transparent text-[#596B59] text-xs font-semibold focus:outline-none cursor-pointer"
+                className="bg-transparent text-[#242622] text-xs font-semibold focus:outline-none cursor-pointer"
               >
                 {SEED_LISTINGS.map((b) => (
-                  <option key={b.id} value={b.id} className="bg-[#F1EEE5] text-[#242923]">
+                  <option key={b.id} value={b.id} className="bg-[#E9E3D8] text-[#242622]">
                     {b.title} ({b.year})
                   </option>
                 ))}
               </select>
             </div>
 
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-950/70 border border-emerald-500/40">
-              <ShieldCheck className="w-4 h-4 text-[#596B59]" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-none bg-emerald-950/70 border border-emerald-500/40">
+              <ShieldCheck className="w-4 h-4 text-[#242622]" />
               <div>
-                <span className="text-[10px] text-[#77796F] block leading-none">Inspection</span>
-                <span className="text-xs font-bold text-[#596B59]">
+                <span className="text-[10px] text-[#85857E] block leading-none">Inspection</span>
+                <span className="text-xs font-bold text-[#242622]">
                   {vehicle.inspectionScore} / 5.0
                 </span>
               </div>
@@ -124,19 +124,19 @@ export const MotorcycleInspectionPage: React.FC = () => {
       {/* Main Studio Viewport */}
       <main className="flex-1 flex flex-col relative min-h-[calc(100vh-120px)]">
         {/* Category Tabs */}
-        <div className="bg-[#F1EEE5]/90 border-b border-[#E5E1D7] px-4 py-2.5 z-20">
+        <div className="bg-[#E9E3D8]/90 border-b border-[#E9E3D8] px-4 py-2.5 z-20">
           <div className="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar">
-            <span className="text-[11px] font-semibold text-[#77796F] uppercase tracking-wider flex items-center gap-1 mr-1 flex-shrink-0">
-              <Compass className="w-3.5 h-3.5 text-[#596B59]" /> Assembly:
+            <span className="text-[11px] font-semibold text-[#85857E] uppercase tracking-wider flex items-center gap-1 mr-1 flex-shrink-0">
+              <Compass className="w-3.5 h-3.5 text-[#242622]" /> Assembly:
             </span>
             {COMPONENT_CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                className={`px-3 py-1.5 rounded-none text-xs font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                   selectedCategory === cat.id
                     ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-950 font-semibold'
-                    : 'bg-white text-[#77796F] hover:text-white hover:bg-[#152722] border border-[#E5E1D7]'
+                    : 'bg-white text-[#85857E] hover:text-white hover:bg-[#152722] border border-[#E9E3D8]'
                 }`}
               >
                 {cat.label}
@@ -158,7 +158,7 @@ export const MotorcycleInspectionPage: React.FC = () => {
 
           {/* Quick Component Picker Floating Bar (Bottom of 3D Canvas) */}
           <div className="absolute bottom-4 left-4 right-4 z-10 flex justify-center pointer-events-none">
-            <div className="pointer-events-auto bg-[#F7F5EF]/95 backdrop-blur-md border border-[#E5E1D7] rounded-2xl p-2 max-w-4xl w-full shadow-2xl flex items-center justify-between gap-3 overflow-x-auto">
+            <div className="pointer-events-auto bg-[#F7F5EF]/95 backdrop-blur-md border border-[#E9E3D8] rounded-none p-2 max-w-4xl w-full shadow-2xl flex items-center justify-between gap-3 overflow-x-auto">
               <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
                 {filteredComponents.map((comp) => {
                   const isSelected = selectedComponentId === comp.id;
@@ -166,10 +166,10 @@ export const MotorcycleInspectionPage: React.FC = () => {
                     <button
                       key={comp.id}
                       onClick={() => setSelectedComponentId(comp.id)}
-                      className={`px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all whitespace-nowrap flex-shrink-0 ${
+                      className={`px-3 py-1.5 rounded-none text-xs flex items-center gap-1.5 transition-all whitespace-nowrap flex-shrink-0 ${
                         isSelected
                           ? 'bg-emerald-500 text-slate-950 font-bold shadow-md'
-                          : 'bg-white text-[#77796F] hover:text-white hover:bg-[#152722] border border-[#E5E1D7]'
+                          : 'bg-white text-[#85857E] hover:text-white hover:bg-[#152722] border border-[#E9E3D8]'
                       }`}
                     >
                       <span className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -179,13 +179,13 @@ export const MotorcycleInspectionPage: React.FC = () => {
                 })}
               </div>
 
-              <div className="flex items-center gap-2 pl-2 border-l border-[#E5E1D7] flex-shrink-0">
+              <div className="flex items-center gap-2 pl-2 border-l border-[#E9E3D8] flex-shrink-0">
                 <button
                   onClick={() => setExplodedView(!explodedView)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+                  className={`px-3 py-1.5 rounded-none text-xs font-bold flex items-center gap-1.5 transition-all ${
                     explodedView
                       ? 'bg-amber-500 text-slate-950 shadow-md'
-                      : 'bg-white text-[#77796F] hover:text-white border border-[#E5E1D7]'
+                      : 'bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]'
                   }`}
                   title="Toggle Exploded Mechanical Assembly"
                 >
@@ -194,7 +194,7 @@ export const MotorcycleInspectionPage: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setSelectedComponentId(null)}
-                  className="p-1.5 rounded-xl bg-white text-[#77796F] hover:text-white border border-[#E5E1D7]"
+                  className="p-1.5 rounded-none bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]"
                   title="Clear Selection"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -214,10 +214,10 @@ export const MotorcycleInspectionPage: React.FC = () => {
       </main>
 
       {/* Bottom Bar: Action CTAs & Honest Disclosure Footer */}
-      <footer className="border-t border-[#E5E1D7] bg-[#F1EEE5] px-4 sm:px-6 py-3 z-30">
+      <footer className="border-t border-[#E9E3D8] bg-[#E9E3D8] px-4 sm:px-6 py-3 z-30">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-[11px] text-[#77796F]">
-            <Info className="w-3.5 h-3.5 text-[#596B59] flex-shrink-0" />
+          <div className="flex items-center gap-2 text-[11px] text-[#85857E]">
+            <Info className="w-3.5 h-3.5 text-[#242622] flex-shrink-0" />
             <span>
               <strong>Transparency Guarantee:</strong> Representative 3D CAD visualization mapped with verified on-ground physical inspection logs & wear indicators.
             </span>
@@ -226,14 +226,14 @@ export const MotorcycleInspectionPage: React.FC = () => {
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={() => setTestRideModalOpen(true)}
-              className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#F1EEE5] hover:bg-[#E5D9C7]/40 text-[#596B59] text-xs font-bold border border-emerald-500/30 transition-all flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none px-4 py-2 rounded-none bg-[#E9E3D8] hover:bg-[#E9E3D8]/40 text-[#242622] text-xs font-bold border border-emerald-500/30 transition-all flex items-center justify-center gap-2"
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Book Hub Test Ride</span>
             </button>
             <Link
               to={`/bike/${vehicle.id}`}
-              className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-950"
+              className="flex-1 sm:flex-none px-4 py-2 rounded-none bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-950"
             >
               <span>View Full Listing & Buy ({formatINR(vehicle.price)})</span>
               <ExternalLink className="w-3.5 h-3.5" />

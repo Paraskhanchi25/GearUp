@@ -211,29 +211,29 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
-      <div className="relative w-full max-w-4xl my-8 rounded-3xl bg-[#0B1512] border border-emerald-500/50 p-6 sm:p-8 space-y-6 shadow-2xl text-[#242923]">
+      <div className="relative w-full max-w-4xl my-8 rounded-none border border-[#E9E3D8] bg-[#0B1512] border border-emerald-500/50 p-6 sm:p-8 space-y-6 shadow-2xl text-[#242622]">
         
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-[#E5E1D7] pb-4">
+        <div className="flex items-start justify-between border-b border-[#E9E3D8] pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-forest-700 flex items-center justify-center text-white shadow-sm">
+            <div className="w-10 h-10 rounded-none bg-gradient-to-br from-emerald-500 to-forest-700 flex items-center justify-center text-white shadow-sm">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-heading font-extrabold text-xl text-white">SMART RC VERIFICATION</h2>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-[#596B59] border border-emerald-500/40 uppercase tracking-wider">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-[#242622] border border-emerald-500/40 uppercase tracking-wider">
                   AI Authenticity Engine
                 </span>
               </div>
-              <p className="text-xs text-[#77796F] mt-0.5">
+              <p className="text-xs text-[#85857E] mt-0.5">
                 Upload your Registration Certificate to automatically extract and cross-check your vehicle details.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white border border-[#E5E1D7] flex items-center justify-center text-[#77796F] hover:text-white transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white border border-[#E9E3D8] flex items-center justify-center text-[#85857E] hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -241,9 +241,9 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
 
         {/* Hackathon Demo Presets Quick Selector */}
         {demoScenarios.length > 0 && (
-          <div className="p-3.5 rounded-2xl bg-white border border-[#E5E1D7] space-y-2">
+          <div className="p-3.5 rounded-none bg-white border border-[#E9E3D8] space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-[#596B59] flex items-center gap-1.5">
+              <span className="font-bold text-[#242622] flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Hackathon One-Click Demo Scenarios (Pre-configured Presets):</span>
               </span>
@@ -255,10 +255,10 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                   key={sc.caseId}
                   disabled={isProcessing}
                   onClick={() => handleRunDemoScenario(sc)}
-                  className="p-2.5 rounded-xl bg-white hover:bg-[#F1EEE5] border border-[#E5E1D7] text-left transition-all hover:border-emerald-500/80 group cursor-pointer"
+                  className="p-2.5 rounded-none bg-white hover:bg-[#E9E3D8] border border-[#E9E3D8] text-left transition-all hover:border-emerald-500/80 group cursor-pointer"
                 >
-                  <p className="font-bold text-[11px] text-white group-hover:text-[#596B59]">{sc.title}</p>
-                  <p className="text-[10px] text-[#77796F] line-clamp-1 mt-0.5">{sc.description}</p>
+                  <p className="font-bold text-[11px] text-white group-hover:text-[#242622]">{sc.title}</p>
+                  <p className="text-[10px] text-[#85857E] line-clamp-1 mt-0.5">{sc.description}</p>
                 </button>
               ))}
             </div>
@@ -266,16 +266,16 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
         )}
 
         {/* Stepper Navigation */}
-        <div className="flex items-center justify-between border-b border-[#E5E1D7]/80 pb-3 text-xs">
+        <div className="flex items-center justify-between border-b border-[#E9E3D8]/80 pb-3 text-xs">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setActiveStep('upload')}
               className={`flex items-center gap-1.5 font-bold transition-colors ${
-                activeStep === 'upload' ? 'text-[#596B59]' : 'text-[#77796F]'
+                activeStep === 'upload' ? 'text-[#242622]' : 'text-[#85857E]'
               }`}
             >
               <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
-                activeStep === 'upload' ? 'bg-emerald-500 text-slate-950' : 'bg-white text-[#77796F]'
+                activeStep === 'upload' ? 'bg-emerald-500 text-slate-950' : 'bg-white text-[#85857E]'
               }`}>1</span>
               <span>Upload Document</span>
             </button>
@@ -286,11 +286,11 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
               disabled={!processResult}
               onClick={() => setActiveStep('confirm')}
               className={`flex items-center gap-1.5 font-bold transition-colors ${
-                activeStep === 'confirm' ? 'text-[#596B59]' : 'text-[#77796F] disabled:opacity-40'
+                activeStep === 'confirm' ? 'text-[#242622]' : 'text-[#85857E] disabled:opacity-40'
               }`}
             >
               <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
-                activeStep === 'confirm' ? 'bg-emerald-500 text-slate-950' : 'bg-white text-[#77796F]'
+                activeStep === 'confirm' ? 'bg-emerald-500 text-slate-950' : 'bg-white text-[#85857E]'
               }`}>2</span>
               <span>Confirm Extracted Fields</span>
             </button>
@@ -301,11 +301,11 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
               disabled={!comparisonResult}
               onClick={() => setActiveStep('report')}
               className={`flex items-center gap-1.5 font-bold transition-colors ${
-                activeStep === 'report' ? 'text-[#596B59]' : 'text-[#77796F] disabled:opacity-40'
+                activeStep === 'report' ? 'text-[#242622]' : 'text-[#85857E] disabled:opacity-40'
               }`}
             >
               <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
-                activeStep === 'report' ? 'bg-emerald-500 text-slate-950' : 'bg-white text-[#77796F]'
+                activeStep === 'report' ? 'bg-emerald-500 text-slate-950' : 'bg-white text-[#85857E]'
               }`}>3</span>
               <span>Authenticity Report</span>
             </button>
@@ -320,16 +320,16 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
 
         {/* Processing Spinner Overlay */}
         {isProcessing && (
-          <div className="p-8 rounded-2xl bg-[#F1EEE5] border border-emerald-500/40 flex flex-col items-center justify-center space-y-3 animate-pulse">
-            <RefreshCw className="w-8 h-8 text-[#596B59] animate-spin" />
+          <div className="p-8 rounded-none bg-[#E9E3D8] border border-emerald-500/40 flex flex-col items-center justify-center space-y-3 animate-pulse">
+            <RefreshCw className="w-8 h-8 text-[#242622] animate-spin" />
             <p className="font-heading font-bold text-sm text-white">{processingStage}</p>
-            <p className="text-[11px] text-[#77796F]">Executing OpenCV deskew, ML document classification, and structured OCR parsing.</p>
+            <p className="text-[11px] text-[#85857E]">Executing OpenCV deskew, ML document classification, and structured OCR parsing.</p>
           </div>
         )}
 
         {/* Error Alert */}
         {errorMessage && (
-          <div className="p-4 rounded-xl bg-red-950/80 border border-red-500/60 text-xs text-red-200 flex items-start gap-2.5">
+          <div className="p-4 rounded-none bg-red-950/80 border border-red-500/60 text-xs text-red-200 flex items-start gap-2.5">
             <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="font-bold text-white">Verification Error</p>
@@ -341,7 +341,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
         {/* STEP 1: UPLOAD AREA */}
         {activeStep === 'upload' && !isProcessing && (
           <div className="space-y-5">
-            <label className="block p-8 rounded-3xl border-2 border-dashed border-[#E5E1D7] hover:border-emerald-500/80 bg-white/40 hover:bg-white/70 transition-all text-center cursor-pointer">
+            <label className="block p-8 rounded-none border border-[#E9E3D8] border-2 border-dashed border-[#E9E3D8] hover:border-emerald-500/80 bg-white/40 hover:bg-white/70 transition-all text-center cursor-pointer">
               <input
                 type="file"
                 accept=".pdf,.jpg,.jpeg,.png,.webp"
@@ -352,19 +352,19 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                 }}
                 className="hidden"
               />
-              <div className="w-14 h-14 rounded-2xl bg-emerald-950/80 border border-emerald-600/40 text-[#596B59] flex items-center justify-center mx-auto mb-3 shadow-sm">
+              <div className="w-14 h-14 rounded-none bg-emerald-950/80 border border-emerald-600/40 text-[#242622] flex items-center justify-center mx-auto mb-3 shadow-sm">
                 <Upload className="w-7 h-7" />
               </div>
               <p className="font-heading font-extrabold text-base text-white">Click or Drag & Drop Registration Certificate</p>
-              <p className="text-xs text-[#77796F] mt-1">Supports authentic Parivahan e-RC PDF, Scanned Smart Cards, JPG, JPEG, PNG, WEBP (Max 10MB)</p>
-              <div className="inline-flex items-center gap-2 mt-4 px-3 py-1 rounded-full bg-[#F1EEE5]/60 text-[11px] text-[#77796F] border border-[#E5E1D7]">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#596B59]" />
+              <p className="text-xs text-[#85857E] mt-1">Supports authentic Parivahan e-RC PDF, Scanned Smart Cards, JPG, JPEG, PNG, WEBP (Max 10MB)</p>
+              <div className="inline-flex items-center gap-2 mt-4 px-3 py-1 rounded-full bg-[#E9E3D8]/60 text-[11px] text-[#85857E] border border-[#E9E3D8]">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#242622]" />
                 <span>Magic bytes & file contents cryptographically checked</span>
               </div>
             </label>
 
             {/* Target Listing Reference */}
-            <div className="p-4 rounded-2xl bg-white/60 border border-[#E5E1D7] text-xs text-[#77796F] flex items-center justify-between">
+            <div className="p-4 rounded-none bg-white/60 border border-[#E9E3D8] text-xs text-[#85857E] flex items-center justify-between">
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-500">Listing Being Cross-Checked</span>
                 <p className="font-bold text-white mt-0.5">
@@ -373,7 +373,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
               </div>
               <div className="text-right">
                 <span className="text-[10px] uppercase font-bold text-slate-500">Claimed Registration</span>
-                <p className="font-mono font-bold text-[#596B59] mt-0.5">{listingDetails.registration_number}</p>
+                <p className="font-mono font-bold text-[#242622] mt-0.5">{listingDetails.registration_number}</p>
               </div>
             </div>
           </div>
@@ -385,37 +385,37 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
             {/* AI Analysis Badges */}
             {processResult && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div className="p-3 rounded-2xl bg-white border border-[#E5E1D7]">
+                <div className="p-3 rounded-none bg-white border border-[#E9E3D8]">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Document Classification</span>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="font-bold text-white text-sm">{processResult.documentType}</span>
-                    <span className="px-1.5 py-0.5 rounded bg-emerald-950 text-[#596B59] text-[10px] font-bold border border-emerald-600/40">
+                    <span className="px-1.5 py-0.5 rounded bg-emerald-950 text-[#242622] text-[10px] font-bold border border-emerald-600/40">
                       {Math.round((processResult.classificationConfidence || 0.95) * 100)}% Conf
                     </span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-white border border-[#E5E1D7]">
+                <div className="p-3 rounded-none bg-white border border-[#E9E3D8]">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Image Blur & Quality</span>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="font-bold text-white text-sm">
                       {processResult.imageQuality?.quality_grade || 'PASS'}
                     </span>
-                    <span className="text-[10px] text-[#77796F]">
+                    <span className="text-[10px] text-[#85857E]">
                       (Var: {processResult.imageQuality?.blur_score || 220})
                     </span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-white border border-[#E5E1D7]">
+                <div className="p-3 rounded-none bg-white border border-[#E9E3D8]">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Anomaly Risk Assessment</span>
                   <div className="flex items-center gap-2 mt-1">
                     <span className={`font-bold text-sm ${
-                      processResult.anomalyAssessment?.risk_level === 'LOW' ? 'text-[#596B59]' : 'text-amber-400'
+                      processResult.anomalyAssessment?.risk_level === 'LOW' ? 'text-[#242622]' : 'text-amber-400'
                     }`}>
                       {processResult.anomalyAssessment?.risk_level || 'LOW'}
                     </span>
-                    <span className="text-[10px] text-[#77796F]">
+                    <span className="text-[10px] text-[#85857E]">
                       (Score: {processResult.anomalyAssessment?.anomaly_score || 0.2})
                     </span>
                   </div>
@@ -424,59 +424,59 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
             )}
 
             {/* Editable Confirmation Form */}
-            <div className="p-5 rounded-3xl bg-white border border-[#E5E1D7] space-y-4">
-              <div className="flex items-center justify-between border-b border-[#E5E1D7] pb-2">
+            <div className="p-5 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-4">
+              <div className="flex items-center justify-between border-b border-[#E9E3D8] pb-2">
                 <h3 className="font-heading font-bold text-sm text-white">Review & Confirm OCR Extracted Values</h3>
-                <span className="text-[11px] text-[#77796F]">Correct any misrecognized characters before cross-checking</span>
+                <span className="text-[11px] text-[#85857E]">Correct any misrecognized characters before cross-checking</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
-                  <label className="block text-[#77796F] mb-1 font-semibold">Registration Number</label>
+                  <label className="block text-[#85857E] mb-1 font-semibold">Registration Number</label>
                   <input
                     type="text"
                     value={confirmedFields.registrationNumber}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, registrationNumber: e.target.value.toUpperCase() })}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#E5E1D7] text-white font-mono font-bold focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white font-mono font-bold focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[#77796F] mb-1 font-semibold">Manufacturer / Brand</label>
+                  <label className="block text-[#85857E] mb-1 font-semibold">Manufacturer / Brand</label>
                   <input
                     type="text"
                     value={confirmedFields.manufacturer}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, manufacturer: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#E5E1D7] text-white font-bold focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white font-bold focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[#77796F] mb-1 font-semibold">Model Name</label>
+                  <label className="block text-[#85857E] mb-1 font-semibold">Model Name</label>
                   <input
                     type="text"
                     value={confirmedFields.model}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, model: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#E5E1D7] text-white font-bold focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white font-bold focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[#77796F] mb-1 font-semibold">Registration Date (DD/MM/YYYY)</label>
+                  <label className="block text-[#85857E] mb-1 font-semibold">Registration Date (DD/MM/YYYY)</label>
                   <input
                     type="text"
                     value={confirmedFields.registrationDate}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, registrationDate: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#E5E1D7] text-white font-mono focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white font-mono focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[#77796F] mb-1 font-semibold">Fuel Type</label>
+                  <label className="block text-[#85857E] mb-1 font-semibold">Fuel Type</label>
                   <select
                     value={confirmedFields.fuelType}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, fuelType: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#E5E1D7] text-white focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white focus:border-emerald-500 focus:outline-none"
                   >
                     <option value="PETROL">PETROL</option>
                     <option value="ELECTRIC">ELECTRIC</option>
@@ -486,11 +486,11 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                 </div>
 
                 <div>
-                  <label className="block text-[#77796F] mb-1 font-semibold">Vehicle Class</label>
+                  <label className="block text-[#85857E] mb-1 font-semibold">Vehicle Class</label>
                   <select
                     value={confirmedFields.vehicleClass}
                     onChange={(e) => setConfirmedFields({ ...confirmedFields, vehicleClass: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#E5E1D7] text-white focus:border-emerald-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-none bg-white border border-[#E9E3D8] text-white focus:border-emerald-500 focus:outline-none"
                   >
                     <option value="2W - Motorcycle">2W - Motorcycle</option>
                     <option value="2W - Scooter">2W - Scooter</option>
@@ -499,7 +499,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
               </div>
 
               {/* Masked Identifiers Display */}
-              <div className="pt-2 border-t border-[#E5E1D7] grid grid-cols-2 gap-4 text-[11px] text-[#77796F]">
+              <div className="pt-2 border-t border-[#E9E3D8] grid grid-cols-2 gap-4 text-[11px] text-[#85857E]">
                 <div>
                   <span>Masked Chassis: </span>
                   <span className="font-mono text-white font-bold">
@@ -519,14 +519,14 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                 <button
                   type="button"
                   onClick={() => setActiveStep('upload')}
-                  className="px-4 py-2.5 rounded-xl bg-white border border-[#E5E1D7] text-[#77796F] hover:text-white text-xs font-semibold"
+                  className="px-4 py-2.5 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white text-xs font-semibold"
                 >
                   Back to Upload
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmAndCompare}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-extrabold text-xs uppercase tracking-wider shadow-sm flex items-center gap-1.5 cursor-pointer"
+                  className="px-6 py-2.5 rounded-none bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-extrabold text-xs uppercase tracking-wider shadow-sm flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>Confirm & Run Cross-Check</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -540,17 +540,17 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
         {activeStep === 'report' && comparisonResult && (
           <div className="space-y-5">
             {/* Status Summary Banner */}
-            <div className={`p-5 rounded-3xl border flex items-center justify-between ${
+            <div className={`p-5 rounded-none border border-[#E9E3D8] border flex items-center justify-between ${
               comparisonResult.finalWorkflowStatus === 'DOCUMENT_MATCHED'
-                ? 'bg-emerald-950/70 border-emerald-500/60 text-[#354638]'
+                ? 'bg-emerald-950/70 border-emerald-500/60 text-[#35483C]'
                 : comparisonResult.finalWorkflowStatus === 'GOVERNMENT_VERIFIED'
                 ? 'bg-blue-950/70 border-blue-500/60 text-blue-200'
                 : 'bg-amber-950/70 border-amber-500/60 text-amber-200'
             }`}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-black/40 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-none bg-black/40 flex items-center justify-center">
                   {comparisonResult.finalWorkflowStatus === 'DOCUMENT_MATCHED' ? (
-                    <CheckCircle2 className="w-6 h-6 text-[#596B59]" />
+                    <CheckCircle2 className="w-6 h-6 text-[#242622]" />
                   ) : (
                     <AlertTriangle className="w-6 h-6 text-amber-400" />
                   )}
@@ -565,36 +565,36 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
                   <h3 className="font-heading font-extrabold text-lg text-white mt-0.5">
                     {comparisonResult.finalWorkflowStatus.replace('_', ' ')}
                   </h3>
-                  <p className="text-xs text-[#77796F] mt-0.5">{comparisonResult.statusReason}</p>
+                  <p className="text-xs text-[#85857E] mt-0.5">{comparisonResult.statusReason}</p>
                 </div>
               </div>
 
               <div className="text-right hidden sm:block">
-                <span className="text-[10px] text-[#77796F]">Match Level</span>
+                <span className="text-[10px] text-[#85857E]">Match Level</span>
                 <p className="font-bold text-white text-sm">{comparisonResult.comparisonResults?.overallComparison}</p>
               </div>
             </div>
 
             {/* Field Comparison Table */}
-            <div className="p-5 rounded-3xl bg-white border border-[#E5E1D7] space-y-3">
-              <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-[#77796F]">Field-by-Field Cross Check</h4>
+            <div className="p-5 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-3">
+              <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-[#85857E]">Field-by-Field Cross Check</h4>
               <div className="divide-y divide-forest-900 text-xs">
                 {Object.entries(comparisonResult.comparisonResults?.fieldComparisons || {}).map(([key, data]: [string, any]) => (
                   <div key={key} className="py-2.5 flex items-start justify-between gap-4">
                     <div className="space-y-0.5">
                       <p className="font-semibold text-white capitalize">{key.replace(/([A-Z])/g, ' $1')}</p>
-                      <p className="text-[11px] text-[#77796F]">{data.explanation}</p>
+                      <p className="text-[11px] text-[#85857E]">{data.explanation}</p>
                     </div>
                     <div className="text-right flex items-center gap-2 flex-shrink-0">
-                      <div className="text-[11px] text-[#77796F] hidden sm:block">
-                        <span>Extracted: <strong className="text-[#242923]">{data.extractedValue || 'N/A'}</strong></span>
+                      <div className="text-[11px] text-[#85857E] hidden sm:block">
+                        <span>Extracted: <strong className="text-[#242622]">{data.extractedValue || 'N/A'}</strong></span>
                       </div>
                       <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase ${
                         data.status === 'MATCH'
                           ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                           : data.status === 'MISMATCH'
                           ? 'bg-red-50 text-red-800 border border-red-200'
-                          : 'bg-[#F1EEE5] text-[#77796F] border border-[#E5E1D7]'
+                          : 'bg-[#E9E3D8] text-[#85857E] border border-[#E9E3D8]'
                       }`}>
                         {data.status}
                       </span>
@@ -605,13 +605,13 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
             </div>
 
             {/* External Government VAHAN Gateway Section */}
-            <div className="p-4 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7] flex items-center justify-between text-xs">
+            <div className="p-4 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] flex items-center justify-between text-xs">
               <div className="space-y-0.5">
                 <div className="flex items-center gap-1.5 font-bold text-white">
                   <ShieldAlert className="w-4 h-4 text-amber-400" />
                   <span>Authorized Ministry VAHAN Record Gateway</span>
                 </div>
-                <p className="text-[11px] text-[#77796F]">
+                <p className="text-[11px] text-[#85857E]">
                   {externalVahanResult
                     ? `Status: ${externalVahanResult.externalVerification?.status} (${externalVahanResult.externalVerification?.message})`
                     : 'Official National Vehicle Registry direct cryptographic API lookup.'}
@@ -621,7 +621,7 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
               <button
                 type="button"
                 onClick={handleExternalVAHAN}
-                className="px-3.5 py-2 rounded-xl bg-[#E5D9C7]/40 hover:bg-[#879783]/30 text-[#596B59] text-xs font-bold transition-colors cursor-pointer flex-shrink-0"
+                className="px-3.5 py-2 rounded-none bg-[#E9E3D8]/40 hover:bg-[#35483C]/30 text-[#242622] text-xs font-bold transition-colors cursor-pointer flex-shrink-0"
               >
                 {externalVahanResult ? 'Re-test Gateway' : 'Run VAHAN Check'}
               </button>
@@ -632,14 +632,14 @@ export const SmartRCVerificationModal: React.FC<SmartRCVerificationModalProps> =
               <button
                 type="button"
                 onClick={() => setActiveStep('confirm')}
-                className="px-4 py-2 rounded-xl bg-white border border-[#E5E1D7] text-[#77796F] hover:text-white text-xs font-semibold"
+                className="px-4 py-2 rounded-none bg-white border border-[#E9E3D8] text-[#85857E] hover:text-white text-xs font-semibold"
               >
                 Edit Extracted Fields
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-extrabold text-xs uppercase tracking-wider shadow-sm transition-all"
+                className="px-6 py-2.5 rounded-none bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-extrabold text-xs uppercase tracking-wider shadow-sm transition-all"
               >
                 Done / Save Verification
               </button>

@@ -242,11 +242,11 @@ export const AdminPage: React.FC = () => {
   const vehicle = currentRecord?.vehicle_details || {};
 
   return (
-    <div className="min-h-screen bg-[#F7F5EF] text-[#242923] pb-24 px-4 sm:px-6 lg:px-8 pt-6">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#242622] pb-24 px-4 sm:px-6 lg:px-8 pt-6">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Top Header Banner */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-3xl bg-white border border-[#E5E1D7] shadow-2xl">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] shadow-2xl">
           <div>
             <span className="text-xs font-bold text-red-400 uppercase tracking-widest flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-red-400" />
@@ -255,19 +255,19 @@ export const AdminPage: React.FC = () => {
             <h1 className="font-heading font-extrabold text-2xl text-white mt-1">
               GEAR UP Trust & Verification Desk
             </h1>
-            <p className="text-xs text-[#77796F] mt-0.5">
+            <p className="text-xs text-[#85857E] mt-0.5">
               OCR Document extraction comparison, RTO Parivahan consistency audit, and split-view verification moderation.
             </p>
           </div>
 
           {/* Navigation Tab Switcher */}
-          <div className="flex items-center gap-1 p-1.5 rounded-2xl bg-white border border-[#E5E1D7] self-stretch md:self-auto overflow-x-auto">
+          <div className="flex items-center gap-1 p-1.5 rounded-none bg-white border border-[#E9E3D8] self-stretch md:self-auto overflow-x-auto">
             <button
               onClick={() => setActiveTab('verification_desk')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'verification_desk'
-                  ? 'bg-[#879783] text-white shadow-sm'
-                  : 'text-[#77796F] hover:text-white'
+                  ? 'bg-[#35483C] text-white shadow-sm'
+                  : 'text-[#85857E] hover:text-white'
               }`}
             >
               <FileSearch className="w-4 h-4" />
@@ -275,21 +275,21 @@ export const AdminPage: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('smart_rc_desk')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'smart_rc_desk'
-                  ? 'bg-[#879783] text-white shadow-sm'
-                  : 'text-[#77796F] hover:text-white'
+                  ? 'bg-[#35483C] text-white shadow-sm'
+                  : 'text-[#85857E] hover:text-white'
               }`}
             >
-              <Cpu className="w-4 h-4 text-[#596B59]" />
+              <Cpu className="w-4 h-4 text-[#242622]" />
               <span>Smart RC Reviews</span>
             </button>
             <button
               onClick={() => setActiveTab('marketplace_moderation')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'marketplace_moderation'
-                  ? 'bg-[#879783] text-white shadow-sm'
-                  : 'text-[#77796F] hover:text-white'
+                  ? 'bg-[#35483C] text-white shadow-sm'
+                  : 'text-[#85857E] hover:text-white'
               }`}
             >
               <Users className="w-4 h-4" />
@@ -297,13 +297,13 @@ export const AdminPage: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('location_revenue')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+              className={`flex-1 md:flex-none px-4 py-2 rounded-none text-xs font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === 'location_revenue'
-                  ? 'bg-[#879783] text-white shadow-sm'
-                  : 'text-[#77796F] hover:text-white'
+                  ? 'bg-[#35483C] text-white shadow-sm'
+                  : 'text-[#85857E] hover:text-white'
               }`}
             >
-              <DollarSign className="w-4 h-4 text-[#596B59]" />
+              <DollarSign className="w-4 h-4 text-[#242622]" />
               <span>Location Monetization</span>
             </button>
           </div>
@@ -313,31 +313,31 @@ export const AdminPage: React.FC = () => {
           <div className="space-y-6 animate-fade-in">
             {/* Stat Counters */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-4 rounded-2xl bg-white border border-[#E5E1D7]">
-                <span className="text-[10px] uppercase font-bold text-[#77796F]">Total in Queue</span>
+              <div className="p-4 rounded-none bg-white border border-[#E9E3D8]">
+                <span className="text-[10px] uppercase font-bold text-[#85857E]">Total in Queue</span>
                 <p className="font-heading font-extrabold text-2xl text-white mt-1">{queue.length || 2}</p>
                 <p className="text-[10px] text-slate-500">Listings awaiting moderation</p>
               </div>
-              <div className="p-4 rounded-2xl bg-white border border-amber-800/40">
+              <div className="p-4 rounded-none bg-white border border-amber-800/40">
                 <span className="text-[10px] uppercase font-bold text-amber-400">Needs Review</span>
                 <p className="font-heading font-extrabold text-2xl text-amber-300 mt-1">
                   {queue.filter(q => q.overall_status === 'pending_review' || q.overall_status === 'partially_verified').length || 1}
                 </p>
                 <p className="text-[10px] text-amber-200/60">OCR confidence &lt; 90% or missing</p>
               </div>
-              <div className="p-4 rounded-2xl bg-white border border-red-800/40">
+              <div className="p-4 rounded-none bg-white border border-red-800/40">
                 <span className="text-[10px] uppercase font-bold text-red-400">Discrepancy Alerts</span>
                 <p className="font-heading font-extrabold text-2xl text-red-300 mt-1">
                   {queue.filter(q => q.mismatches_count > 0).length || 0}
                 </p>
                 <p className="text-[10px] text-red-200/60">Fuel or chassis mismatches</p>
               </div>
-              <div className="p-4 rounded-2xl bg-white border border-emerald-800/40">
-                <span className="text-[10px] uppercase font-bold text-[#596B59]">Verified & Cleared</span>
-                <p className="font-heading font-extrabold text-2xl text-[#596B59] mt-1">
+              <div className="p-4 rounded-none bg-white border border-emerald-800/40">
+                <span className="text-[10px] uppercase font-bold text-[#242622]">Verified & Cleared</span>
+                <p className="font-heading font-extrabold text-2xl text-[#242622] mt-1">
                   {queue.filter(q => q.overall_status === 'verified_documents').length || 1}
                 </p>
-                <p className="text-[10px] text-[#354638]/60">Published with Trust Badge</p>
+                <p className="text-[10px] text-[#35483C]/60">Published with Trust Badge</p>
               </div>
             </div>
 
@@ -346,16 +346,16 @@ export const AdminPage: React.FC = () => {
               
               {/* Left Column: Verification Queue */}
               <div className="lg:col-span-4 space-y-4">
-                <div className="p-4 rounded-3xl bg-white border border-[#E5E1D7] space-y-3">
+                <div className="p-4 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="font-heading font-bold text-sm text-white flex items-center gap-1.5">
-                      <Clock className="w-4 h-4 text-[#596B59]" />
+                      <Clock className="w-4 h-4 text-[#242622]" />
                       <span>Review Queue</span>
                     </h3>
                     <button 
                       onClick={fetchQueue}
                       disabled={isLoadingQueue}
-                      className="p-1.5 rounded-lg bg-white text-[#77796F] hover:text-white border border-[#E5E1D7]"
+                      className="p-1.5 rounded-lg bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]"
                       title="Refresh queue"
                     >
                       <RefreshCw className={`w-3.5 h-3.5 ${isLoadingQueue ? 'animate-spin' : ''}`} />
@@ -375,8 +375,8 @@ export const AdminPage: React.FC = () => {
                         onClick={() => setFilterStatus(f.id)}
                         className={`px-2.5 py-1 rounded-lg font-bold whitespace-nowrap transition-colors ${
                           filterStatus === f.id
-                            ? 'bg-[#879783]/30 text-white'
-                            : 'bg-white text-[#77796F] hover:text-[#242923] border border-[#E5E1D7]'
+                            ? 'bg-[#35483C]/30 text-white'
+                            : 'bg-white text-[#85857E] hover:text-[#242622] border border-[#E9E3D8]'
                         }`}
                       >
                         {f.label}
@@ -392,17 +392,17 @@ export const AdminPage: React.FC = () => {
                         <div
                           key={item.listing_id}
                           onClick={() => setSelectedListingId(item.listing_id)}
-                          className={`p-3.5 rounded-2xl cursor-pointer transition-all border text-xs space-y-2 ${
+                          className={`p-3.5 rounded-none cursor-pointer transition-all border text-xs space-y-2 ${
                             isSelected
-                              ? 'bg-[#F1EEE5]/60 border-[#879783] shadow-md'
-                              : 'bg-white/60 border-[#E5E1D7]/80 hover:border-[#E5E1D7]'
+                              ? 'bg-[#E9E3D8]/60 border-[#35483C] shadow-md'
+                              : 'bg-white/60 border-[#E9E3D8]/80 hover:border-[#E9E3D8]'
                           }`}
                         >
                           <div className="flex items-center justify-between">
-                            <span className="font-mono text-[10px] text-[#77796F]">{item.listing_id}</span>
+                            <span className="font-mono text-[10px] text-[#85857E]">{item.listing_id}</span>
                             <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                               item.overall_status === 'verified_documents'
-                                ? 'bg-emerald-950 text-[#596B59] border border-emerald-600/40'
+                                ? 'bg-emerald-950 text-[#242622] border border-emerald-600/40'
                                 : item.overall_status === 'verification_issue_found'
                                 ? 'bg-red-950 text-red-300 border border-red-600/40'
                                 : 'bg-amber-950 text-amber-300 border border-amber-600/40'
@@ -413,12 +413,12 @@ export const AdminPage: React.FC = () => {
 
                           <div>
                             <h4 className="font-bold text-white text-xs line-clamp-1">{item.vehicle_title}</h4>
-                            <p className="text-[11px] text-[#77796F]">Seller: {item.seller_name}</p>
+                            <p className="text-[11px] text-[#85857E]">Seller: {item.seller_name}</p>
                           </div>
 
-                          <div className="flex items-center justify-between text-[10px] text-[#77796F] pt-1 border-t border-[#E5E1D7]/60">
+                          <div className="flex items-center justify-between text-[10px] text-[#85857E] pt-1 border-t border-[#E9E3D8]/60">
                             <span>Reg: <strong className="text-white font-mono">{item.registration_number}</strong></span>
-                            <span className="text-[#596B59] font-semibold">{Math.round((item.ocr_confidence || 0.94) * 100)}% OCR match</span>
+                            <span className="text-[#242622] font-semibold">{Math.round((item.ocr_confidence || 0.94) * 100)}% OCR match</span>
                           </div>
                         </div>
                       );
@@ -429,28 +429,28 @@ export const AdminPage: React.FC = () => {
 
               {/* Right Column: Split-View Reviewer Workspace (8 cols) */}
               <div className="lg:col-span-8 space-y-4">
-                <div className="p-6 rounded-3xl bg-white border border-[#E5E1D7] space-y-6">
+                <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-6">
                   
                   {/* Top Bar of Selected Listing */}
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E5E1D7] pb-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E9E3D8] pb-4">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs px-2 py-0.5 rounded bg-white text-[#596B59] border border-[#E5E1D7] font-bold">
+                        <span className="font-mono text-xs px-2 py-0.5 rounded bg-white text-[#242622] border border-[#E9E3D8] font-bold">
                           {selectedListingId}
                         </span>
                         <h2 className="font-heading font-extrabold text-lg text-white">
                           {vehicle.year || 2023} {vehicle.brand || 'Vehicle'} {vehicle.model || 'Model'}
                         </h2>
                       </div>
-                      <p className="text-xs text-[#77796F] mt-0.5">
-                        Seller: <strong className="text-[#242923]">{currentL3.seller_full_name || 'Vikramjit Singh'}</strong> • Reg: <strong className="text-white font-mono">{vehicle.registration_number || 'CH01AB8821'}</strong>
+                      <p className="text-xs text-[#85857E] mt-0.5">
+                        Seller: <strong className="text-[#242622]">{currentL3.seller_full_name || 'Vikramjit Singh'}</strong> • Reg: <strong className="text-white font-mono">{vehicle.registration_number || 'CH01AB8821'}</strong>
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className={`px-3 py-1 rounded-xl text-xs font-bold uppercase border ${
+                      <span className={`px-3 py-1 rounded-none text-xs font-bold uppercase border ${
                         currentSummary?.overall_verification_status === 'verified_documents'
-                          ? 'bg-emerald-950 text-[#596B59] border-emerald-600/50'
+                          ? 'bg-emerald-950 text-[#242622] border-emerald-600/50'
                           : 'bg-amber-950 text-amber-300 border-amber-600/50'
                       }`}>
                         {currentSummary?.overall_verification_status?.replace('_', ' ') || 'In Review'}
@@ -459,7 +459,7 @@ export const AdminPage: React.FC = () => {
                   </div>
 
                   {/* Document Category Tabs */}
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#E5E1D7]/60 text-xs">
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#E9E3D8]/60 text-xs">
                     {[
                       { id: 'rc', label: '1. Registration (RC)', badge: currentL1?.rc?.status || 'matched' },
                       { id: 'insurance', label: '2. Insurance Policy', badge: currentL1?.insurance?.status || 'matched' },
@@ -470,10 +470,10 @@ export const AdminPage: React.FC = () => {
                       <button
                         key={t.id}
                         onClick={() => setActiveDocTab(t.id as any)}
-                        className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-colors flex items-center gap-2 ${
+                        className={`px-3.5 py-2 rounded-none font-bold whitespace-nowrap transition-colors flex items-center gap-2 ${
                           activeDocTab === t.id
-                            ? 'bg-[#879783]/30 text-white shadow-sm'
-                            : 'bg-white/70 text-[#77796F] hover:text-white border border-[#E5E1D7]'
+                            ? 'bg-[#35483C]/30 text-white shadow-sm'
+                            : 'bg-white/70 text-[#85857E] hover:text-white border border-[#E9E3D8]'
                         }`}
                       >
                         <span>{t.label}</span>
@@ -493,49 +493,49 @@ export const AdminPage: React.FC = () => {
                     
                     {/* Left Split Panel: Document Visual Preview & Metadata (5 cols) */}
                     <div className="md:col-span-5 space-y-3">
-                      <div className="p-4 rounded-2xl bg-white border border-[#E5E1D7] space-y-3">
+                      <div className="p-4 rounded-none bg-white border border-[#E9E3D8] space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] uppercase font-bold text-[#596B59]">Document Scan Viewer</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-[#596B59] border border-emerald-600/40">
+                          <span className="text-[10px] uppercase font-bold text-[#242622]">Document Scan Viewer</span>
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-[#242622] border border-emerald-600/40">
                             OCR: 96.4%
                           </span>
                         </div>
 
                         {/* Visual Document Canvas Simulation */}
-                        <div className="relative aspect-[3/4] rounded-xl bg-[#14231E] border border-[#E5E1D7] p-4 overflow-hidden shadow-inner flex flex-col justify-between">
+                        <div className="relative aspect-[3/4] rounded-none bg-[#14231E] border border-[#E9E3D8] p-4 overflow-hidden shadow-inner flex flex-col justify-between">
                           <div className="space-y-2">
-                            <div className="flex items-center justify-between border-b border-[#E5E1D7] pb-2">
-                              <span className="text-[9px] font-mono text-[#77796F] uppercase">PARIVAHAN SEWA / RTO INDIA</span>
-                              <ShieldCheck className="w-4 h-4 text-[#596B59]" />
+                            <div className="flex items-center justify-between border-b border-[#E9E3D8] pb-2">
+                              <span className="text-[9px] font-mono text-[#85857E] uppercase">PARIVAHAN SEWA / RTO INDIA</span>
+                              <ShieldCheck className="w-4 h-4 text-[#242622]" />
                             </div>
                             <div className="space-y-1.5 pt-1">
-                              <div className="h-2 w-3/4 bg-[#E5D9C7]/40 rounded animate-pulse" />
-                              <div className="h-2 w-1/2 bg-[#E5D9C7]/40 rounded animate-pulse" />
-                              <div className="h-2 w-2/3 bg-[#E5D9C7]/40 rounded animate-pulse" />
+                              <div className="h-2 w-3/4 bg-[#E9E3D8]/40 rounded animate-pulse" />
+                              <div className="h-2 w-1/2 bg-[#E9E3D8]/40 rounded animate-pulse" />
+                              <div className="h-2 w-2/3 bg-[#E9E3D8]/40 rounded animate-pulse" />
                             </div>
-                            <div className="pt-4 p-2 rounded bg-[#F1EEE5] border border-[#E5E1D7] space-y-1 font-mono text-[9px]">
-                              <p className="text-[#77796F]">REG NO: <span className="text-[#596B59] font-bold">{vehicle.registration_number || 'CH01AB8821'}</span></p>
-                              <p className="text-[#77796F]">CHASSIS: <span className="text-[#242923]">ME4J3A5C9P0••••••</span></p>
-                              <p className="text-[#77796F]">ENGINE: <span className="text-[#242923]">J350E••••••</span></p>
-                              <p className="text-[#77796F]">MAKER: <span className="text-[#242923]">{vehicle.brand || 'ROYAL ENFIELD'}</span></p>
+                            <div className="pt-4 p-2 rounded bg-[#E9E3D8] border border-[#E9E3D8] space-y-1 font-mono text-[9px]">
+                              <p className="text-[#85857E]">REG NO: <span className="text-[#242622] font-bold">{vehicle.registration_number || 'CH01AB8821'}</span></p>
+                              <p className="text-[#85857E]">CHASSIS: <span className="text-[#242622]">ME4J3A5C9P0••••••</span></p>
+                              <p className="text-[#85857E]">ENGINE: <span className="text-[#242622]">J350E••••••</span></p>
+                              <p className="text-[#85857E]">MAKER: <span className="text-[#242622]">{vehicle.brand || 'ROYAL ENFIELD'}</span></p>
                             </div>
                           </div>
 
-                          <div className="border-t border-[#E5E1D7] pt-2 flex items-center justify-between text-[9px] text-slate-500">
+                          <div className="border-t border-[#E9E3D8] pt-2 flex items-center justify-between text-[9px] text-slate-500">
                             <span>Security Hash: #B821A</span>
-                            <span className="text-[#596B59] font-semibold">Digitally Signed</span>
+                            <span className="text-[#242622] font-semibold">Digitally Signed</span>
                           </div>
                         </div>
 
                         {/* File Details */}
-                        <div className="text-[11px] text-[#77796F] space-y-1 pt-1">
+                        <div className="text-[11px] text-[#85857E] space-y-1 pt-1">
                           <div className="flex justify-between">
                             <span>Uploaded Filename:</span>
-                            <span className="text-[#242923] font-mono text-[10px]">rc_scan_certified.pdf</span>
+                            <span className="text-[#242622] font-mono text-[10px]">rc_scan_certified.pdf</span>
                           </div>
                           <div className="flex justify-between">
                             <span>Storage Vault:</span>
-                            <span className="text-[#596B59] font-mono text-[10px]">AES-256 Encrypted</span>
+                            <span className="text-[#242622] font-mono text-[10px]">AES-256 Encrypted</span>
                           </div>
                         </div>
                       </div>
@@ -543,17 +543,17 @@ export const AdminPage: React.FC = () => {
 
                     {/* Right Split Panel: Field-by-Field Extracted vs Listing Comparison (7 cols) */}
                     <div className="md:col-span-7 space-y-4">
-                      <div className="p-4 rounded-2xl bg-white border border-[#E5E1D7] space-y-3">
+                      <div className="p-4 rounded-none bg-white border border-[#E9E3D8] space-y-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="font-bold text-xs uppercase tracking-wider text-[#77796F]">
+                          <h4 className="font-bold text-xs uppercase tracking-wider text-[#85857E]">
                             Extracted Data vs Listing Claims
                           </h4>
-                          <span className="text-[10px] text-[#77796F]">Automated OCR Match</span>
+                          <span className="text-[10px] text-[#85857E]">Automated OCR Match</span>
                         </div>
 
                         {/* Comparison Table */}
-                        <div className="rounded-xl overflow-hidden border border-[#E5E1D7] divide-y divide-forest-900 text-xs">
-                          <div className="p-2.5 bg-[#0D1815] grid grid-cols-12 font-bold text-[10px] text-[#77796F] uppercase">
+                        <div className="rounded-none overflow-hidden border border-[#E9E3D8] divide-y divide-forest-900 text-xs">
+                          <div className="p-2.5 bg-[#0D1815] grid grid-cols-12 font-bold text-[10px] text-[#85857E] uppercase">
                             <span className="col-span-4">Field</span>
                             <span className="col-span-4">Extracted (OCR)</span>
                             <span className="col-span-4 text-right">Listing / Status</span>
@@ -561,64 +561,64 @@ export const AdminPage: React.FC = () => {
 
                           {/* Row: Reg Number */}
                           <div className="p-2.5 grid grid-cols-12 items-center bg-white/40">
-                            <span className="col-span-4 text-[#77796F] font-medium">Registration No</span>
-                            <span className="col-span-4 font-mono font-bold text-[#596B59]">{vehicle.registration_number || 'CH01AB8821'}</span>
-                            <span className="col-span-4 text-right font-bold text-[#596B59] flex items-center justify-end gap-1">
+                            <span className="col-span-4 text-[#85857E] font-medium">Registration No</span>
+                            <span className="col-span-4 font-mono font-bold text-[#242622]">{vehicle.registration_number || 'CH01AB8821'}</span>
+                            <span className="col-span-4 text-right font-bold text-[#242622] flex items-center justify-end gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Matched
                             </span>
                           </div>
 
                           {/* Row: Owner Name */}
                           <div className="p-2.5 grid grid-cols-12 items-center">
-                            <span className="col-span-4 text-[#77796F] font-medium">Owner Name</span>
+                            <span className="col-span-4 text-[#85857E] font-medium">Owner Name</span>
                             <span className="col-span-4 text-white font-medium">{currentL3.seller_full_name || 'Vikramjit Singh'}</span>
-                            <span className="col-span-4 text-right font-bold text-[#596B59] flex items-center justify-end gap-1">
+                            <span className="col-span-4 text-right font-bold text-[#242622] flex items-center justify-end gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Confirmed
                             </span>
                           </div>
 
                           {/* Row: Vehicle Model */}
                           <div className="p-2.5 grid grid-cols-12 items-center bg-white/40">
-                            <span className="col-span-4 text-[#77796F] font-medium">Brand & Model</span>
+                            <span className="col-span-4 text-[#85857E] font-medium">Brand & Model</span>
                             <span className="col-span-4 text-white">{vehicle.brand || 'Royal Enfield'} {vehicle.model || 'Classic 350'}</span>
-                            <span className="col-span-4 text-right font-bold text-[#596B59] flex items-center justify-end gap-1">
+                            <span className="col-span-4 text-right font-bold text-[#242622] flex items-center justify-end gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Matched
                             </span>
                           </div>
 
                           {/* Row: Fuel Type */}
                           <div className="p-2.5 grid grid-cols-12 items-center">
-                            <span className="col-span-4 text-[#77796F] font-medium">Fuel Type</span>
+                            <span className="col-span-4 text-[#85857E] font-medium">Fuel Type</span>
                             <span className="col-span-4 text-white capitalize">{vehicle.fuel || 'Petrol'}</span>
-                            <span className="col-span-4 text-right font-bold text-[#596B59] flex items-center justify-end gap-1">
+                            <span className="col-span-4 text-right font-bold text-[#242622] flex items-center justify-end gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Matched
                             </span>
                           </div>
 
                           {/* Row: Financed / Loan */}
                           <div className="p-2.5 grid grid-cols-12 items-center bg-white/40">
-                            <span className="col-span-4 text-[#77796F] font-medium">Lien / Loan</span>
-                            <span className="col-span-4 text-[#242923]">No Hypothecation</span>
-                            <span className="col-span-4 text-right font-bold text-[#596B59] flex items-center justify-end gap-1">
+                            <span className="col-span-4 text-[#85857E] font-medium">Lien / Loan</span>
+                            <span className="col-span-4 text-[#242622]">No Hypothecation</span>
+                            <span className="col-span-4 text-right font-bold text-[#242622] flex items-center justify-end gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Clear Title
                             </span>
                           </div>
 
                           {/* Row: Insurance Expiry */}
                           <div className="p-2.5 grid grid-cols-12 items-center">
-                            <span className="col-span-4 text-[#77796F] font-medium">Insurance Policy</span>
-                            <span className="col-span-4 text-[#242923]">Valid Policy</span>
-                            <span className="col-span-4 text-right font-bold text-[#596B59] flex items-center justify-end gap-1">
+                            <span className="col-span-4 text-[#85857E] font-medium">Insurance Policy</span>
+                            <span className="col-span-4 text-[#242622]">Valid Policy</span>
+                            <span className="col-span-4 text-right font-bold text-[#242622] flex items-center justify-end gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Valid
                             </span>
                           </div>
                         </div>
 
                         {/* Extra Level 2 & 3 summary pills */}
-                        <div className="p-3 rounded-xl bg-[#0D1815] border border-[#E5E1D7]/60 text-xs space-y-1">
+                        <div className="p-3 rounded-none bg-[#0D1815] border border-[#E9E3D8]/60 text-xs space-y-1">
                           <p className="font-bold text-white text-[11px]">Level 2 Condition & Maintenance Disclosures:</p>
-                          <p className="text-[11px] text-[#77796F]">
-                            Service: <strong className="text-[#242923] capitalize">{currentL2.service_history || 'Regular (OEM Workshop)'}</strong> • Tyres: <strong className="text-[#242923] capitalize">{currentL2.tyre_condition || 'Good'}</strong> • Accidental: <strong className="text-[#596B59]">{currentL2.accident_disclosure || 'None reported'}</strong>
+                          <p className="text-[11px] text-[#85857E]">
+                            Service: <strong className="text-[#242622] capitalize">{currentL2.service_history || 'Regular (OEM Workshop)'}</strong> • Tyres: <strong className="text-[#242622] capitalize">{currentL2.tyre_condition || 'Good'}</strong> • Accidental: <strong className="text-[#242622]">{currentL2.accident_disclosure || 'None reported'}</strong>
                           </p>
                         </div>
                       </div>
@@ -626,17 +626,17 @@ export const AdminPage: React.FC = () => {
                   </div>
 
                   {/* Reviewer Action Bar */}
-                  <div className="p-5 rounded-2xl bg-white border border-[#E5E1D7] space-y-4">
+                  <div className="p-5 rounded-none bg-white border border-[#E9E3D8] space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                        <UserCheck className="w-4 h-4 text-[#596B59]" />
+                        <UserCheck className="w-4 h-4 text-[#242622]" />
                         <span>Moderator Decision Desk</span>
                       </span>
-                      <span className="text-[11px] text-[#77796F]">Acting as Reviewer: <strong className="text-[#242923]">MOD-9821</strong></span>
+                      <span className="text-[11px] text-[#85857E]">Acting as Reviewer: <strong className="text-[#242622]">MOD-9821</strong></span>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-[11px] font-bold text-[#77796F]">
+                      <label className="text-[11px] font-bold text-[#85857E]">
                         Reviewer Notes & Action Justification:
                       </label>
                       <input
@@ -644,13 +644,13 @@ export const AdminPage: React.FC = () => {
                         value={reviewerNotes}
                         onChange={(e) => setReviewerNotes(e.target.value)}
                         placeholder="e.g. Parivahan RTO extracted chassis prefix matches listing. Cleared for publication."
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#E5E1D7] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#879783]"
+                        className="w-full px-3.5 py-2.5 rounded-none bg-white border border-[#E9E3D8] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#35483C]"
                       />
                     </div>
 
                     {decisionSuccessMsg && (
-                      <div className="p-3 rounded-xl bg-emerald-950/80 border border-emerald-500 text-xs text-[#596B59] flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#596B59] flex-shrink-0" />
+                      <div className="p-3 rounded-none bg-emerald-950/80 border border-emerald-500 text-xs text-[#242622] flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-[#242622] flex-shrink-0" />
                         <span>{decisionSuccessMsg}</span>
                       </div>
                     )}
@@ -660,7 +660,7 @@ export const AdminPage: React.FC = () => {
                       <button
                         onClick={() => handleDecision('approve')}
                         disabled={isSubmittingDecision}
-                        className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition-colors"
+                        className="px-4 py-2.5 rounded-none bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition-colors"
                       >
                         <CheckCircle2 className="w-4 h-4" />
                         <span>Approve Document</span>
@@ -669,7 +669,7 @@ export const AdminPage: React.FC = () => {
                       <button
                         onClick={() => handleDecision('request_clearer_upload')}
                         disabled={isSubmittingDecision}
-                        className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                        className="px-4 py-2.5 rounded-none bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors"
                       >
                         <RotateCcw className="w-4 h-4" />
                         <span>Request Clearer Scan</span>
@@ -678,7 +678,7 @@ export const AdminPage: React.FC = () => {
                       <button
                         onClick={() => handleDecision('request_info')}
                         disabled={isSubmittingDecision}
-                        className="px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
+                        className="px-4 py-2.5 rounded-none bg-blue-700 hover:bg-blue-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
                       >
                         <AlertCircle className="w-4 h-4" />
                         <span>Request Info from Seller</span>
@@ -687,7 +687,7 @@ export const AdminPage: React.FC = () => {
                       <button
                         onClick={() => handleDecision('mark_further_verification')}
                         disabled={isSubmittingDecision}
-                        className="px-4 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
+                        className="px-4 py-2.5 rounded-none bg-purple-700 hover:bg-purple-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
                       >
                         <ShieldCheck className="w-4 h-4" />
                         <span>Hub Physical Inspection</span>
@@ -696,7 +696,7 @@ export const AdminPage: React.FC = () => {
                       <button
                         onClick={() => handleDecision('reject')}
                         disabled={isSubmittingDecision}
-                        className="px-4 py-2.5 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
+                        className="px-4 py-2.5 rounded-none bg-red-700 hover:bg-red-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
                       >
                         <Ban className="w-4 h-4" />
                         <span>Reject / Flag Discrepancy</span>
@@ -705,10 +705,10 @@ export const AdminPage: React.FC = () => {
                   </div>
 
                   {/* Audit Trail Drawer */}
-                  <div className="p-4 rounded-2xl bg-white border border-[#E5E1D7] space-y-3">
+                  <div className="p-4 rounded-none bg-white border border-[#E9E3D8] space-y-3">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-bold text-xs uppercase tracking-wider text-[#77796F] flex items-center gap-1.5">
-                        <History className="w-4 h-4 text-[#596B59]" />
+                      <h4 className="font-bold text-xs uppercase tracking-wider text-[#85857E] flex items-center gap-1.5">
+                        <History className="w-4 h-4 text-[#242622]" />
                         <span>Audit Trail & Moderation History</span>
                       </h4>
                       <span className="text-[10px] text-slate-500">Immutable ledger log</span>
@@ -725,13 +725,13 @@ export const AdminPage: React.FC = () => {
                           reason: 'RC matches registration number and Parivahan engine spec.'
                         }
                       ]).map((entry: any, idx: number) => (
-                        <div key={idx} className="p-2.5 rounded-xl bg-white border border-[#E5E1D7] flex items-start justify-between">
+                        <div key={idx} className="p-2.5 rounded-none bg-white border border-[#E9E3D8] flex items-start justify-between">
                           <div className="space-y-0.5">
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-white capitalize">{entry.action?.replace('_', ' ')}</span>
-                              <span className="text-[10px] font-mono text-[#596B59]">by {entry.reviewer_id} ({entry.reviewer_name})</span>
+                              <span className="text-[10px] font-mono text-[#242622]">by {entry.reviewer_id} ({entry.reviewer_name})</span>
                             </div>
-                            <p className="text-[11px] text-[#77796F]">{entry.reason}</p>
+                            <p className="text-[11px] text-[#85857E]">{entry.reason}</p>
                           </div>
                           <span className="text-[10px] text-slate-500 whitespace-nowrap">
                             {new Date(entry.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -755,39 +755,39 @@ export const AdminPage: React.FC = () => {
           <div className="space-y-6 animate-fade-in">
             {/* Stat Counters */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-4 rounded-2xl bg-white border border-[#E5E1D7]">
-                <span className="text-[10px] uppercase font-bold text-[#77796F]">Total RC Submissions</span>
+              <div className="p-4 rounded-none bg-white border border-[#E9E3D8]">
+                <span className="text-[10px] uppercase font-bold text-[#85857E]">Total RC Submissions</span>
                 <p className="font-heading font-extrabold text-2xl text-white mt-1">{smartRcQueue.length}</p>
                 <p className="text-[10px] text-slate-500">Pipeline audits logged</p>
               </div>
-              <div className="p-4 rounded-2xl bg-white border border-amber-800/40">
+              <div className="p-4 rounded-none bg-white border border-amber-800/40">
                 <span className="text-[10px] uppercase font-bold text-amber-400">Manual Review Queue</span>
                 <p className="font-heading font-extrabold text-2xl text-amber-300 mt-1">
                   {smartRcQueue.filter(r => r.status === 'MANUAL_REVIEW').length}
                 </p>
                 <p className="text-[10px] text-amber-200/60">Discrepancy or blur flag</p>
               </div>
-              <div className="p-4 rounded-2xl bg-white border border-blue-800/40">
+              <div className="p-4 rounded-none bg-white border border-blue-800/40">
                 <span className="text-[10px] uppercase font-bold text-blue-400">Document Matched</span>
                 <p className="font-heading font-extrabold text-2xl text-blue-300 mt-1">
                   {smartRcQueue.filter(r => r.status === 'DOCUMENT_MATCHED').length}
                 </p>
                 <p className="text-[10px] text-blue-200/60">Listing vs RC verified</p>
               </div>
-              <div className="p-4 rounded-2xl bg-white border border-emerald-800/40">
-                <span className="text-[10px] uppercase font-bold text-[#596B59]">Government Verified</span>
-                <p className="font-heading font-extrabold text-2xl text-[#596B59] mt-1">
+              <div className="p-4 rounded-none bg-white border border-emerald-800/40">
+                <span className="text-[10px] uppercase font-bold text-[#242622]">Government Verified</span>
+                <p className="font-heading font-extrabold text-2xl text-[#242622] mt-1">
                   {smartRcQueue.filter(r => r.status === 'GOVERNMENT_VERIFIED').length}
                 </p>
-                <p className="text-[10px] text-[#354638]/60">Live VAHAN API confirmed</p>
+                <p className="text-[10px] text-[#35483C]/60">Live VAHAN API confirmed</p>
               </div>
             </div>
 
             {/* Filter Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-white border border-[#E5E1D7]">
+            <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-none bg-white border border-[#E9E3D8]">
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-[#596B59]" />
-                <span className="text-xs font-bold text-[#77796F]">Filter Status:</span>
+                <Filter className="w-4 h-4 text-[#242622]" />
+                <span className="text-xs font-bold text-[#85857E]">Filter Status:</span>
                 <div className="flex flex-wrap items-center gap-1.5 ml-2">
                   {['ALL', 'MANUAL_REVIEW', 'DOCUMENT_MATCHED', 'GOVERNMENT_VERIFIED', 'VERIFICATION_FAILED'].map((st) => (
                     <button
@@ -797,7 +797,7 @@ export const AdminPage: React.FC = () => {
                       className={`px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase transition-colors ${
                         smartRcFilter === st
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-white text-[#77796F] hover:text-white border border-[#E5E1D7]'
+                          : 'bg-white text-[#85857E] hover:text-white border border-[#E9E3D8]'
                       }`}
                     >
                       {st.replace('_', ' ')}
@@ -808,7 +808,7 @@ export const AdminPage: React.FC = () => {
               <button
                 type="button"
                 onClick={fetchSmartRcQueue}
-                className="px-3 py-1.5 rounded-xl bg-[#F1EEE5] hover:bg-[#E5D9C7]/40 text-[#242923] text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                className="px-3 py-1.5 rounded-none bg-[#E9E3D8] hover:bg-[#E9E3D8]/40 text-[#242622] text-xs font-semibold flex items-center gap-1.5 transition-colors"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoadingSmartRc ? 'animate-spin' : ''}`} />
                 <span>Refresh Desk</span>
@@ -819,11 +819,11 @@ export const AdminPage: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
               {/* Queue List (4 Cols) */}
-              <div className="lg:col-span-4 rounded-3xl bg-white border border-[#E5E1D7] overflow-hidden flex flex-col h-[750px]">
-                <div className="p-4 bg-white border-b border-[#E5E1D7] flex items-center justify-between">
+              <div className="lg:col-span-4 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] overflow-hidden flex flex-col h-[750px]">
+                <div className="p-4 bg-white border-b border-[#E9E3D8] flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-[#596B59]" />
-                    <span className="font-heading font-bold text-xs uppercase tracking-wider text-[#77796F]">
+                    <Clock className="w-4 h-4 text-[#242622]" />
+                    <span className="font-heading font-bold text-xs uppercase tracking-wider text-[#85857E]">
                       RC Submissions ({smartRcQueue.length})
                     </span>
                   </div>
@@ -841,7 +841,7 @@ export const AdminPage: React.FC = () => {
                     smartRcQueue.map((item) => {
                       const isSelected = selectedSmartRcId === item.id;
                       const statusColor = 
-                        item.status === 'GOVERNMENT_VERIFIED' ? 'text-[#596B59] bg-emerald-950/80 border-emerald-700/60' :
+                        item.status === 'GOVERNMENT_VERIFIED' ? 'text-[#242622] bg-emerald-950/80 border-emerald-700/60' :
                         item.status === 'DOCUMENT_MATCHED' ? 'text-blue-300 bg-blue-950/80 border-blue-700/60' :
                         item.status === 'MANUAL_REVIEW' ? 'text-amber-300 bg-amber-950/80 border-amber-700/60' :
                         'text-red-300 bg-red-950/80 border-red-700/60';
@@ -851,7 +851,7 @@ export const AdminPage: React.FC = () => {
                           key={item.id}
                           onClick={() => setSelectedSmartRcId(item.id)}
                           className={`p-4 cursor-pointer transition-all hover:bg-white/70 ${
-                            isSelected ? 'bg-[#F1EEE5] border-l-4 border-l-emerald-500' : ''
+                            isSelected ? 'bg-[#E9E3D8] border-l-4 border-l-emerald-500' : ''
                           }`}
                         >
                           <div className="flex items-start justify-between gap-2">
@@ -859,8 +859,8 @@ export const AdminPage: React.FC = () => {
                               <span className="font-bold text-sm text-white font-mono tracking-wide">
                                 {item.registration_number || 'REG PENDING'}
                               </span>
-                              <p className="text-[11px] text-[#77796F] mt-0.5">
-                                Seller: <strong className="text-[#77796F]">{item.seller_name || item.listing_id || 'Seller'}</strong>
+                              <p className="text-[11px] text-[#85857E] mt-0.5">
+                                Seller: <strong className="text-[#85857E]">{item.seller_name || item.listing_id || 'Seller'}</strong>
                               </p>
                             </div>
                             <span className={`px-2 py-0.5 rounded text-[10px] font-bold border uppercase ${statusColor}`}>
@@ -879,7 +879,7 @@ export const AdminPage: React.FC = () => {
                               <span className={`px-1.5 py-0.2 rounded font-semibold ${
                                 item.anomaly_risk === 'HIGH_RISK' ? 'bg-red-950 text-red-300 border border-red-800' :
                                 item.anomaly_risk === 'MEDIUM' ? 'bg-amber-950 text-amber-300 border border-amber-800' :
-                                'bg-emerald-950 text-[#596B59] border border-emerald-900'
+                                'bg-emerald-950 text-[#242622] border border-emerald-900'
                               }`}>
                                 {item.anomaly_risk || 'LOW RISK'}
                               </span>
@@ -893,7 +893,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* Inspector Pane (8 Cols) */}
-              <div className="lg:col-span-8 rounded-3xl bg-white border border-[#E5E1D7] p-6 space-y-6">
+              <div className="lg:col-span-8 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] p-6 space-y-6">
                 {!smartRcDetail ? (
                   <div className="py-24 text-center text-slate-500 space-y-2">
                     <Cpu className="w-10 h-10 text-slate-600 mx-auto" />
@@ -902,23 +902,23 @@ export const AdminPage: React.FC = () => {
                 ) : (
                   <>
                     {/* Header Banner */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-[#E5E1D7]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-[#E9E3D8]">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-xs text-slate-500 font-bold">VERIFICATION RECORD:</span>
-                          <span className="font-mono text-xs text-[#596B59] font-bold">{smartRcDetail.id}</span>
+                          <span className="font-mono text-xs text-[#242622] font-bold">{smartRcDetail.id}</span>
                         </div>
                         <h2 className="text-xl font-heading font-extrabold text-white mt-1">
                           {smartRcDetail.sellerConfirmedFields?.registrationNumber || smartRcDetail.extractedFields?.registrationNumber || 'Registration Certificate'}
                         </h2>
-                        <p className="text-xs text-[#77796F] mt-0.5">
-                          Listing: <span className="text-[#77796F] font-semibold">{smartRcDetail.listingId}</span> • Owner: <span className="text-[#77796F] font-semibold">{smartRcDetail.sellerConfirmedFields?.registeredOwnerName || 'Unknown'}</span>
+                        <p className="text-xs text-[#85857E] mt-0.5">
+                          Listing: <span className="text-[#85857E] font-semibold">{smartRcDetail.listingId}</span> • Owner: <span className="text-[#85857E] font-semibold">{smartRcDetail.sellerConfirmedFields?.registeredOwnerName || 'Unknown'}</span>
                         </p>
                       </div>
 
                       <div className="flex items-center gap-2 self-start sm:self-center">
-                        <span className={`px-3 py-1.5 rounded-xl font-bold text-xs uppercase border ${
-                          smartRcDetail.status === 'GOVERNMENT_VERIFIED' ? 'bg-emerald-950 text-[#596B59] border-emerald-700' :
+                        <span className={`px-3 py-1.5 rounded-none font-bold text-xs uppercase border ${
+                          smartRcDetail.status === 'GOVERNMENT_VERIFIED' ? 'bg-emerald-950 text-[#242622] border-emerald-700' :
                           smartRcDetail.status === 'DOCUMENT_MATCHED' ? 'bg-blue-950 text-blue-300 border-blue-700' :
                           smartRcDetail.status === 'MANUAL_REVIEW' ? 'bg-amber-950 text-amber-300 border-amber-700' :
                           'bg-red-950 text-red-300 border-red-700'
@@ -930,8 +930,8 @@ export const AdminPage: React.FC = () => {
 
                     {/* Notification Alert Message */}
                     {smartRcActionMsg && (
-                      <div className="p-3 rounded-xl bg-emerald-950/80 border border-emerald-700 text-[#354638] text-xs flex items-center gap-2 animate-fade-in">
-                        <CheckCircle2 className="w-4 h-4 text-[#596B59] shrink-0" />
+                      <div className="p-3 rounded-none bg-emerald-950/80 border border-emerald-700 text-[#35483C] text-xs flex items-center gap-2 animate-fade-in">
+                        <CheckCircle2 className="w-4 h-4 text-[#242622] shrink-0" />
                         <span>{smartRcActionMsg}</span>
                       </div>
                     )}
@@ -940,16 +940,16 @@ export const AdminPage: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       
                       {/* Card 1: Document Classification */}
-                      <div className="p-4 rounded-2xl bg-white/70 border border-[#E5E1D7] space-y-2">
-                        <span className="text-[10px] uppercase font-bold text-[#77796F] flex items-center gap-1.5">
+                      <div className="p-4 rounded-none bg-white/70 border border-[#E9E3D8] space-y-2">
+                        <span className="text-[10px] uppercase font-bold text-[#85857E] flex items-center gap-1.5">
                           <FileText className="w-3.5 h-3.5 text-blue-400" />
                           <span>ML Classification</span>
                         </span>
                         <p className="font-heading font-extrabold text-lg text-white">
                           {smartRcDetail.documentClassification?.document_type || 'RC'}
                         </p>
-                        <p className="text-[11px] text-[#77796F]">
-                          Confidence: <strong className="text-[#596B59] font-mono">
+                        <p className="text-[11px] text-[#85857E]">
+                          Confidence: <strong className="text-[#242622] font-mono">
                             {((smartRcDetail.documentClassification?.confidence || 0.99) * 100).toFixed(1)}%
                           </strong>
                         </p>
@@ -957,9 +957,9 @@ export const AdminPage: React.FC = () => {
                       </div>
 
                       {/* Card 2: CV Image Quality */}
-                      <div className="p-4 rounded-2xl bg-white/70 border border-[#E5E1D7] space-y-2">
-                        <span className="text-[10px] uppercase font-bold text-[#77796F] flex items-center gap-1.5">
-                          <Eye className="w-3.5 h-3.5 text-[#596B59]" />
+                      <div className="p-4 rounded-none bg-white/70 border border-[#E9E3D8] space-y-2">
+                        <span className="text-[10px] uppercase font-bold text-[#85857E] flex items-center gap-1.5">
+                          <Eye className="w-3.5 h-3.5 text-[#242622]" />
                           <span>Image Quality (CV)</span>
                         </span>
                         <p className="font-heading font-extrabold text-lg text-white flex items-center gap-2">
@@ -967,31 +967,31 @@ export const AdminPage: React.FC = () => {
                           <span className={`text-[11px] px-1.5 py-0.5 rounded font-normal ${
                             smartRcDetail.qualityAssessment?.isBlurred
                               ? 'bg-amber-950 text-amber-300 border border-amber-800'
-                              : 'bg-emerald-950 text-[#596B59] border border-emerald-900'
+                              : 'bg-emerald-950 text-[#242622] border border-emerald-900'
                           }`}>
                             {smartRcDetail.qualityAssessment?.isBlurred ? 'Blurred (<100)' : 'Sharp'}
                           </span>
                         </p>
-                        <p className="text-[11px] text-[#77796F]">
+                        <p className="text-[11px] text-[#85857E]">
                           Laplacian Variance Blur Metric
                         </p>
                         <p className="text-[10px] text-slate-500">Contrast: {smartRcDetail.qualityAssessment?.contrast || 'Adequate'}</p>
                       </div>
 
                       {/* Card 3: Anomaly & Fraud Risk */}
-                      <div className="p-4 rounded-2xl bg-white/70 border border-[#E5E1D7] space-y-2">
-                        <span className="text-[10px] uppercase font-bold text-[#77796F] flex items-center gap-1.5">
+                      <div className="p-4 rounded-none bg-white/70 border border-[#E9E3D8] space-y-2">
+                        <span className="text-[10px] uppercase font-bold text-[#85857E] flex items-center gap-1.5">
                           <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
                           <span>Anomaly & Fraud Risk</span>
                         </span>
                         <p className={`font-heading font-extrabold text-lg ${
                           smartRcDetail.anomalyResult?.risk_level === 'HIGH_RISK' ? 'text-red-400' :
-                          smartRcDetail.anomalyResult?.risk_level === 'MEDIUM' ? 'text-amber-300' : 'text-[#596B59]'
+                          smartRcDetail.anomalyResult?.risk_level === 'MEDIUM' ? 'text-amber-300' : 'text-[#242622]'
                         }`}>
                           {smartRcDetail.anomalyResult?.risk_level || 'LOW'}
                         </p>
-                        <p className="text-[11px] text-[#77796F]">
-                          Score: <strong className="font-mono text-[#242923]">{smartRcDetail.anomalyResult?.anomaly_score?.toFixed(2) || '0.12'}</strong>
+                        <p className="text-[11px] text-[#85857E]">
+                          Score: <strong className="font-mono text-[#242622]">{smartRcDetail.anomalyResult?.anomaly_score?.toFixed(2) || '0.12'}</strong>
                         </p>
                         <p className="text-[10px] text-slate-500">IsolationForest Model B</p>
                       </div>
@@ -1000,7 +1000,7 @@ export const AdminPage: React.FC = () => {
 
                     {/* Discrepancy Warnings if any */}
                     {smartRcDetail.comparisonResult?.discrepancies?.length > 0 && (
-                      <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-800/60 space-y-2">
+                      <div className="p-4 rounded-none bg-amber-950/40 border border-amber-800/60 space-y-2">
                         <div className="flex items-center gap-2 text-amber-300 font-bold text-xs uppercase tracking-wider">
                           <AlertTriangle className="w-4 h-4 text-amber-400" />
                           <span>Listing vs Document Discrepancy Warning ({smartRcDetail.comparisonResult.discrepancies.length})</span>
@@ -1017,8 +1017,8 @@ export const AdminPage: React.FC = () => {
                     )}
 
                     {/* Side-by-Side Comparison Spec Table */}
-                    <div className="rounded-2xl border border-[#E5E1D7] overflow-hidden">
-                      <div className="p-3 bg-white border-b border-[#E5E1D7] font-bold text-xs text-[#77796F] flex items-center justify-between">
+                    <div className="rounded-none border border-[#E9E3D8] overflow-hidden">
+                      <div className="p-3 bg-white border-b border-[#E9E3D8] font-bold text-xs text-[#85857E] flex items-center justify-between">
                         <span>Extracted vs Seller Confirmed vs External VAHAN</span>
                         <span className="text-[10px] text-slate-500 font-mono">
                           VAHAN Sandbox: {smartRcDetail.externalVerification?.source || 'VAHAN_MOCK_SANDBOX'}
@@ -1078,13 +1078,13 @@ export const AdminPage: React.FC = () => {
                           }
                         ].map((row, idx) => (
                           <div key={idx} className="p-3 grid grid-cols-12 gap-2 items-center hover:bg-white/30">
-                            <span className="col-span-3 text-[#77796F] font-semibold">{row.label}</span>
+                            <span className="col-span-3 text-[#85857E] font-semibold">{row.label}</span>
                             <span className="col-span-3 text-white font-mono">{row.extracted || '—'}</span>
-                            <span className="col-span-3 text-[#77796F] font-mono">{row.confirmed || '—'}</span>
+                            <span className="col-span-3 text-[#85857E] font-mono">{row.confirmed || '—'}</span>
                             <div className="col-span-3 flex items-center justify-between">
-                              <span className="text-[#77796F] font-mono">{row.vahan || '—'}</span>
+                              <span className="text-[#85857E] font-mono">{row.vahan || '—'}</span>
                               {row.match === 'MATCH' ? (
-                                <span className="px-1.5 py-0.5 rounded bg-emerald-950 text-[#596B59] text-[10px] font-bold">
+                                <span className="px-1.5 py-0.5 rounded bg-emerald-950 text-[#242622] text-[10px] font-bold">
                                   MATCH
                                 </span>
                               ) : row.match === 'MISMATCH' ? (
@@ -1092,7 +1092,7 @@ export const AdminPage: React.FC = () => {
                                   MISMATCH
                                 </span>
                               ) : (
-                                <span className="px-1.5 py-0.5 rounded bg-[#F1EEE5] text-[#77796F] text-[10px]">
+                                <span className="px-1.5 py-0.5 rounded bg-[#E9E3D8] text-[#85857E] text-[10px]">
                                   N/A
                                 </span>
                               )}
@@ -1103,24 +1103,24 @@ export const AdminPage: React.FC = () => {
                     </div>
 
                     {/* Reviewer Action Desk */}
-                    <div className="p-5 rounded-2xl bg-white border border-[#E5E1D7] space-y-4">
+                    <div className="p-5 rounded-none bg-white border border-[#E9E3D8] space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <UserCheck className="w-4 h-4 text-[#596B59]" />
+                          <UserCheck className="w-4 h-4 text-[#242622]" />
                           <h4 className="font-heading font-bold text-sm text-white">Reviewer Audit Decision</h4>
                         </div>
                         <span className="text-[10px] text-slate-500">Moderator ID: RTO-CHIEF-01</span>
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-[#77796F] mb-1">
+                        <label className="block text-[11px] font-semibold text-[#85857E] mb-1">
                           Reviewer Audit Reason / Directives (Immutable log)
                         </label>
                         <textarea
                           value={smartRcNotes}
                           onChange={(e) => setSmartRcNotes(e.target.value)}
                           placeholder="e.g. Confirmed chassis and engine serial against physical image; verified fuel and model match."
-                          className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#E5E1D7] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2.5 rounded-none bg-white border border-[#E9E3D8] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
                           rows={2}
                         />
                       </div>
@@ -1130,7 +1130,7 @@ export const AdminPage: React.FC = () => {
                           type="button"
                           onClick={() => handleSmartRcDecision('approve')}
                           disabled={isSubmittingSmartRc}
-                          className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                          className="px-4 py-2 rounded-none bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-50"
                         >
                           <Check className="w-4 h-4" />
                           <span>Approve Verification</span>
@@ -1140,7 +1140,7 @@ export const AdminPage: React.FC = () => {
                           type="button"
                           onClick={() => handleSmartRcDecision('request_clearer_upload')}
                           disabled={isSubmittingSmartRc}
-                          className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                          className="px-4 py-2 rounded-none bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-50"
                         >
                           <RotateCcw className="w-4 h-4" />
                           <span>Request Clearer RC Upload</span>
@@ -1150,7 +1150,7 @@ export const AdminPage: React.FC = () => {
                           type="button"
                           onClick={() => handleSmartRcDecision('reject')}
                           disabled={isSubmittingSmartRc}
-                          className="px-4 py-2 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                          className="px-4 py-2 rounded-none bg-red-700 hover:bg-red-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-50"
                         >
                           <Ban className="w-4 h-4" />
                           <span>Reject / Flag Discrepancy</span>
@@ -1159,10 +1159,10 @@ export const AdminPage: React.FC = () => {
                     </div>
 
                     {/* Audit Trail Log */}
-                    <div className="p-4 rounded-2xl bg-white/60 border border-[#E5E1D7] space-y-3">
+                    <div className="p-4 rounded-none bg-white/60 border border-[#E9E3D8] space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-xs uppercase tracking-wider text-[#77796F] flex items-center gap-1.5">
-                          <History className="w-4 h-4 text-[#596B59]" />
+                        <h4 className="font-bold text-xs uppercase tracking-wider text-[#85857E] flex items-center gap-1.5">
+                          <History className="w-4 h-4 text-[#242622]" />
                           <span>Audit Trail Ledger</span>
                         </h4>
                         <span className="text-[10px] text-slate-500 font-mono">
@@ -1175,13 +1175,13 @@ export const AdminPage: React.FC = () => {
                           <p className="text-[11px] text-slate-500 italic">No previous manual audit actions recorded.</p>
                         ) : (
                           smartRcDetail.auditTrail.map((log: any, idx: number) => (
-                            <div key={idx} className="p-2.5 rounded-xl bg-white border border-[#E5E1D7] flex items-start justify-between">
+                            <div key={idx} className="p-2.5 rounded-none bg-white border border-[#E9E3D8] flex items-start justify-between">
                               <div className="space-y-0.5">
                                 <div className="flex items-center gap-2">
                                   <span className="font-bold text-white capitalize">{log.action?.replace('_', ' ')}</span>
-                                  <span className="text-[10px] font-mono text-[#596B59]">by {log.reviewer_id}</span>
+                                  <span className="text-[10px] font-mono text-[#242622]">by {log.reviewer_id}</span>
                                 </div>
-                                <p className="text-[11px] text-[#77796F]">{log.notes}</p>
+                                <p className="text-[11px] text-[#85857E]">{log.notes}</p>
                               </div>
                               <span className="text-[10px] text-slate-500 whitespace-nowrap">
                                 {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -1202,8 +1202,8 @@ export const AdminPage: React.FC = () => {
 
         {/* Existing Marketplace Listings Moderation Tab */}
         {activeTab === 'marketplace_moderation' && (
-          <div className="rounded-3xl bg-white border border-[#E5E1D7] overflow-hidden shadow-2xl animate-fade-in">
-            <div className="p-4 bg-white border-b border-[#E5E1D7] font-bold text-xs text-[#77796F] grid grid-cols-12 gap-4">
+          <div className="rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] overflow-hidden shadow-2xl animate-fade-in">
+            <div className="p-4 bg-white border-b border-[#E9E3D8] font-bold text-xs text-[#85857E] grid grid-cols-12 gap-4">
               <span className="col-span-4">Vehicle & Location</span>
               <span className="col-span-2">Asking Price</span>
               <span className="col-span-3">Verification Tier</span>
@@ -1217,7 +1217,7 @@ export const AdminPage: React.FC = () => {
                     <img src={bike.primaryImage} alt={bike.title} className="w-12 h-10 rounded-lg object-cover" />
                     <div className="min-w-0">
                       <p className="font-bold text-white truncate">{bike.title}</p>
-                      <p className="text-[#77796F] text-[11px]">{bike.area}, {bike.city}</p>
+                      <p className="text-[#85857E] text-[11px]">{bike.area}, {bike.city}</p>
                     </div>
                   </div>
 
@@ -1229,10 +1229,10 @@ export const AdminPage: React.FC = () => {
                   <div className="col-span-3">
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                       bike.verificationTier === 'physically_inspected'
-                        ? 'bg-[#879783]/30 text-white'
+                        ? 'bg-[#35483C]/30 text-white'
                         : bike.verificationTier === 'document_verified'
-                        ? 'bg-emerald-950 text-[#596B59]'
-                        : 'bg-slate-800 text-[#77796F]'
+                        ? 'bg-emerald-950 text-[#242622]'
+                        : 'bg-slate-800 text-[#85857E]'
                     }`}>
                       {bike.verificationTier.replace('_', ' ')}
                     </span>
@@ -1241,7 +1241,7 @@ export const AdminPage: React.FC = () => {
                   <div className="col-span-3 flex items-center justify-end gap-2">
                     <button
                       onClick={() => toggleVerify(bike.id)}
-                      className="px-2.5 py-1 rounded-lg bg-[#E5D9C7]/40 hover:bg-[#879783]/30 text-white text-[11px] font-semibold transition-colors"
+                      className="px-2.5 py-1 rounded-lg bg-[#E9E3D8]/40 hover:bg-[#35483C]/30 text-white text-[11px] font-semibold transition-colors"
                     >
                       Toggle Cert
                     </button>
@@ -1266,51 +1266,51 @@ export const AdminPage: React.FC = () => {
           <div className="space-y-6 animate-fade-in">
             {/* Top Revenue Metric Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-5 rounded-3xl bg-white border border-[#E5E1D7] space-y-1">
-                <span className="text-[10px] uppercase font-bold text-[#77796F]">Total Location Unlocks</span>
+              <div className="p-5 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-1">
+                <span className="text-[10px] uppercase font-bold text-[#85857E]">Total Location Unlocks</span>
                 <p className="font-heading font-extrabold text-3xl text-white mt-1">
                   {revenueStats?.total_location_unlocks || 0}
                 </p>
-                <p className="text-[11px] text-[#596B59] font-semibold flex items-center gap-1">
+                <p className="text-[11px] text-[#242622] font-semibold flex items-center gap-1">
                   <TrendingUp className="w-3.5 h-3.5" /> Paid verified buyer accesses
                 </p>
               </div>
 
-              <div className="p-5 rounded-3xl bg-white border border-[#E5E1D7] space-y-1">
-                <span className="text-[10px] uppercase font-bold text-[#77796F]">Gross Revenue</span>
-                <p className="font-heading font-extrabold text-3xl text-[#596B59] mt-1">
+              <div className="p-5 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-1">
+                <span className="text-[10px] uppercase font-bold text-[#85857E]">Gross Revenue</span>
+                <p className="font-heading font-extrabold text-3xl text-[#242622] mt-1">
                   ₹{(revenueStats?.gross_revenue_inr || 0).toLocaleString('en-IN')}
                 </p>
-                <p className="text-[11px] text-[#77796F]">@ ₹49 per meetup unlock</p>
+                <p className="text-[11px] text-[#85857E]">@ ₹49 per meetup unlock</p>
               </div>
 
-              <div className="p-5 rounded-3xl bg-white border border-[#E5E1D7] space-y-1">
-                <span className="text-[10px] uppercase font-bold text-[#77796F]">Successful Payments</span>
-                <p className="font-heading font-extrabold text-3xl text-[#596B59] mt-1">
+              <div className="p-5 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-1">
+                <span className="text-[10px] uppercase font-bold text-[#85857E]">Successful Payments</span>
+                <p className="font-heading font-extrabold text-3xl text-[#242622] mt-1">
                   {revenueStats?.successful_payments || 0}
                 </p>
-                <p className="text-[11px] text-[#596B59] font-semibold">100% server verified</p>
+                <p className="text-[11px] text-[#242622] font-semibold">100% server verified</p>
               </div>
 
-              <div className="p-5 rounded-3xl bg-white border border-[#E5E1D7] space-y-1">
-                <span className="text-[10px] uppercase font-bold text-[#77796F]">Net Revenue (After Refunds)</span>
+              <div className="p-5 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-1">
+                <span className="text-[10px] uppercase font-bold text-[#85857E]">Net Revenue (After Refunds)</span>
                 <p className="font-heading font-extrabold text-3xl text-gold mt-1">
                   ₹{(revenueStats?.net_revenue_inr || 0).toLocaleString('en-IN')}
                 </p>
-                <p className="text-[11px] text-[#77796F]">Zero active dispute deductions</p>
+                <p className="text-[11px] text-[#85857E]">Zero active dispute deductions</p>
               </div>
             </div>
 
             {/* Daily Breakdown & Monetization Rule Summary */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Daily Breakdown (7 Cols) */}
-              <div className="lg:col-span-7 p-6 rounded-3xl bg-white border border-[#E5E1D7] space-y-4">
+              <div className="lg:col-span-7 p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-[#596B59]" />
+                    <Calendar className="w-4 h-4 text-[#242622]" />
                     <h3 className="font-heading font-bold text-base text-white">Daily Unlocks Breakdown</h3>
                   </div>
-                  <span className="text-xs text-[#596B59] font-semibold">Real-Time Ledger</span>
+                  <span className="text-xs text-[#242622] font-semibold">Real-Time Ledger</span>
                 </div>
 
                 <div className="divide-y divide-forest-900/60 text-xs">
@@ -1323,10 +1323,10 @@ export const AdminPage: React.FC = () => {
                       <div key={day} className="py-3 flex items-center justify-between">
                         <span className="font-semibold text-white">{day}</span>
                         <div className="flex items-center gap-3">
-                          <span className="px-2.5 py-0.5 rounded-full bg-white text-[#596B59] font-bold border border-[#E5E1D7]">
+                          <span className="px-2.5 py-0.5 rounded-full bg-white text-[#242622] font-bold border border-[#E9E3D8]">
                             {Number(count)} unlock(s)
                           </span>
-                          <span className="font-bold text-[#596B59] font-mono">
+                          <span className="font-bold text-[#242622] font-mono">
                             ₹{(Number(count) * 49).toLocaleString('en-IN')}
                           </span>
                         </div>
@@ -1337,45 +1337,45 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* Revenue Engine Specifications (5 Cols) */}
-              <div className="lg:col-span-5 p-6 rounded-3xl bg-white border border-[#E5E1D7] space-y-4 text-xs">
+              <div className="lg:col-span-5 p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-4 text-xs">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#596B59]" />
+                  <ShieldCheck className="w-4 h-4 text-[#242622]" />
                   <h3 className="font-heading font-bold text-base text-white">Monetization Engine Rules</h3>
                 </div>
 
-                <div className="space-y-3 text-[#77796F]">
-                  <div className="p-3.5 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7] space-y-1">
-                    <span className="text-[#77796F] text-[10px] block uppercase font-bold">Pricing Model</span>
+                <div className="space-y-3 text-[#85857E]">
+                  <div className="p-3.5 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] space-y-1">
+                    <span className="text-[#85857E] text-[10px] block uppercase font-bold">Pricing Model</span>
                     <p className="font-semibold text-white">₹49 Flat Location Access Fee</p>
-                    <p className="text-[11px] text-[#77796F]">One-time payment per buyer per listing. No vehicle percentage cut.</p>
+                    <p className="text-[11px] text-[#85857E]">One-time payment per buyer per listing. No vehicle percentage cut.</p>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7] space-y-1">
-                    <span className="text-[#77796F] text-[10px] block uppercase font-bold">Privacy Guard</span>
+                  <div className="p-3.5 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] space-y-1">
+                    <span className="text-[#85857E] text-[10px] block uppercase font-bold">Privacy Guard</span>
                     <p className="font-semibold text-white">Strict Approximate Masking</p>
-                    <p className="text-[11px] text-[#77796F]">Before payment, APIs and frontend omit exact GPS coordinates and house numbers.</p>
+                    <p className="text-[11px] text-[#85857E]">Before payment, APIs and frontend omit exact GPS coordinates and house numbers.</p>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-[#F1EEE5] border border-[#E5E1D7] space-y-1">
-                    <span className="text-[#77796F] text-[10px] block uppercase font-bold">Access Duration</span>
+                  <div className="p-3.5 rounded-none bg-[#E9E3D8] border border-[#E9E3D8] space-y-1">
+                    <span className="text-[#85857E] text-[10px] block uppercase font-bold">Access Duration</span>
                     <p className="font-semibold text-white">7 Calendar Days Validity</p>
-                    <p className="text-[11px] text-[#77796F]">Buyer cannot be double-charged during active entitlement term.</p>
+                    <p className="text-[11px] text-[#85857E]">Buyer cannot be double-charged during active entitlement term.</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Recent Verified Transactions Table */}
-            <div className="p-6 rounded-3xl bg-white border border-[#E5E1D7] space-y-4">
+            <div className="p-6 rounded-none border border-[#E9E3D8] bg-white border border-[#E9E3D8] space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <CreditCard className="w-4 h-4 text-[#596B59]" />
+                  <CreditCard className="w-4 h-4 text-[#242622]" />
                   <h3 className="font-heading font-bold text-base text-white">Recent Payment Transactions</h3>
                 </div>
                 <button
                   type="button"
                   onClick={fetchRevenue}
-                  className="px-3 py-1.5 rounded-xl bg-[#F1EEE5] hover:bg-[#E5D9C7]/40 text-[#354638] text-xs font-semibold flex items-center gap-1"
+                  className="px-3 py-1.5 rounded-none bg-[#E9E3D8] hover:bg-[#E9E3D8]/40 text-[#35483C] text-xs font-semibold flex items-center gap-1"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>Refresh Ledger</span>
@@ -1393,16 +1393,16 @@ export const AdminPage: React.FC = () => {
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-white font-mono">{txn.transaction_id}</span>
-                          <span className="px-2 py-0.5 rounded bg-emerald-950 text-[#596B59] text-[10px] font-bold">
+                          <span className="px-2 py-0.5 rounded bg-emerald-950 text-[#242622] text-[10px] font-bold">
                             Success
                           </span>
                         </div>
-                        <p className="text-[11px] text-[#77796F] mt-0.5">
-                          Listing: <strong className="text-[#77796F]">{txn.listing_id}</strong> • Buyer: {txn.buyer_name || txn.buyer_id}
+                        <p className="text-[11px] text-[#85857E] mt-0.5">
+                          Listing: <strong className="text-[#85857E]">{txn.listing_id}</strong> • Buyer: {txn.buyer_name || txn.buyer_id}
                         </p>
                       </div>
                       <div className="text-right">
-                        <span className="font-heading font-extrabold text-sm text-[#596B59] font-mono">
+                        <span className="font-heading font-extrabold text-sm text-[#242622] font-mono">
                           +₹{txn.amount_inr || 49}
                         </span>
                         <p className="text-[10px] text-slate-500">{new Date(txn.timestamp).toLocaleString()}</p>
