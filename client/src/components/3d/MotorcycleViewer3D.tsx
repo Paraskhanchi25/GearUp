@@ -3,12 +3,33 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import gsap from 'gsap';
+
 import { 
   MOTORCYCLE_COMPONENTS, 
   CAMERA_PRESETS, 
   InspectionComponentDef, 
   ComponentCategory 
 } from './inspectionComponentData';
+import { 
+  EnvironmentPresetId, 
+  EnvironmentPreset, 
+  ENVIRONMENT_PRESETS,
+  ACCENT_COLOR_OPTIONS
+} from './environmentPresets';
+import { 
+  PAINT_COLOR_SWATCHES, 
+  isPaintableMesh 
+} from './paintPresets';
+import { 
+  buildWorkshopEnvironment, 
+  disposeWorkshopEnvironment 
+} from './workshopEnvironment';
+import { EnvironmentControlPanel } from './EnvironmentControlPanel';
 import { VehicleListing } from '../../types';
 import { 
   RotateCcw, 
@@ -21,10 +42,13 @@ import {
   Compass, 
   Sparkles,
   AlertTriangle,
-  Loader2
+  Loader2,
+  SlidersHorizontal,
+  Camera,
+  Check
 } from 'lucide-react';
 
-interface MotorcycleViewer3DProps {
+export interface MotorcycleViewer3DProps {
   vehicle?: VehicleListing;
   selectedComponentId: string | null;
   onSelectComponent: (id: string | null) => void;
@@ -34,6 +58,7 @@ interface MotorcycleViewer3DProps {
   fullscreen?: boolean;
   onToggleFullscreen?: () => void;
   className?: string;
+  showStudioControls?: boolean;
 }
 
 export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
@@ -45,19 +70,45 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   onToggleExploded,
   fullscreen = false,
   onToggleFullscreen,
-  className = ''
+  className = '',
+  showStudioControls = true
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
-  
-  // Three.js instances refs
+
+  // ---------------------------------------------------------------------------
+  // Three.js Core Object Refs
+  // ---------------------------------------------------------------------------
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
   const modelRef = useRef<THREE.Group | null>(null);
   const animFrameRef = useRef<number | null>(null);
+  const pmremGeneratorRef = useRef<THREE.PMREMGenerator | null>(null);
 
-  // Mesh & Hotspot tracking
+  // Postprocessing refs
+  const composerRef = useRef<EffectComposer | null>(null);
+  const bloomPassRef = useRef<UnrealBloomPass | null>(null);
+
+  // Lighting refs
+  const ambientLightRef = useRef<THREE.AmbientLight | null>(null);
+  const keyLightRef = useRef<THREE.DirectionalLight | null>(null);
+  const fillLightRef = useRef<THREE.DirectionalLight | null>(null);
+  const rimLightRef = useRef<THREE.DirectionalLight | null>(null);
+  const underLightRef = useRef<THREE.PointLight | null>(null);
+
+  // Floor & Ring Meshes
+  const floorMeshRef = useRef<THREE.Mesh | null>(null);
+  const innerRingRef = useRef<THREE.Mesh | null>(null);
+  const outerRingRef = useRef<THREE.Mesh | null>(null);
+  const workshopGroupRef = useRef<THREE.Group | null>(null);
+
+  // Particle System
+  const particleSystemRef = useRef<THREE.Points | null>(null);
+
+  // Cached Environment Radiance Maps & Original Materials
+  const envMapCacheRef = useRef<Map<string, THREE.Texture>>(new Map());
+  const originalMaterialsMap = useRef<Map<string, THREE.Material>>(new Map());
   const meshMapRef = useRef<Map<string, { mesh: THREE.Mesh; originalMat: THREE.Material; initialPos: THREE.Vector3 }>>(new Map());
   const clickableMeshesRef = useRef<THREE.Mesh[]>([]);
   const screenHotspotsRef = useRef<Array<{ id: string; name: string; category: string; x: number; y: number; visible: boolean }>>([]);
@@ -67,15 +118,48 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   const controlsTargetPos = useRef<THREE.Vector3 | null>(null);
   const isTransitioning = useRef<boolean>(false);
 
+  // User Interaction & Inactivity Timer for Auto-Rotate
+  const isUserInteracting = useRef<boolean>(false);
+  const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ---------------------------------------------------------------------------
+  // Controlled Studio Environment State
+  // ---------------------------------------------------------------------------
+  const [currentEnvId, setCurrentEnvId] = useState<EnvironmentPresetId>('showroom');
+  const [ambientIntensity, setAmbientIntensity] = useState<number>(0.75);
+  const [keyLightIntensity, setKeyLightIntensity] = useState<number>(2.4);
+  const [rimLightIntensity, setRimLightIntensity] = useState<number>(1.6);
+  const [accentColor, setAccentColor] = useState<string>('#10b981');
+
+  // Camera settings
+  const [autoRotate, setAutoRotate] = useState<boolean>(true);
+  const autoRotateRef = useRef<boolean>(true);
+  autoRotateRef.current = autoRotate;
+  const [autoRotateSpeed, setAutoRotateSpeed] = useState<number>(0.8);
+  const [fov, setFov] = useState<number>(45);
+
+  // Rendering FX
+  const [wireframe, setWireframe] = useState<boolean>(false);
+  const [bloomEnabled, setBloomEnabled] = useState<boolean>(false);
+  const [floorReflection, setFloorReflection] = useState<boolean>(true);
+
+  // Paint Customization
+  const [selectedColorHex, setSelectedColorHex] = useState<string>('#dc2626');
+  const [paintMetalness, setPaintMetalness] = useState<number>(0.75);
+  const [paintRoughness, setPaintRoughness] = useState<number>(0.25);
+  const [isCustomPaintActive, setIsCustomPaintActive] = useState<boolean>(false);
+
   // UI state
+  const [isStudioDrawerOpen, setIsStudioDrawerOpen] = useState<boolean>(false);
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [showHotspots, setShowHotspots] = useState<boolean>(true);
   const [activePreset, setActivePreset] = useState<string>('perspective');
   const [projectedHotspots, setProjectedHotspots] = useState<Array<{ id: string; name: string; category: string; x: number; y: number; visible: boolean }>>([]);
+  const [screenshotSuccess, setScreenshotSuccess] = useState<boolean>(false);
 
-  // Model URL determination (scooter vs motorcycle from existing data)
+  // Model URL determination (scooter vs motorcycle from existing verified data)
   const isScooter =
     vehicle?.category === 'scooter' ||
     vehicle?.category === 'electric' ||
@@ -88,7 +172,114 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   const modelUrl = isScooter ? '/models/scooter.glb' : '/models/motorcycle.glb';
 
   // ---------------------------------------------------------------------------
-  // 1. SCENE INITIALIZATION & CLEANUP
+  // 1. GENERATE PMREM ENVIRONMENT RADIANCE MAP
+  // ---------------------------------------------------------------------------
+  const getOrCreateEnvMap = useCallback((preset: EnvironmentPreset, renderer: THREE.WebGLRenderer): THREE.Texture => {
+    if (envMapCacheRef.current.has(preset.id)) {
+      return envMapCacheRef.current.get(preset.id)!;
+    }
+
+    if (!pmremGeneratorRef.current) {
+      pmremGeneratorRef.current = new THREE.PMREMGenerator(renderer);
+      pmremGeneratorRef.current.compileEquirectangularShader();
+    }
+
+    // Build virtual studio radiance room
+    const envScene = new THREE.Scene();
+    const sphereGeo = new THREE.SphereGeometry(18, 32, 16);
+    const sphereMat = new THREE.MeshBasicMaterial({
+      color: preset.background.color,
+      side: THREE.BackSide
+    });
+    const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+    envScene.add(sphere);
+
+    // Warm & cool key radiance lights for reflections
+    const rKey = new THREE.DirectionalLight(preset.keyLight.color, 2.5);
+    rKey.position.set(...preset.keyLight.position);
+    envScene.add(rKey);
+
+    const rFill = new THREE.DirectionalLight(preset.fillLight.color, 1.8);
+    rFill.position.set(...preset.fillLight.position);
+    envScene.add(rFill);
+
+    const renderTarget = pmremGeneratorRef.current.fromScene(envScene);
+    sphereGeo.dispose();
+    sphereMat.dispose();
+
+    envMapCacheRef.current.set(preset.id, renderTarget.texture);
+    return renderTarget.texture;
+  }, []);
+
+  // ---------------------------------------------------------------------------
+  // 2. SETUP AMBIENT PARTICLE EFFECTS
+  // ---------------------------------------------------------------------------
+  const updateParticles = useCallback((preset: EnvironmentPreset, scene: THREE.Scene) => {
+    // Remove existing particle system
+    if (particleSystemRef.current) {
+      scene.remove(particleSystemRef.current);
+      particleSystemRef.current.geometry.dispose();
+      (particleSystemRef.current.material as THREE.Material).dispose();
+      particleSystemRef.current = null;
+    }
+
+    if (preset.particleType === 'none') return;
+
+    if (preset.particleType === 'garage_dust') {
+      const count = 120;
+      const positions = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        positions[i * 3 + 0] = (Math.random() - 0.5) * 6;
+        positions[i * 3 + 1] = 0.15 + Math.random() * 2.8;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 6;
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const mat = new THREE.PointsMaterial({
+        color: 0xfbbf24,
+        size: 0.038,
+        transparent: true,
+        opacity: 0.35,
+        blending: THREE.AdditiveBlending
+      });
+      const points = new THREE.Points(geo, mat);
+      particleSystemRef.current = points;
+      scene.add(points);
+    } else if (preset.particleType === 'neon_sparkles') {
+      const count = 160;
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+      const cyan = new THREE.Color(0x06b6d4);
+      const magenta = new THREE.Color(0xd946ef);
+
+      for (let i = 0; i < count; i++) {
+        positions[i * 3 + 0] = (Math.random() - 0.5) * 7;
+        positions[i * 3 + 1] = 0.1 + Math.random() * 3.2;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 7;
+
+        const c = i % 2 === 0 ? cyan : magenta;
+        colors[i * 3 + 0] = c.r;
+        colors[i * 3 + 1] = c.g;
+        colors[i * 3 + 2] = c.b;
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      const mat = new THREE.PointsMaterial({
+        vertexColors: true,
+        size: 0.048,
+        transparent: true,
+        opacity: 0.65,
+        blending: THREE.AdditiveBlending
+      });
+      const points = new THREE.Points(geo, mat);
+      particleSystemRef.current = points;
+      scene.add(points);
+    }
+  }, []);
+
+  // ---------------------------------------------------------------------------
+  // 3. SCENE INITIALIZATION & CLEANUP
   // ---------------------------------------------------------------------------
   useEffect(() => {
     const container = mountRef.current;
@@ -106,22 +297,25 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     const width = container.clientWidth || 800;
     const height = container.clientHeight || 500;
 
+    const currentPreset = ENVIRONMENT_PRESETS[currentEnvId] || ENVIRONMENT_PRESETS.showroom;
+
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060C0A);
-    scene.fog = new THREE.FogExp2(0x060C0A, 0.08);
+    scene.background = new THREE.Color(currentPreset.background.color);
+    scene.fog = new THREE.FogExp2(currentPreset.fog.color, currentPreset.fog.density);
     sceneRef.current = scene;
 
     // 2. Camera
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 50);
+    const camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 50);
     const initialCam = CAMERA_PRESETS.perspective.position;
     camera.position.set(initialCam[0], initialCam[1], initialCam[2]);
     cameraRef.current = camera;
 
-    // 3. Renderer
+    // 3. Renderer with preserveDrawingBuffer for high-res screenshots
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: 'high-performance',
+      preserveDrawingBuffer: true,
       alpha: true
     });
     renderer.setSize(width, height);
@@ -134,25 +328,75 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // 4. OrbitControls
+    // Set initial environment radiance map
+    const envTexture = getOrCreateEnvMap(currentPreset, renderer);
+    scene.environment = envTexture;
+
+    // 4. Postprocessing Composer (UnrealBloomPass)
+    const composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(width, height),
+      currentPreset.postprocessing.bloomStrength,
+      currentPreset.postprocessing.bloomRadius,
+      currentPreset.postprocessing.bloomThreshold
+    );
+    composer.addPass(bloomPass);
+
+    const outputPass = new OutputPass();
+    composer.addPass(outputPass);
+
+    composerRef.current = composer;
+    bloomPassRef.current = bloomPass;
+
+    // 5. OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.minDistance = 1.1;
-    controls.maxDistance = 5.5;
-    controls.maxPolarAngle = Math.PI / 2 + 0.01; // prevent camera going below floor
+    controls.minDistance = 1.0;
+    controls.maxDistance = 6.8;
+    controls.minPolarAngle = 0.08; // Allows tilting up to look directly at ceiling, roof beams and LED lights
+    controls.maxPolarAngle = Math.PI / 2 - 0.02; // Floor collision clamping
+    controls.autoRotate = autoRotate;
+    controls.autoRotateSpeed = autoRotateSpeed;
     const initialTarget = CAMERA_PRESETS.perspective.target;
     controls.target.set(initialTarget[0], initialTarget[1], initialTarget[2]);
     controlsRef.current = controls;
 
-    // 5. Studio Showroom Lighting
-    // Ambient fill with soft emerald floor reflection
-    const ambientLight = new THREE.AmbientLight(0xdcfce7, 0.7);
-    scene.add(ambientLight);
+    // Inactivity listener to pause/resume auto-rotation
+    const handleUserInteractionStart = () => {
+      isUserInteracting.current = true;
+      controls.autoRotate = false;
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
+    };
 
-    // Key Light (Main warm showroom spot)
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
-    keyLight.position.set(3, 4, 3);
+    const handleUserInteractionEnd = () => {
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
+      inactivityTimerRef.current = setTimeout(() => {
+        isUserInteracting.current = false;
+        if (autoRotateRef.current && controlsRef.current) {
+          controlsRef.current.autoRotate = true;
+        }
+      }, 3500);
+    };
+
+    const domElem = renderer.domElement;
+    domElem.addEventListener('pointerdown', handleUserInteractionStart);
+    domElem.addEventListener('pointerup', handleUserInteractionEnd);
+    domElem.addEventListener('wheel', handleUserInteractionStart);
+    domElem.addEventListener('wheel', handleUserInteractionEnd);
+    domElem.addEventListener('touchstart', handleUserInteractionStart);
+    domElem.addEventListener('touchend', handleUserInteractionEnd);
+
+    // 6. Studio Lighting Rig
+    const ambientLight = new THREE.AmbientLight(currentPreset.ambientLight.color, ambientIntensity);
+    scene.add(ambientLight);
+    ambientLightRef.current = ambientLight;
+
+    const keyLight = new THREE.DirectionalLight(currentPreset.keyLight.color, keyLightIntensity);
+    keyLight.position.set(...currentPreset.keyLight.position);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.width = 2048;
     keyLight.shadow.mapSize.height = 2048;
@@ -160,52 +404,38 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     keyLight.shadow.camera.far = 12;
     keyLight.shadow.bias = -0.0005;
     scene.add(keyLight);
+    keyLightRef.current = keyLight;
 
-    // Rim Light (Cool cyan accent on metallic edges)
-    const rimLight = new THREE.DirectionalLight(0x34d399, 1.4);
-    rimLight.position.set(-3, 3, -3);
+    const rimLight = new THREE.DirectionalLight(currentPreset.rimLight.color, rimLightIntensity);
+    rimLight.position.set(...currentPreset.rimLight.position);
     scene.add(rimLight);
+    rimLightRef.current = rimLight;
 
-    // Front Fill Light
-    const fillLight = new THREE.DirectionalLight(0xe0f2fe, 1.0);
-    fillLight.position.set(0, 1.5, -4);
+    const fillLight = new THREE.DirectionalLight(currentPreset.fillLight.color, currentPreset.fillLight.intensity);
+    fillLight.position.set(...currentPreset.fillLight.position);
     scene.add(fillLight);
+    fillLightRef.current = fillLight;
 
-    // Under-chassis soft uplight for engine detail
-    const underLight = new THREE.PointLight(0x10b981, 0.8, 4);
-    underLight.position.set(0, 0.1, 0);
+    const underLight = new THREE.PointLight(new THREE.Color(accentColor), 0.9, 4.5);
+    underLight.position.set(0, 0.15, 0);
     scene.add(underLight);
+    underLightRef.current = underLight;
 
-    // 6. Luxury Showroom Pedestal Floor
-    const floorGeo = new THREE.PlaneGeometry(16, 16);
-    const floorMat = new THREE.MeshStandardMaterial({
-      color: 0x081310,
-      roughness: 0.25,
-      metalness: 0.75
-    });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
-    floor.rotation.x = -Math.PI / 2;
-    floor.receiveShadow = true;
-    scene.add(floor);
+    // 7. Complete 3D Motorcycle Service Workshop Environment
+    const workshop = buildWorkshopEnvironment();
+    workshopGroupRef.current = workshop;
+    const floorMesh = workshop.getObjectByName('workshop_floor_mesh') as THREE.Mesh;
+    if (floorMesh) {
+      floorMeshRef.current = floorMesh;
+    }
+    scene.add(workshop);
 
-    // Showroom ring guidelines
-    const ringGeo = new THREE.RingGeometry(1.6, 1.63, 64);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x10b981, side: THREE.DoubleSide, opacity: 0.35, transparent: true });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.y = 0.002;
-    scene.add(ring);
+    // Initialize particles
+    updateParticles(currentPreset, scene);
 
-    const outerRingGeo = new THREE.RingGeometry(2.4, 2.415, 64);
-    const outerRingMat = new THREE.MeshBasicMaterial({ color: 0x064e3b, side: THREE.DoubleSide, opacity: 0.25, transparent: true });
-    const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
-    outerRing.rotation.x = -Math.PI / 2;
-    outerRing.position.y = 0.001;
-    scene.add(outerRing);
-
-    // 7. Load GLTF 3D Asset
+    // 8. Load GLTF 3D Asset with local Draco decoder
     setIsLoading(true);
-    setLoadingProgress(10);
+    setLoadingProgress(15);
     setLoadError(null);
 
     const dracoLoader = new DRACOLoader();
@@ -219,7 +449,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         const root = gltf.scene;
         modelRef.current = root;
 
-        // Compute Bounding Box & Normalize Model to fit showroom pedestal
+        // Bounding Box Normalization
         const box = new THREE.Box3().setFromObject(root);
         const size = box.getSize(new THREE.Vector3());
         const center = box.getCenter(new THREE.Vector3());
@@ -228,12 +458,12 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         const targetScale = 2.4 / (maxDim || 1);
         root.scale.setScalar(targetScale);
 
-        // Center on (0, 0, 0) and position bottom onto floor (y=0)
+        // Center on (0, 0, 0) and position bottom onto hydraulic service lift platform surface
         root.position.x = -center.x * targetScale;
         root.position.z = -center.z * targetScale;
-        root.position.y = -box.min.y * targetScale;
+        root.position.y = -box.min.y * targetScale + 0.04;
 
-        // Traverse & catalog meshes for raycasting & component inspection
+        // Catalog meshes for raycasting, exploded view & paint customization
         const meshMap = new Map();
         const clickable: THREE.Mesh[] = [];
 
@@ -243,26 +473,14 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
             mesh.castShadow = true;
             mesh.receiveShadow = true;
 
-            // Preserve initial position for exploded view animations
+            const baseMat = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+            originalMaterialsMap.current.set(mesh.name, baseMat);
+
             meshMap.set(mesh.name, {
               mesh,
-              originalMat: Array.isArray(mesh.material) ? mesh.material[0] : mesh.material,
+              originalMat: baseMat,
               initialPos: mesh.position.clone()
             });
-
-            // Improve material aesthetics for showroom polish
-            if (mesh.material) {
-              const m = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
-              if (m.name && (m.name.includes('chrome') || m.name.includes('metal') || m.name.includes('brakedisk'))) {
-                m.metalness = Math.max(m.metalness, 0.85);
-                m.roughness = Math.min(m.roughness, 0.18);
-              }
-              if (m.name && m.name.includes('carpaint')) {
-                // Apply rich hunter forest green or classic lacquer gloss
-                m.metalness = 0.55;
-                m.roughness = 0.12;
-              }
-            }
 
             clickable.push(mesh);
           }
@@ -285,14 +503,17 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       },
       (err) => {
         console.error('Error loading 3D motorcycle model:', err);
-        setLoadError('Failed to load 3D motorcycle asset. Falling back to high-res inspection viewer.');
+        setLoadError('Failed to load 3D motorcycle asset. High-resolution fallback inspection mode is active.');
         setIsLoading(false);
       }
     );
 
-    // 8. Animation & Render Loop
+    // 9. Main Animation Loop
+    const clock = new THREE.Clock();
+
     const animate = () => {
       animFrameRef.current = requestAnimationFrame(animate);
+      const delta = clock.getDelta();
 
       // Smooth camera transition if active
       if (isTransitioning.current && cameraRef.current && controlsRef.current) {
@@ -303,7 +524,6 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           controlsRef.current.target.lerp(controlsTargetPos.current, 0.055);
         }
 
-        // Check if transition is close enough to snap & complete
         if (
           cameraTargetPos.current &&
           cameraRef.current.position.distanceTo(cameraTargetPos.current) < 0.015 &&
@@ -314,9 +534,21 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         }
       }
 
+      // Update particle drift
+      if (particleSystemRef.current) {
+        const positions = particleSystemRef.current.geometry.attributes.position.array as Float32Array;
+        for (let i = 1; i < positions.length; i += 3) {
+          positions[i] += delta * 0.15;
+          if (positions[i] > 3.2) {
+            positions[i] = 0.1;
+          }
+        }
+        particleSystemRef.current.geometry.attributes.position.needsUpdate = true;
+      }
+
       controls.update();
 
-      // Project 3D Hotspot positions to 2D screen coordinates for overlay pills
+      // Project 3D Hotspot positions to 2D screen coordinates
       if (cameraRef.current && container) {
         const w = container.clientWidth;
         const h = container.clientHeight;
@@ -324,7 +556,6 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           const pos = new THREE.Vector3(...comp.hotspotPosition);
           pos.project(cameraRef.current!);
 
-          // Check if hotspot is facing the camera (Z < 1)
           const isBehind = pos.z > 1;
           const x = (pos.x * 0.5 + 0.5) * w;
           const y = (-(pos.y * 0.5) + 0.5) * h;
@@ -346,12 +577,17 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         setProjectedHotspots(hotspots);
       }
 
-      renderer.render(scene, camera);
+      // Render via Bloom EffectComposer or direct standard renderer
+      if (bloomEnabled && composerRef.current) {
+        composerRef.current.render();
+      } else {
+        renderer.render(scene, camera);
+      }
     };
 
     animate();
 
-    // 9. Resize Listener
+    // 10. Window Resize Handler
     const handleResize = () => {
       if (!container || !cameraRef.current || !rendererRef.current) return;
       const newW = container.clientWidth;
@@ -359,13 +595,25 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       cameraRef.current.aspect = newW / newH;
       cameraRef.current.updateProjectionMatrix();
       rendererRef.current.setSize(newW, newH);
+      composerRef.current?.setSize(newW, newH);
+      bloomPassRef.current?.setSize(newW, newH);
     };
 
     window.addEventListener('resize', handleResize);
 
+    // 11. Cleanup Lifecycle
     return () => {
       window.removeEventListener('resize', handleResize);
+      domElem.removeEventListener('pointerdown', handleUserInteractionStart);
+      domElem.removeEventListener('pointerup', handleUserInteractionEnd);
+      domElem.removeEventListener('wheel', handleUserInteractionStart);
+      domElem.removeEventListener('wheel', handleUserInteractionEnd);
+      domElem.removeEventListener('touchstart', handleUserInteractionStart);
+      domElem.removeEventListener('touchend', handleUserInteractionEnd);
+
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+
       if (modelRef.current) {
         modelRef.current.traverse((child) => {
           if ((child as THREE.Mesh).isMesh) {
@@ -379,6 +627,24 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
           }
         });
       }
+
+      if (workshopGroupRef.current) {
+        disposeWorkshopEnvironment(workshopGroupRef.current);
+        scene.remove(workshopGroupRef.current);
+        workshopGroupRef.current = null;
+      }
+
+      if (particleSystemRef.current) {
+        particleSystemRef.current.geometry.dispose();
+        (particleSystemRef.current.material as THREE.Material).dispose();
+      }
+
+      envMapCacheRef.current.forEach((t) => t.dispose());
+      envMapCacheRef.current.clear();
+      pmremGeneratorRef.current?.dispose();
+
+      composerRef.current?.dispose();
+
       if (rendererRef.current) {
         rendererRef.current.dispose();
         if (rendererRef.current.domElement && rendererRef.current.domElement.parentNode) {
@@ -390,17 +656,261 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   }, [modelUrl]);
 
   // ---------------------------------------------------------------------------
-  // 2. RAYCASTING: CLICK ON 3D MESHES TO SELECT COMPONENT
+  // 4. DYNAMIC ENVIRONMENT SWITCHING WITHOUT MODEL RELOADING
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const renderer = rendererRef.current;
+    if (!scene || !renderer) return;
+
+    const preset = ENVIRONMENT_PRESETS[currentEnvId];
+    if (!preset) return;
+
+    // Smooth transition background & fog
+    scene.background = new THREE.Color(preset.background.color);
+    if (scene.fog) {
+      scene.fog.color.set(preset.fog.color);
+      (scene.fog as THREE.FogExp2).density = preset.fog.density;
+    }
+
+    // Radiance environment map
+    const envTexture = getOrCreateEnvMap(preset, renderer);
+    scene.environment = envTexture;
+
+    // Update lighting with GSAP smooth interpolation
+    if (ambientLightRef.current) {
+      ambientLightRef.current.color.set(preset.ambientLight.color);
+      gsap.to(ambientLightRef.current, { intensity: ambientIntensity, duration: 0.6 });
+    }
+    if (keyLightRef.current) {
+      keyLightRef.current.color.set(preset.keyLight.color);
+      keyLightRef.current.position.set(...preset.keyLight.position);
+      gsap.to(keyLightRef.current, { intensity: keyLightIntensity, duration: 0.6 });
+    }
+    if (fillLightRef.current) {
+      fillLightRef.current.color.set(preset.fillLight.color);
+      fillLightRef.current.position.set(...preset.fillLight.position);
+      gsap.to(fillLightRef.current, { intensity: preset.fillLight.intensity, duration: 0.6 });
+    }
+    if (rimLightRef.current) {
+      rimLightRef.current.color.set(preset.rimLight.color);
+      rimLightRef.current.position.set(...preset.rimLight.position);
+      gsap.to(rimLightRef.current, { intensity: rimLightIntensity, duration: 0.6 });
+    }
+
+    // Update floor appearance
+    if (floorMeshRef.current) {
+      const mat = floorMeshRef.current.material as THREE.MeshStandardMaterial;
+      mat.color.set(preset.floor.color);
+      mat.roughness = floorReflection ? preset.floor.roughness : 0.9;
+      mat.metalness = floorReflection ? preset.floor.metalness : 0.1;
+      mat.needsUpdate = true;
+    }
+
+    // Update rings visibility
+    if (innerRingRef.current && outerRingRef.current) {
+      innerRingRef.current.visible = preset.floor.showRings;
+      outerRingRef.current.visible = preset.floor.showRings;
+    }
+
+    // Update particle system
+    updateParticles(preset, scene);
+
+    // Auto-enable bloom for Neon Underground
+    if (preset.id === 'neon_underground') {
+      setBloomEnabled(true);
+    } else {
+      setBloomEnabled(false);
+    }
+
+    // Subtle photography camera glide on environment change if not inspecting
+    if (!selectedComponentId && cameraRef.current && controlsRef.current) {
+      const currentPos = cameraRef.current.position.clone();
+      const offset = new THREE.Vector3((Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.4);
+      cameraTargetPos.current = currentPos.add(offset);
+      isTransitioning.current = true;
+    }
+  }, [currentEnvId, getOrCreateEnvMap, updateParticles]);
+
+  // Real-time lighting intensity changes from sliders
+  useEffect(() => {
+    if (ambientLightRef.current) ambientLightRef.current.intensity = ambientIntensity;
+  }, [ambientIntensity]);
+
+  useEffect(() => {
+    if (keyLightRef.current) keyLightRef.current.intensity = keyLightIntensity;
+  }, [keyLightIntensity]);
+
+  useEffect(() => {
+    if (rimLightRef.current) rimLightRef.current.intensity = rimLightIntensity;
+  }, [rimLightIntensity]);
+
+  // Accent lighting color changes
+  useEffect(() => {
+    const col = new THREE.Color(accentColor);
+    if (underLightRef.current) underLightRef.current.color.set(col);
+    if (innerRingRef.current) (innerRingRef.current.material as THREE.MeshBasicMaterial).color.set(col);
+    if (outerRingRef.current) (outerRingRef.current.material as THREE.MeshBasicMaterial).color.set(col.clone().multiplyScalar(0.6));
+  }, [accentColor]);
+
+  // Auto-rotate controls update
+  useEffect(() => {
+    if (controlsRef.current) {
+      controlsRef.current.autoRotate = autoRotate;
+      controlsRef.current.autoRotateSpeed = autoRotateSpeed;
+    }
+  }, [autoRotate, autoRotateSpeed]);
+
+  // FOV camera update
+  useEffect(() => {
+    if (cameraRef.current) {
+      cameraRef.current.fov = fov;
+      cameraRef.current.updateProjectionMatrix();
+    }
+  }, [fov]);
+
+  // Floor reflection toggle
+  useEffect(() => {
+    if (floorMeshRef.current) {
+      const mat = floorMeshRef.current.material as THREE.MeshStandardMaterial;
+      const preset = ENVIRONMENT_PRESETS[currentEnvId];
+      mat.roughness = floorReflection ? preset.floor.roughness : 0.95;
+      mat.metalness = floorReflection ? preset.floor.metalness : 0.05;
+      mat.needsUpdate = true;
+    }
+  }, [floorReflection, currentEnvId]);
+
+  // Wireframe mode toggle
+  useEffect(() => {
+    if (!modelRef.current) return;
+    modelRef.current.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        if (Array.isArray(mesh.material)) {
+          mesh.material.forEach(m => { (m as any).wireframe = wireframe; });
+        } else if (mesh.material) {
+          (mesh.material as any).wireframe = wireframe;
+        }
+      }
+    });
+  }, [wireframe]);
+
+  // ---------------------------------------------------------------------------
+  // 5. MOTORCYCLE PAINT & MATERIAL CUSTOMIZER (PRESERVES MECHANICAL PARTS)
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    if (!modelRef.current || !isCustomPaintActive) return;
+
+    const targetColor = new THREE.Color(selectedColorHex);
+
+    modelRef.current.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        if (isPaintableMesh(mesh)) {
+          // Clone or adjust material properties
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach((mat) => {
+              if ((mat as THREE.MeshStandardMaterial).isMeshStandardMaterial) {
+                const sMat = mat as THREE.MeshStandardMaterial;
+                sMat.color.copy(targetColor);
+                sMat.metalness = paintMetalness;
+                sMat.roughness = paintRoughness;
+                sMat.needsUpdate = true;
+              }
+            });
+          } else if (mesh.material && (mesh.material as THREE.MeshStandardMaterial).isMeshStandardMaterial) {
+            const sMat = mesh.material as THREE.MeshStandardMaterial;
+            sMat.color.copy(targetColor);
+            sMat.metalness = paintMetalness;
+            sMat.roughness = paintRoughness;
+            sMat.needsUpdate = true;
+          }
+        }
+      }
+    });
+  }, [selectedColorHex, paintMetalness, paintRoughness, isCustomPaintActive]);
+
+  const handleSelectPaintColor = (hex: string) => {
+    setSelectedColorHex(hex);
+    setIsCustomPaintActive(true);
+  };
+
+  const handleResetAppearance = () => {
+    // Restore OEM factory materials
+    if (modelRef.current) {
+      modelRef.current.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          const orig = originalMaterialsMap.current.get(mesh.name);
+          if (orig) {
+            mesh.material = orig;
+            (mesh.material as any).wireframe = false;
+          }
+        }
+      });
+    }
+
+    // Restore Default Studio Environment & Lighting
+    setCurrentEnvId('showroom');
+    const defaultPreset = ENVIRONMENT_PRESETS.showroom;
+    setAmbientIntensity(defaultPreset.ambientLight.intensity);
+    setKeyLightIntensity(defaultPreset.keyLight.intensity);
+    setRimLightIntensity(defaultPreset.rimLight.intensity);
+    setAccentColor(defaultPreset.defaultAccent);
+    setWireframe(false);
+    setBloomEnabled(false);
+    setFloorReflection(true);
+    setAutoRotate(true);
+    setAutoRotateSpeed(0.8);
+    setFov(45);
+    setIsCustomPaintActive(false);
+
+    // Reset Camera to perspective
+    applyCameraPreset('perspective');
+  };
+
+  // ---------------------------------------------------------------------------
+  // 6. CAPTURE HIGH-RESOLUTION SCREENSHOT
+  // ---------------------------------------------------------------------------
+  const handleCaptureScreenshot = () => {
+    if (!rendererRef.current || !sceneRef.current || !cameraRef.current) return;
+
+    // Force pristine render frame
+    if (bloomEnabled && composerRef.current) {
+      composerRef.current.render();
+    } else {
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+    }
+
+    try {
+      const dataUrl = rendererRef.current.domElement.toDataURL('image/png');
+      const filename = `gearup-motorcycle-${vehicle?.model?.toLowerCase().replace(/\s+/g, '-') || 'studio'}-${currentEnvId}.png`;
+      const anchor = document.createElement('a');
+      anchor.href = dataUrl;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+
+      setScreenshotSuccess(true);
+      setTimeout(() => setScreenshotSuccess(false), 3000);
+    } catch (err) {
+      console.error('Screenshot capture error:', err);
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // 7. RAYCASTING: CLICK ON 3D MESHES TO SELECT COMPONENT
   // ---------------------------------------------------------------------------
   const handlePointerDown = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerIsReady() || isLoading) return;
+    if (!mountRef.current || !cameraRef.current || isLoading) return;
 
-    const rect = mountRef.current!.getBoundingClientRect();
+    const rect = mountRef.current.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(x, y), cameraRef.current!);
+    raycaster.setFromCamera(new THREE.Vector2(x, y), cameraRef.current);
 
     const intersects = raycaster.intersectObjects(clickableMeshesRef.current, true);
 
@@ -408,7 +918,6 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
       const hitMesh = intersects[0].object as THREE.Mesh;
       const hitName = hitMesh.name.toLowerCase();
 
-      // Find matching component definition
       const matchedComp = MOTORCYCLE_COMPONENTS.find((comp) =>
         comp.meshKeywords.some((keyword) => hitName.includes(keyword.toLowerCase()))
       );
@@ -419,10 +928,8 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     }
   }, [isLoading, onSelectComponent]);
 
-  const containerIsReady = () => Boolean(mountRef.current && cameraRef.current && sceneRef.current);
-
   // ---------------------------------------------------------------------------
-  // 3. SELECTION HIGHLIGHT & CAMERA TRANSITION
+  // 8. SELECTION HIGHLIGHT & CAMERA TRANSITION
   // ---------------------------------------------------------------------------
   useEffect(() => {
     if (!meshMapRef.current || meshMapRef.current.size === 0) return;
@@ -431,11 +938,12 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
     // Reset previous highlights
     meshMapRef.current.forEach(({ mesh, originalMat }) => {
-      mesh.material = originalMat;
+      if (!isCustomPaintActive || !isPaintableMesh(mesh)) {
+        mesh.material = originalMat;
+      }
     });
 
     if (selectedComp) {
-      // Highlight matching meshes with emerald glowing emissive accent
       meshMapRef.current.forEach(({ mesh, originalMat }) => {
         const meshName = mesh.name.toLowerCase();
         const isTarget = selectedComp.meshKeywords.some((kw) => meshName.includes(kw.toLowerCase()));
@@ -448,15 +956,14 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         }
       });
 
-      // Smooth camera transition to inspect the selected component
       cameraTargetPos.current = new THREE.Vector3(...selectedComp.cameraPosition);
       controlsTargetPos.current = new THREE.Vector3(...selectedComp.cameraTarget);
       isTransitioning.current = true;
     }
-  }, [selectedComponentId]);
+  }, [selectedComponentId, isCustomPaintActive]);
 
   // ---------------------------------------------------------------------------
-  // 4. EXPLODED VIEW TOGGLE ANIMATION
+  // 9. EXPLODED VIEW TOGGLE ANIMATION
   // ---------------------------------------------------------------------------
   useEffect(() => {
     if (!meshMapRef.current || meshMapRef.current.size === 0) return;
@@ -477,13 +984,13 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   }, [exploded]);
 
   // ---------------------------------------------------------------------------
-  // 5. CAMERA PRESET SWITCHER (FRONT, REAR, LEFT, RIGHT, TOP, RESET)
+  // 10. CAMERA PRESET SWITCHER
   // ---------------------------------------------------------------------------
-  const applyCameraPreset = (presetKey: keyof typeof CAMERA_PRESETS) => {
+  const applyCameraPreset = (presetKey: string) => {
     setActivePreset(presetKey);
-    onSelectComponent(null); // clear specific component focus
+    onSelectComponent(null);
 
-    const preset = CAMERA_PRESETS[presetKey];
+    const preset = (CAMERA_PRESETS as any)[presetKey] || CAMERA_PRESETS.perspective;
     cameraTargetPos.current = new THREE.Vector3(...preset.position);
     controlsTargetPos.current = new THREE.Vector3(...preset.target);
     isTransitioning.current = true;
@@ -499,13 +1006,21 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
 
   return (
     <div className={`relative w-full h-full bg-[#060C0A] overflow-hidden select-none ${className}`}>
-      {/* 3D WebGL Canvas Container */}
+      {/* 3D WebGL Canvas */}
       <div
         ref={mountRef}
         onClick={handlePointerDown}
         className="w-full h-full cursor-grab active:cursor-grabbing"
         title="Drag to rotate 360° • Scroll to zoom • Click any component to inspect"
       />
+
+      {/* Screenshot Success Toast */}
+      {screenshotSuccess && (
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-emerald-950/95 border border-emerald-500 text-white px-4 py-2 text-xs font-mono flex items-center gap-2 shadow-2xl animate-bounce">
+          <Check className="w-4 h-4 text-emerald-400" />
+          <span>High-Resolution Studio Screenshot Downloaded!</span>
+        </div>
+      )}
 
       {/* Loading Overlay */}
       {isLoading && (
@@ -518,226 +1033,170 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
               Loading 3D Digital Twin Showroom
             </h3>
             <p className="text-xs text-[#85857E]">
-              Initializing {vehicle?.brand || 'Motorcycle'} {vehicle?.model || '350'} inspection meshes...
+              Decompressing high-fidelity polygon meshes with Draco WASM acceleration...
             </p>
           </div>
-          <div className="w-64 h-2 rounded-full bg-white border border-[#E9E3D8] overflow-hidden">
+          <div className="w-56 h-1.5 bg-black/40 rounded-none overflow-hidden border border-[#E9E3D8]/40">
             <div
-              className="h-full bg-gradient-to-r from-emerald-500 to-forest-400 rounded-full transition-all duration-300"
+              className="h-full bg-[#35483C] transition-all duration-300 ease-out"
               style={{ width: `${loadingProgress}%` }}
             />
           </div>
-          <span className="text-[11px] font-mono text-[#242622]">{loadingProgress}%</span>
         </div>
       )}
 
-      {/* Fallback / Error State */}
+      {/* Error Fallback Notice */}
       {loadError && (
-        <div className="absolute inset-0 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-20 space-y-4">
-          <div className="w-12 h-12 rounded-none bg-amber-950/80 border border-amber-600/50 flex items-center justify-center text-amber-400">
-            <AlertTriangle className="w-6 h-6" />
-          </div>
-          <div className="space-y-1 max-w-md">
-            <h4 className="font-heading font-bold text-sm text-[#242622]">Interactive 3D Notice</h4>
-            <p className="text-xs text-[#85857E]">{loadError}</p>
-          </div>
-          {vehicle?.primaryImage && (
-            <div className="relative aspect-video w-full max-w-md rounded-none overflow-hidden border border-[#E9E3D8]">
-              <img src={vehicle.primaryImage} alt="Vehicle visual" className="w-full h-full object-cover" />
-              <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-md bg-black/80 text-[10px] text-white">
-                Certified 120-Point Photographic Inspection
-              </div>
-            </div>
-          )}
+        <div className="absolute inset-x-4 top-4 z-20 p-4 bg-amber-950/90 border border-amber-600 text-amber-200 text-xs flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+          <p>{loadError}</p>
         </div>
       )}
 
-      {/* Interactive 3D Screen Hotspot Pins (Projected from 3D coordinates) */}
-      {!isLoading && showHotspots && !selectedComponentId && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-          {projectedHotspots.map((h) => {
-            if (!h.visible) return null;
-            return (
-              <button
-                key={h.id}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelectComponent(h.id);
-                }}
-                style={{
-                  transform: `translate(${h.x}px, ${h.y}px) translate(-50%, -50%)`,
-                }}
-                className="absolute pointer-events-auto group flex items-center gap-1.5 transition-transform hover:scale-110 focus:outline-none"
-                title={`Inspect ${h.name}`}
-              >
-                {/* Glowing Pulse Ring */}
-                <div className="relative flex items-center justify-center">
-                  <span className="absolute w-6 h-6 rounded-full bg-emerald-400/30 animate-ping" />
-                  <span className="w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white shadow-glow" />
-                </div>
-                {/* Hotspot Label Pill */}
-                <span className="px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E9E3D8] text-[10px] font-bold text-[#242622] shadow-xl whitespace-nowrap opacity-75 group-hover:opacity-100 group-hover:border-emerald-400 transition-opacity">
-                  {h.name}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Top Floating Badge: Discloses Representative 3D Model with Real Inspection Data */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <div className="pointer-events-auto flex items-center gap-2.5 px-3.5 py-2 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] shadow-xl text-xs">
-          <Sparkles className="w-4 h-4 text-[#35483C] flex-shrink-0" />
-          <div className="leading-tight">
-            <div className="flex items-center gap-2">
-              <span className="font-heading font-extrabold text-[#242622] text-xs">
-                {vehicle?.brand} {vehicle?.model}
-              </span>
-              <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-[#E9E3D8] text-[#242622]">
-                {isScooter ? 'Illustrative Scooter 3D' : 'Illustrative Motorcycle 3D'}
-              </span>
-            </div>
-            <span className="text-[10px] text-[#85857E] block mt-0.5">
-              360° Interactive Digital Twin • Real 120-Point Mechanical Audit Data
-            </span>
-          </div>
-        </div>
-
-        {/* View Fullscreen & Hotspots Toggle */}
-        <div className="pointer-events-auto flex items-center gap-1.5">
-          <button
-            onClick={() => setShowHotspots(!showHotspots)}
-            className={`p-2 rounded-none backdrop-blur-md border text-xs transition-colors shadow-lg ${
-              showHotspots
-                ? 'bg-emerald-950/80 border-emerald-600/70 text-[#242622]'
-                : 'bg-white/95 border-[#E9E3D8] text-[#85857E] hover:text-[#242622]'
-            }`}
-            title={showHotspots ? 'Hide Component Hotspot Pins' : 'Show Component Hotspot Pins'}
-          >
-            <Eye className="w-4 h-4" />
-          </button>
-
-          {onToggleExploded && (
+      {/* Projected 2D Interactive Hotspots */}
+      {showHotspots &&
+        !isLoading &&
+        projectedHotspots.map((hs) => {
+          if (!hs.visible) return null;
+          const isSelected = selectedComponentId === hs.id;
+          return (
             <button
-              onClick={onToggleExploded}
-              className={`p-2 rounded-none backdrop-blur-md border text-xs transition-colors shadow-lg flex items-center gap-1 ${
-                exploded
-                  ? 'bg-amber-950/80 border-amber-600/70 text-amber-300'
-                  : 'bg-white/95 border-[#E9E3D8] text-[#85857E] hover:text-[#242622]'
+              key={hs.id}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectComponent(hs.id);
+              }}
+              style={{
+                left: `${hs.x}px`,
+                top: `${hs.y}px`,
+                transform: 'translate(-50%, -50%)'
+              }}
+              className={`absolute z-10 pointer-events-auto transition-transform ${
+                isSelected ? 'scale-110 z-20' : 'hover:scale-105'
               }`}
-              title="Exploded Assembly View"
+              title={`Inspect ${hs.name}`}
             >
-              <Layers className="w-4 h-4" />
-              <span className="hidden sm:inline text-[10px] font-bold">Exploded</span>
+              <div
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-none text-[11px] font-mono tracking-wider transition-all shadow-lg ${
+                  isSelected
+                    ? 'bg-[#35483C] text-white border border-emerald-400 ring-2 ring-emerald-500/50 shadow-glow font-bold'
+                    : 'bg-[#060C0A]/85 hover:bg-[#060C0A] text-[#A4AD98] hover:text-white border border-[#E9E3D8]/30 backdrop-blur-sm'
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    isSelected ? 'bg-emerald-400 animate-pulse' : 'bg-emerald-500'
+                  }`}
+                />
+                <span>{hs.name}</span>
+              </div>
             </button>
-          )}
+          );
+        })}
 
-          {onToggleFullscreen && (
-            <button
-              onClick={onToggleFullscreen}
-              className="p-2 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] text-[#85857E] hover:text-[#242622] text-xs transition-colors shadow-lg"
-              title={fullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen Showroom'}
-            >
-              {fullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Bottom Camera Perspectives Bar (Front, Rear, Left, Right, Top, Reset) */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 p-1.5 rounded-none bg-white/95 backdrop-blur-md border border-[#E9E3D8] shadow-2xl z-10 max-w-[95%] overflow-x-auto">
+      {/* Floating HUD Camera Presets & Zoom Toolstrip (Bottom-Left) */}
+      <div className="absolute bottom-4 left-4 z-20 flex flex-wrap items-center gap-1.5 bg-[#060C0A]/85 backdrop-blur-md p-1.5 border border-white/10 text-white shadow-2xl">
         <button
-          onClick={() => applyCameraPreset('perspective')}
-          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all flex items-center gap-1 whitespace-nowrap ${
-            activePreset === 'perspective' && !selectedComponentId
-              ? 'bg-emerald-600 text-white shadow-glow'
-              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
+          onClick={() => setShowHotspots(!showHotspots)}
+          className={`p-2 rounded-none border text-xs transition-colors ${
+            showHotspots ? 'bg-[#35483C] border-[#35483C] text-white' : 'bg-black/40 border-white/10 text-[#85857E]'
           }`}
-          title="3/4 Perspective Hero View"
+          title={showHotspots ? 'Hide Inspection Hotspots' : 'Show Inspection Hotspots'}
         >
-          <RotateCcw className="w-3.5 h-3.5" />
-          <span>3/4 Reset</span>
+          <Eye className="w-3.5 h-3.5" />
         </button>
 
-        <button
-          onClick={() => applyCameraPreset('front')}
-          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
-            activePreset === 'front'
-              ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
-          }`}
-        >
-          Front
-        </button>
+        <div className="h-4 w-px bg-white/20 mx-0.5" />
 
-        <button
-          onClick={() => applyCameraPreset('side_left')}
-          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
-            activePreset === 'side_left'
-              ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
-          }`}
-        >
-          Left Profile
-        </button>
-
-        <button
-          onClick={() => applyCameraPreset('side_right')}
-          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
-            activePreset === 'side_right'
-              ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
-          }`}
-        >
-          Right Profile
-        </button>
-
-        <button
-          onClick={() => applyCameraPreset('rear')}
-          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
-            activePreset === 'rear'
-              ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
-          }`}
-        >
-          Rear
-        </button>
-
-        <button
-          onClick={() => applyCameraPreset('top')}
-          className={`px-2.5 py-1.5 rounded-none text-[11px] font-bold transition-all whitespace-nowrap ${
-            activePreset === 'top'
-              ? 'bg-emerald-600 text-white'
-              : 'text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8]'
-          }`}
-        >
-          Top Down
-        </button>
-
-        <div className="w-[1px] h-4 bg-[#E9E3D8]/40 mx-0.5" />
-
-        {/* Zoom Controls */}
         <button
           onClick={() => handleZoom('in')}
-          className="p-1.5 rounded-lg text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8] transition-colors"
-          title="Zoom In (+)"
+          className="p-2 rounded-none bg-black/40 hover:bg-white/10 border border-white/10 text-white text-xs transition-colors"
+          title="Zoom In"
         >
           <ZoomIn className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={() => handleZoom('out')}
-          className="p-1.5 rounded-lg text-[#85857E] hover:text-[#242622] hover:bg-[#E9E3D8] transition-colors"
-          title="Zoom Out (-)"
+          className="p-2 rounded-none bg-black/40 hover:bg-white/10 border border-white/10 text-white text-xs transition-colors"
+          title="Zoom Out"
         >
           <ZoomOut className="w-3.5 h-3.5" />
         </button>
+
+        <div className="h-4 w-px bg-white/20 mx-0.5" />
+
+        {/* Quick Camera Angle Buttons */}
+        {(['perspective', 'front', 'rear', 'left', 'right', 'top'] as const).map((preset) => (
+          <button
+            key={preset}
+            onClick={() => applyCameraPreset(preset)}
+            className={`px-2.5 py-1 rounded-none text-[10px] font-mono uppercase tracking-wider transition-all border ${
+              activePreset === preset
+                ? 'bg-[#35483C] text-white border-emerald-400 font-bold'
+                : 'bg-black/30 text-[#85857E] hover:text-white border-white/10 hover:bg-white/5'
+            }`}
+          >
+            {preset === 'perspective' ? '3/4' : preset}
+          </button>
+        ))}
+
+        {onToggleExploded && (
+          <>
+            <div className="h-4 w-px bg-white/20 mx-0.5" />
+            <button
+              onClick={onToggleExploded}
+              className={`px-2.5 py-1 rounded-none text-[10px] font-mono uppercase tracking-wider flex items-center gap-1 transition-all border ${
+                exploded
+                  ? 'bg-amber-600 border-amber-500 text-white font-bold'
+                  : 'bg-black/30 border-white/10 text-[#85857E] hover:text-white'
+              }`}
+              title="Toggle Exploded Mechanical Assembly"
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>{exploded ? 'Collapse' : 'Explode'}</span>
+            </button>
+          </>
+        )}
       </div>
 
-      {/* Hint Badge for User Interaction */}
-      <div className="absolute bottom-16 left-3 text-[10px] text-slate-500 pointer-events-none hidden sm:block">
-        Click any motorcycle component to view certified inspection report
-      </div>
+      {/* Floating Environment & Studio Configurator Control Panel */}
+      {showStudioControls && (
+        <EnvironmentControlPanel
+          currentEnvironment={currentEnvId}
+          onSelectEnvironment={(envId) => setCurrentEnvId(envId)}
+          ambientIntensity={ambientIntensity}
+          onAmbientIntensityChange={setAmbientIntensity}
+          keyLightIntensity={keyLightIntensity}
+          onKeyLightIntensityChange={setKeyLightIntensity}
+          rimLightIntensity={rimLightIntensity}
+          onRimLightIntensityChange={setRimLightIntensity}
+          autoRotate={autoRotate}
+          onToggleAutoRotate={() => setAutoRotate(!autoRotate)}
+          autoRotateSpeed={autoRotateSpeed}
+          onAutoRotateSpeedChange={setAutoRotateSpeed}
+          fov={fov}
+          onFovChange={setFov}
+          onApplyCameraPreset={applyCameraPreset}
+          accentColor={accentColor}
+          onSelectAccentColor={setAccentColor}
+          wireframe={wireframe}
+          onToggleWireframe={() => setWireframe(!wireframe)}
+          bloomEnabled={bloomEnabled}
+          onToggleBloom={() => setBloomEnabled(!bloomEnabled)}
+          floorReflection={floorReflection}
+          onToggleFloorReflection={() => setFloorReflection(!floorReflection)}
+          selectedColorHex={selectedColorHex}
+          onSelectPaintColor={handleSelectPaintColor}
+          paintMetalness={paintMetalness}
+          onPaintMetalnessChange={setPaintMetalness}
+          paintRoughness={paintRoughness}
+          onPaintRoughnessChange={setPaintRoughness}
+          onCaptureScreenshot={handleCaptureScreenshot}
+          onResetAppearance={handleResetAppearance}
+          isOpen={isStudioDrawerOpen}
+          onToggleOpen={() => setIsStudioDrawerOpen(!isStudioDrawerOpen)}
+        />
+      )}
     </div>
   );
 };
