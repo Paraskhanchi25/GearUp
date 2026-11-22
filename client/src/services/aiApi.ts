@@ -7,7 +7,7 @@ const API_BASE = '/api';
 
 export interface ChatMessagePayload {
   message: string;
-  history?: { role: string; content: string }[];
+  history?: { role?: string; sender?: string; text?: string; content?: string }[];
   language?: string;
   vehicle_context?: any;
 }
@@ -158,25 +158,28 @@ export interface ComparisonPayload {
 
 // 1. AI Buddy Chat API
 export async function sendAIBuddyMessage(payload: ChatMessagePayload) {
-  try {
-    const res = await fetch(`${API_BASE}/ai-buddy/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (res.ok) {
-      return await res.json();
-    }
-  } catch (err) {
-    console.warn('AI Buddy API fetch error:', err);
+  const res = await fetch(`${API_BASE}/ai-buddy/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Server returned ${res.status}`);
   }
+  return await res.json();
+}
 
-  // Graceful fallback
-  return {
-    response: `Namaste! I am AI Bike Buddy. For ${payload.message}, ensure your tyre pressure, chain tension, and synthetic oil levels meet manufacturer spec. Avoid high-speed highway riding if experiencing brake or steering anomalies.`,
-    is_refusal: false,
-    timestamp: 'Just now',
-  };
+export async function getAIBuddyDiagnostics() {
+  const res = await fetch(`${API_BASE}/ai-buddy/diagnostic`);
+  if (!res.ok) throw new Error('Failed to fetch diagnostics');
+  return await res.json();
+}
+
+export async function getAIBuddyHealth() {
+  const res = await fetch(`${API_BASE}/ai-buddy/health`);
+  if (!res.ok) throw new Error('Failed to fetch health');
+  return await res.json();
 }
 
 // 2. Machine Learning Price Estimator API

@@ -106,9 +106,16 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
     setIsTyping(true);
 
     try {
+      // Build conversation history payload from prior messages
+      const historyPayload = messages.slice(-8).map((m) => ({
+        sender: m.sender,
+        text: m.text,
+      }));
+
       // 1. Send to AI Buddy Service (Gemini API with Strict Boundaries + Grounded Marketplace Retrieval)
       const res = await sendAIBuddyMessage({
         message: q || (hadImage ? 'Photo component inspection' : 'Engine audio sound check'),
+        history: historyPayload,
         language,
         vehicle_context: selectedProfile
       });
@@ -138,8 +145,15 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
         briefUtterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
         window.speechSynthesis.speak(briefUtterance);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.warn('AI Buddy send error:', err);
+      const errMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        text: `⚠️ **Connection Notice**: ${err?.message || 'Could not reach GEAR UP AI Buddy. Please verify that the backend server is running.'}`,
+        timestamp: 'Just now',
+      };
+      setMessages((prev) => [...prev, errMsg]);
     } finally {
       setIsTyping(false);
     }
@@ -247,6 +261,25 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
                 ਪੰਜਾਬੀ
               </button>
             </div>
+
+            {/* Clear / New Chat Button */}
+            <button
+              onClick={() => {
+                setMessages([
+                  {
+                    id: Date.now().toString(),
+                    sender: 'ai',
+                    text: `Namaste! I am GEAR UP AI Buddy, your intelligent advisor for India's used two-wheeler marketplace. Ask me about used bike/scooter buying, condition checks, price negotiation, RC & insurance verification, or maintenance!`,
+                    timestamp: 'Just now',
+                  },
+                ]);
+              }}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-forest-950 hover:bg-forest-900 border border-forest-800 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
+              title="Clear & Start New Conversation"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-forest-400" />
+              <span>New Chat</span>
+            </button>
           </div>
         </div>
       </div>
@@ -493,17 +526,18 @@ Ask me about unusual engine clicking sounds, sudden mileage drops, CVT judder, s
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder={`Describe symptoms for ${selectedProfile.brand} ${selectedProfile.model} (e.g. clicking sound, mileage drop)...`}
-            className="flex-1 bg-white border border-[#E5E1D7] rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#879783]"
+            onKeyDown={(e) => e.key === 'Enter' && !isTyping && handleSend()}
+            disabled={isTyping}
+            placeholder={`Ask about buying, selling, prices, RC/insurance, or diagnostics...`}
+            className="flex-1 bg-forest-950 border border-forest-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-forest-500 disabled:opacity-50"
           />
 
           <button
             onClick={() => handleSend()}
-            disabled={!input.trim() && !attachedImage && !attachedAudio}
-            className="px-6 py-3 rounded-2xl bg-[#879783] hover:bg-[#596B59] disabled:opacity-40 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-elevated"
+            disabled={isTyping || (!input.trim() && !attachedImage && !attachedAudio)}
+            className="px-6 py-3 rounded-2xl bg-forest-600 hover:bg-forest-500 disabled:opacity-40 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-elevated"
           >
-            <span>Ask</span>
+            <span>{isTyping ? 'Thinking...' : 'Ask'}</span>
             <Send className="w-4 h-4" />
           </button>
         </div>

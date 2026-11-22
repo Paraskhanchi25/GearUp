@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Bot, X, Send, Sparkles, Mic, MicOff, ChevronRight, Wrench, AlertTriangle } from 'lucide-react';
+import { Bot, X, Send, Sparkles, Mic, MicOff, ChevronRight, Wrench, AlertTriangle, Loader2 } from 'lucide-react';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
 import { diagnoseTwoWheelerQuery } from '../utils/mechanicAI';
+import { sendAIBuddyMessage } from '../services/aiApi';
 import { Link } from 'react-router-dom';
 
 interface Message {
@@ -16,29 +17,51 @@ export const FloatingBikeBuddy: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [language, setLanguage] = useState<'en' | 'hi' | 'pa'>('en');
 
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: 'ai',
-      text: "Namaste! I'm AI Bike Buddy, your 24/7 two-wheeler mechanic & advisor. Tell me your bike's symptoms (e.g. 'clicking sound on start', 'low mileage', 'spongy brakes') or budget and I'll troubleshoot right away!",
+      text: "Namaste! I'm GEAR UP AI Buddy, your 24/7 used two-wheeler advisor. Ask me about buying, selling, prices, condition checks, or RC/insurance!",
     },
   ]);
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const q = textToSend || input;
-    if (!q.trim()) return;
+    if (!q.trim() || isTyping) return;
 
     const newMsgs: Message[] = [...messages, { sender: 'user', text: q }];
     setMessages(newMsgs);
     setInput('');
+    setIsTyping(true);
 
-    setTimeout(() => {
+    try {
+      const historyPayload = messages.slice(-6).map((m) => ({
+        sender: m.sender,
+        text: m.text,
+      }));
+
+      const res = await sendAIBuddyMessage({
+        message: q,
+        history: historyPayload,
+        language,
+      });
+
+      const reply = res.response || res.text || 'Diagnostic assessment generated.';
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: reply,
+          recommendedIds: res.matched_listings?.map((l: any) => l.id),
+        },
+      ]);
+    } catch (err: any) {
+      // Complement with offline diagnostic if backend unreachable
       const diagnosis = diagnoseTwoWheelerQuery(q, null);
-
       let reply = `🔧 **${diagnosis.title}**\n\n`;
       reply += `**Possible Causes:**\n${diagnosis.possibleCauses.slice(0, 2).map((c) => `• ${c}`).join('\n')}\n\n`;
-      reply += `**Quick Safe Check:**\n${diagnosis.diyChecks[0] || 'Inspect spark plug and battery voltage.'}\n\n`;
       reply += `*Recommendation:* ${diagnosis.professionalAction}`;
 
       setMessages((prev) => [
@@ -50,7 +73,9 @@ export const FloatingBikeBuddy: React.FC = () => {
           recommendedIds: diagnosis.recommendedListings,
         },
       ]);
-    }, 600);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const toggleSpeech = () => {
@@ -223,17 +248,18 @@ export const FloatingBikeBuddy: React.FC = () => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask anything about 2-wheeler mechanics..."
-              className="flex-1 bg-[#101E19] border border-[#E5E1D7] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#879783]"
+              onKeyDown={(e) => e.key === 'Enter' && !isTyping && handleSend()}
+              disabled={isTyping}
+              placeholder="Ask anything about 2-wheelers or market..."
+              className="flex-1 bg-[#101E19] border border-forest-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-forest-500 disabled:opacity-50"
             />
 
             <button
               onClick={() => handleSend()}
-              disabled={!input.trim()}
-              className="p-2 rounded-xl bg-[#879783] hover:bg-[#596B59] disabled:opacity-40 text-white transition-colors"
+              disabled={isTyping || !input.trim()}
+              className="p-2 rounded-xl bg-forest-600 hover:bg-forest-500 disabled:opacity-40 text-white transition-colors"
             >
-              <Send className="w-4 h-4" />
+              {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>
           </div>
         </div>
