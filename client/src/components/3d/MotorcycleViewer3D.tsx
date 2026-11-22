@@ -25,6 +25,10 @@ import {
   PAINT_COLOR_SWATCHES, 
   isPaintableMesh 
 } from './paintPresets';
+import { 
+  buildWorkshopEnvironment, 
+  disposeWorkshopEnvironment 
+} from './workshopEnvironment';
 import { EnvironmentControlPanel } from './EnvironmentControlPanel';
 import { VehicleListing } from '../../types';
 import { 
@@ -97,6 +101,7 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
   const floorMeshRef = useRef<THREE.Mesh | null>(null);
   const innerRingRef = useRef<THREE.Mesh | null>(null);
   const outerRingRef = useRef<THREE.Mesh | null>(null);
+  const workshopGroupRef = useRef<THREE.Group | null>(null);
 
   // Particle System
   const particleSystemRef = useRef<THREE.Points | null>(null);
@@ -350,9 +355,10 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.minDistance = 1.1;
-    controls.maxDistance = 5.5;
-    controls.maxPolarAngle = Math.PI / 2 + 0.01; // floor clamping
+    controls.minDistance = 1.0;
+    controls.maxDistance = 6.8;
+    controls.minPolarAngle = 0.08; // Allows tilting up to look directly at ceiling, roof beams and LED lights
+    controls.maxPolarAngle = Math.PI / 2 - 0.02; // Floor collision clamping
     controls.autoRotate = autoRotate;
     controls.autoRotateSpeed = autoRotateSpeed;
     const initialTarget = CAMERA_PRESETS.perspective.target;
@@ -415,46 +421,14 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
     scene.add(underLight);
     underLightRef.current = underLight;
 
-    // 7. Studio Pedestal Floor & Circular Accent Rings
-    const floorGeo = new THREE.PlaneGeometry(18, 18);
-    const floorMat = new THREE.MeshStandardMaterial({
-      color: currentPreset.floor.color,
-      roughness: currentPreset.floor.roughness,
-      metalness: currentPreset.floor.metalness
-    });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
-    floor.rotation.x = -Math.PI / 2;
-    floor.receiveShadow = true;
-    scene.add(floor);
-    floorMeshRef.current = floor;
-
-    const ringGeo = new THREE.RingGeometry(1.6, 1.63, 64);
-    const ringMat = new THREE.MeshBasicMaterial({ 
-      color: new THREE.Color(accentColor), 
-      side: THREE.DoubleSide, 
-      opacity: 0.45, 
-      transparent: true 
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.y = 0.002;
-    ring.visible = currentPreset.floor.showRings;
-    scene.add(ring);
-    innerRingRef.current = ring;
-
-    const outerRingGeo = new THREE.RingGeometry(2.4, 2.418, 64);
-    const outerRingMat = new THREE.MeshBasicMaterial({ 
-      color: new THREE.Color(accentColor).multiplyScalar(0.6), 
-      side: THREE.DoubleSide, 
-      opacity: 0.3, 
-      transparent: true 
-    });
-    const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
-    outerRing.rotation.x = -Math.PI / 2;
-    outerRing.position.y = 0.001;
-    outerRing.visible = currentPreset.floor.showRings;
-    scene.add(outerRing);
-    outerRingRef.current = outerRing;
+    // 7. Complete 3D Motorcycle Service Workshop Environment
+    const workshop = buildWorkshopEnvironment();
+    workshopGroupRef.current = workshop;
+    const floorMesh = workshop.getObjectByName('workshop_floor_mesh') as THREE.Mesh;
+    if (floorMesh) {
+      floorMeshRef.current = floorMesh;
+    }
+    scene.add(workshop);
 
     // Initialize particles
     updateParticles(currentPreset, scene);
@@ -484,10 +458,10 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         const targetScale = 2.4 / (maxDim || 1);
         root.scale.setScalar(targetScale);
 
-        // Center on (0, 0, 0) and position onto floor
+        // Center on (0, 0, 0) and position bottom onto hydraulic service lift platform surface
         root.position.x = -center.x * targetScale;
         root.position.z = -center.z * targetScale;
-        root.position.y = -box.min.y * targetScale;
+        root.position.y = -box.min.y * targetScale + 0.04;
 
         // Catalog meshes for raycasting, exploded view & paint customization
         const meshMap = new Map();
@@ -654,12 +628,11 @@ export const MotorcycleViewer3D: React.FC<MotorcycleViewer3DProps> = ({
         });
       }
 
-      floorGeo.dispose();
-      floorMat.dispose();
-      ringGeo.dispose();
-      ringMat.dispose();
-      outerRingGeo.dispose();
-      outerRingMat.dispose();
+      if (workshopGroupRef.current) {
+        disposeWorkshopEnvironment(workshopGroupRef.current);
+        scene.remove(workshopGroupRef.current);
+        workshopGroupRef.current = null;
+      }
 
       if (particleSystemRef.current) {
         particleSystemRef.current.geometry.dispose();
