@@ -11,7 +11,15 @@ Independent, modular AI micro-services for the GEAR UP two-wheeler marketplace:
 - /api/voice/
 """
 
+import os
+import sys
 import time
+
+# Ensure backend root is on Python sys.path regardless of execution working directory
+_backend_dir = os.path.dirname(os.path.abspath(__file__))
+if _backend_dir not in sys.path:
+    sys.path.insert(0, _backend_dir)
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse

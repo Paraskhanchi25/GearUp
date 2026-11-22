@@ -30,7 +30,8 @@ import {
   Camera, 
   CheckCircle, 
   Clock, 
-  ShieldAlert
+  ShieldAlert,
+  Layers
 } from 'lucide-react';
 import { SEED_LISTINGS } from '../data/seedListings';
 import { formatINR } from '../utils/geo';
@@ -335,6 +336,16 @@ export const BikeDetailPage: React.FC<BikeDetailPageProps> = ({ savedIds, onTogg
                   <p className="text-[#77796F] text-[10px]">Document Authenticity</p>
                   <p className="font-semibold text-[#596B59] mt-0.5">RC & PUC Match</p>
                 </div>
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <Link
+                  to={`/inspect/${vehicle.id}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#879783] hover:bg-[#596B59] text-white text-xs font-semibold shadow-sm transition-all"
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Launch 3D Digital Twin Inspection</span>
+                </Link>
               </div>
             </div>
 

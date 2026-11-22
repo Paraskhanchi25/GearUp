@@ -18,6 +18,7 @@ import { BikeDoctorPage } from './pages/BikeDoctorPage';
 import { ComparePage } from './pages/ComparePage';
 import { PriceEstimatorPage } from './pages/PriceEstimatorPage';
 import { DashboardPage } from './pages/Dashboard';
+import { MotorcycleInspectionPage } from './pages/MotorcycleInspectionPage';
 import { TrustPage } from './pages/TrustPage';
 import { AuthPage } from './pages/AuthPage';
 import { AdminPage } from './pages/AdminPage';
@@ -108,7 +109,7 @@ export const App: React.FC = () => {
                 />
               }
             />
-            <Route path="/inspect/:id" element={<Navigate to="/explore" replace />} />
+            <Route path="/inspect/:id" element={<MotorcycleInspectionPage />} />
             <Route path="/sell" element={<SellBikePage />} />
             <Route path="/resale-studio" element={<ResaleStudioPage />} />
             <Route path="/bike-doctor" element={<BikeDoctorPage />} />
